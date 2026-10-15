@@ -1,0 +1,50 @@
+# oc-store-setup — instructions for Claude
+
+Stack: **ocStore 3.0.3.7** (OpenCart 3.0.3.x fork, PHP + MySQL/MariaDB, Twig templates, MVC-L)
+as an unmodified base in `core/`, with all project code in `custom/`, composed into a runnable
+docroot by `scripts/build.mjs`. Dev tooling: Node >= 20 (build/verify) and PHP CLI (install,
+migrate, seed).
+
+## Spec-driven development (mandatory)
+
+Read `specs/README.md`. Rule: **NO SPEC = NO IMPLEMENTATION = NO COMMIT.**
+
+1. For any non-trivial change, first create `specs/<feature>/{spec,plan,tasks}.md` from
+   `specs/_template/` with the next free `SPEC-NNN` id, status `draft`.
+2. Stop and get the user's approval -> set status `approved`. Do not implement before that.
+3. Implement task by task (status `in-progress`); every requirement has `REQ-<AREA>-NNN`,
+   every task references REQs, every test/check has a `TEST-<AREA>-NNN — verifies REQ-…` id.
+4. If the spec turns out wrong: stop, update the spec, re-approve, continue.
+5. Finish with `npm run verify` green -> status `implemented`; add the row to the table in
+   `specs/README.md`. Commit messages end with `[SPEC-NNN]`.
+
+## Read first (platform context)
+
+1. `docs/ocstore-internals.md` — how ocStore/OpenCart 3 works: request lifecycle, routes,
+   loader/events, Twig (autoescape is OFF), themes, OCMOD, extensions, DB tables, pitfalls.
+2. `docs/agent-playbook.md` — decision tree "where does my change go" + recipes (module, event,
+   theme override, OCMOD, migration, new page, language strings) and the done-checklist.
+3. `docs/coding-rules.md` — style and layering rules.
+
+Verify claims against `core/upload/` by grepping before relying on memory of "standard"
+OpenCart — this is a fork (ocStore) with blog, SeoPro and other changes.
+
+The architecture is fixed by **SPEC-001** (`specs/project-architecture/spec.md`). Read it before
+touching anything. The non-negotiable parts:
+
+- `core/` is **read-only**. Never edit a file under `core/upload/`. Not even "just one line".
+- All project code lives in `custom/` and reaches the store only through the build overlay,
+  OCMOD, events, or a theme/extension — never by overwriting a core file.
+- All database changes are numbered idempotent migrations in `custom/db/migrations/`.
+  Never change the schema or settings by hand in phpMyAdmin/admin and leave it undocumented.
+- Secrets live only in `.env` (git-ignored). `system/storage` lives outside the docroot.
+- Controllers stay thin; logic goes in `system/library/ocs/*` classes or models.
+
+## Commands
+
+No tooling exists yet: SPEC-001 defines it (`build`, `migrate`, `seed`, `verify`) and its tasks
+are `pending`. Nothing is deployed from this repo until a deployment spec is written and
+approved. Do not invent commands; implement them from the approved spec.
+
+- Docs: `docs/ocstore-internals.md`, `docs/agent-playbook.md`, `docs/coding-rules.md`,
+  `docs/architecture-overview.md`

@@ -1,0 +1,22 @@
+# TASKS — SPEC-001 Project Architecture
+
+| Task | Description | Fulfills | Check | Status |
+| ---- | ----------- | -------- | ----- | ------ |
+| TASK-ARCH-001 | Move vanilla dist to `core/`, generate `core/.manifest.sha256` | REQ-ARCH-001, 010 | TEST-ARCH-001 manifest verify | pending |
+| TASK-ARCH-002 | Repo skeleton: `custom/*`, `scripts/`, `docs/`, `.gitignore`, `.env.example`, `package.json` | REQ-ARCH-011, 013 | TEST-ARCH-002 layout check | pending |
+| TASK-ARCH-003 | `scripts/lib/env.mjs` (parse/validate `.env`) | REQ-ARCH-015, 043, 044 | TEST-ARCH-003 missing key fails | pending |
+| TASK-ARCH-004 | `scripts/build.mjs` overlay + collision check + incremental copy + preserve `image/catalog`,`image/cache` | REQ-ARCH-012, 014, 015, 016 | TEST-ARCH-004 collision negative test | pending |
+| TASK-ARCH-005 | Config templates + renderer, admin dir rename, storage skeleton | REQ-ARCH-033, 040, 041, 042 | TEST-ARCH-005 rendered config has no `{{` | pending |
+| TASK-ARCH-006 | `.htaccess` generation + deny-list | REQ-ARCH-061 | TEST-ARCH-006 smoke denied paths | pending |
+| TASK-ARCH-007 | `scripts/migrate.php` + `oc_ocs_migration` + checksums + `0001_baseline.sql` | REQ-ARCH-051, 053, 055 | TEST-ARCH-007 edited-migration negative test | pending |
+| TASK-ARCH-008 | `scripts/seed.php` (idempotent) | REQ-ARCH-052 | TEST-ARCH-008 double-run no diff | pending |
+| TASK-ARCH-009 | `scripts/refresh.php` (OCMOD refresh + cache clear) | REQ-ARCH-054, 021 | TEST-ARCH-009 modification dir populated | pending |
+| TASK-ARCH-010 | Extension scaffolder `scripts/new-extension.mjs` + sample `ocs_hello` module | REQ-ARCH-024..027, 030, 031, 034 | TEST-ARCH-010 builds & renders in storefront | pending |
+| TASK-ARCH-011 | Theme skeleton `custom/theme/ocs` + `extension/theme/ocs` admin entry, selected by migration | REQ-ARCH-020 | TEST-ARCH-011 home renders with theme `ocs` | pending |
+| TASK-ARCH-012 | `lint-layers.mjs` (no SQL in controllers/views, no `@`, no `eval`, namespace in libs) | REQ-ARCH-031, 034, 035, 063 | TEST-ARCH-012 fixtures | pending |
+| TASK-ARCH-013 | i18n parity check | REQ-ARCH-025, 092 | TEST-ARCH-013 | pending |
+| TASK-ARCH-014 | `scripts/smoke.mjs` | REQ-ARCH-081, 060 | TEST-ARCH-014 | pending |
+| TASK-ARCH-015 | `scripts/verify.mjs` orchestration + traceability check | REQ-ARCH-080 | TEST-ARCH-015 | pending |
+| TASK-ARCH-016 | `scripts/backup.mjs` | REQ-ARCH-056 | TEST-ARCH-016 | pending |
+| TASK-ARCH-017 | Production guard `verify --env production` | REQ-ARCH-062 | TEST-ARCH-017 | pending |
+| TASK-ARCH-018 | `docs/coding-rules.md`, `docs/architecture-overview.md` | REQ-ARCH-083 | review | pending |
