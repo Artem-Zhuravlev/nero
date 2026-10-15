@@ -336,6 +336,96 @@ committed and lists every key:
 - **REQ-ARCH-083** — Coding rules in `docs/coding-rules.md` are binding; spec-level exceptions
   are written in the spec's `plan.md`.
 
+## 12. Core upgrade and patching policy
+
+- **REQ-ARCH-100** — Core upgrades are their own spec (`SPEC-NNN core-upgrade-<version>`):
+  replace `core/upload/` wholesale from the official ocStore release, regenerate
+  `core/.manifest.sha256`, update the version line in `docs/architecture-overview.md`, then run
+  verify. Never mix with feature work (REQ-ARCH-082).
+- **REQ-ARCH-101** — Every OCMOD, event and overlay file that depends on a specific core file
+  records it in a header comment (`@core-file path`, `@core-version 3.0.3.7`). Verify
+  extracts these and, on a core upgrade, lists every dependent whose core file hash changed, so
+  they are re-reviewed.
+- **REQ-ARCH-102** — Security hotfixes to core are applied as OCMOD (`ocs_hotfix_<id>.ocmod.xml`)
+  with a link to the advisory, and removed when the core upgrade includes the fix.
+
+## 13. Caching and performance
+
+- **REQ-ARCH-110** — Use the framework cache (`$this->cache->get|set|delete`, file engine
+  by default, `cache_expire` 3600 s) for expensive custom queries. Key format
+  `ocs_<ext>.<entity>.<id|hash>[.<language_id>.<store_id>]`; the cache entry is deleted by the
+  code that mutates the entity (admin model `edit/delete`).
+- **REQ-ARCH-111** — No query inside a loop (N+1) in custom models: batch with `IN (...)` or
+  joins. Custom queries on large tables must use existing indexes or ship an index in an
+  `oc_ocs_*` table / migration (core tables are not altered, REQ-ARCH-053).
+- **REQ-ARCH-112** — Twig template cache stays enabled in non-local environments
+  (`developer_theme` off); theme/SCSS developer flags are allowed only when `APP_ENV=local`.
+- **REQ-ARCH-113** — Images are served through core's resize model (`tool/image`, cache in
+  `image/cache/`); custom code never hot-links original uploads into listings and never
+  stores generated thumbnails elsewhere.
+- **REQ-ARCH-114** — Static assets of the theme are versioned by a query string derived from
+  `BUILD_INFO.json` commit hash so browsers refresh them after each build.
+
+## 14. Logging and error handling
+
+- **REQ-ARCH-120** — Errors go to `DIR_LOGS/error.log` via the framework handler; custom
+  diagnostic logging uses `$this->log->write()` with a prefix `[ocs_<ext>]`. Custom code logs
+  no secrets, no card data, no full customer records, no raw request bodies.
+- **REQ-ARCH-121** — Custom code does not catch-and-swallow: exceptions are either handled with
+  a user-visible message from a language file or rethrown. Controllers return the standard
+  `error/not_found` route for unknown ids instead of rendering empty pages.
+- **REQ-ARCH-122** — `config_error_display` is `0` outside `local`; verify (production profile)
+  fails otherwise. Log rotation/size is an operations concern (own spec).
+
+## 15. SEO, URLs and routing
+
+- **REQ-ARCH-130** — SEO URLs stay enabled (`config_seo_url=1`; SeoPro `config_seo_pro` decision
+  is made once in the store-config spec and recorded here). Custom pages get slugs through
+  `oc_seo_url` rows created in migrations, one per enabled language and store, with keywords
+  unique per `(store_id, language_id)`.
+- **REQ-ARCH-131** — Custom routes live under `extension/ocs_<name>/…` (storefront) and the same
+  in admin; custom code never adds routes outside this namespace and never reuses a core
+  route name.
+- **REQ-ARCH-132** — URLs are built only with `$this->url->link($route, $args)`; no
+  hand-concatenated URLs, so SEO rewriting and multi-store domains keep working.
+- **REQ-ARCH-133** — Canonical, `hreflang` and meta tags are set through `$this->document`
+  (`setTitle`, `setDescription`, `addLink`), never hard-coded in templates.
+
+## 16. Multi-language, multi-currency, multi-store
+
+- **REQ-ARCH-140** — Any content table added by us that holds translatable text follows the
+  core pattern: `oc_ocs_<entity>` + `oc_ocs_<entity>_description(<id>, language_id, …)`.
+- **REQ-ARCH-141** — Prices are read through `$this->currency->format()` /
+  `$this->tax->calculate()`; custom code never formats currency or computes tax by hand.
+- **REQ-ARCH-142** — Anything store-specific (settings, layouts, slugs) carries `store_id`; code
+  reads settings with `$this->config->get()` (already store-scoped by `startup/startup`), never
+  by direct `oc_setting` queries except in migrations.
+
+## 17. Testing strategy
+
+- **REQ-ARCH-150** — Three levels, all runnable without Docker:
+  1. *Static*: `php -l`, layering lint, i18n parity, migration lint (REQ-ARCH-080).
+  2. *Unit*: libraries in `system/library/ocs/` are pure PHP and must be testable without
+     bootstrapping the framework by passing a stub registry; tests live in
+     `custom/extensions/<ext>/tests/` and run with a minimal in-repo PHP runner
+     (`scripts/run-php-tests.php`, no Composer dependency in v1).
+  3. *Smoke/HTTP*: `scripts/smoke.mjs` against a running build (REQ-ARCH-081), extended per
+     feature spec with its acceptance paths.
+- **REQ-ARCH-151** — Each feature spec lists its checks (`TEST-<AREA>-NNN`) and states the
+  level of each. A requirement with no check is a spec defect.
+- **REQ-ARCH-152** — Tests never use production data and never write outside `var/`.
+
+## 18. Documentation upkeep
+
+- **REQ-ARCH-160** — `docs/ocstore-internals.md` is corrected whenever a spec or an
+  investigation shows it to be wrong; items marked `[std]` are promoted to verified (with the
+  core file reference) the first time they are exercised.
+- **REQ-ARCH-161** — `docs/agent-playbook.md` gains a recipe whenever a new kind of change is
+  done twice.
+- **REQ-ARCH-162** — Decisions that deviate from this spec are recorded in the relevant
+  `plan.md` and, if lasting, folded back into this spec via the STOP -> UPDATE -> RE-APPROVE
+  loop.
+
 ## Data requirements
 
 Only `oc_ocs_migration` is introduced by this spec (REQ-ARCH-051). Everything else is core.

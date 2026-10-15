@@ -20,3 +20,11 @@
 | TASK-ARCH-016 | `scripts/backup.mjs` | REQ-ARCH-056 | TEST-ARCH-016 | pending |
 | TASK-ARCH-017 | Production guard `verify --env production` | REQ-ARCH-062 | TEST-ARCH-017 | pending |
 | TASK-ARCH-018 | `docs/coding-rules.md`, `docs/architecture-overview.md` | REQ-ARCH-083 | review | pending |
+| TASK-ARCH-019 | Core-dependency header scanner (`@core-file`) and upgrade report | REQ-ARCH-100, 101, 102 | TEST-ARCH-019 | pending |
+| TASK-ARCH-020 | Cache-key and N+1 review checklist in coding rules | REQ-ARCH-110, 111, 113 | review | pending |
+| TASK-ARCH-021 | Asset versioning from BUILD_INFO | REQ-ARCH-114 | TEST-ARCH-021 | pending |
+| TASK-ARCH-022 | Logging/error rules lint (no swallow, no secrets in log calls) | REQ-ARCH-120, 121, 122 | TEST-ARCH-022 | pending |
+| TASK-ARCH-023 | SEO/route namespace lint (`extension/ocs_*` only, `url->link` only) | REQ-ARCH-130..133 | TEST-ARCH-023 | pending |
+| TASK-ARCH-024 | i18n/currency/store rules lint | REQ-ARCH-140, 141, 142 | TEST-ARCH-024 | pending |
+| TASK-ARCH-025 | `scripts/run-php-tests.php` minimal runner + stub registry | REQ-ARCH-150, 151, 152 | TEST-ARCH-025 | pending |
+| TASK-ARCH-026 | Docs upkeep gate (spec touching platform must touch docs) | REQ-ARCH-160, 161, 162 | review | pending |
