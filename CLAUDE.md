@@ -53,7 +53,10 @@ touching anything. The non-negotiable parts:
 Implemented so far (SPEC-001/003/009, see task statuses): `npm run core:check` (core/ vs manifest), `npm run build` /
 `npm run build:check` (compose `build/www` + storage from `.env`; needs `.env` copied from `.env.example`), `npm test`
 (Node tests in `scripts/test/`), `npm run verify` (core-manifest, layout, php-lint, build-check, traceability, secrets).
-Not implemented yet: migrations, installer, extension scaffolder, smoke tests, jobs — do not invent them; implement from the
+`npm run test:php` (dependency-free PHP runner; SQLite-backed tests of the migration runner, helpers and installer) and
+`npm run db:migrate|db:status|db:install` (code and tests exist but have NEVER been run against a real MySQL/MariaDB server;
+they need `php -d extension=mysqli` and a built `build/www/config.php`).
+Not implemented yet: seeds, `refresh.php` (OCMOD refresh), extension scaffolder, smoke tests, jobs — do not invent them; implement from the
 approved specs. Nothing is deployed from this repo.
 
 - Docs: `docs/ocstore-internals.md`, `docs/agent-playbook.md`, `docs/coding-rules.md`,

@@ -71,7 +71,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-001 | [Project Architecture](project-architecture/spec.md)     | `in-progress` |
 | SPEC-003 | [Build Overlay and Generated Configuration](build-overlay/spec.md) | `in-progress` |
 | SPEC-004 | [Extension Contracts](extension-contracts/spec.md)       | `approved` |
-| SPEC-005 | [Database, Migrations, Settings-as-Code](database-migrations/spec.md) | `approved` |
+| SPEC-005 | [Database, Migrations, Settings-as-Code](database-migrations/spec.md) | `in-progress` |
 | SPEC-006 | [Storefront Theme Architecture](theme-architecture/spec.md) | `draft` |
 | SPEC-007 | [OCMOD and Event Policy](ocmod-and-events/spec.md)       | `draft` |
 | SPEC-008 | [Localisation](localisation/spec.md)                     | `draft` |

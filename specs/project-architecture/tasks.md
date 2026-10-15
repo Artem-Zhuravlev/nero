@@ -30,7 +30,7 @@
 | TASK-ARCH-026 | Docs upkeep gate (spec touching platform must touch docs) | REQ-ARCH-160, 161, 162 | review | pending |
 | TASK-ARCH-027 | Platform prerequisites and PHP policy documented/checked (extensions list, version, error levels) | REQ-ARCH-002, 003, 004 | TEST-ARCH-027 | pending |
 | TASK-ARCH-028 | Forbid vQmod and vendored-extension rules (VENDOR.md) in verify | REQ-ARCH-022, 023 | TEST-ARCH-028 | pending |
-| TASK-ARCH-029 | `scripts/install.php` replaying installer DB steps (never run stock installer on `core/`) + parity test on temp copy | REQ-ARCH-032 | TEST-ARCH-029 | pending |
+| TASK-ARCH-029 | `scripts/install.php` replaying installer DB steps (never run stock installer on `core/`) + parity test on temp copy | REQ-ARCH-032 | TEST-ARCH-029 | in-progress |
 | TASK-ARCH-030 | Settings-as-code convention check (settings only via migrations in non-local) | REQ-ARCH-050 | TEST-ARCH-030 | pending |
 | TASK-ARCH-031 | Language set declaration + overrides convention | REQ-ARCH-090, 091 | TEST-ARCH-031 | pending |
 | TASK-ARCH-032 | Admin permission and upload rules lint | REQ-ARCH-064, 065 | TEST-ARCH-032 | pending |

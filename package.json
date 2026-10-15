@@ -10,7 +10,12 @@
     "core:check": "node scripts/core-manifest.mjs check",
     "build": "node scripts/build.mjs",
     "build:check": "node scripts/build.mjs --check",
-    "test": "node --test scripts/test/*.test.mjs",
+    "test": "node --test scripts/test/*.test.mjs && php scripts/run-php-tests.php",
+    "test:node": "node --test scripts/test/*.test.mjs",
+    "test:php": "php scripts/run-php-tests.php",
+    "db:migrate": "php -d extension=mysqli scripts/migrate.php up",
+    "db:status": "php -d extension=mysqli scripts/migrate.php status",
+    "db:install": "php -d extension=mysqli scripts/install.php",
     "verify": "node scripts/verify.mjs"
   }
 }

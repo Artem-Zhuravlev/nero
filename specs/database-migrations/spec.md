@@ -1,6 +1,6 @@
 # SPEC-005 — Database, Migrations and Settings-as-Code
 
-**Status:** approved
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-15
 **Refines:** SPEC-001 section 8 · **Facts:** [`docs/ocstore-reference.md`](../../docs/ocstore-reference.md) §3, §5, §6, §9
