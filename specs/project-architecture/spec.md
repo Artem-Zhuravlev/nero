@@ -84,10 +84,10 @@ oc-store-setup/
 │   │   ├── config.php.tpl            storefront config template
 │   │   └── admin-config.php.tpl      admin config template
 │   └── i18n/                  translation sources (see section 9)
-├── scripts/                   tooling (build.mjs, deploy-local.mjs, verify.mjs, router.php,
+├── scripts/                   tooling (build.mjs, verify.mjs, smoke.mjs, migrate.php,
 │                              install.php, migrate.php, seed.php, php.ini, lib/*.mjs)
 ├── specs/                     SPEC-NNN directories (this process)
-├── docs/                      coding-rules.md, deployment.md, architecture-overview.md
+├── docs/                      coding-rules.md, ocstore-internals.md, ocstore-reference.md, agent-playbook.md, architecture-overview.md
 ├── build/                     GENERATED (git-ignored): build/www = docroot
 └── var/                       RUNTIME (git-ignored): storage/, logs/, backups/, db data
 ```
@@ -103,7 +103,7 @@ oc-store-setup/
   a core file is done with OCMOD, never by shadowing it.) Two documented exceptions are
   generated, not overlaid: `config.php` and `admin/config.php`.
 - **REQ-ARCH-013** — `build/` and `var/` are disposable and git-ignored; deleting them and
-  re-running `npm run deploy:local` must reproduce a working store from git + `.env` alone
+  re-running build + install + migrate must reproduce a working store from git + `.env` alone
   (images and DB content excepted — see REQ-ARCH-052).
 
 ## 3. Build overlay
@@ -150,7 +150,7 @@ stronger mechanism must justify it in the spec's `plan.md`.
 - **REQ-ARCH-021** — OCMOD files: one concern per file, named `ocs_<concern>.ocmod.xml`, with
   `<code>`, `<name>`, `<version>`, `<author>`, `<link>`; every `<search>` has `error="skip"`
   only if justified; an OCMOD must be installed through the same migration mechanism (inserted
-  into `oc_modification`), then "Refresh modifications" is run by `deploy` (REQ-ARCH-054).
+  into `oc_modification`), then "Refresh modifications" is run by `refresh.php` (REQ-ARCH-054).
 - **REQ-ARCH-022** — vQmod is **not** used.
 - **REQ-ARCH-023** — Third-party extensions bought/downloaded are vendored as
   `custom/extensions/<vendor_name>/` unchanged, with a `VENDOR.md` (source, version, licence) and
@@ -262,7 +262,7 @@ committed and lists every key:
   zero-padded, applied in order by `scripts/migrate.php`, recorded in table
   `oc_ocs_migration (id VARCHAR(64) PK, applied_at DATETIME, checksum CHAR(64))`. An applied
   migration file must never be edited (checksum mismatch aborts `migrate`); fixes are new
-  migrations. Each migration runs in one transaction where DDL permits, uses `{{PREFIX}}` for the
+  migrations. Core tables are almost all MyISAM (157 of 159 in `install/opencart.sql`), so there are no atomic migrations: each migration is idempotent and re-runnable (SPEC-005), uses `{{PREFIX}}` for the
   table prefix, and is idempotent (`CREATE TABLE IF NOT EXISTS`, guarded `ALTER`).
 - **REQ-ARCH-052** — **Runtime data** (products, categories created in admin, customers, orders,
   uploaded images) is *not* in git. Reference/demo data needed for development lives in
@@ -271,19 +271,19 @@ committed and lists every key:
 - **REQ-ARCH-053** — Core tables are never altered structurally. Extra columns/tables are added
   as separate `oc_ocs_*` tables joined by key. Core table rows may only be inserted/updated
   via settings (REQ-ARCH-050) or documented extension install steps.
-- **REQ-ARCH-054** — After every `migrate`, `deploy` runs the "refresh modifications" and "clear
+- **REQ-ARCH-054** — After every `migrate`, the update procedure runs the "refresh modifications" and "clear
   cache" equivalents through CLI (`scripts/refresh.php`) so OCMOD and events take effect.
 - **REQ-ARCH-055** — Charset: tables stay as created by core (`utf8`, `utf8_general_ci`);
-  custom tables match core (`ENGINE=InnoDB DEFAULT CHARSET=utf8`) for consistent joins.
+  custom tables use `ENGINE=InnoDB DEFAULT CHARSET=utf8` (core is MyISAM; custom tables never rely on foreign keys to core tables, only on joins by key).
 - **REQ-ARCH-056** — `scripts/backup.mjs` dumps the DB and tars `image/catalog` into
   `var/backups/<timestamp>/` and is run automatically before any `migrate` when
   `APP_ENV != local`.
 
 ## 9. Localisation
 
-- **REQ-ARCH-090** — Enabled store languages are declared in `custom/db/migrations` (settings)
-  and mirrored in `custom/i18n/languages.json` (`[{"code":"uk-ua"},{"code":"ru-ru"},{"code":"en-gb"}]`
-  — final set decided in the first store-config spec). Default language is configurable.
+- **REQ-ARCH-090** — Enabled store languages are declared in `custom/i18n/languages.json` and
+  mirrored into the DB by a migration (SPEC-008). The distribution ships only `uk-ua` and `en-gb`
+  (no `ru-ru`, despite the "UK-EN-RU" label); `uk-ua` is also the hard-coded runtime fallback.
 - **REQ-ARCH-091** — Language strings of custom code live in each extension's/theme's own
   language files. Overriding core strings uses OpenCart's per-route language override file added
   as a **new** path (e.g. `catalog/language/<lang>/ocs/override.php` loaded by an event), not by
@@ -295,7 +295,7 @@ committed and lists every key:
 
 - **REQ-ARCH-060** — Docroot (`build/www`) contains no `.env`, no `var/`, no `custom/`, no
   `specs/`, no `scripts/`, no SQL dumps, no storage. The web server serves only `build/www`.
-- **REQ-ARCH-061** — Generated `.htaccess` (and the nginx snippet in `docs/deployment.md`) deny
+- **REQ-ARCH-061** — Generated `.htaccess` deny
   `*.twig`, `*.tpl`, `*.ini`, `*.log`, `*.sql`, `.git*`, `config.php` over HTTP. The local router
   (`scripts/router.php`) enforces the same deny-list.
 - **REQ-ARCH-062** — Production requires: HTTPS (`APP_URL` https), `ADMIN_DIR` != `admin`,
@@ -323,7 +323,7 @@ committed and lists every key:
   6. `build` into a temp dir (collision check)
   7. spec traceability: every `REQ-*` in specs with status >= `implemented` has a task and a
      check id; every check id in code/scripts maps to an existing REQ
-- **REQ-ARCH-081** — Smoke test (`scripts/smoke.mjs`, run by `deploy:local` and
+- **REQ-ARCH-081** — Smoke test (`scripts/smoke.mjs`, run by the verify step and
   `verify --smoke`): with the store running, `GET /` -> 200 and contains the store name;
   `GET /index.php?route=common/home` -> 200; `GET /<admin>/` -> 200 login form;
   `GET /.env`, `/config.php`, `/system/storage/` -> 403/404; PHP error log has no new fatal.
@@ -436,7 +436,7 @@ Only `oc_ocs_migration` is introduced by this spec (REQ-ARCH-051). Everything el
 - `.env` missing a key -> build aborts naming the key (REQ-ARCH-015).
 - Applied migration edited -> migrate aborts with checksum mismatch (REQ-ARCH-051).
 - `image/catalog` exists from earlier runs -> never touched by build (REQ-ARCH-014).
-- DB unreachable -> `deploy:local` stops before install with a clear message, build output kept.
+- DB unreachable -> the install procedure stops before migrating with a clear message, build output kept.
 - Core upgraded -> new manifest, rerun verify + smoke; any OCMOD `<search>` that no longer
   matches shows up in the OCMOD log and fails `refresh` (REQ-ARCH-054).
 
@@ -444,7 +444,7 @@ Only `oc_ocs_migration` is introduced by this spec (REQ-ARCH-051). Everything el
 
 - [ ] `core/` unchanged vs manifest; `npm run verify` green on a clean checkout + `.env`.
 - [ ] `build/www` is produced from `core/` + `custom/` only and contains no `install/`.
-- [ ] Deleting `build/` and `var/storage` then running `deploy:local` yields a working store.
+- [ ] Deleting `build/` and `var/storage` then running build + install + migrate yields a working store.
 - [ ] Smoke test passes (home, admin login, denied sensitive paths).
 - [ ] A deliberately colliding overlay file makes `build` fail (negative test).
 - [ ] A deliberately edited applied migration makes `migrate` fail (negative test).

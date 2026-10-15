@@ -24,7 +24,13 @@ Read `specs/README.md`. Rule: **NO SPEC = NO IMPLEMENTATION = NO COMMIT.**
    loader/events, Twig (autoescape is OFF), themes, OCMOD, extensions, DB tables, pitfalls.
 2. `docs/agent-playbook.md` — decision tree "where does my change go" + recipes (module, event,
    theme override, OCMOD, migration, new page, language strings) and the done-checklist.
-3. `docs/coding-rules.md` — style and layering rules.
+3. `docs/ocstore-reference.md` — verified tables: generated config constants, setting keys,
+   extension contracts, layouts, default events, DB engines.
+4. `docs/coding-rules.md` — style and layering rules.
+
+Architecture is split into SPEC-001 (foundation) and refinements SPEC-003 build/config, 004
+extensions, 005 database/migrations, 006 theme, 007 OCMOD/events, 008 localisation, 009 quality
+gates. When a rule seems missing, look in the matching spec before inventing one.
 
 Verify claims against `core/upload/` by grepping before relying on memory of "standard"
 OpenCart — this is a fork (ocStore) with blog, SeoPro and other changes.
