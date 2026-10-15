@@ -95,40 +95,40 @@ REQ-ARCH-056), hosting.
 
 All helpers are idempotent and log what they changed (`created|updated|unchanged`).
 
-- **REQ-DB-020 Settings** — `$m->setting->set(string $code, string $key, mixed $value, int $store = 0)`
+- **REQ-DB-020** — **Settings.** `$m->setting->set(string $code, string $key, mixed $value, int $store = 0)`
   (arrays/objects stored JSON with `serialized=1`); `get`, `delete`; `setMany($code, array, $store)`
   replicating `editSetting` semantics **only for the given keys** (does not wipe other keys of the
   same `code`, unlike core's `editSetting` — documented difference). Implementation: `UPDATE …
   WHERE store_id/code/key`; if no row affected and none exists -> `INSERT`; duplicates of the
   same key (possible in core data) are reduced to one.
-- **REQ-DB-021 Extensions** — `$m->extension->register(string $type, string $code)` (insert into
+- **REQ-DB-021** — **Extensions.** `$m->extension->register(string $type, string $code)` (insert into
   `oc_extension` if missing), `unregister`, `isRegistered`.
-- **REQ-DB-022 Permissions** — `$m->permission->grant(int|string $group, string $route, array $types =
+- **REQ-DB-022** — **Permissions.** `$m->permission->grant(int|string $group, string $route, array $types =
   ['access','modify'])` reads the JSON of `oc_user_group.permission`, adds the route to each list
   if absent, writes back (same effect as core `addPermission`, without duplicates); `revoke`.
   Group by id or by name (`'Administrator'` = id 1).
-- **REQ-DB-023 Events** — `$m->event->register(string $code, string $trigger, string $action, int
+- **REQ-DB-023** — **Events.** `$m->event->register(string $code, string $trigger, string $action, int
   $sort = 0, int $status = 1)`: ensures exactly one row with that `code` and `trigger`, `action`
   updated if changed. Validates the trigger against `^(catalog|admin)/(controller|model|view|language)/[a-zA-Z0-9_/]+/(before|after)$`
   (view/language/controller routes may contain `*` wildcard) and that `action` route's file
   exists in an extension or core. `unregisterByCode($code)`. Codes must start with `ocs_`.
-- **REQ-DB-024 SEO URLs** — `$m->seoUrl->set(string $query, string $keyword, string $lang, int $store = 0)`
+- **REQ-DB-024** — **SEO URLs.** `$m->seoUrl->set(string $query, string $keyword, string $lang, int $store = 0)`
   ensures one row per `(store, language, query)`; fails if the `keyword` is already used by a
   different `query` in the same `(store, language)`; `delete($query)`.
-- **REQ-DB-025 Layouts** — `$m->layout->routeAdd(int $layoutId, string $route, int $store = 0)`;
+- **REQ-DB-025** — **Layouts.** `$m->layout->routeAdd(int $layoutId, string $route, int $store = 0)`;
   `$m->layout->moduleAdd(int $layoutId, string $moduleCode, string $position, int $sort)` where
   `$moduleCode` is `<code>` or `<code>.<module_id>`; both de-duplicate; layout referenced by
   **route** (`product/category`) through `$m->layout->idByRoute()` rather than by magic id when
   possible (reference §6 lists default ids).
-- **REQ-DB-026 Module instances** — `$m->module->upsert(string $code, string $name, array
+- **REQ-DB-026** — **Module instances.** `$m->module->upsert(string $code, string $name, array
   $setting): int` (by `code`+`name`), returns `module_id`.
-- **REQ-DB-027 OCMOD** — `$m->ocmod->install(string $xmlPath)` parses code/name/author/version/link
+- **REQ-DB-027** — **OCMOD.** `$m->ocmod->install(string $xmlPath)` parses code/name/author/version/link
   from the XML, inserts or updates the `oc_modification` row keyed by `code` with
   `extension_install_id = 0`, `status = 1`, `xml` = file content; `remove($code)`. After any
   OCMOD change the runner sets a flag so `refresh.php` runs (REQ-DB-040).
-- **REQ-DB-028 Lookup** — `$m->lang->id('uk-ua')`, `$m->currency->id('UAH')`, `$m->group->id('Administrator')`,
+- **REQ-DB-028** — **Lookup.** `$m->lang->id('uk-ua')`, `$m->currency->id('UAH')`, `$m->group->id('Administrator')`,
   `$m->orderStatus->id('Pending')`: fail loudly if missing (never guess ids).
-- **REQ-DB-029 Raw SQL** — `$m->sql(string $sql, array $params = [])` expands `{{PREFIX}}`
+- **REQ-DB-029** — **Raw SQL.** `$m->sql(string $sql, array $params = [])` expands `{{PREFIX}}`
   and escapes `?` params with `DB::escape`; `$m->query`/`$m->rows` for reads. Direct string
   concatenation of values is a lint error.
 - **REQ-DB-030 Schema helpers (own tables only)** — `createTable`, `addColumnIfMissing`,

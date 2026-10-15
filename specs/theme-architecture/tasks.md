@@ -11,3 +11,5 @@
 | TASK-THM-007 | Baselines: responsive, a11y, perf, schema.org | REQ-THM-040..043 | manual audit | pending |
 | TASK-THM-008 | Scope control and checkout-last policy documented in playbook | REQ-THM-050, 051 | review | pending |
 | TASK-THM-009 | Theme Editor restriction migration | REQ-THM-061 (edge) | TEST-THM-009 | pending |
+| TASK-THM-010 | Language/escaping rules for theme templates (lint hooks to SPEC-009) | REQ-THM-014, 015 | TEST-THM-010 | pending |
+| TASK-THM-011 | No-build-dependency check for theme (committed CSS) | REQ-THM-060 | TEST-THM-011 | pending |
