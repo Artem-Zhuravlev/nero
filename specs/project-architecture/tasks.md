@@ -35,3 +35,5 @@
 | TASK-ARCH-031 | Language set declaration + overrides convention | REQ-ARCH-090, 091 | TEST-ARCH-031 | pending |
 | TASK-ARCH-032 | Admin permission and upload rules lint | REQ-ARCH-064, 065 | TEST-ARCH-032 | pending |
 | TASK-ARCH-033 | Commit-message and branch policy hook/check | REQ-ARCH-082 | TEST-ARCH-033 | pending |
+| TASK-ARCH-034 | Agent-context gate: CLAUDE.md references docs; docs updated with platform learnings | REQ-ARCH-084 | review | pending |
+| TASK-ARCH-035 | Non-local cache/template-cache settings check | REQ-ARCH-112 | TEST-ARCH-035 | pending |
