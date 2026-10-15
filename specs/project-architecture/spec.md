@@ -296,8 +296,8 @@ committed and lists every key:
 - **REQ-ARCH-060** — Docroot (`build/www`) contains no `.env`, no `var/`, no `custom/`, no
   `specs/`, no `scripts/`, no SQL dumps, no storage. The web server serves only `build/www`.
 - **REQ-ARCH-061** — Generated `.htaccess` deny
-  `*.twig`, `*.tpl`, `*.ini`, `*.log`, `*.sql`, `.git*`, `config.php` over HTTP. The local router
-  (`scripts/router.php`) enforces the same deny-list.
+  `*.twig`, `*.tpl`, `*.ini`, `*.log`, `*.sql`, `.git*`, `config.php` over HTTP; any other server setup (nginx, built-in server) must reproduce the same deny-list, which the
+  smoke test verifies (SPEC-009 REQ-QA-060).
 - **REQ-ARCH-062** — Production requires: HTTPS (`APP_URL` https), `ADMIN_DIR` != `admin`,
   `config_error_display = 0`, `config_error_log = 1`, strong DB password, DB user limited to its
   schema. `verify --env production` fails otherwise.
@@ -425,6 +425,11 @@ committed and lists every key:
 - **REQ-ARCH-162** — Decisions that deviate from this spec are recorded in the relevant
   `plan.md` and, if lasting, folded back into this spec via the STOP -> UPDATE -> RE-APPROVE
   loop.
+
+## Open questions
+
+- Serving/deployment (web server, installer invocation, hosting) is not specified: a deployment spec must define it before anything runs. Owner: Artem Zhuravlev. Needed before the first task that requires a running store (smoke, L2/L3 tests).
+- Final language set, store niche, payment/delivery providers: store-config spec (not written yet).
 
 ## Data requirements
 

@@ -37,7 +37,7 @@ Concrete business extensions (own specs), ocmod format (SPEC-007), theme interna
 - **REQ-EXT-002** — `extension.json` is mandatory:
   ```json
   { "code": "ocs_featured_plus", "type": "module", "version": "1.0.0",
-    "title": { "en-gb": "Featured Plus", "uk-ua": "…", "ru-ru": "…" },
+    "title": { "en-gb": "Featured Plus", "uk-ua": "…" },
     "requires": { "core": "3.0.3.7", "extensions": [] },
     "spec": "SPEC-0NN", "tables": ["oc_ocs_featured_plus_item"],
     "settings": ["module_ocs_featured_plus_status"],

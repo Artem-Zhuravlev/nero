@@ -95,8 +95,8 @@ row in `oc_layout_route`.
 
 ## Recipe 7 — Adding a language string
 
-Add the key to the extension's/theme's language file for **every** enabled language (`uk-ua`,
-`ru-ru`, `en-gb`). Never edit core language files; to change a core string use an event on
+Add the key to the extension's/theme's language file for **every** enabled language (currently `uk-ua`,
+`en-gb`; the list is `custom/i18n/languages.json`, SPEC-008). Never edit core language files; to change a core string use an event on
 `language/<route>/after` that overrides `$output[...]`, or `oc_translation`.
 
 ## Checklist before saying "done"
