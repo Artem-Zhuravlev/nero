@@ -1,6 +1,6 @@
 # SPEC-009 — Quality Gates, Lint Rules and Security Checklist
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-15
 **Refines:** SPEC-001 sections 10, 11, 17

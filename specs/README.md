@@ -68,14 +68,14 @@ feat(theme): add base theme skeleton [SPEC-003]
 
 | ID       | Feature                                                  | Status  |
 | -------- | -------------------------------------------------------- | ------- |
-| SPEC-001 | [Project Architecture](project-architecture/spec.md)     | `draft` |
-| SPEC-003 | [Build Overlay and Generated Configuration](build-overlay/spec.md) | `draft` |
-| SPEC-004 | [Extension Contracts](extension-contracts/spec.md)       | `draft` |
-| SPEC-005 | [Database, Migrations, Settings-as-Code](database-migrations/spec.md) | `draft` |
+| SPEC-001 | [Project Architecture](project-architecture/spec.md)     | `in-progress` |
+| SPEC-003 | [Build Overlay and Generated Configuration](build-overlay/spec.md) | `in-progress` |
+| SPEC-004 | [Extension Contracts](extension-contracts/spec.md)       | `approved` |
+| SPEC-005 | [Database, Migrations, Settings-as-Code](database-migrations/spec.md) | `approved` |
 | SPEC-006 | [Storefront Theme Architecture](theme-architecture/spec.md) | `draft` |
 | SPEC-007 | [OCMOD and Event Policy](ocmod-and-events/spec.md)       | `draft` |
 | SPEC-008 | [Localisation](localisation/spec.md)                     | `draft` |
-| SPEC-009 | [Quality Gates, Lint, Security Checklist](quality-gates/spec.md) | `draft` |
+| SPEC-009 | [Quality Gates, Lint, Security Checklist](quality-gates/spec.md) | `in-progress` |
 | SPEC-010 | [Admin Access, Users, Permissions, API](admin-access/spec.md) | `draft` |
 | SPEC-011 | [Orders and Checkout](orders-checkout/spec.md)           | `draft` |
 | SPEC-012 | [Catalogue Data Model](catalog-data-model/spec.md)       | `draft` |

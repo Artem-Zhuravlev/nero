@@ -1,6 +1,6 @@
 # SPEC-003 — Build Overlay and Generated Configuration
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-15
 **Refines:** SPEC-001 sections 2, 3, 7 · **Facts:** [`docs/ocstore-reference.md`](../../docs/ocstore-reference.md) §1, §8

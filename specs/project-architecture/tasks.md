@@ -2,13 +2,13 @@
 
 | Task | Description | Fulfills | Check | Status |
 | ---- | ----------- | -------- | ----- | ------ |
-| TASK-ARCH-001 | Move vanilla dist to `core/`, generate `core/.manifest.sha256` | REQ-ARCH-001, 010 | TEST-ARCH-001 manifest verify | pending |
-| TASK-ARCH-002 | Repo skeleton: `custom/*`, `scripts/`, `docs/`, `.gitignore`, `.env.example`, `package.json` | REQ-ARCH-011, 013 | TEST-ARCH-002 layout check | pending |
-| TASK-ARCH-003 | `scripts/lib/env.mjs` (parse/validate `.env`) | REQ-ARCH-015, 043, 044 | TEST-ARCH-003 missing key fails | pending |
-| TASK-ARCH-004 | `scripts/build.mjs` overlay + collision check + incremental copy + preserve `image/catalog`,`image/cache` | REQ-ARCH-012, 014, 015, 016 | TEST-ARCH-004 collision negative test | pending |
-| TASK-ARCH-005 | Config templates + renderer, admin dir rename, storage skeleton | REQ-ARCH-033, 040, 041, 042 | TEST-ARCH-005 rendered config has no `{{` | pending |
-| TASK-ARCH-006 | `.htaccess` generation + deny-list | REQ-ARCH-061 | TEST-ARCH-006 smoke denied paths | pending |
-| TASK-ARCH-007 | `scripts/migrate.php` + `oc_ocs_migration` + checksums + `0001_baseline.sql` | REQ-ARCH-051, 053, 055 | TEST-ARCH-007 edited-migration negative test | pending |
+| TASK-ARCH-001 | Move vanilla dist to `core/`, generate `core/.manifest.sha256` | REQ-ARCH-001, 010 | TEST-ARCH-001 manifest verify | done |
+| TASK-ARCH-002 | Repo skeleton: `custom/*`, `scripts/`, `docs/`, `.gitignore`, `.env.example`, `package.json` | REQ-ARCH-011, 013 | TEST-ARCH-002 layout check | done |
+| TASK-ARCH-003 | `scripts/lib/env.mjs` (parse/validate `.env`) | REQ-ARCH-015, 043, 044 | TEST-ARCH-003 missing key fails | done |
+| TASK-ARCH-004 | `scripts/build.mjs` overlay + collision check + incremental copy + preserve `image/catalog`,`image/cache` | REQ-ARCH-012, 014, 015, 016 | TEST-ARCH-004 collision negative test | done |
+| TASK-ARCH-005 | Config templates + renderer, admin dir rename, storage skeleton | REQ-ARCH-033, 040, 041, 042 | TEST-ARCH-005 rendered config has no `{{` | done |
+| TASK-ARCH-006 | `.htaccess` generation + deny-list | REQ-ARCH-061 | TEST-ARCH-006 smoke denied paths | in-progress |
+| TASK-ARCH-007 | `scripts/migrate.php` + `oc_ocs_migration` + checksums + `0001_baseline.sql` | REQ-ARCH-051, 053, 055 | TEST-ARCH-007 edited-migration negative test | in-progress |
 | TASK-ARCH-008 | `scripts/seed.php` (idempotent) | REQ-ARCH-052 | TEST-ARCH-008 double-run no diff | pending |
 | TASK-ARCH-009 | `scripts/refresh.php` (OCMOD refresh + cache clear) | REQ-ARCH-054, 021 | TEST-ARCH-009 modification dir populated | pending |
 | TASK-ARCH-010 | Extension scaffolder `scripts/new-extension.mjs` + sample `ocs_hello` module | REQ-ARCH-024..027, 030, 031, 034 | TEST-ARCH-010 builds & renders in storefront | pending |

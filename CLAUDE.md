@@ -50,9 +50,11 @@ touching anything. The non-negotiable parts:
 
 ## Commands
 
-No tooling exists yet: SPEC-001 defines it (`build`, `migrate`, `seed`, `verify`) and its tasks
-are `pending`. Nothing is deployed from this repo until a deployment spec is written and
-approved. Do not invent commands; implement them from the approved spec.
+Implemented so far (SPEC-001/003/009, see task statuses): `npm run core:check` (core/ vs manifest), `npm run build` /
+`npm run build:check` (compose `build/www` + storage from `.env`; needs `.env` copied from `.env.example`), `npm test`
+(Node tests in `scripts/test/`), `npm run verify` (core-manifest, layout, php-lint, build-check, traceability, secrets).
+Not implemented yet: migrations, installer, extension scaffolder, smoke tests, jobs — do not invent them; implement from the
+approved specs. Nothing is deployed from this repo.
 
 - Docs: `docs/ocstore-internals.md`, `docs/agent-playbook.md`, `docs/coding-rules.md`,
   `docs/architecture-overview.md`

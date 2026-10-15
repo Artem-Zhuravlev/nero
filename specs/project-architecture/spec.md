@@ -1,6 +1,6 @@
 # SPEC-001 — Project Architecture
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-15
 

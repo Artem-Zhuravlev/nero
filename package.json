@@ -1,0 +1,16 @@
+{
+  "name": "oc-store-setup",
+  "private": true,
+  "version": "0.0.0",
+  "description": "ocStore 3.0.3.7 store developed spec-first (see CLAUDE.md)",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "core:manifest": "node scripts/core-manifest.mjs generate",
+    "core:check": "node scripts/core-manifest.mjs check",
+    "build": "node scripts/build.mjs",
+    "build:check": "node scripts/build.mjs --check",
+    "test": "node --test scripts/test/*.test.mjs",
+    "verify": "node scripts/verify.mjs"
+  }
+}

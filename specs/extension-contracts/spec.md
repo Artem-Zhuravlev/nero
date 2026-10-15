@@ -1,6 +1,6 @@
 # SPEC-004 — Extension Contracts
 
-**Status:** draft
+**Status:** approved
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-15
 **Refines:** SPEC-001 sections 4, 5, 6 · **Facts:** [`docs/ocstore-reference.md`](../../docs/ocstore-reference.md) §3–§5
