@@ -84,6 +84,8 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-015 | [Customer Accounts, Groups, Privacy](customer-accounts/spec.md) | `draft` |
 | SPEC-016 | [Content: Pages, Blog, Banners, Layouts](content-blog/spec.md) | `draft` |
 | SPEC-017 | [Marketing, Analytics, Consent, Returns](marketing-analytics/spec.md) | `draft` |
+| SPEC-018 | [External Integrations Architecture](integrations/spec.md) | `draft` |
+| SPEC-019 | [Performance, Scalability, Availability](performance-availability/spec.md) | `draft` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).
