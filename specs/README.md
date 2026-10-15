@@ -86,6 +86,9 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-017 | [Marketing, Analytics, Consent, Returns](marketing-analytics/spec.md) | `draft` |
 | SPEC-018 | [External Integrations Architecture](integrations/spec.md) | `draft` |
 | SPEC-019 | [Performance, Scalability, Availability](performance-availability/spec.md) | `draft` |
+| SPEC-020 | [Agent Workflow and Knowledge Base](agent-workflow/spec.md) | `draft` |
+| SPEC-021 | [Testing Strategy and Harness](testing-strategy/spec.md) | `draft` |
+| SPEC-022 | [Multi-store and Environment Profiles](multi-store-environments/spec.md) | `draft` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).
