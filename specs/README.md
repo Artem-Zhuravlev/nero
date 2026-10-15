@@ -76,6 +76,11 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-007 | [OCMOD and Event Policy](ocmod-and-events/spec.md)       | `draft` |
 | SPEC-008 | [Localisation](localisation/spec.md)                     | `draft` |
 | SPEC-009 | [Quality Gates, Lint, Security Checklist](quality-gates/spec.md) | `draft` |
+| SPEC-010 | [Admin Access, Users, Permissions, API](admin-access/spec.md) | `draft` |
+| SPEC-011 | [Orders and Checkout](orders-checkout/spec.md)           | `draft` |
+| SPEC-012 | [Catalogue Data Model](catalog-data-model/spec.md)       | `draft` |
+| SPEC-013 | [SEO, Sitemaps and Search](seo-search/spec.md)           | `draft` |
+| SPEC-014 | [Operations: backups, logs, jobs, runbooks](operations/spec.md) | `draft` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

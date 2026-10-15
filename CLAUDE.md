@@ -30,7 +30,8 @@ Read `specs/README.md`. Rule: **NO SPEC = NO IMPLEMENTATION = NO COMMIT.**
 
 Architecture is split into SPEC-001 (foundation) and refinements SPEC-003 build/config, 004
 extensions, 005 database/migrations, 006 theme, 007 OCMOD/events, 008 localisation, 009 quality
-gates. When a rule seems missing, look in the matching spec before inventing one.
+gates, 010 admin access, 011 orders/checkout, 012 catalogue data, 013 SEO/search, 014 operations.
+When a rule seems missing, look in the matching spec before inventing one.
 
 Verify claims against `core/upload/` by grepping before relying on memory of "standard"
 OpenCart — this is a fork (ocStore) with blog, SeoPro and other changes.

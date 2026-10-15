@@ -155,3 +155,13 @@ Bootstrap 3, Font Awesome, a Google Fonts link and `catalog/view/theme/default/s
 Theme image settings: `theme_default_image_{thumb,popup,category,manufacturer,product,additional,related,compare,wishlist,cart,location}_{width,height}`,
 `theme_default_product_limit` (15), `theme_default_product_description_length` (100),
 `theme_default_directory` (`default`), `theme_default_status` (1).
+
+## 11. Orders, catalogue, SEO, admin auth (verified)
+
+- Order statuses (id: en): 1 Pending, 2 Processing, 3 Shipped, 5 Complete, 7 Canceled, 8 Denied, 9 Canceled Reversal, 10 Failed, 11 Refunded, 12 Reversed, 13 Chargeback, 14 Expired, 15 Processed, 16 Voided. Defaults: `config_order_status_id=1`, `config_processing_status=[5,1,2,12,3]`, `config_complete_status=[5,3]`.
+- Total extension sort orders: sub_total 1, reward 2, shipping 3, coupon 4, tax 5, credit 7, voucher 8, total 9.
+- `checkout/confirm` calls `model_checkout_order->addOrder` (sets `session order_id`); status changes go through `addOrderHistory` (fraud extensions, stock, coupons, mail/statistics events).
+- Admin password check: `SHA1(salt.SHA1(salt.SHA1(pw)))` or legacy `md5(pw)`; `user_token` GET param on every admin route; API access via `oc_api` + `oc_api_ip` + `oc_api_session` (`api_token`).
+- ocStore extra columns: `oc_product.noindex`, `oc_category.noindex` (default 1), `oc_product_description.meta_h1`. `oc_product.status` defaults to 0.
+- Search is LIKE-based (`pd.name LIKE %word%`, tag, optional description); blog uses `MATCH AGAINST`. SeoPro flags: `config_seo_pro`, `config_seopro_addslash`, `config_seopro_lowercase`, `config_valide_param_flag`, `config_valide_params`.
+- Cache engines in core: file, apc, mem, memcached, redis; session engines: db, file; mail: mail, smtp. Core has no cron/queue.
