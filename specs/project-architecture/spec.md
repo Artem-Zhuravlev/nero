@@ -210,9 +210,16 @@ View (Twig; no logic beyond loops/ifs/format filters)
   controllers/templates).
 - **REQ-ARCH-035** — No global state, no `$GLOBALS`, no `define()` outside generated config, no
   `eval`, no `@` error suppression, no `die()` outside install scripts.
-- **REQ-ARCH-032** — The `install/` directory is **never** present in `build/www`; installation
-  is performed by `scripts/install.php` which invokes the core CLI installer from `core/upload/`
-  *in place*.
+- **REQ-ARCH-032** — The `install/` directory is **never** present in `build/www`. The stock installers must not be run
+  against `core/`: `install/cli_install.php` derives `DIR_OPENCART` from its own location and **writes `config.php` and
+  `admin/config.php` into it and checks storage directories under it**, which would modify the read-only core
+  (verified in `core/upload/install/cli_install.php`, `write_config_files()`). Installation is therefore done by our own
+  `scripts/install.php`, which replays the installer's database steps against the target DB using `core/upload/install/opencart.sql`
+  as data: table-prefix replace on `DROP/CREATE/INSERT` statements, `SET sql_mode=''`, admin user row (id 1, group 1, salted-SHA1
+  hash as in reference §2), `config_email`, 1024-char `config_encryption`, default API user + `config_api_id`,
+  `config_invoice_prefix`, `product.viewed=0`. Configs are produced by the build (SPEC-003), never by an installer. A test compares
+  the resulting row set with a run of the stock installer executed on a throw-away copy of `core/upload/` in `var/` (so differences
+  after a core upgrade are detected).
 - **REQ-ARCH-033** — Admin directory name is configurable (`ADMIN_DIR`, default `admin`;
   production should differ). The build renames the directory and rewrites `HTTP_*`/`DIR_*`
   constants in generated configs accordingly.

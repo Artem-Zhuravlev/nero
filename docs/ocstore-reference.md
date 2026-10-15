@@ -165,3 +165,7 @@ Theme image settings: `theme_default_image_{thumb,popup,category,manufacturer,pr
 - ocStore extra columns: `oc_product.noindex`, `oc_category.noindex` (default 1), `oc_product_description.meta_h1`. `oc_product.status` defaults to 0.
 - Search is LIKE-based (`pd.name LIKE %word%`, tag, optional description); blog uses `MATCH AGAINST`. SeoPro flags: `config_seo_pro`, `config_seopro_addslash`, `config_seopro_lowercase`, `config_valide_param_flag`, `config_valide_params`.
 - Cache engines in core: file, apc, mem, memcached, redis; session engines: db, file; mail: mail, smtp. Core has no cron/queue.
+
+## 12. Installer behaviour (verified)
+
+`install/cli_install.php install --db_* --username --password --email --http_server` defines `DIR_OPENCART` as the parent of its own directory, imports `opencart.sql`, creates the admin user, settings and API user, then **writes `config.php` and `admin/config.php` into `DIR_OPENCART`** and checks that `image/` and `system/storage/{download,upload,cache,logs,modification}` are writable there. Never run it against `core/` — run it only on a throw-away copy (parity tests) or replay its DB steps (SPEC-001 REQ-ARCH-032).
