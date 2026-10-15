@@ -81,6 +81,9 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-012 | [Catalogue Data Model](catalog-data-model/spec.md)       | `draft` |
 | SPEC-013 | [SEO, Sitemaps and Search](seo-search/spec.md)           | `draft` |
 | SPEC-014 | [Operations: backups, logs, jobs, runbooks](operations/spec.md) | `draft` |
+| SPEC-015 | [Customer Accounts, Groups, Privacy](customer-accounts/spec.md) | `draft` |
+| SPEC-016 | [Content: Pages, Blog, Banners, Layouts](content-blog/spec.md) | `draft` |
+| SPEC-017 | [Marketing, Analytics, Consent, Returns](marketing-analytics/spec.md) | `draft` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).
