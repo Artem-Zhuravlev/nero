@@ -90,6 +90,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-021 | [Testing Strategy and Harness](testing-strategy/spec.md) | `draft` |
 | SPEC-022 | [Multi-store and Environment Profiles](multi-store-environments/spec.md) | `draft` |
 | SPEC-023 | [Storefront Visual Design (Apple-style)](theme-design/spec.md) | `in-progress` |
+| SPEC-024 | [Storefront Functionality Reference (moyo.ua)](storefront-reference/spec.md) | `draft` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

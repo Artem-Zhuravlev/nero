@@ -32,5 +32,4 @@ Apple.com is used only as a colour/spacing reference.
 
 ## Proposed follow-up specs (from the client brief, not part of this one)
 
-SPEC-024 quick order + pre-order + back-in-stock; SPEC-025 AJAX cart; SPEC-026 mega menu + side menu + category
-wall; SPEC-027 AJAX search; SPEC-028 stickers; SPEC-029 recently viewed. Buy, do not build: OCFilter, Simple.
+See SPEC-024 plan for the owner-spec table (supersedes this list): SPEC-025..036.
