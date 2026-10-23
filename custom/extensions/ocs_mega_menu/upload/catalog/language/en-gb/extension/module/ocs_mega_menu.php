@@ -3,3 +3,4 @@
 
 $_['text_catalog'] = 'Catalogue';
 $_['text_all']     = 'Show all';
+$_['text_brands'] = 'Brands';

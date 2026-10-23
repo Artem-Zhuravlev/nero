@@ -260,7 +260,9 @@ test('menu model reads only columns of ocs_menu_category', () => {
   const model = read('custom/extensions/ocs_menu/upload/catalog/model/extension/ocs_menu/tree.php');
   for (const used of model.matchAll(/\bx\.([a-z_]+)/g)) assert.ok(cols.includes(used[1]), `model reads missing column ${used[1]}`);
   assert.ok(/ENGINE=InnoDB DEFAULT CHARSET=utf8/.test(ddl));
-  assert.equal((model.match(/->query\(/g) || []).length, 1, 'tree model must run exactly one query');
+  // one cached query for the rows, one cached query for the optional brand group (REQ-MNU-030)
+  assert.equal((model.match(/->query\(/g) || []).length, 2, 'tree model runs exactly two queries');
+  assert.equal((model.match(/cache->set\(/g) || []).length, 2, 'both queries are cached');
 });
 
 // TEST-MNU-002, TEST-MNU-003 - verifies REQ-MNU-001, REQ-MNU-004 (markup keeps core menu hooks and the classes theme.js drives)

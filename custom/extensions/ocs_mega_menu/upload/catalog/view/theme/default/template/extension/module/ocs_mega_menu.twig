@@ -28,6 +28,12 @@
               </div>
               {% endfor %}
             </div>
+            {% if c.brands %}
+            <div class="ocs-mega-brands">
+              <span class="ocs-mega-gtitle">{{ text_brands }}</span>
+              {% for b in c.brands %}<a class="ocs-chip" href="{{ b.href }}">{{ b.name }}</a>{% endfor %}
+            </div>
+            {% endif %}
             {% if c.banner %}<a class="ocs-mega-promo" href="{{ c.banner.url }}"><img src="{{ c.banner.src }}" alt="" loading="lazy" /></a>{% endif %}
             <a href="{{ c.href }}" class="see-all">{{ text_all }} {{ c.name }}</a>
           </div>

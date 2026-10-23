@@ -21,11 +21,36 @@ class ControllerExtensionModuleOcsMegaMenu extends Controller {
 		$active = isset($this->request->get['path']) ? \Ocs\CategoryTree::pathIds($this->request->get['path']) : array();
 		$tree = \Ocs\CategoryTree::markActive($tree, $active);
 
+		$brands = array();
+
+		if ($this->config->get('module_ocs_mega_menu_brands')) {
+			$top_ids = array();
+
+			foreach ($tree as $node) {
+				if ($node['top'] && $node['children']) {
+					$top_ids[] = $node['category_id'];
+				}
+			}
+
+			$brands = $this->model_extension_ocs_menu_tree->getBrands($top_ids, max(1, (int)$this->config->get('module_ocs_mega_menu_brands_limit') ?: 8));
+		}
+
 		$data['categories'] = array();
 
 		foreach ($tree as $node) {
 			if (!$node['top']) {
 				continue;
+			}
+
+			$node_brands = array();
+
+			if (isset($brands[(int)$node['category_id']])) {
+				foreach ($brands[(int)$node['category_id']] as $brand) {
+					$node_brands[] = array(
+						'name' => $brand['name'],
+						'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $brand['manufacturer_id'])
+					);
+				}
 			}
 
 			$icon = \Ocs\CategoryTree::icon($node['icon']);
@@ -52,6 +77,7 @@ class ControllerExtensionModuleOcsMegaMenu extends Controller {
 				'popular'  => (bool)$node['popular'],
 				'icon'     => $icon,
 				'banner'   => $banner,
+				'brands'   => $node_brands,
 				'children' => $node['children']
 			);
 		}
@@ -60,6 +86,7 @@ class ControllerExtensionModuleOcsMegaMenu extends Controller {
 		$data['behaviour'] = $behaviour;
 		$data['text_catalog'] = $strings['text_catalog'];
 		$data['text_all'] = $strings['text_all'];
+		$data['text_brands'] = $strings['text_brands'];
 
 		return $data['categories'] ? $this->load->view('extension/module/ocs_mega_menu', $data) : '';
 	}

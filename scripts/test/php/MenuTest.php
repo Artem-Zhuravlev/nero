@@ -93,6 +93,36 @@ final class MenuTest extends TestCase
         $this->assertSame(2, $picked[1]['category_id']);
     }
 
+    // TEST-MNU-002 - verifies REQ-MNU-002 (brand group: most products first, then name, limited per category)
+    public function test_group_brands(): void
+    {
+        $rows = [
+            ['category_id' => 1, 'manufacturer_id' => 5, 'name' => 'Zed', 'cnt' => 3],
+            ['category_id' => 1, 'manufacturer_id' => 6, 'name' => 'Alpha', 'cnt' => 3],
+            ['category_id' => 1, 'manufacturer_id' => 7, 'name' => 'Top', 'cnt' => 9],
+            ['category_id' => 1, 'manufacturer_id' => 8, 'name' => 'Low', 'cnt' => 1],
+            ['category_id' => 2, 'manufacturer_id' => 5, 'name' => 'Zed', 'cnt' => 2],
+        ];
+        $g = \Ocs\CategoryTree::groupBrands($rows, 3);
+        $this->assertSame([7, 6, 5], array_map(static function (array $b): int { return $b['manufacturer_id']; }, $g[1]));
+        $this->assertCount(1, $g[2]);
+        $this->assertSame([], \Ocs\CategoryTree::groupBrands([], 3));
+    }
+
+    // verifies REQ-EXT-031 (brands off by default; migration 002 idempotent and keeps edited values)
+    public function test_brands_migration(): void
+    {
+        $db = new SqliteDb();
+        $db->createCoreSubset();
+        $m = new Context($db, 'oc_', dirname(__DIR__, 3));
+        $fn = require dirname(__DIR__, 3) . '/custom/extensions/ocs_mega_menu/db/002_brands.php';
+        $fn($m);
+        $this->assertSame('0', (string) $m->setting->get('module_ocs_mega_menu', 'module_ocs_mega_menu_brands'));
+        $m->setting->set('module_ocs_mega_menu', 'module_ocs_mega_menu_brands_limit', 12);
+        $fn($m);
+        $this->assertSame('12', (string) $m->setting->get('module_ocs_mega_menu', 'module_ocs_mega_menu_brands_limit'));
+    }
+
     // verifies REQ-MNU-001 (icon values: Font Awesome class vs image path)
     public function test_icon_kinds(): void
     {

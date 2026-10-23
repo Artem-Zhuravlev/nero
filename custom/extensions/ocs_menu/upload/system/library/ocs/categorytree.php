@@ -173,6 +173,36 @@ class CategoryTree {
 	}
 
 	/**
+	 * Groups manufacturer rows (category_id, manufacturer_id, name, cnt) per category: most products first,
+	 * then name, at most $limit per category.
+	 *
+	 * @return array category_id => array(array('manufacturer_id' => , 'name' => ), ...)
+	 */
+	public static function groupBrands($rows, $limit) {
+		$by = array();
+
+		foreach ($rows as $row) {
+			$by[(int)$row['category_id']][] = $row;
+		}
+
+		$out = array();
+
+		foreach ($by as $category_id => $list) {
+			usort($list, function ($a, $b) {
+				$d = (int)$b['cnt'] - (int)$a['cnt'];
+
+				return $d !== 0 ? $d : strcmp(mb_strtolower((string)$a['name'], 'UTF-8'), mb_strtolower((string)$b['name'], 'UTF-8'));
+			});
+
+			foreach (array_slice($list, 0, max(1, (int)$limit)) as $row) {
+				$out[$category_id][] = array('manufacturer_id' => (int)$row['manufacturer_id'], 'name' => $row['name']);
+			}
+		}
+
+		return $out;
+	}
+
+	/**
 	 * Renders an icon value: Font Awesome class ("fa-mobile") -> class string, otherwise an image path.
 	 *
 	 * @return array('type' => 'fa'|'image'|'', 'value' => string)
