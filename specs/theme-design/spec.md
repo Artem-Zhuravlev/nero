@@ -22,7 +22,7 @@ type, soft rounded cards.
 
 Design tokens as CSS custom properties in `custom/theme/ocs/stylesheet/`; base components (buttons, inputs,
 cards, badges, alerts, breadcrumbs, pagination, tables); unified popup/modal component; styling of header, footer,
-home, menu, category, product, product thumb; styling hooks (class names/CSS variables) that modules use; styling
+menu, category, product and the product card (CSS for all listings; markup override only in `product/category` and `product/product` in this iteration); footer and home are CSS-only; styling hooks (class names/CSS variables) that modules use; styling
 of the built-in ocStore blog; dark mode.
 
 ## Out of scope
@@ -58,7 +58,7 @@ is forbidden — only the colour/spacing language is borrowed. Screenshots in th
   link with chevron); sizes sm/md/lg; hover/active/focus/disabled/loading states.
 - **REQ-DSG-011** — Form controls (input, select, textarea, checkbox, radio, quantity stepper): 44 px min
   touch height, 1px border, accent focus ring, visible validation error text.
-- **REQ-DSG-012** — Product card (`product/thumb`): `--bg-alt` surface, large image on neutral background,
+- **REQ-DSG-012** — Product card (`.product-thumb`, inlined in each listing template; there is no `product/thumb.twig` in ocStore 3.0.3.7): `--bg-alt` surface, large image on neutral background,
   name (2-line clamp), price with old price struck through, add-to-cart button, sticker slots
   (top-left/top-right/bottom-left) provided as empty positioned containers.
 - **REQ-DSG-013** — One popup/modal component (`.ocs-modal`) used by every module: overlay, centred card or

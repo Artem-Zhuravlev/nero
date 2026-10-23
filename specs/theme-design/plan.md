@@ -20,7 +20,7 @@ Apple.com is used only as a colour/spacing reference.
 ## Affected files / directories
 
 - `custom/theme/ocs/stylesheet/{tokens,base,components,pages,vendor-overrides}.css` (concatenated into `stylesheet.css`)
-- `custom/theme/ocs/template/common/{header,footer,home,menu}.twig`, `product/{product,category,thumb}.twig`, `blog/*`
+- `custom/theme/ocs/template/common/{header,menu}.twig`, `product/{product,category}.twig` (other listings and `blog/*` later)
 - `custom/theme/ocs/javascript/theme.js` (`OCS.modal`), `custom/theme/ocs/fonts/`, `DESIGN.md`
 - `custom/db/migrations/` (image sizes), `specs/README.md`
 

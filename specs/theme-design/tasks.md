@@ -10,8 +10,8 @@ Prerequisite: SPEC-006 approved and TASK-THM-001..006 done.
 | TASK-DSG-004 | Buttons, forms, alerts, breadcrumbs, pagination, tabs, tables | REQ-DSG-010, 011, 015 | TEST-DSG-004 | in-progress |
 | TASK-DSG-005 | `OCS.modal` + `.ocs-modal` styles (overlay/Esc close, focus trap) | REQ-DSG-013 | TEST-DSG-005 | done |
 | TASK-DSG-006 | Badge component and sticker slots | REQ-DSG-014, 012 | TEST-DSG-006 | in-progress |
-| TASK-DSG-007 | Header/footer/menu templates with slots | REQ-DSG-020, 021 | TEST-DSG-007 | in-progress |
-| TASK-DSG-008 | Home, category, product, thumb templates | REQ-DSG-012, 022, 023, 024 | TEST-DSG-008 | pending |
+| TASK-DSG-007 | Header and menu templates with slots; footer CSS-only | REQ-DSG-020, 021 | TEST-DSG-007 | in-progress |
+| TASK-DSG-008 | Category and product templates (card slots, buy-box slots); home CSS-only; other listings later | REQ-DSG-012, 022, 023, 024 | TEST-DSG-008 | in-progress |
 | TASK-DSG-009 | Blog templates styling | REQ-DSG-025 | TEST-DSG-009 | pending |
 | TASK-DSG-010 | `vendor-overrides.css` for OCFilter/Simple | REQ-DSG-026 | review | pending |
 | TASK-DSG-011 | uk/ru/en theme strings | REQ-DSG-031 | TEST-DSG-011 | pending |

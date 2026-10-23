@@ -124,3 +124,24 @@ test('theme.js stays within the size budget and header loads it after common.js'
   const css = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/stylesheet/stylesheet.css'), 'utf8');
   assert.ok(Buffer.byteLength(css) <= 150 * 1024);
 });
+
+// TEST-DSG-008 - verifies REQ-DSG-012, REQ-DSG-024, REQ-THM-010, REQ-THM-011, REQ-THM-013, REQ-THM-042
+test('category and product overrides add slots, keep core JS hooks, are not copies, drop third-party widget', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  for (const t of ['product/category', 'product/product']) {
+    const ours = read(`custom/theme/ocs/template/${t}.twig`);
+    const core = read(`core/upload/catalog/view/theme/default/template/${t}.twig`);
+    assert.notEqual(ours, core);
+    assert.ok(ours.startsWith(`{# @core-file catalog/view/theme/default/template/${t}.twig @core-version 3.0.3.7 #}`));
+    assert.match(ours, /ocs-slot-tl/);
+  }
+  const cat = read('custom/theme/ocs/template/product/category.twig');
+  for (const hook of ['id="list-view"', 'id="grid-view"', "cart.add('{{ product.product_id }}'", 'wishlist.add', 'compare.add', 'class="product-layout']) {
+    assert.ok(cat.includes(hook), `category lost hook ${hook}`);
+  }
+  const prod = read('custom/theme/ocs/template/product/product.twig');
+  for (const hook of ['id="button-cart"', 'id="input-quantity"', 'name="product_id"', 'id="product"', 'class="thumbnails"', 'id="tab-review"', 'id="ocs-buy-slot"']) {
+    assert.ok(prod.includes(hook), `product lost hook ${hook}`);
+  }
+  assert.doesNotMatch(prod, /addthis/i);
+});

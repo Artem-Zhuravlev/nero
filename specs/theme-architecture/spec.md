@@ -111,9 +111,12 @@ Visual design (colours, layout of concrete pages) — each page redesign is its 
 
 ### Scope control
 
-- **REQ-THM-050** — The first iteration overrides at most: `common/header`, `common/footer`,
-  `common/home`, `common/menu`, `product/product`, `product/category`, `product/thumb`,
-  `checkout/*` as required by its own design spec. Every further template needs an item in the
+- **REQ-THM-050** — The first iteration overrides at most: `common/header`, `common/menu`, `product/product`,
+  `product/category`, `checkout/*` as required by its own design spec. `common/footer` and `common/home`
+  are styled by CSS only (no markup change needed, REQ-THM-010). `product/thumb` does not exist in ocStore
+  3.0.3.7: the product card is inlined in each listing template (category, search, special, manufacturer_info,
+  modules featured/latest/bestseller/special, blog); the remaining listings are overridden in a later iteration
+  and until then are styled by CSS only. Every further template needs an item in the
   design spec.
 - **REQ-THM-051** — Checkout templates are overridden last and only visually (markup of forms and
   JS ids preserved), because order flow correctness is owned by core.

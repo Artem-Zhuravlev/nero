@@ -312,3 +312,14 @@ footer hr { border-color: var(--border); }
 	cursor: pointer;
 }
 .ocs-modal-close:hover { background: var(--border); }
+
+/* ==== 9. Product page slots (REQ-DSG-024) =========================================== */
+.ocs-gallery { position: relative; }
+.ocs-buy-slot { display: flex; flex-direction: column; gap: var(--sp-2); margin-top: var(--sp-3); }
+.ocs-buy-slot:empty { display: none; }
+.thumbnails .thumbnail { border: 0; border-radius: var(--r-lg); background: var(--bg-alt); }
+.nav-tabs { border-bottom-color: var(--border); }
+.nav-tabs > li > a { color: var(--text-muted); border: 0; border-radius: 0; }
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+	color: var(--text); background: transparent; border: 0; border-bottom: 2px solid var(--accent);
+}
