@@ -553,3 +553,31 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 .ocs-stock-low { color: var(--warning); }
 .ocs-stock-out { color: var(--text-muted); }
 li .ocs-stock { font-size: inherit; }
+
+/* ==== 18. AJAX search dropdown (SPEC-028) =========================================== */
+#search { position: relative; }
+.ocs-search-dd {
+	position: absolute; left: 0; right: 0; top: calc(100% + var(--sp-1)); z-index: 1045;
+	max-height: 70vh; overflow-y: auto; padding: var(--sp-2);
+	background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow);
+}
+.ocs-search-dd[hidden] { display: none; }
+.ocs-search-h { padding: var(--sp-2) var(--sp-3) var(--sp-1); font-size: var(--fs-xs); font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.ocs-search-clear { border: 0; background: transparent; color: var(--link); font-size: var(--fs-xs); text-transform: none; letter-spacing: 0; cursor: pointer; }
+.ocs-search-chips { padding: 0 var(--sp-3) var(--sp-2); display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.ocs-search-chips .ocs-search-h { flex-basis: 100%; padding-left: 0; }
+.ocs-search-product { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-2) var(--sp-3); border-radius: var(--r-sm); color: var(--text); }
+.ocs-search-product img { width: 48px; height: 48px; object-fit: contain; border-radius: var(--r-sm); background: var(--bg-alt); flex: none; }
+.ocs-search-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ocs-search-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ocs-search-model { color: var(--text-muted); }
+.ocs-search-price { display: flex; flex-direction: column; align-items: flex-end; font-size: var(--fs-sm); }
+.ocs-search-price s { color: var(--text-muted); }
+.ocs-badge-discount-inline { background: var(--danger); color: var(--bg); }
+.ocs-search-item.active, .ocs-search-product:hover { background: var(--bg-alt); text-decoration: none; }
+.ocs-search-item.ocs-chip.active { background: var(--border); }
+.ocs-search-empty { padding: var(--sp-3); color: var(--text-muted); }
+.ocs-search-all { display: block; margin-top: var(--sp-1); padding: var(--sp-3); text-align: center; border-radius: var(--r-sm); color: var(--link); font-weight: 500; }
+@media (max-width: 767px) {
+	.ocs-search-dd { max-height: 60vh; }
+}

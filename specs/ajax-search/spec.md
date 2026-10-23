@@ -1,6 +1,6 @@
 # SPEC-028 — AJAX Search with History and Popular Queries
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-011 · **Brief:** module 7 · **Depends on:** SPEC-013, SPEC-023

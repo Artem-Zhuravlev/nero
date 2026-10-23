@@ -1,0 +1,7 @@
+{ "code": "ocs_ajax_search", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS AJAX Search", "uk-ua": "OCS: AJAX-пошук" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
+  "spec": "SPEC-028", "tables": [],
+  "settings": ["module_ocs_ajax_search_status", "module_ocs_ajax_search_limit", "module_ocs_ajax_search_min_length", "module_ocs_ajax_search_categories", "module_ocs_ajax_search_brands", "module_ocs_ajax_search_l"],
+  "events": ["ocs_ajax_search_box_before"],
+  "routes": ["extension/module/ocs_ajax_search", "extension/ocs_ajax_search/events"] }

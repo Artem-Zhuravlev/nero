@@ -13,6 +13,33 @@ class OrderRequest {
 	}
 
 	/**
+	 * Parses lines "Label|URL" (URL optional) of a setting into array(array('text' => plain label, 'url' => safe URL or '')).
+	 * Plain text (entities decoded) for JSON output; only http(s), tel, mailto and site-relative URLs survive.
+	 */
+	public static function parseLines($text) {
+		$out = array();
+
+		foreach (preg_split('/\r\n|\r|\n/', (string)$text) as $line) {
+			$parts = explode('|', htmlspecialchars_decode(trim($line), ENT_QUOTES), 2);
+			$label = trim($parts[0]);
+
+			if ($label === '') {
+				continue;
+			}
+
+			$url = isset($parts[1]) ? trim($parts[1]) : '';
+
+			if ($url !== '' && !preg_match('#^(https?://|tel:|mailto:|/(?!/))#i', $url)) {
+				$url = '';
+			}
+
+			$out[] = array('text' => $label, 'url' => $url);
+		}
+
+		return $out;
+	}
+
+	/**
 	 * Validates a contact form.
 	 *
 	 * @param array $post   raw POST

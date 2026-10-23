@@ -389,3 +389,39 @@ test('ajax cart: manifest, endpoints, panel markup and theme.js are consistent a
   assert.deepEqual(keys('en-gb', 'admin'), keys('uk-ua', 'admin'));
   for (const k of ['text_in_stock', 'text_few_left', 'text_out_of_stock', 'error_stock', 'error_minimum']) assert.ok(keys('uk-ua', 'catalog').includes(k), `missing ${k}`);
 });
+
+// --- SPEC-028 AJAX search ---
+// TEST-SRC-001..004 - verifies REQ-SRC-001..006, 010, 011, 021 (manifest, endpoint safety, markup hooks used by theme.js, off by default)
+test('ajax search: manifest, endpoint, template hooks and theme.js are consistent', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ext = JSON.parse(read('custom/extensions/ocs_ajax_search/extension.json'));
+  const mig = read('custom/extensions/ocs_ajax_search/db/001_install.php');
+  assert.equal(ext.spec, 'SPEC-028');
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
+  assert.match(mig, /'module_ocs_ajax_search_status' => 0/);
+
+  const ctl = read('custom/extensions/ocs_ajax_search/upload/catalog/controller/extension/module/ocs_ajax_search.php');
+  assert.match(ctl, /rateLimit\(.*time\(\), 10, 10\)/, 'REQ-SRC-011: 10 requests per 10 s');
+  assert.match(ctl, /mb_strlen\(\$q, 'UTF-8'\) > 100/, 'REQ-SRC-011: query length limit');
+  assert.match(ctl, /HTTP\/1\.1 429/);
+  assert.equal((ctl.match(/\$this->url->link\(/g) || []).length, 1, 'JSON must use plainLink (core url->link returns &amp;); only the wrapper calls it');
+  assert.match(ctl, /html_entity_decode\(\$product\['name'\]/, 'names are decoded to plain text for textContent');
+  assert.match(ctl, /getProducts\(array\('filter_name'/, 'products come from the core filter (store, status, price rules)');
+
+  const twig = read('custom/theme/ocs/template/common/search.twig');
+  assert.ok(twig.startsWith('{# @core-file catalog/view/theme/default/template/common/search.twig @core-version 3.0.3.7 #}'));
+  for (const hook of ['id="search"', 'name="search"', 'input-group-btn', 'data-ocs-search', 'data-strings', 'ocs-search-dd', 'role="combobox"']) assert.ok(twig.includes(hook), `search.twig lacks ${hook}`);
+  assert.match(twig, /\{% if ocs_search %\}/, 'falls back to core markup when the module is off');
+
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  const block = js.slice(js.indexOf('AJAX search (SPEC-028)'));
+  for (const s of ['ocs.search.recent', "'ArrowDown'", "'Escape'", "'Enter'", 'textContent', 'ocs-search-clear', 'encodeURIComponent']) assert.ok(block.includes(s), `search JS lacks ${s}`);
+  assert.doesNotMatch(block.replace(/dd\.innerHTML = '';/g, ''), /\.innerHTML\s*=/, 'server data is never written with innerHTML');
+
+  const keys = (l, p) => [...read(`custom/extensions/ocs_ajax_search/upload/${p}/language/${l}/extension/module/ocs_ajax_search.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  assert.deepEqual(keys('en-gb', 'catalog'), keys('uk-ua', 'catalog'));
+  assert.deepEqual(keys('ru-ru', 'catalog'), keys('uk-ua', 'catalog'));
+  assert.deepEqual(keys('en-gb', 'admin'), keys('uk-ua', 'admin'));
+  const events = read('custom/extensions/ocs_ajax_search/upload/catalog/controller/extension/ocs_ajax_search/events.php');
+  for (const k of [...events.matchAll(/'(recent|popular|clear|all|empty|error|products|categories|brands)'/g)].map((m) => m[1])) assert.ok(keys('uk-ua', 'catalog').includes(`text_${k}`), `missing text_${k}`);
+});

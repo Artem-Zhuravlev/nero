@@ -83,6 +83,34 @@ final class RequestTest extends TestCase
         $this->assertFalse(\Ocs\OrderRequest::preorderApplies(false, 3, ['mode' => 'on']), 'in-stock products never get pre-order');
     }
 
+    // TEST-SRC-003 - verifies REQ-SRC-010 (popular queries: "Label" or "Label|URL"; unsafe URLs dropped; entities decoded to plain text)
+    public function test_parse_lines_for_popular_queries(): void
+    {
+        $items = \Ocs\OrderRequest::parseLines("iPhone\r\nLaptops|/index.php?route=product/category&amp;path=18\n\nEvil|javascript:alert(1)\nFish &amp; Chips|https://example.com/x\n//proto|//evil.example");
+        $this->assertCount(5, $items);
+        $this->assertSame(['text' => 'iPhone', 'url' => ''], $items[0]);
+        $this->assertSame('/index.php?route=product/category&path=18', $items[1]['url']);
+        $this->assertSame('', $items[2]['url']);
+        $this->assertSame('Fish & Chips', $items[3]['text']);
+        $this->assertSame('https://example.com/x', $items[3]['url']);
+        $this->assertSame('', $items[4]['url'], 'protocol-relative URLs are not site-relative');
+    }
+
+    // TEST-SRC-004 - verifies REQ-SRC-021, REQ-EXT-031 (install migration: disabled by default, one view event, idempotent)
+    public function test_ajax_search_install(): void
+    {
+        $db = new SqliteDb();
+        $db->createCoreSubset();
+        $m = new Context($db, 'oc_', dirname(__DIR__, 3));
+        $fn = require dirname(__DIR__, 3) . '/custom/extensions/ocs_ajax_search/db/001_install.php';
+        $fn($m);
+        $fn($m);
+        $this->assertTrue($m->extension->isRegistered('module', 'ocs_ajax_search'));
+        $this->assertSame('0', (string) $m->setting->get('module_ocs_ajax_search', 'module_ocs_ajax_search_status'));
+        $this->assertSame('6', (string) $m->setting->get('module_ocs_ajax_search', 'module_ocs_ajax_search_limit'));
+        $this->assertCount(1, $db->pdo->query("SELECT 1 FROM oc_event WHERE code = 'ocs_ajax_search_box_before'")->fetchAll());
+    }
+
     // verifies REQ-ARCH-063 (entity-encoded settings are not escaped twice)
     public function test_escape_decodes_first(): void
     {
