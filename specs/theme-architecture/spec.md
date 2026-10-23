@@ -1,6 +1,6 @@
 # SPEC-006 — Storefront Theme Architecture
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-15
 **Refines:** SPEC-001 REQ-ARCH-020 · **Facts:** [`docs/ocstore-internals.md`](../../docs/ocstore-internals.md) §8, [`docs/ocstore-reference.md`](../../docs/ocstore-reference.md) §3

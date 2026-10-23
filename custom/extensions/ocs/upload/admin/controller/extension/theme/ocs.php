@@ -1,0 +1,111 @@
+<?php
+// Extension: ocs (theme). Admin settings form: image sizes and list limits. Owner: SPEC-006 (REQ-THM-001, 030, 031).
+
+class ControllerExtensionThemeOcs extends Controller {
+	private $error = array();
+
+	private $roles = array('thumb', 'popup', 'category', 'manufacturer', 'product', 'additional', 'related', 'compare', 'wishlist', 'cart', 'location');
+
+	public function index() {
+		$this->load->language('extension/theme/ocs');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('setting/setting');
+
+		$store_id = isset($this->request->get['store_id']) ? (int)$this->request->get['store_id'] : 0;
+		$token = 'user_token=' . $this->session->data['user_token'];
+
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+			$this->model_setting_setting->editSetting('theme_ocs', $this->request->post, $store_id);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->response->redirect($this->url->link('marketplace/extension', $token . '&type=theme', true));
+		}
+
+		$data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
+		$data['error_product_limit'] = isset($this->error['product_limit']) ? $this->error['product_limit'] : '';
+		$data['error_product_description_length'] = isset($this->error['product_description_length']) ? $this->error['product_description_length'] : '';
+
+		$data['breadcrumbs'] = array();
+
+		$data['breadcrumbs'][] = array(
+			'text' => $this->language->get('text_home'),
+			'href' => $this->url->link('common/dashboard', $token, true)
+		);
+
+		$data['breadcrumbs'][] = array(
+			'text' => $this->language->get('text_extension'),
+			'href' => $this->url->link('marketplace/extension', $token . '&type=theme', true)
+		);
+
+		$data['breadcrumbs'][] = array(
+			'text' => $this->language->get('heading_title'),
+			'href' => $this->url->link('extension/theme/ocs', $token . '&store_id=' . $store_id, true)
+		);
+
+		$data['action'] = $this->url->link('extension/theme/ocs', $token . '&store_id=' . $store_id, true);
+		$data['cancel'] = $this->url->link('marketplace/extension', $token . '&type=theme', true);
+
+		$setting_info = array();
+
+		if ($this->request->server['REQUEST_METHOD'] != 'POST') {
+			$setting_info = $this->model_setting_setting->getSetting('theme_ocs', $store_id);
+		}
+
+		$defaults = array('status' => 0, 'directory' => 'ocs', 'product_limit' => 15, 'product_description_length' => 100);
+
+		foreach ($this->roles as $role) {
+			$data['error_image_' . $role] = isset($this->error['image_' . $role]) ? $this->error['image_' . $role] : '';
+			$defaults['image_' . $role . '_width'] = 80;
+			$defaults['image_' . $role . '_height'] = 80;
+		}
+
+		foreach ($defaults as $field => $default) {
+			$key = 'theme_ocs_' . $field;
+
+			if (isset($this->request->post[$key])) {
+				$data[$key] = $this->request->post[$key];
+			} elseif (isset($setting_info[$key])) {
+				$data[$key] = $setting_info[$key];
+			} else {
+				$data[$key] = $default;
+			}
+		}
+
+		$data['roles'] = $this->roles;
+		$data['version'] = '1.0.0';
+
+		$data['header'] = $this->load->controller('common/header');
+		$data['column_left'] = $this->load->controller('common/column_left');
+		$data['footer'] = $this->load->controller('common/footer');
+
+		$this->response->setOutput($this->load->view('extension/theme/ocs', $data));
+	}
+
+	protected function validate() {
+		if (!$this->user->hasPermission('modify', 'extension/theme/ocs')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		}
+
+		if (empty($this->request->post['theme_ocs_product_limit'])) {
+			$this->error['product_limit'] = $this->language->get('error_limit');
+		}
+
+		if (empty($this->request->post['theme_ocs_product_description_length'])) {
+			$this->error['product_description_length'] = $this->language->get('error_limit');
+		}
+
+		foreach ($this->roles as $role) {
+			$w = 'theme_ocs_image_' . $role . '_width';
+			$h = 'theme_ocs_image_' . $role . '_height';
+
+			if (empty($this->request->post[$w]) || empty($this->request->post[$h])) {
+				$this->error['image_' . $role] = $this->language->get('error_image');
+			}
+		}
+
+		return !$this->error;
+	}
+}
