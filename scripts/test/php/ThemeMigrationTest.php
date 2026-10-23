@@ -74,6 +74,22 @@ final class ThemeMigrationTest extends TestCase
         $this->assertCount(1, $this->db->pdo->query("SELECT 1 FROM oc_extension WHERE type='theme' AND code='ocs'")->fetchAll());
     }
 
+    // TEST-DSG-012 - verifies REQ-THM-030 (design image sizes set by migration 0002, other roles untouched, idempotent)
+    public function test_image_sizes_migration_sets_design_values(): void
+    {
+        $this->run0001();
+        $this->m->setting->set('theme_ocs', 'theme_ocs_image_cart_width', 55);
+        $fn = require dirname(__DIR__, 3) . '/custom/db/migrations/0002_theme_ocs_image_sizes.php';
+        $fn($this->m);
+        $fn($this->m);
+        $this->assertSame('600', (string) $this->m->setting->get('theme_ocs', 'theme_ocs_image_thumb_width'));
+        $this->assertSame('1200', (string) $this->m->setting->get('theme_ocs', 'theme_ocs_image_popup_height'));
+        $this->assertSame('400', (string) $this->m->setting->get('theme_ocs', 'theme_ocs_image_product_width'));
+        $this->assertSame('100', (string) $this->m->setting->get('theme_ocs', 'theme_ocs_image_additional_height'));
+        $this->assertSame('800', (string) $this->m->setting->get('theme_ocs', 'theme_ocs_image_category_width'));
+        $this->assertSame('55', (string) $this->m->setting->get('theme_ocs', 'theme_ocs_image_cart_width'));
+    }
+
     // verifies REQ-THM-002: existing theme_ocs_* values are never overwritten by a re-run
     public function test_rerun_keeps_edited_theme_values(): void
     {

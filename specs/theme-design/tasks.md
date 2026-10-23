@@ -12,10 +12,10 @@ Prerequisite: SPEC-006 approved and TASK-THM-001..006 done.
 | TASK-DSG-006 | Badge component and sticker slots | REQ-DSG-014, 012 | TEST-DSG-006 | in-progress |
 | TASK-DSG-007 | Header and menu templates with slots; footer CSS-only | REQ-DSG-020, 021 | TEST-DSG-007 | in-progress |
 | TASK-DSG-008 | Category and product templates (card slots, buy-box slots); home CSS-only; other listings later | REQ-DSG-012, 022, 023, 024 | TEST-DSG-008 | in-progress |
-| TASK-DSG-009 | Blog templates styling | REQ-DSG-025 | TEST-DSG-009 | pending |
+| TASK-DSG-009 | Blog templates styling | REQ-DSG-025 | TEST-DSG-009 | in-progress |
 | TASK-DSG-010 | `vendor-overrides.css` for OCFilter/Simple | REQ-DSG-026 | review | pending |
 | TASK-DSG-011 | uk/ru/en theme strings | REQ-DSG-031 | TEST-DSG-011 | pending |
-| TASK-DSG-012 | Image-size migration | REQ-THM-030 | TEST-DSG-012 | pending |
+| TASK-DSG-012 | Image-size migration | REQ-THM-030 | TEST-DSG-012 | done |
 | TASK-DSG-013 | `DESIGN.md` (tokens, slots, re-brand guide) + no-colour-literal grep check | REQ-DSG-001, 032, 042 | TEST-DSG-001 | done |
 | TASK-DSG-014 | Responsive/budget/browser audit | REQ-DSG-040, 041 | manual | pending |
 | TASK-DSG-015 | PHP 7.4 compatibility of all PHP added by this spec (no 8.x syntax; ocStore runs on 7.4 max) | REQ-DSG-030 | review | pending |
