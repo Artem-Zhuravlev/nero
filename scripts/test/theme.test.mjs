@@ -473,3 +473,37 @@ test('stickers: manifest, OCMOD anchors, template slots and escaping are consist
   const coreAdminKeys = ['text_home', 'text_enabled', 'text_disabled']; // defined by core's admin default language file
   for (const k of [...ctl.matchAll(/language->get\('((?:error|heading|text)_[a-z_]+)'\)/g)].map((m) => m[1]).filter((k) => !coreAdminKeys.includes(k))) assert.ok(adm('uk-ua').includes(k), `missing admin string ${k}`);
 });
+
+// --- SPEC-030 recently viewed ---
+// TEST-VWD-001..003 - verifies REQ-VWD-002, 003, 010, 011 (manifest, cookie flags, card partial reuse, one history model, language parity)
+test('recently viewed: manifest, cookie flags, shared card partial and strings are consistent', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ext = JSON.parse(read('custom/extensions/ocs_viewed/extension.json'));
+  const mig = read('custom/extensions/ocs_viewed/db/001_install.php');
+  assert.equal(ext.spec, 'SPEC-030');
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
+  for (const t of ext.tables) assert.ok(mig.includes(t.replace(/^oc_/, '{{PREFIX}}')), `table ${t} not created`);
+  assert.match(mig, /'module_ocs_viewed_status' => 0/);
+
+  const model = read('custom/extensions/ocs_viewed/upload/catalog/model/extension/ocs_viewed/history.php');
+  for (const flag of ["'httponly' => true", "'samesite' => 'Lax'", "'path'     => '/'"]) assert.ok(model.includes(flag), `cookie lacks ${flag}`);
+  assert.match(model, /Ocs\\Viewed::MAX/, 'history is capped at 20');
+  assert.match(model, /ocs_viewed_merged/, 'browser list is merged once per session');
+
+  const ev = read('custom/extensions/ocs_viewed/upload/catalog/controller/extension/ocs_viewed/events.php');
+  assert.match(ev, /getProduct\(\$product_id\)/, 'only existing, visible products are recorded');
+
+  const ctl = read('custom/extensions/ocs_viewed/upload/catalog/controller/extension/module/ocs_viewed.php');
+  assert.match(ctl, /isset\(\$this->request->get\['product_id'\]\)/, 'current product is excluded');
+  assert.match(ctl, /if \(!\$product\) \{\s*continue;/, 'disabled or deleted products are skipped');
+  const tpl = read('custom/extensions/ocs_viewed/upload/catalog/view/theme/default/template/extension/module/ocs_viewed.twig');
+  assert.ok(tpl.includes("{% include 'ocs/template/ocs/card.twig' %}"), 'same card markup as the listings');
+  assert.match(read('custom/theme/ocs/stylesheet/stylesheet.css'), /\.ocs-viewed-grid/);
+
+  const keys = (p) => [...read(p).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  const cat = (l) => keys(`custom/extensions/ocs_viewed/upload/catalog/language/${l}/extension/module/ocs_viewed.php`);
+  assert.deepEqual(cat('en-gb'), cat('uk-ua'));
+  assert.deepEqual(cat('ru-ru'), cat('uk-ua'));
+  const adm = (l) => keys(`custom/extensions/ocs_viewed/upload/admin/language/${l}/extension/module/ocs_viewed.php`);
+  assert.deepEqual(adm('en-gb'), adm('uk-ua'));
+});

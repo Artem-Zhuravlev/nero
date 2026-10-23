@@ -580,3 +580,10 @@ li .ocs-stock { font-size: inherit; }
 @media (max-width: 767px) {
 	.ocs-search-dd { max-height: 60vh; }
 }
+
+/* ==== 19. Recently viewed block (SPEC-030) ========================================= */
+.ocs-viewed { margin: var(--sp-6) 0; }
+.ocs-viewed-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-4); }
+@media (min-width: 768px) { .ocs-viewed-grid { grid-template-columns: repeat(4, 1fr); } }
+.ocs-viewed-grid > .product-layout { width: auto; float: none; padding: 0; margin: 0; }
+.ocs-viewed-grid .product-thumb { height: 100%; margin-bottom: 0; }

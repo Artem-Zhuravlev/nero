@@ -1,6 +1,6 @@
 # SPEC-030 — Recently Viewed Products
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-014 · **Brief:** module 10 · **Depends on:** SPEC-023, SPEC-015
