@@ -1,0 +1,42 @@
+<?php
+// Extension: ocs_city. Storefront strings, en-gb. Owner: SPEC-032.
+
+$_['prompt_text']         = 'Is your city %s?';
+$_['prompt_yes']          = 'Yes';
+$_['prompt_other']        = 'Other city';
+$_['select_title']        = 'Choose your city';
+$_['select_search']       = 'Search city';
+$_['text_close']          = 'Close';
+$_['text_delivery_title'] = 'Delivery and payment';
+$_['text_your_city']      = 'Your city:';
+$_['text_change_city']    = 'Change city';
+$_['text_all_stores']     = 'All stores';
+$_['method_pickup']       = 'Pickup';
+$_['method_post']         = 'Post office';
+$_['method_courier']      = 'Courier';
+$_['text_free']           = 'free';
+$_['text_free_from']      = 'free from %s';
+$_['text_tomorrow']       = 'tomorrow';
+$_['text_days']           = 'in %d–%d days';
+$_['text_days_one']       = 'in %d day';
+$_['text_payment']        = 'Payment:';
+$_['text_warranty']       = 'Warranty:';
+$_['text_returns']        = 'Returns:';
+$_['text_in_stores']      = 'In stock at: %s';
+$_['text_pickup_minutes'] = 'Pick up in a store in %d min';
+$_['text_pickup_ok']      = 'Available for pickup';
+$_['stores_title']        = 'Stores';
+$_['stores_empty']        = 'No stores in this city yet.';
+$_['text_hours']          = 'Hours:';
+$_['text_map']            = 'Show on map';
+$_['track_title']         = 'Order tracking';
+$_['track_intro']         = 'Enter the order number and the e-mail or phone you gave when ordering.';
+$_['track_order']         = 'Order number';
+$_['track_contact']       = 'E-mail or phone';
+$_['track_button']        = 'Show status';
+$_['track_status']        = 'Status:';
+$_['track_history']       = 'History';
+$_['track_placed']        = 'placed';
+$_['track_not_found']     = 'Order not found. Check the number and the contact details.';
+$_['error_token']         = 'The form expired, reload the page and try again.';
+$_['error_rate']          = 'Too many attempts, please try again in a minute.';

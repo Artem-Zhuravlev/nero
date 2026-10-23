@@ -1,0 +1,12 @@
+{# Extension: ocs_city. Delivery and payment block of the product page (SPEC-032 REQ-CTY-011); replaced in place when the city changes. #}
+<div class="ocs-delivery" data-url="{{ block_url }}" data-select="{{ select_url }}">
+  <h4>{{ text_title }}</h4>
+  <p class="ocs-delivery-city">{{ text_city }} <button type="button" class="ocs-city-btn" data-ocs-city-open="1">{{ city }}</button></p>
+  <ul class="list-unstyled ocs-delivery-lines">
+    {% for l in lines %}
+    <li><strong>{{ l.label }}</strong>{% if l.eta %} &middot; {{ l.eta }}{% endif %} &middot; {{ l.price }}{% if l.note %}<br /><small class="text-muted">{{ l.note }}</small>{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% if pickup %}<p class="ocs-delivery-pickup"><i class="fa fa-map-marker"></i> {{ pickup }} <a href="{{ stores_url }}">{{ text_stores }}</a></p>{% endif %}
+  {% for i in infos %}<p class="ocs-delivery-info"><strong>{{ i.label }}</strong> {{ i.text }}</p>{% endfor %}
+</div>

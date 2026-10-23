@@ -1,0 +1,68 @@
+{# Extension: ocs_city. Store form. Owner: SPEC-032. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-store" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ text_store_form }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>{% endif %}
+    {% for e in errors %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}
+    <form action="{{ action }}" method="post" id="form-store" class="form-horizontal">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="form-group required">
+            <label class="col-sm-3 control-label">{{ entry_city }}</label>
+            <div class="col-sm-9"><select name="city_id" class="form-control">
+              {% for c in cities %}<option value="{{ c.city_id }}"{% if c.city_id == city_id %} selected="selected"{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+          </div>
+          {% for language in languages %}
+          <div class="form-group required">
+            <label class="col-sm-3 control-label">{{ entry_name }} ({{ language.code }})</label>
+            <div class="col-sm-9"><input type="text" name="desc[{{ language.language_id }}][name]" value="{{ desc[language.language_id].name }}" class="form-control" /></div>
+          </div>
+          <div class="form-group required">
+            <label class="col-sm-3 control-label">{{ entry_address }} ({{ language.code }})</label>
+            <div class="col-sm-9"><input type="text" name="desc[{{ language.language_id }}][address]" value="{{ desc[language.language_id].address }}" class="form-control" /></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_hours }} ({{ language.code }})</label>
+            <div class="col-sm-9"><input type="text" name="desc[{{ language.language_id }}][hours]" value="{{ desc[language.language_id].hours }}" class="form-control" /></div>
+          </div>
+          {% endfor %}
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_phone }}</label>
+            <div class="col-sm-9"><input type="text" name="phone" value="{{ phone }}" class="form-control" /></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_map }}</label>
+            <div class="col-sm-9"><input type="text" name="map_link" value="{{ map_link }}" class="form-control" placeholder="https://" /></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_coords }}</label>
+            <div class="col-sm-4"><input type="text" name="latitude" value="{{ latitude }}" class="form-control" placeholder="50.4501" /></div>
+            <div class="col-sm-5"><input type="text" name="longitude" value="{{ longitude }}" class="form-control" placeholder="30.5234" /></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_sort }}</label>
+            <div class="col-sm-9"><input type="text" name="sort_order" value="{{ sort_order }}" class="form-control" /></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_status }}</label>
+            <div class="col-sm-9"><select name="status" class="form-control">
+              <option value="1"{% if status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+              <option value="0"{% if not status %} selected="selected"{% endif %}>{{ text_disabled }}</option></select></div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{{ footer }}

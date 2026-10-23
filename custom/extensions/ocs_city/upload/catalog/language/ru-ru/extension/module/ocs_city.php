@@ -1,0 +1,42 @@
+<?php
+// Extension: ocs_city. Storefront strings, ru-ru. Owner: SPEC-032.
+
+$_['prompt_text']         = 'Ваш город — %s?';
+$_['prompt_yes']          = 'Да';
+$_['prompt_other']        = 'Другой город';
+$_['select_title']        = 'Выберите город';
+$_['select_search']       = 'Поиск города';
+$_['text_close']          = 'Закрыть';
+$_['text_delivery_title'] = 'Доставка и оплата';
+$_['text_your_city']      = 'Ваш город:';
+$_['text_change_city']    = 'Сменить город';
+$_['text_all_stores']     = 'Все магазины';
+$_['method_pickup']       = 'Самовывоз';
+$_['method_post']         = 'Отделение почты';
+$_['method_courier']      = 'Курьер';
+$_['text_free']           = 'бесплатно';
+$_['text_free_from']      = 'бесплатно от %s';
+$_['text_tomorrow']       = 'завтра';
+$_['text_days']           = 'за %d–%d дн.';
+$_['text_days_one']       = 'за %d дн.';
+$_['text_payment']        = 'Оплата:';
+$_['text_warranty']       = 'Гарантия:';
+$_['text_returns']        = 'Возврат:';
+$_['text_in_stores']      = 'Есть в магазинах: %s';
+$_['text_pickup_minutes'] = 'Можно забрать в магазине через %d мин';
+$_['text_pickup_ok']      = 'Есть в наличии для самовывоза';
+$_['stores_title']        = 'Магазины';
+$_['stores_empty']        = 'В этом городе пока нет магазинов.';
+$_['text_hours']          = 'График:';
+$_['text_map']            = 'Показать на карте';
+$_['track_title']         = 'Отслеживание заказа';
+$_['track_intro']         = 'Укажите номер заказа и e-mail или телефон, которые вы оставляли при оформлении.';
+$_['track_order']         = 'Номер заказа';
+$_['track_contact']       = 'E-mail или телефон';
+$_['track_button']        = 'Показать статус';
+$_['track_status']        = 'Статус:';
+$_['track_history']       = 'История';
+$_['track_placed']        = 'от';
+$_['track_not_found']     = 'Заказ не найден. Проверьте номер и контактные данные.';
+$_['error_token']         = 'Форма устарела, обновите страницу и попробуйте снова.';
+$_['error_rate']          = 'Слишком много попыток, попробуйте через минуту.';

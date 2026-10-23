@@ -657,3 +657,26 @@ li .ocs-stock { font-size: inherit; }
 .ocs-q-answer { padding: var(--sp-3); background: var(--bg-alt); border-radius: var(--r-md); }
 .ocs-q-form textarea { flex-basis: 100%; }
 #ocs-accessories, #ocs-similar { scroll-margin-top: calc(var(--ocs-hdr, 0px) + 56px); }
+
+/* ==== 22. Cities, delivery block, stores, tracking (SPEC-032) ==== */
+.ocs-city-btn { border: 0; background: none; padding: 0; color: var(--link); cursor: pointer; font: inherit; }
+.ocs-city-strip { margin: 0; display: inline-block; }
+.ocs-city-prompt { background: var(--bg-alt); border-bottom: 1px solid var(--border); padding: var(--sp-2) 0; }
+.ocs-city-prompt[hidden] { display: none; }
+.ocs-city-prompt .container > * { margin-right: var(--sp-3); }
+.ocs-city-search { margin: var(--sp-3) 0; }
+.ocs-city-list { max-height: 50vh; overflow-y: auto; margin: 0; }
+.ocs-city-list li[hidden] { display: none; }
+.ocs-city-choice { display: block; width: 100%; text-align: left; padding: var(--sp-3); border: 0; border-radius: var(--r-md); background: none; cursor: pointer; font: inherit; color: var(--text); }
+.ocs-city-choice:hover, .ocs-city-choice:focus-visible { background: var(--bg-alt); }
+.ocs-city-choice.is-current { font-weight: 600; }
+.ocs-delivery { margin: var(--sp-4) 0; padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
+.ocs-delivery h4 { margin-top: 0; }
+.ocs-delivery-lines li { margin-bottom: var(--sp-2); }
+.ocs-city-tabs a.is-current { font-weight: 600; text-decoration: underline; }
+.ocs-stores { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--sp-4); margin: var(--sp-4) 0; }
+.ocs-store { padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
+.ocs-store h3 { margin-top: 0; }
+.ocs-track-form { display: flex; flex-wrap: wrap; gap: var(--sp-3); max-width: 640px; margin: var(--sp-4) 0; }
+.ocs-track-form .form-control { flex: 1 1 200px; }
+.ocs-track-result { padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); max-width: 640px; }

@@ -1,0 +1,68 @@
+{# Extension: ocs_city. City form with delivery rules. Owner: SPEC-032. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-city" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ text_city_form }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>{% endif %}
+    {% for e in errors %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}
+    <form action="{{ action }}" method="post" id="form-city" class="form-horizontal">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          {% for language in languages %}
+          <div class="form-group required">
+            <label class="col-sm-3 control-label">{{ entry_name }} ({{ language.code }})</label>
+            <div class="col-sm-9"><input type="text" name="name[{{ language.language_id }}]" value="{{ names[language.language_id] }}" class="form-control" /></div>
+          </div>
+          {% endfor %}
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_sort }}</label>
+            <div class="col-sm-9"><input type="text" name="sort_order" value="{{ sort_order }}" class="form-control" /></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_default }}</label>
+            <div class="col-sm-9"><label class="checkbox-inline"><input type="checkbox" name="is_default" value="1"{% if is_default %} checked="checked"{% endif %} /> {{ text_yes }}</label></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_status }}</label>
+            <div class="col-sm-9"><select name="status" class="form-control">
+              <option value="1"{% if status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+              <option value="0"{% if not status %} selected="selected"{% endif %}>{{ text_disabled }}</option></select></div>
+          </div>
+        </div>
+      </div>
+      {% for r in rules %}
+      <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">
+          <label><input type="checkbox" name="rule[{{ r.method }}][status]" value="1"{% if r.status %} checked="checked"{% endif %} /> {{ r.label }}</label></h3></div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-sm-3"><label>{{ entry_price }}</label><input type="text" name="rule[{{ r.method }}][price]" value="{{ r.price }}" class="form-control" /></div>
+            <div class="col-sm-3"><label>{{ entry_free_from }}</label><input type="text" name="rule[{{ r.method }}][free_from]" value="{{ r.free_from }}" class="form-control" /></div>
+            <div class="col-sm-2"><label>{{ entry_days_min }}</label><input type="text" name="rule[{{ r.method }}][days_min]" value="{{ r.days_min }}" class="form-control" /></div>
+            <div class="col-sm-2"><label>{{ entry_days_max }}</label><input type="text" name="rule[{{ r.method }}][days_max]" value="{{ r.days_max }}" class="form-control" /></div>
+            <div class="col-sm-2"><label><span data-toggle="tooltip" title="{{ help_cutoff }}">{{ entry_cutoff }}</span></label><input type="text" name="rule[{{ r.method }}][cutoff]" value="{{ r.cutoff }}" class="form-control" placeholder="16:00" /></div>
+          </div>
+          <br />
+          {% for language in languages %}
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ entry_note }} ({{ language.code }})</label>
+            <div class="col-sm-9"><input type="text" name="rule[{{ r.method }}][notes][{{ language.language_id }}]" value="{{ r.notes[language.language_id] }}" class="form-control" /></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </form>
+  </div>
+</div>
+{{ footer }}

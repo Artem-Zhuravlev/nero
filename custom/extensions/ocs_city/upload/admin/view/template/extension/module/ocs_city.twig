@@ -1,0 +1,88 @@
+{# Extension: ocs_city. Admin overview: settings, cities, stores. Owner: SPEC-032. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-city-settings" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>{% endif %}
+    {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>{% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3></div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" id="form-city-settings" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-3 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-9"><select name="module_ocs_city_status" id="input-status" class="form-control">
+              <option value="1"{% if module_ocs_city_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+              <option value="0"{% if not module_ocs_city_status %} selected="selected"{% endif %}>{{ text_disabled }}</option></select></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label" for="input-tracking">{{ entry_tracking }}</label>
+            <div class="col-sm-9"><select name="module_ocs_city_tracking" id="input-tracking" class="form-control">
+              <option value="1"{% if module_ocs_city_tracking %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+              <option value="0"{% if not module_ocs_city_tracking %} selected="selected"{% endif %}>{{ text_disabled }}</option></select></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label" for="input-minutes"><span data-toggle="tooltip" title="{{ help_minutes }}">{{ entry_minutes }}</span></label>
+            <div class="col-sm-9"><input type="text" name="module_ocs_city_pickup_minutes" value="{{ module_ocs_city_pickup_minutes }}" id="input-minutes" class="form-control" />
+              {% if error_minutes %}<div class="text-danger">{{ error_minutes }}</div>{% endif %}</div>
+          </div>
+          <ul class="nav nav-tabs">
+            {% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#lang{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}
+          </ul>
+          <div class="tab-content">
+            {% for language in languages %}
+            <div class="tab-pane{% if loop.first %} active{% endif %}" id="lang{{ language.language_id }}"><br />
+              {% for f in ['payment', 'warranty', 'returns'] %}
+              <div class="form-group">
+                <label class="col-sm-3 control-label">{{ attribute(_context, 'entry_' ~ f) }}</label>
+                <div class="col-sm-9"><textarea name="module_ocs_city_l[{{ language.code }}][{{ f }}]" rows="2" class="form-control">{{ l[language.code][f] }}</textarea></div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endfor %}
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading"><a href="{{ add_city }}" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i></a><h3 class="panel-title"><i class="fa fa-map-marker"></i> {{ text_cities }}</h3></div>
+      <div class="panel-body">
+        <table class="table table-bordered table-hover">
+          {% for c in cities %}
+          <tr><td>{{ c.name }}{% if c.is_default %} <span class="label label-info">{{ text_default }}</span>{% endif %}{% if not c.status %} <span class="label label-default">{{ text_disabled }}</span>{% endif %}</td>
+            <td class="text-right"><a href="{{ c.edit }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i></a>
+              <form action="{{ action }}" method="post" style="display:inline"><input type="hidden" name="delete_city" value="{{ c.city_id }}" /><button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ text_confirm }}');"><i class="fa fa-trash-o"></i></button></form></td></tr>
+          {% else %}
+          <tr><td class="text-center">{{ text_none }}</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading"><a href="{{ add_store }}" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i></a><h3 class="panel-title"><i class="fa fa-building"></i> {{ text_stores }}</h3></div>
+      <div class="panel-body">
+        <table class="table table-bordered table-hover">
+          {% for s in stores %}
+          <tr><td>{{ s.name }} <span class="text-muted">&middot; {{ s.city }}</span>{% if not s.status %} <span class="label label-default">{{ text_disabled }}</span>{% endif %}</td>
+            <td class="text-right"><a href="{{ s.edit }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i></a>
+              <form action="{{ action }}" method="post" style="display:inline"><input type="hidden" name="delete_store" value="{{ s.store_id }}" /><button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ text_confirm }}');"><i class="fa fa-trash-o"></i></button></form></td></tr>
+          {% else %}
+          <tr><td class="text-center">{{ text_none }}</td></tr>
+          {% endfor %}
+        </table>
+        <p class="text-muted">ocs_city v{{ version }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

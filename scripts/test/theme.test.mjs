@@ -414,7 +414,9 @@ test('ajax search: manifest, endpoint, template hooks and theme.js are consisten
   assert.match(twig, /\{% if ocs_search %\}/, 'falls back to core markup when the module is off');
 
   const js = read('custom/theme/ocs/javascript/theme.js');
-  const block = js.slice(js.indexOf('AJAX search (SPEC-028)'));
+  const from = js.indexOf('AJAX search (SPEC-028)');
+  const to = js.indexOf('City selector (SPEC-032');
+  const block = js.slice(from, to > from ? to : undefined);
   for (const s of ['ocs.search.recent', "'ArrowDown'", "'Escape'", "'Enter'", 'textContent', 'ocs-search-clear', 'encodeURIComponent']) assert.ok(block.includes(s), `search JS lacks ${s}`);
   assert.doesNotMatch(block.replace(/dd\.innerHTML = '';/g, ''), /\.innerHTML\s*=/, 'server data is never written with innerHTML');
 
@@ -625,4 +627,46 @@ test('questions: guarded endpoint, moderated by default, escaped once on output'
   const adm = read('custom/extensions/ocs_product_extras/upload/admin/controller/extension/module/ocs_product_extras.php');
   assert.match(adm, /htmlspecialchars\(\$row\['text'\]/);
   assert.match(adm, /htmlspecialchars\(\$row\['answer'\]/);
+});
+
+// TEST-CTY-001 - verifies REQ-CTY-041, REQ-EXT-051 (manifest matches the migration; strings identical across languages; off by default)
+test('city extension: manifest matches migration and language files have identical keys', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const code = 'ocs_city';
+  const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
+  assert.equal(ext.spec, 'SPEC-032');
+  const mig = read(`custom/extensions/${code}/db/001_install.php`);
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `event ${e}`);
+  for (const t of ext.tables) assert.ok(mig.includes(`{{PREFIX}}${t.replace(/^oc_/, '')} (`), `table ${t}`);
+  for (const s of ext.settings) assert.ok(mig.includes(`'${s}'`), `setting ${s}`);
+  assert.match(mig, /'module_ocs_city_status' => 0/);
+  const keys = (side, l) => [...read(`custom/extensions/${code}/upload/${side}/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  for (const l of ['en-gb', 'ru-ru']) assert.deepEqual(keys('catalog', l), keys('catalog', 'uk-ua'), `catalog ${l}`);
+  assert.deepEqual(keys('admin', 'en-gb'), keys('admin', 'uk-ua'), 'admin strings');
+});
+
+// TEST-CTY-002 - verifies REQ-CTY-002, REQ-CTY-011 (header prompt, popup hooks, delivery slot and theme.js/css selectors agree)
+test('city selector: header, product slot, theme.js and css hooks are consistent', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const header = read('custom/theme/ocs/template/common/header.twig');
+  for (const hook of ['id="ocs-city-prompt"', 'data-ocs-city-yes', 'data-ocs-city-open', 'ocs-city-strip']) assert.ok(header.includes(hook), hook);
+  assert.ok(read('custom/theme/ocs/template/product/product.twig').includes('id="ocs-delivery-wrap"'));
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  for (const hook of ['ocs-delivery-wrap', 'ocs-city-choice', 'ocs-city-search', 'ocs_city_ok']) assert.ok(js.includes(hook), hook);
+  const select = read('custom/extensions/ocs_city/upload/catalog/view/theme/default/template/extension/module/ocs_city_select.twig');
+  for (const hook of ['ocs-city-choice', 'ocs-city-search', 'ocs-city-title', 'data-close']) assert.ok(select.includes(hook), hook);
+  for (const sel of ['.ocs-city-btn', '.ocs-city-prompt', '.ocs-delivery', '.ocs-store', '.ocs-track-form']) assert.ok(css.includes(sel), sel);
+});
+
+// TEST-CTY-006 - verifies REQ-CTY-030, REQ-CTY-041 (tracking: token, rate limit, one generic answer, no staff comments)
+test('order tracking: guarded, generic mismatch answer, no comments in the history query', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ctl = read('custom/extensions/ocs_city/upload/catalog/controller/extension/module/ocs_city.php');
+  assert.match(ctl, /tokenValid/);
+  assert.match(ctl, /allow\('track'\)/);
+  assert.match(ctl, /trackingMatches/);
+  assert.equal((ctl.match(/track_not_found/g) || []).length, 1, 'one message for every mismatch');
+  const model = read('custom/extensions/ocs_city/upload/catalog/model/extension/ocs_city/city.php');
+  assert.ok(!/oh\.comment|\.comment/.test(model), 'comments of the staff are never selected');
+  assert.match(model, /order_status_id > '0'/);
 });

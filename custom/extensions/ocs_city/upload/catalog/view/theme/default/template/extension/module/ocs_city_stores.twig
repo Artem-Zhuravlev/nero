@@ -1,0 +1,29 @@
+{# Extension: ocs_city. Stores page (SPEC-032 REQ-CTY-020). #}
+{{ header }}
+<div class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}
+  </ul>
+  <div class="row">{{ column_left }}
+    <div id="content" class="{% if column_left and column_right %}col-sm-6{% elseif column_left or column_right %}col-sm-9{% else %}col-sm-12{% endif %}">{{ content_top }}
+      <h1>{{ stores_title }}</h1>
+      <ul class="list-inline ocs-city-tabs">
+        {% for c in cities %}<li><a href="{{ c.href }}"{% if c.current %} class="is-current" aria-current="true"{% endif %}>{{ c.name }}</a></li>{% endfor %}
+      </ul>
+      <div class="ocs-stores">
+        {% for s in stores %}
+        <article class="ocs-store">
+          <h3>{{ s.name }}</h3>
+          <p>{{ s.address }}</p>
+          {% if s.hours %}<p><span class="text-muted">{{ text_hours }}</span> {{ s.hours }}</p>{% endif %}
+          {% if s.phone %}<p><a href="tel:{{ s.tel }}">{{ s.phone }}</a></p>{% endif %}
+          {% if s.map %}<p><a href="{{ s.map }}" target="_blank" rel="noopener">{{ text_map }}</a></p>{% endif %}
+        </article>
+        {% else %}
+        <p>{{ stores_empty }}</p>
+        {% endfor %}
+      </div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}

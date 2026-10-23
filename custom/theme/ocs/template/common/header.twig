@@ -63,6 +63,13 @@
   <div class="container">{{ currency }}
     {{ language }}
 	{{ blog_menu }}
+    {% if ocs_city %}
+    <ul class="list-inline ocs-city-strip">
+      <li><button type="button" class="ocs-city-btn" data-ocs-city-open="1" data-city="{{ ocs_city.id }}" data-select="{{ ocs_city.select_url }}"><i class="fa fa-map-marker"></i> {{ ocs_city.name }}</button></li>
+      <li class="hidden-xs hidden-sm"><a href="{{ ocs_city.stores }}">{{ ocs_city.stores_text }}</a></li>
+      {% if ocs_city.track %}<li class="hidden-xs hidden-sm"><a href="{{ ocs_city.track }}">{{ ocs_city.track_text }}</a></li>{% endif %}
+    </ul>
+    {% endif %}
     {% if ocs_shell %}
     <ul class="list-inline ocs-strip">
       {% for link in ocs_shell.links %}
@@ -104,6 +111,13 @@
     </div>
   </div>
 </nav>
+{% if ocs_city %}
+<div class="ocs-city-prompt" id="ocs-city-prompt" hidden role="region" aria-label="{{ ocs_city.prompt }}">
+  <div class="container"><span>{{ ocs_city.prompt }}</span>
+    <button type="button" class="btn btn-primary btn-sm" data-ocs-city-yes="1">{{ ocs_city.yes }}</button>
+    <button type="button" class="btn btn-default btn-sm" data-ocs-city-open="1" data-select="{{ ocs_city.select_url }}">{{ ocs_city.other }}</button></div>
+</div>
+{% endif %}
 <header>
   <div class="container">
     <div class="row">
