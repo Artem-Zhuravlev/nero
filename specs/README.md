@@ -104,6 +104,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-035 | [Product Page Extras](product-page/spec.md) | `implemented` |
 | SPEC-036 | [Instalments and Trade-in](credit-tradein/spec.md) | `implemented` |
 | SPEC-037 | [Swiper Carousels and Brief Gaps](swiper-quickview/spec.md) | `implemented` |
+| SPEC-038 | [Modern Layout: Grid, Subgrid, Container Queries](modern-layout/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

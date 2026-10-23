@@ -1705,6 +1705,38 @@
 	});
 }(window, document));
 
+/* Sticky offsets (SPEC-038): --head-h follows the real height of the sticky header, so toolbars and sidebars stick right under it. */
+(function (window, document) {
+	'use strict';
+
+	function boot() {
+		var head = document.querySelector('header.ocs-head');
+
+		if (!head) {
+			return;
+		}
+
+		function set() {
+			// a header that scrolls away (phones) leaves no offset for the sticky toolbars
+			document.documentElement.style.setProperty('--head-h', window.getComputedStyle(head).position === 'sticky' ? head.offsetHeight + 'px' : '0px');
+		}
+
+		set();
+
+		if (window.ResizeObserver) {
+			new window.ResizeObserver(set).observe(head);
+		} else {
+			window.addEventListener('resize', set);
+		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
+
 /* Newsletter form (SPEC-033 REQ-HOM-030): posts the block form as JSON and shows the answer in place. */
 (function (window, document) {
 	'use strict';
@@ -1771,7 +1803,11 @@
 		}
 
 		var links = [].slice.call(bar.querySelectorAll('a'));
-		var header = document.querySelector('header');
+		var header = document.querySelector('header.ocs-head') || document.querySelector('header');
+
+		function headH() {
+			return header && window.getComputedStyle(header).position === 'sticky' ? header.offsetHeight : 0;
+		}
 		var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		function mark(href) {
@@ -1781,10 +1817,10 @@
 		}
 
 		function offset() {
-			return (header ? header.offsetHeight : 0) + bar.offsetHeight + 8;
+			return headH() + bar.offsetHeight + 8;
 		}
 
-		bar.style.setProperty('--ocs-hdr', (header ? header.offsetHeight : 0) + 'px');
+		bar.style.setProperty('--ocs-hdr', headH() + 'px');
 
 		links.forEach(function (a) {
 			a.addEventListener('click', function (e) {

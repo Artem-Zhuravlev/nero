@@ -47,7 +47,7 @@ class ControllerExtensionModuleOcsHomeSlider extends Controller {
 		$data['add'] = $this->url->link('extension/module/ocs_home_slider/form', $token, true);
 		$data['cancel'] = $this->url->link('marketplace/extension', $token . '&type=module', true);
 
-		$defaults = array('status' => 0, 'autoplay' => 6000, 'width' => 1280, 'height' => 480, 'mobile_width' => 640, 'mobile_height' => 480);
+		$defaults = array('status' => 0, 'tiles' => 0, 'autoplay' => 6000, 'width' => 1280, 'height' => 480, 'mobile_width' => 640, 'mobile_height' => 480);
 
 		foreach ($defaults as $field => $default) {
 			$key = 'module_ocs_home_slider_' . $field;

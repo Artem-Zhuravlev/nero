@@ -1,0 +1,7 @@
+{ "code": "ocs_benefits", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Benefits Strip", "uk-ua": "OCS: смуга переваг" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
+  "spec": "SPEC-038", "tables": [],
+  "settings": ["module_ocs_benefits_status", "module_ocs_benefits_items"],
+  "events": [],
+  "routes": ["extension/module/ocs_benefits"] }

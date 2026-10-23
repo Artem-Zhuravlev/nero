@@ -21,7 +21,7 @@
     {% set class = 'col-sm-12' %}
     {% endif %}
     <div id="content" class="{{ class }}">{{ content_top }}
-      <div class="row"> {% if column_left or column_right %}
+      <div class="row ocs-pdp"> {% if column_left or column_right %}
         {% set class = 'col-sm-6' %}
         {% else %}
         {% set class = 'col-sm-8' %}
@@ -61,111 +61,7 @@
           {% endif %}
           </div>
           {% endif %}
-          <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab-description" data-toggle="tab">{{ tab_description }}</a></li>
-            {% if attribute_groups %}
-            <li><a href="#tab-specification" data-toggle="tab">{{ tab_attribute }}</a></li>
-            {% endif %}
-            {% if review_status %}
-            <li><a href="#tab-review" data-toggle="tab">{{ tab_review }}</a></li>
-            {% endif %}
-            {% if ocs_px.qa %}
-            <li><a href="#tab-questions" data-toggle="tab">{{ ocs_px.qa.label }}</a></li>
-            {% endif %}
-          </ul>
-          <div class="tab-content">
-            <div class="tab-pane active" id="tab-description">{{ description }}</div>
-            {% if attribute_groups %}
-            <div class="tab-pane" id="tab-specification">
-              <table class="table table-bordered">
-                {% for attribute_group in attribute_groups %}
-                <thead>
-                  <tr>
-                    <td colspan="2"><strong>{{ attribute_group.name }}</strong></td>
-                  </tr>
-                </thead>
-                <tbody>
-                {% for attribute in attribute_group.attribute %}
-                <tr>
-                  <td>{{ attribute.name }}</td>
-                  <td>{{ attribute.text }}</td>
-                </tr>
-                {% endfor %}
-                  </tbody>
-                {% endfor %}
-              </table>
-            </div>
-            {% endif %}
-            {% if review_status %}
-            <div class="tab-pane" id="tab-review">
-              <form class="form-horizontal" id="form-review">
-                <div id="review"></div>
-                <h2>{{ text_write }}</h2>
-                {% if review_guest %}
-                <div class="form-group required">
-                  <div class="col-sm-12">
-                    <label class="control-label" for="input-name">{{ entry_name }}</label>
-                    <input type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" />
-                  </div>
-                </div>
-                <div class="form-group required">
-                  <div class="col-sm-12">
-                    <label class="control-label" for="input-review">{{ entry_review }}</label>
-                    <textarea name="text" rows="5" id="input-review" class="form-control"></textarea>
-                    <div class="help-block">{{ text_note }}</div>
-                  </div>
-                </div>
-                <div class="form-group required">
-                  <div class="col-sm-12">
-                    <label class="control-label">{{ entry_rating }}</label>
-                    &nbsp;&nbsp;&nbsp; {{ entry_bad }}&nbsp;
-                    <input type="radio" name="rating" value="1" />
-                    &nbsp;
-                    <input type="radio" name="rating" value="2" />
-                    &nbsp;
-                    <input type="radio" name="rating" value="3" />
-                    &nbsp;
-                    <input type="radio" name="rating" value="4" />
-                    &nbsp;
-                    <input type="radio" name="rating" value="5" />
-                    &nbsp;{{ entry_good }}</div>
-                </div>
-                {{ captcha }}
-                <div class="buttons clearfix">
-                  <div class="pull-right">
-                    <button type="button" id="button-review" data-loading-text="{{ text_loading }}" class="btn btn-primary">{{ button_continue }}</button>
-                  </div>
-                </div>
-                {% else %}
-                {{ text_login }}
-                {% endif %}
-              </form>
-            </div>
-            {% endif %}
-            {% if ocs_px.qa %}
-            <div class="tab-pane" id="tab-questions">
-              {% for q in ocs_px.qa.list %}
-              <div class="ocs-q">
-                <p><strong>{{ q.name }}</strong> <span class="text-muted">{{ q.date }}</span></p>
-                <p>{{ q.text }}</p>
-                {% if q.answer %}<p class="ocs-q-answer"><strong>{{ ocs_px.qa.ask.text_answer }}</strong> {{ q.answer }}</p>{% endif %}
-              </div>
-              {% else %}
-              <p class="text-muted">{{ ocs_px.qa.ask.text_no_questions }}</p>
-              {% endfor %}
-              <h3>{{ ocs_px.qa.ask.text_ask_title }}</h3>
-              <form class="ocs-news-form ocs-q-form" action="{{ ocs_px.qa.action }}" method="post" data-failed="{{ ocs_px.qa.ask.error_generic }}" novalidate>
-                <input type="hidden" name="token" value="{{ ocs_px.qa.token }}" />
-                <input type="hidden" name="product_id" value="{{ product_id }}" />
-                <div class="ocs-news-hp" aria-hidden="true"><label>Website <input type="text" name="website" value="" tabindex="-1" autocomplete="off" /></label></div>
-                <input type="text" name="name" value="{{ ocs_px.qa.name }}" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_name }}" aria-label="{{ ocs_px.qa.ask.entry_name }}" autocomplete="name" />
-                <input type="email" name="email" value="{{ ocs_px.qa.email }}" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_email }}" aria-label="{{ ocs_px.qa.ask.entry_email }}" autocomplete="email" />
-                <textarea name="text" rows="4" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_question }}" aria-label="{{ ocs_px.qa.ask.entry_question }}"></textarea>
-                <button type="submit" class="btn btn-primary">{{ ocs_px.qa.ask.button_ask }}</button>
-                <div class="ocs-news-msg" role="status" aria-live="polite"></div>
-              </form>
-            </div>
-            {% endif %}</div>
+
         </div>
         {% if column_left or column_right %}
         {% set class = 'col-sm-6' %}
@@ -263,6 +159,113 @@
             <hr>
                       </div>
           {% endif %} </div>
+      </div>
+      <div class="ocs-pdp-sections">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#tab-description" data-toggle="tab">{{ tab_description }}</a></li>
+          {% if attribute_groups %}
+          <li><a href="#tab-specification" data-toggle="tab">{{ tab_attribute }}</a></li>
+          {% endif %}
+          {% if review_status %}
+          <li><a href="#tab-review" data-toggle="tab">{{ tab_review }}</a></li>
+          {% endif %}
+          {% if ocs_px.qa %}
+          <li><a href="#tab-questions" data-toggle="tab">{{ ocs_px.qa.label }}</a></li>
+          {% endif %}
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab-description">{{ description }}</div>
+          {% if attribute_groups %}
+          <div class="tab-pane" id="tab-specification">
+            <table class="table table-bordered">
+              {% for attribute_group in attribute_groups %}
+              <thead>
+                <tr>
+                  <td colspan="2"><strong>{{ attribute_group.name }}</strong></td>
+                </tr>
+              </thead>
+              <tbody>
+              {% for attribute in attribute_group.attribute %}
+              <tr>
+                <td>{{ attribute.name }}</td>
+                <td>{{ attribute.text }}</td>
+              </tr>
+              {% endfor %}
+                </tbody>
+              {% endfor %}
+            </table>
+          </div>
+          {% endif %}
+          {% if review_status %}
+          <div class="tab-pane" id="tab-review">
+            <form class="form-horizontal" id="form-review">
+              <div id="review"></div>
+              <h2>{{ text_write }}</h2>
+              {% if review_guest %}
+              <div class="form-group required">
+                <div class="col-sm-12">
+                  <label class="control-label" for="input-name">{{ entry_name }}</label>
+                  <input type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group required">
+                <div class="col-sm-12">
+                  <label class="control-label" for="input-review">{{ entry_review }}</label>
+                  <textarea name="text" rows="5" id="input-review" class="form-control"></textarea>
+                  <div class="help-block">{{ text_note }}</div>
+                </div>
+              </div>
+              <div class="form-group required">
+                <div class="col-sm-12">
+                  <label class="control-label">{{ entry_rating }}</label>
+                  &nbsp;&nbsp;&nbsp; {{ entry_bad }}&nbsp;
+                  <input type="radio" name="rating" value="1" />
+                  &nbsp;
+                  <input type="radio" name="rating" value="2" />
+                  &nbsp;
+                  <input type="radio" name="rating" value="3" />
+                  &nbsp;
+                  <input type="radio" name="rating" value="4" />
+                  &nbsp;
+                  <input type="radio" name="rating" value="5" />
+                  &nbsp;{{ entry_good }}</div>
+              </div>
+              {{ captcha }}
+              <div class="buttons clearfix">
+                <div class="pull-right">
+                  <button type="button" id="button-review" data-loading-text="{{ text_loading }}" class="btn btn-primary">{{ button_continue }}</button>
+                </div>
+              </div>
+              {% else %}
+              {{ text_login }}
+              {% endif %}
+            </form>
+          </div>
+          {% endif %}
+          {% if ocs_px.qa %}
+          <div class="tab-pane" id="tab-questions">
+            {% for q in ocs_px.qa.list %}
+            <div class="ocs-q">
+              <p><strong>{{ q.name }}</strong> <span class="text-muted">{{ q.date }}</span></p>
+              <p>{{ q.text }}</p>
+              {% if q.answer %}<p class="ocs-q-answer"><strong>{{ ocs_px.qa.ask.text_answer }}</strong> {{ q.answer }}</p>{% endif %}
+            </div>
+            {% else %}
+            <p class="text-muted">{{ ocs_px.qa.ask.text_no_questions }}</p>
+            {% endfor %}
+            <h3>{{ ocs_px.qa.ask.text_ask_title }}</h3>
+            <form class="ocs-news-form ocs-q-form" action="{{ ocs_px.qa.action }}" method="post" data-failed="{{ ocs_px.qa.ask.error_generic }}" novalidate>
+              <input type="hidden" name="token" value="{{ ocs_px.qa.token }}" />
+              <input type="hidden" name="product_id" value="{{ product_id }}" />
+              <div class="ocs-news-hp" aria-hidden="true"><label>Website <input type="text" name="website" value="" tabindex="-1" autocomplete="off" /></label></div>
+              <input type="text" name="name" value="{{ ocs_px.qa.name }}" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_name }}" aria-label="{{ ocs_px.qa.ask.entry_name }}" autocomplete="name" />
+              <input type="email" name="email" value="{{ ocs_px.qa.email }}" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_email }}" aria-label="{{ ocs_px.qa.ask.entry_email }}" autocomplete="email" />
+              <textarea name="text" rows="4" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_question }}" aria-label="{{ ocs_px.qa.ask.entry_question }}"></textarea>
+              <button type="submit" class="btn btn-primary">{{ ocs_px.qa.ask.button_ask }}</button>
+              <div class="ocs-news-msg" role="status" aria-live="polite"></div>
+            </form>
+          </div>
+          {% endif %}</div>
       </div>
       {% for block in [{'id': 'ocs-accessories', 'title': ocs_px.text_accessories, 'items': ocs_px.accessories}, {'id': 'ocs-similar', 'title': ocs_px.text_similar, 'items': ocs_px.similar}] %}
       {% if block.items %}

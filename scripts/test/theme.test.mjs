@@ -123,7 +123,7 @@ test('theme.js stays within the size budget and header loads it after common.js'
   const header = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/common/header.twig'), 'utf8');
   assert.ok(header.indexOf('javascript/common.js') < header.indexOf('ocs/javascript/theme.js'));
   const css = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/stylesheet/stylesheet.css'), 'utf8');
-  assert.ok(Buffer.byteLength(css) <= 150 * 1024);
+  assert.ok(Buffer.byteLength(css) <= 200 * 1024);
 });
 
 // TEST-DSG-008 - verifies REQ-DSG-012, REQ-DSG-024, REQ-THM-010, REQ-THM-011, REQ-THM-013, REQ-THM-042
@@ -834,4 +834,76 @@ test('back in stock: cron endpoint is keyed, each subscription is marked before 
   assert.match(adm, /module_ocs_back_in_stock_cron_key'\] = /, 'saving the settings keeps the key');
   assert.match(adm, /optionNames/);
   assert.match(read('custom/extensions/ocs_back_in_stock/db/003_cron_key.php'), /random_bytes\(16\)/);
+});
+
+// TEST-LAY-001 - verifies REQ-LAY-001, REQ-LAY-002, REQ-LAY-010, REQ-LAY-012, REQ-LAY-021 (layers, Bootstrap and Swiper inside the lowest layer, fluid scale, shell grid, no new !important)
+test('modern layout: cascade layers, layered vendor css, fluid scale and shell grid', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  assert.match(css, /@layer reset, tokens, legacy, base, layout, components, utilities, overrides;/);
+  assert.match(css, /@import url\("\.\.\/\.\.\/\.\.\/javascript\/bootstrap\/css\/bootstrap\.min\.css"\) layer\(reset\);/);
+  assert.match(css, /@import url\("\.\.\/\.\.\/\.\.\/javascript\/jquery\/swiper\/css\/swiper\.min\.css"\) layer\(reset\);/);
+  assert.ok(css.indexOf('@import') < css.indexOf('@layer tokens'), '@import comes before any rule');
+  const header = read('custom/theme/ocs/template/common/header.twig');
+  assert.ok(!/<link[^>]*bootstrap\.min\.css/.test(header), 'Bootstrap CSS is only imported through the layer');
+  assert.ok(!/<link[^>]*swiper\.min\.css/.test(header), 'Swiper CSS is only imported through the layer');
+  assert.match(css, /html \{ font-size: 100%; \}/, 'rem is the browser default, not Bootstrap\'s 10px');
+  for (const feature of ['clamp(', 'dvh', 'text-wrap: balance', 'color-mix(', 'aspect-ratio', 'inset-block-start', 'inline-size']) assert.ok(css.includes(feature), feature);
+  assert.match(css, /body \{\s*display: grid; grid-template-columns: minmax\(0, 1fr\); grid-template-rows: auto auto 1fr auto;/);
+  assert.equal((css.match(/!important\s*;/g) || []).length, 3, 'no new !important (the two reduced-motion declarations and the [hidden] guard)');
+  assert.ok(header.includes('<div class="ocs-page">') && read('custom/theme/ocs/template/common/footer.twig').includes('</div>{# .ocs-page'), 'the page wrapper is opened by the header and closed by the footer');
+});
+
+// TEST-LAY-002 - verifies REQ-LAY-003 (header: one grid row, container queries, sticky blur; account icons moved next to the cart)
+test('modern layout: header grid with container queries', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const header = read('custom/theme/ocs/template/common/header.twig');
+  for (const hook of ['class="ocs-head"', 'ocs-head-grid', 'ocs-head-cat', 'ocs-head-search', 'ocs-head-actions', 'id="top-links"', 'ocs-head-cart', 'id="logo"']) assert.ok(header.includes(hook), hook);
+  assert.ok(header.indexOf('<nav id="top"') < header.indexOf('<header class="ocs-head">'), 'utility strip above the main header');
+  for (const rule of ['container: head / inline-size', '@container head (max-width: 62rem)', '@container head (max-width: 40rem)', 'grid-template-areas: "logo cat search actions"', 'backdrop-filter']) assert.ok(css.includes(rule), rule);
+  assert.match(read('custom/theme/ocs/javascript/theme.js'), /setProperty\('--head-h'/);
+});
+
+// TEST-LAY-003 - verifies REQ-LAY-004, REQ-LAY-005, REQ-LAY-012 (card is a container; listing rows align through subgrid behind @supports)
+test('modern layout: card container queries and subgrid listing', () => {
+  for (const rule of ['.product-layout { container: card / inline-size;', '@container card (max-width: 12.5rem)', '@container card (min-width: 36rem)', '@supports (grid-template-rows: subgrid)', 'grid-template-rows: subgrid', 'grid-row: span 9', 'repeat(auto-fill, minmax(min(100%, var(--card-min)), 1fr))']) assert.ok(css.includes(rule), rule);
+  const sub = css.slice(css.indexOf('@supports (grid-template-rows: subgrid)'));
+  assert.ok(sub.indexOf('grid-template-rows: subgrid') > 0 && sub.includes('.product-thumb .price { grid-row: 6; }'), 'rows are placed explicitly, so a missing rating cannot shift the price row');
+});
+
+// TEST-LAY-004 - verifies REQ-LAY-006 (home grid by container width, promo tiles, benefits strip module)
+test('modern layout: home grid, promo tiles and the benefits module', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  for (const rule of ['#common-home #content { container: home / inline-size;', '@container home (min-width: 58rem)', '.ocs-hero-wrap.has-tiles', '.ocs-benefits', '@container hero (max-width: 44rem)']) assert.ok(css.includes(rule), rule);
+  const slider = read('custom/extensions/ocs_home_slider/upload/catalog/view/theme/default/template/extension/module/ocs_home_slider.twig');
+  assert.ok(slider.includes('ocs-hero-wrap') && slider.includes('ocs-hero-tiles'));
+  assert.match(read('custom/extensions/ocs_home_slider/upload/catalog/controller/extension/module/ocs_home_slider.php'), /array_splice\(\$data\['slides'\], -2\)/);
+  const code = 'ocs_benefits';
+  const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
+  assert.equal(ext.spec, 'SPEC-038');
+  assert.match(read(`custom/extensions/${code}/db/001_install.php`), /'module_ocs_benefits_status' => 0/);
+  const keys = (side, l) => [...read(`custom/extensions/${code}/upload/${side}/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  for (const l of ['en-gb', 'ru-ru']) assert.deepEqual(keys('catalog', l), keys('catalog', 'uk-ua'), `catalog ${l}`);
+  assert.deepEqual(keys('admin', 'en-gb'), keys('admin', 'uk-ua'), 'admin strings');
+  assert.match(read(`custom/extensions/${code}/upload/catalog/controller/extension/module/${code}.php`), /preg_match\('\/\^\[a-z0-9-\]\{1,32\}\$\/'/, 'the icon name is whitelisted');
+});
+
+// TEST-LAY-005 - verifies REQ-LAY-007 (sidebar grid through :has() and a page container; sticky toolbar)
+test('modern layout: category grid with sidebar, :has() and sticky toolbar', () => {
+  for (const rule of ['.ocs-page > .container { container: page / inline-size; }', ':has(> #content)', '@container page (min-width: 56rem)', ':has(> #column-left):has(> #column-right)', 'position: sticky; inset-block-start: var(--head-h); z-index: 30;', ':has(> div > .btn-group > #list-view)']) assert.ok(css.includes(rule), rule);
+});
+
+// TEST-LAY-006 - verifies REQ-LAY-008 (product grid: sticky gallery | info card, sections full width below, tabs keep the core ids)
+test('modern layout: product page grid keeps the core hooks', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const twig = read('custom/theme/ocs/template/product/product.twig');
+  assert.ok(twig.includes('class="row ocs-pdp"') && twig.includes('class="ocs-pdp-sections"'));
+  assert.ok(twig.indexOf('class="ocs-pdp-sections"') > twig.indexOf('id="button-cart"'), 'the sections follow the grid');
+  for (const hook of ['id="tab-description"', 'id="tab-review"', 'id="button-review"', 'id="product"', 'id="input-quantity"', 'class="nav nav-tabs"', 'data-toggle="tab"']) assert.ok(twig.includes(hook), hook);
+  for (const rule of ['#product-product #content { container: pdpc / inline-size;', '@container pdpc (min-width: 52rem)', '.ocs-pdp-sections { container: sections / inline-size; }']) assert.ok(css.includes(rule), rule);
+});
+
+// TEST-LAY-007, TEST-LAY-008, TEST-LAY-009 - verifies REQ-LAY-009, REQ-LAY-011, REQ-LAY-021 (footer subgrid, dialogs as containers, stylesheet budget)
+test('modern layout: footer subgrid, dialog containers and the stylesheet budget', () => {
+  for (const rule of ['footer { container: foot / inline-size;', 'grid-template-columns: subgrid', '@container foot (max-width: 62rem)', '.ocs-modal-dialog { container: dialog / inline-size; }', '@container dialog (min-width: 44rem)', ':has(.ocs-qv)']) assert.ok(css.includes(rule), rule);
+  assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'stylesheet within 200 KB');
 });

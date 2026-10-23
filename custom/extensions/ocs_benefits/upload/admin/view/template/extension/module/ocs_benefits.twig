@@ -1,0 +1,55 @@
+{# Extension: ocs_benefits. Admin form. Owner: SPEC-038. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-benefits" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>{% endif %}
+    {% if error_icon %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_icon }}</div>{% endif %}
+    {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>{% endif %}
+    <form action="{{ action }}" method="post" id="form-benefits" class="form-horizontal">
+      <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3></div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10"><select name="module_ocs_benefits_status" id="input-status" class="form-control">
+              <option value="1"{% if status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+              <option value="0"{% if not status %} selected="selected"{% endif %}>{{ text_disabled }}</option></select>
+              <p class="help-block">{{ help_defaults }}</p></div>
+          </div>
+        </div>
+      </div>
+      {% for item in items %}
+      <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">{{ text_item }} {{ loop.index }}</h3></div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_icon }}</label>
+            <div class="col-sm-10"><input type="text" name="item[{{ loop.index0 }}][icon]" value="{{ item.icon }}" class="form-control" placeholder="truck" /></div>
+          </div>
+          {% for language in languages %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_title }} ({{ language.code }})</label>
+            <div class="col-sm-4"><input type="text" name="item[{{ loop.parent.loop.index0 }}][l][{{ language.code }}][title]" value="{{ item.l[language.code].title }}" class="form-control" /></div>
+            <label class="col-sm-1 control-label">{{ entry_text }}</label>
+            <div class="col-sm-5"><input type="text" name="item[{{ loop.parent.loop.index0 }}][l][{{ language.code }}][text]" value="{{ item.l[language.code].text }}" class="form-control" /></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </form>
+    <p class="text-muted">ocs_benefits v{{ version }}</p>
+  </div>
+</div>
+{{ footer }}

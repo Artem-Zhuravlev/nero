@@ -33,3 +33,22 @@ OCS.modal.close();
 
 Closes on overlay click, Esc and the close button; traps focus; restores focus to the opener. `closeLabel` comes from
 the module's language file (no literal text in the theme).
+
+## Layout layer (SPEC-038)
+
+The stylesheet is written in cascade layers: `reset` (Bootstrap 3 and Swiper CSS, imported with `layer(reset)`), `tokens`, `legacy`
+(sections written before SPEC-038, shrinking), `base`, `layout`, `components`, `utilities`, `overrides`. A later layer always wins, so
+no `!important` is needed (only the reduced-motion and `[hidden]` guards keep it).
+
+- **Shell:** `body` is a grid (`auto auto 1fr auto`, one more row with the announcement bar); the page content sits in `.ocs-page`
+  (opened by `common/header.twig`, closed by `common/footer.twig`); `.container` is `min(100% - 2 * var(--gutter), var(--container))`.
+- **Containers, not viewports:** `header.ocs-head` (`head`), `.ocs-page > .container` (`page`), `.product-layout` (`card`),
+  `#common-home #content` (`home`), `#product-product #content` (`pdpc`), `footer` (`foot`), `.ocs-modal-dialog` (`dialog`).
+  Components answer `@container` rules of their own container, so the same card works in a listing, a carousel and a popup.
+- **Subgrid:** listing cards span 9 rows of the listing grid and take them over with `grid-template-rows: subgrid`; every part
+  (image, code, title, text, stock, price, rating, quick order, buttons) is placed in an explicit row, so rows line up without
+  fixed heights. The footer sections take over the 12 footer tracks with `grid-template-columns: subgrid`. Both sit behind `@supports`.
+- **`:has()`:** sidebar columns, the sticky listing toolbar and the quick-view dialog size are chosen by what the markup contains.
+- **Units:** rem (the root is back to 16px), `clamp()` for the type and gutter scale, `dvh`, `aspect-ratio`, logical properties,
+  `color-mix()` for hover and surface tones (no new colour literals outside section 1).
+- **Sticky offsets:** `--head-h` is set from the real header height (0 when the header scrolls away on phones).

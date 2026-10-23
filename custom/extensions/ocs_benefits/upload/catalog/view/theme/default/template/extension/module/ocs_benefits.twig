@@ -1,0 +1,6 @@
+{# Extension: ocs_benefits. Benefits strip (SPEC-038 REQ-LAY-006): a grid that reflows by its own width. #}
+<ul class="ocs-benefits">
+  {% for b in items %}
+  <li><i class="fa fa-{{ b.icon }}" aria-hidden="true"></i><div><strong>{{ b.title }}</strong>{% if b.text %}<span>{{ b.text }}</span>{% endif %}</div></li>
+  {% endfor %}
+</ul>
