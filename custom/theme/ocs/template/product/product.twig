@@ -132,7 +132,7 @@
             {% if reward %}
             <li>{{ text_reward }} {{ reward }}</li>
             {% endif %}
-            <li>{{ text_stock }} {{ stock }}</li>
+            <li>{{ text_stock }} {% if ocs_stock %}<span class="ocs-stock ocs-stock-{{ ocs_stock.state }}">{{ ocs_stock.label }}</span>{% else %}{{ stock }}{% endif %}</li>
           </ul>
           {% if price %}
           <ul class="list-unstyled">

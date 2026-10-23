@@ -50,7 +50,7 @@
 {{ analytic }}
 {% endfor %}
 </head>
-<body>
+<body{% if ocs_cart %} data-ocs-cart="{{ ocs_cart.url }}"{% endif %}>
 {% if ocs_shell and ocs_shell.announcement %}
 <div class="ocs-announce" id="ocs-announce" data-id="{{ ocs_shell.announcement.id }}" role="region" aria-label="{{ ocs_shell.t.ocs_announce }}">
   <div class="container">

@@ -1,0 +1,7 @@
+{ "code": "ocs_ajax_cart", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS AJAX Cart", "uk-ua": "OCS: AJAX-кошик" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_listing"] },
+  "spec": "SPEC-026", "tables": [],
+  "settings": ["module_ocs_ajax_cart_status", "module_ocs_ajax_cart_low_stock"],
+  "events": ["ocs_ajax_cart_header_before", "ocs_ajax_cart_product_before", "ocs_ajax_cart_category_before", "ocs_ajax_cart_search_before", "ocs_ajax_cart_manufacturer_before", "ocs_ajax_cart_special_before"],
+  "routes": ["extension/module/ocs_ajax_cart", "extension/ocs_ajax_cart/events"] }

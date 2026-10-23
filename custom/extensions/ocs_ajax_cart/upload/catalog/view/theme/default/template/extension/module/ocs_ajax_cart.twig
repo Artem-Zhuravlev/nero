@@ -1,0 +1,40 @@
+{# Extension: ocs_ajax_cart. Cart panel body rendered by the panel endpoint (SPEC-026). Buttons are driven by theme.js (OCS.cart). #}
+<div class="ocs-cart" data-close="{{ text_close }}">
+  <h3 class="ocs-cart-title" id="ocs-cart-title">{{ heading_cart }}</h3>
+  {% if lines %}
+  <ul class="ocs-cart-lines list-unstyled">
+    {% for line in lines %}
+    <li class="ocs-cart-line{% if line.added %} ocs-cart-line-new{% endif %}" data-key="{{ line.key }}">
+      <a href="{{ line.href }}" class="ocs-cart-thumb"><img src="{{ line.thumb }}" alt="" width="80" height="80" loading="lazy" /></a>
+      <div class="ocs-cart-info">
+        <a href="{{ line.href }}" class="ocs-cart-name">{{ line.name }}</a>
+        {% for option in line.options %}<small class="ocs-cart-option">{{ option }}</small>{% endfor %}
+        {% if line.problem %}<div class="text-danger ocs-cart-problem" role="alert">{{ line.problem }}</div>{% endif %}
+        <div class="ocs-cart-row">
+          <div class="ocs-cart-stepper">
+            <button type="button" class="ocs-cart-minus" aria-label="{{ text_minus }}">&minus;</button>
+            <input type="text" class="ocs-cart-qty" value="{{ line.quantity }}" inputmode="numeric" aria-label="{{ text_qty }}" />
+            <button type="button" class="ocs-cart-plus" aria-label="{{ text_plus }}">+</button>
+          </div>
+          {% if line.total %}<div class="ocs-cart-price"><strong>{{ line.total }}</strong>{% if line.quantity > 1 %}<small>{{ line.price }}</small>{% endif %}</div>{% endif %}
+          <button type="button" class="ocs-cart-remove" aria-label="{{ text_remove }}"><i class="fa fa-trash-o"></i></button>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  <table class="ocs-cart-totals">
+    {% for t in totals %}
+    <tr><td>{{ t.title }}</td><td class="text-right">{{ t.text }}</td></tr>
+    {% endfor %}
+  </table>
+  <div class="ocs-cart-actions">
+    <a href="{{ checkout }}" class="btn btn-primary btn-lg btn-block">{{ text_checkout }}</a>
+    <button type="button" class="btn btn-default btn-block ocs-cart-continue">{{ text_continue }}</button>
+    <a href="{{ cart }}" class="ocs-cart-full">{{ text_cart }}</a>
+  </div>
+  {% else %}
+  <p class="ocs-cart-empty">{{ text_empty }}</p>
+  <button type="button" class="btn btn-primary btn-block ocs-cart-continue">{{ text_continue }}</button>
+  {% endif %}
+</div>

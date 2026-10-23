@@ -1,6 +1,6 @@
 # SPEC-026 — AJAX Cart and Availability States
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-013, REQ-MOY-023 · **Brief:** module 3 · **Depends on:** SPEC-023, SPEC-011

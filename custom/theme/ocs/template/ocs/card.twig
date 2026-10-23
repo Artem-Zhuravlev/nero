@@ -12,6 +12,7 @@
         {% if product.model %}<div class="ocs-code">{{ product.model }}</div>{% endif %}
         <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
         <p class="ocs-desc">{{ product.description }}</p>
+        {% if product.ocs_stock %}<div class="ocs-stock ocs-stock-{{ product.ocs_stock.state }}">{{ product.ocs_stock.label }}</div>{% endif %}
         {% if product.price %}
         <p class="price"> {% if not product.special %}
           {{ product.price }}

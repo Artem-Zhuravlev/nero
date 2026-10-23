@@ -354,3 +354,38 @@ test('quick order never trusts posted prices and does not touch the visitor cart
   assert.match(pre, /config_processing_status/, 'pre-order order status must exclude stock-subtracting statuses');
   assert.match(pre, /order_id/);
 });
+
+// --- SPEC-026 AJAX cart ---
+// TEST-CRT-001..004 - verifies REQ-CRT-002, REQ-CRT-003, REQ-CRT-005, REQ-CRT-010, REQ-CRT-021 (manifest, endpoints, panel markup, JS hooks, switch-off)
+test('ajax cart: manifest, endpoints, panel markup and theme.js are consistent and the module is off by default', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ext = JSON.parse(read('custom/extensions/ocs_ajax_cart/extension.json'));
+  const mig = read('custom/extensions/ocs_ajax_cart/db/001_install.php');
+  assert.equal(ext.spec, 'SPEC-026');
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
+  assert.match(mig, /'module_ocs_ajax_cart_status' => 0/);
+  assert.match(mig, /event->register\(\$code, \$trigger, '[^']+' \. \$method, 3\)/, 'labels must run after ocs_listing (sort 1)');
+
+  const ctl = read('custom/extensions/ocs_ajax_cart/upload/catalog/controller/extension/module/ocs_ajax_cart.php');
+  for (const m of ['public function panel', 'public function update', 'public function remove']) assert.ok(ctl.includes(m), `controller lacks ${m}`);
+  assert.doesNotMatch(ctl, /post\['(price|total)'\]/, 'prices are never read from the request');
+  assert.match(ctl, /hasLine\(/, 'only lines of the visitor cart can be changed');
+
+  const tpl = read('custom/extensions/ocs_ajax_cart/upload/catalog/view/theme/default/template/extension/module/ocs_ajax_cart.twig');
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  for (const cls of ['ocs-cart-line', 'ocs-cart-minus', 'ocs-cart-plus', 'ocs-cart-remove', 'ocs-cart-qty', 'ocs-cart-continue', 'data-key', 'data-close']) {
+    assert.ok(tpl.includes(cls), `panel template lacks ${cls}`);
+    assert.ok(js.includes(cls), `theme.js does not use ${cls}`);
+  }
+  assert.ok(js.includes("data-ocs-cart") && js.includes('checkout/cart/add') && js.includes("variant: 'side'"));
+  assert.match(js, /base = document\.body\.getAttribute\('data-ocs-cart'\)/, 'body attribute is read after the DOM exists');
+  assert.match(read('custom/theme/ocs/template/common/header.twig'), /<body\{% if ocs_cart %\} data-ocs-cart="\{\{ ocs_cart\.url \}\}"\{% endif %\}>/);
+  assert.match(read('custom/theme/ocs/template/ocs/card.twig'), /product\.ocs_stock/);
+  assert.match(read('custom/theme/ocs/template/product/product.twig'), /ocs_stock\.label/);
+
+  const keys = (l, p) => [...read(`custom/extensions/ocs_ajax_cart/upload/${p}/language/${l}/extension/module/ocs_ajax_cart.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  assert.deepEqual(keys('en-gb', 'catalog'), keys('uk-ua', 'catalog'));
+  assert.deepEqual(keys('ru-ru', 'catalog'), keys('uk-ua', 'catalog'));
+  assert.deepEqual(keys('en-gb', 'admin'), keys('uk-ua', 'admin'));
+  for (const k of ['text_in_stock', 'text_few_left', 'text_out_of_stock', 'error_stock', 'error_minimum']) assert.ok(keys('uk-ua', 'catalog').includes(k), `missing ${k}`);
+});

@@ -520,3 +520,36 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 .ocs-req .required .control-label:after { content: " *"; color: var(--danger); }
 .ocs-quick-card { padding: 0 var(--sp-5) var(--sp-2); }
 .ocs-preorder #button-cart { display: none; }
+
+/* ==== 17. Cart panel and availability labels (SPEC-026) ============================= */
+.ocs-cart-title { margin-top: 0; }
+.ocs-cart-lines { margin: 0 0 var(--sp-4); padding: 0; }
+.ocs-cart-line { display: flex; gap: var(--sp-3); padding: var(--sp-3) 0; border-bottom: 1px solid var(--border); border-radius: var(--r-sm); transition: background-color var(--t); }
+.ocs-cart-line-new { background: var(--bg-alt); }
+.ocs-cart-thumb img { width: 64px; height: 64px; object-fit: contain; border-radius: var(--r-sm); background: var(--bg-alt); }
+.ocs-cart-info { flex: 1; min-width: 0; }
+.ocs-cart-name { display: block; color: var(--text); font-weight: 600; }
+.ocs-cart-option { display: block; color: var(--text-muted); }
+.ocs-cart-row { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-2); }
+.ocs-cart-stepper { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: var(--r-pill); overflow: hidden; }
+.ocs-cart-stepper button { width: 32px; height: 32px; border: 0; background: transparent; color: var(--text); font-size: var(--fs-lg); line-height: 1; cursor: pointer; }
+.ocs-cart-stepper button:hover { background: var(--bg-alt); }
+.ocs-cart-qty { width: 40px; height: 32px; border: 0; text-align: center; background: transparent; color: var(--text); font-size: var(--fs-sm); }
+.ocs-cart-price { margin-left: auto; text-align: right; }
+.ocs-cart-price small { display: block; color: var(--text-muted); }
+.ocs-cart-remove { border: 0; background: transparent; color: var(--text-muted); cursor: pointer; }
+.ocs-cart-remove:hover { color: var(--danger); }
+.ocs-cart-totals { width: 100%; margin-bottom: var(--sp-4); }
+.ocs-cart-totals td { padding: var(--sp-1) 0; }
+.ocs-cart-totals tr:last-child td { font-weight: 600; font-size: var(--fs-lg); }
+.ocs-cart-actions .btn { margin-bottom: var(--sp-2); }
+.ocs-cart-full { display: block; text-align: center; font-size: var(--fs-sm); }
+.ocs-cart-empty { color: var(--text-muted); }
+.ocs-cart-problem { font-size: var(--fs-sm); }
+.ocs-modal-dialog.ocs-cart-busy .ocs-modal-body { opacity: 0.6; pointer-events: none; }
+
+.ocs-stock { font-size: var(--fs-xs); font-weight: 600; margin-bottom: var(--sp-1); }
+.ocs-stock-in { color: var(--success); }
+.ocs-stock-low { color: var(--warning); }
+.ocs-stock-out { color: var(--text-muted); }
+li .ocs-stock { font-size: inherit; }

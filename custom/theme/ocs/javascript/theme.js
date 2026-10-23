@@ -655,3 +655,240 @@
 		}
 	});
 }(window, document));
+
+/* Cart panel (SPEC-026): opens in OCS.modal (side variant) after an add and from the header cart button, edits quantities
+   in place. Active only when the header carries data-ocs-cart (module on); otherwise core cart behaviour is untouched.
+   Prices and totals always come from the server (panel / update / remove endpoints). */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+	var base = null; // read from <body data-ocs-cart> once the DOM exists (theme.js loads in <head>)
+	var dialog = null;
+	var timers = {};
+
+	function endpoint(action, query) {
+		return base.replace('/panel', '/' + action) + (query || '');
+	}
+
+	function joiner(url) {
+		return url.indexOf('?') === -1 ? '?' : '&';
+	}
+
+	function updateHeader(json) {
+		var button = document.querySelector('#cart > button');
+
+		if (button && json.total_text) {
+			button.innerHTML = '<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json.total_text + '</span>';
+		}
+	}
+
+	function render(json) {
+		updateHeader(json);
+
+		if (!dialog || !json.html) {
+			return;
+		}
+
+		var body = dialog.querySelector('.ocs-modal-body');
+
+		body.innerHTML = json.html;
+		bind(body);
+	}
+
+	function request(url, data) {
+		var options = {credentials: 'same-origin'};
+
+		if (data) {
+			var form = new FormData();
+
+			for (var k in data) {
+				if (Object.prototype.hasOwnProperty.call(data, k)) {
+					form.append(k, data[k]);
+				}
+			}
+
+			options.method = 'POST';
+			options.body = form;
+		}
+
+		return window.fetch(url, options).then(function (r) {
+			return r.json();
+		});
+	}
+
+	function mutate(action, key, quantity) {
+		var data = {key: key};
+
+		if (quantity !== null) {
+			data.quantity = quantity;
+		}
+
+		if (dialog) {
+			dialog.classList.add('ocs-cart-busy');
+		}
+
+		request(endpoint(action), data).then(function (json) {
+			if (dialog) {
+				dialog.classList.remove('ocs-cart-busy');
+			}
+
+			render(json);
+		}).catch(function () {
+			if (dialog) {
+				dialog.classList.remove('ocs-cart-busy');
+			}
+		});
+	}
+
+	function bind(root) {
+		var lines = root.querySelectorAll('.ocs-cart-line');
+		var i;
+
+		for (i = 0; i < lines.length; i++) {
+			(function (line) {
+				var key = line.getAttribute('data-key');
+				var input = line.querySelector('.ocs-cart-qty');
+
+				line.querySelector('.ocs-cart-minus').addEventListener('click', function () {
+					mutate('update', key, Math.max(0, (parseInt(input.value, 10) || 1) - 1));
+				});
+
+				line.querySelector('.ocs-cart-plus').addEventListener('click', function () {
+					mutate('update', key, (parseInt(input.value, 10) || 0) + 1);
+				});
+
+				line.querySelector('.ocs-cart-remove').addEventListener('click', function () {
+					mutate('remove', key, null);
+				});
+
+				input.addEventListener('input', function () {
+					window.clearTimeout(timers[key]);
+					timers[key] = window.setTimeout(function () {
+						var q = parseInt(input.value, 10);
+
+						if (!isNaN(q) && q >= 0) {
+							mutate('update', key, q);
+						}
+					}, 600);
+				});
+			}(lines[i]));
+		}
+
+		var more = root.querySelectorAll('.ocs-cart-continue');
+
+		for (i = 0; i < more.length; i++) {
+			more[i].addEventListener('click', function () {
+				OCS.modal.close();
+			});
+		}
+	}
+
+	OCS.cart = {
+		open: function (added) {
+			if (!base || !window.fetch || !OCS.modal) {
+				return;
+			}
+
+			var url = endpoint('panel');
+
+			request(url + (added ? joiner(url) + 'added=' + encodeURIComponent(added) : '')).then(function (json) {
+				if (json.disabled || !json.html) {
+					return;
+				}
+
+				updateHeader(json);
+
+				var holder = document.createElement('div');
+
+				holder.innerHTML = json.html;
+
+				var root = holder.querySelector('.ocs-cart');
+
+				dialog = OCS.modal.open({
+					content: holder,
+					variant: 'side',
+					closeLabel: root ? root.getAttribute('data-close') : '',
+					labelledBy: 'ocs-cart-title',
+					onClose: function () {
+						dialog = null;
+					}
+				});
+
+				bind(dialog.querySelector('.ocs-modal-body'));
+			});
+		},
+
+		refreshCounter: function () {
+			if (base && window.fetch) {
+				var url = endpoint('panel');
+
+				request(url + joiner(url) + 'counter=1').then(updateHeader).catch(function () {});
+			}
+		}
+	};
+
+	function start() {
+	base = document.body.getAttribute('data-ocs-cart');
+
+	if (!base) {
+		return;
+	}
+
+	// core cart.add / the product page button post to checkout/cart/add: open the panel when it succeeded
+	if (window.jQuery) {
+		window.jQuery(document).ajaxSuccess(function (e, xhr, settings) {
+			if (!settings || !settings.url || settings.url.indexOf('checkout/cart/add') === -1) {
+				return;
+			}
+
+			var json;
+
+			try {
+				json = JSON.parse(xhr.responseText);
+			} catch (err) {
+				return;
+			}
+
+			if (json && json.success) {
+				var match = /product_id=(\d+)/.exec(typeof settings.data === 'string' ? settings.data : '');
+
+				window.setTimeout(function () {
+					window.jQuery('.alert-success').remove();
+					OCS.cart.open(match ? match[1] : '');
+				}, 150);
+			}
+		});
+	}
+
+	// the header cart button opens the panel instead of core's dropdown
+	document.addEventListener('click', function (e) {
+		var el = e.target;
+
+		while (el && el !== document) {
+			if (el.parentNode && el.parentNode.id === 'cart' && el.tagName === 'BUTTON') {
+				e.preventDefault();
+				e.stopPropagation();
+				OCS.cart.open('');
+
+				return;
+			}
+
+			el = el.parentNode;
+		}
+	}, true);
+
+	// other tabs: refresh the counter when the tab becomes visible again
+	document.addEventListener('visibilitychange', function () {
+		if (!document.hidden) {
+			OCS.cart.refreshCounter();
+		}
+	});
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', start);
+	} else {
+		start();
+	}
+}(window, document));
