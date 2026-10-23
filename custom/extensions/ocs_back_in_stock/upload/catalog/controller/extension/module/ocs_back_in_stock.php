@@ -76,7 +76,11 @@ class ControllerExtensionModuleOcsBackInStock extends Controller {
 
 		$product = $this->model_catalog_product->getProduct($product_id);
 
-		if (!$product || (int)$product['quantity'] > 0) {
+		$this->load->model('extension/ocs_request/options');
+
+		$post_options = isset($this->request->post['option']) && is_array($this->request->post['option']) ? $this->request->post['option'] : array();
+
+		if (!$product || !\Ocs\Stock::selectionNeedsRequest((int)$product['quantity'] <= 0, \Ocs\Stock::selectedValueIds($post_options), $this->model_extension_ocs_request_options->outValues($product_id))) {
 			$guard->json(array('error' => $this->language->get('error_product')));
 
 			return;

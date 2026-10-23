@@ -59,24 +59,7 @@ class ControllerExtensionOcsStickersEvents extends Controller {
 	private function resolve($ids) {
 		$this->load->model('extension/ocs_stickers/stickers');
 
-		$defs = $this->model_extension_ocs_stickers_stickers->getDefinitions();
-
-		if (!$defs) {
-			return array();
-		}
-
-		$map = \Ocs\Stickers::resolve($defs, $this->model_extension_ocs_stickers_stickers->getFacts($ids), time(), (int)$this->config->get('module_ocs_stickers_limit') ?: 2);
-
-		// templates print the text unescaped (autoescape is off): escape here, once
-		foreach ($map as $product_id => $positions) {
-			foreach ($positions as $position => $list) {
-				foreach ($list as $i => $sticker) {
-					$map[$product_id][$position][$i]['text'] = htmlspecialchars($sticker['text'], ENT_QUOTES, 'UTF-8');
-				}
-			}
-		}
-
-		return $map;
+		return $this->model_extension_ocs_stickers_stickers->forProducts($ids);
 	}
 
 	private function enabled() {

@@ -37,6 +37,11 @@
             </div>
           </div>
         </form>
+        {% if cron_url %}
+        <h4>{{ text_cron }}</h4>
+        <p class="text-muted">{{ help_cron }}</p>
+        <input type="text" readonly="readonly" class="form-control" value="{{ cron_url }}" onclick="this.select();" />
+        {% endif %}
         <p class="text-muted">{{ help_notify }}</p>
         <p class="text-muted">ocs_back_in_stock v{{ version }}</p>
       </div>

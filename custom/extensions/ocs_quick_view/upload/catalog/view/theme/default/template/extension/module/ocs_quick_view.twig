@@ -1,0 +1,42 @@
+{# Extension: ocs_quick_view. Quick-view popup body (SPEC-037 REQ-QVW-001/002). Opened in OCS.modal by theme.js (OCS.qv). #}
+<div class="ocs-qv" data-close="{{ text_close }}" data-ocs-product="1" data-product-id="{{ product_id }}">
+  <div class="ocs-qv-gallery">
+    <div class="ocs-slot ocs-slot-tl">{% for s in stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-tr">{% for s in stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl">{% for s in stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
+    <div class="ocs-qv-slides swiper-container">
+      <div class="swiper-wrapper">
+        {% for src in images %}<div class="swiper-slide"><img src="{{ src }}" alt="{{ name }}" width="{{ image_w }}" height="{{ image_h }}"{% if not loop.first %} loading="lazy"{% endif %} /></div>{% endfor %}
+      </div>
+      {% if images|length > 1 %}<div class="ocs-qv-dots swiper-pagination"></div>{% endif %}
+    </div>
+  </div>
+  <div class="ocs-qv-info">
+    <h3 id="ocs-qv-title">{{ name }}</h3>
+    <p class="text-muted">{% if model %}{{ text_model }} {{ model }} &middot; {% endif %}<span class="ocs-stock ocs-stock-{{ in_stock ? 'in' : 'out' }}">{{ stock }}</span></p>
+    {% if rating %}<div class="rating">{% for i in 1..5 %}{% if rating < i %}<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>{% else %}<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>{% endif %}{% endfor %}</div>{% endif %}
+    {% if price %}
+    <p class="price ocs-qv-price">{% if not special %}<span class="price-new">{{ price }}</span>{% else %}<span class="price-new">{{ special }}</span> <span class="price-old">{{ price }}</span>{% endif %}</p>
+    {% endif %}
+    <form class="ocs-qv-form" action="{{ add_url }}" method="post" novalidate>
+      <input type="hidden" name="product_id" value="{{ product_id }}" />
+      {% if not page_only %}{% include 'ocs/template/ocs/options.twig' %}{% endif %}
+      {% if page_only %}
+      <p class="text-muted">{{ text_choose_on_page }}</p>
+      <a href="{{ href }}" class="btn btn-primary btn-block">{{ text_details }}</a>
+      {% else %}
+      <div class="form-group">
+        <label class="control-label" for="ocs-qv-qty">{{ entry_qty }}</label>
+        <input type="text" name="quantity" value="{{ minimum }}" size="2" id="ocs-qv-qty" class="form-control" />
+      </div>
+      {% if not ocs_preorder %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-qv-add" data-loading-text="{{ text_loading }}">{{ button_cart }}</button>{% endif %}
+      <div class="ocs-buy-slot">
+        {% if ocs_preorder %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-req-btn ocs-preorder-btn" data-form="{{ ocs_preorder.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_preorder.text }}</button>{% if ocs_preorder.note %}<p class="ocs-req-note">{{ ocs_preorder.note }}</p>{% endif %}{% endif %}
+        {% if ocs_quick and not ocs_preorder %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-quick-btn" data-form="{{ ocs_quick.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_quick.text }}</button>{% endif %}
+        {% if ocs_preorder_opt %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-req-btn ocs-preorder-btn ocs-out-only" hidden data-form="{{ ocs_preorder_opt.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_preorder_opt.text }}</button>{% endif %}
+        {% if ocs_subscribe_opt %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-subscribe-btn ocs-out-only" hidden data-form="{{ ocs_subscribe_opt.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_subscribe_opt.text }}</button>{% endif %}
+        {% if ocs_subscribe %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-subscribe-btn" data-form="{{ ocs_subscribe.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_subscribe.text }}</button>{% endif %}
+      </div>
+      <p class="ocs-qv-more"><a href="{{ href }}">{{ text_details }}</a></p>
+      {% endif %}
+    </form>
+  </div>
+</div>

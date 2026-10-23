@@ -35,11 +35,17 @@
 <script src="catalog/view/javascript/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <link href="catalog/view/javascript/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 <link href="catalog/view/theme/ocs/stylesheet/stylesheet.css?v={{ asset_version }}" rel="stylesheet">
+<link href="catalog/view/javascript/jquery/swiper/css/swiper.min.css" rel="stylesheet" media="screen" />
+<script src="catalog/view/javascript/jquery/swiper/js/swiper.jquery.min.js" type="text/javascript"></script>
 {% for style in styles %}
+{% if 'jquery/swiper/css/swiper' not in style.href %}
 <link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />
+{% endif %}
 {% endfor %}
 {% for script in scripts %}
+{% if 'jquery/swiper/js/swiper' not in script %}
 <script src="{{ script }}" type="text/javascript"></script>
+{% endif %}
 {% endfor %}
 <script src="catalog/view/javascript/common.js" type="text/javascript"></script>
 <script src="catalog/view/theme/ocs/javascript/theme.js?v={{ asset_version }}" type="text/javascript"></script>
@@ -50,7 +56,7 @@
 {{ analytic }}
 {% endfor %}
 </head>
-<body{% if ocs_cart %} data-ocs-cart="{{ ocs_cart.url }}"{% endif %}>
+<body{% if ocs_cart %} data-ocs-cart="{{ ocs_cart.url }}"{% endif %}{% if ocs_qv %} data-ocs-qv="{{ ocs_qv.url }}" data-ocs-qv-label="{{ ocs_qv.label }}"{% endif %}>
 {% if ocs_shell and ocs_shell.announcement %}
 <div class="ocs-announce" id="ocs-announce" data-id="{{ ocs_shell.announcement.id }}" role="region" aria-label="{{ ocs_shell.t.ocs_announce }}">
   <div class="container">

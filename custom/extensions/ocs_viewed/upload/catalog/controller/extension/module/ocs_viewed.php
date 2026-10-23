@@ -67,6 +67,19 @@ class ControllerExtensionModuleOcsViewed extends Controller {
 			return '';
 		}
 
+		// REQ-STK-010: stickers in module blocks
+		if ($this->config->get('module_ocs_stickers_status')) {
+			$this->load->model('extension/ocs_stickers/stickers');
+
+			$map = $this->model_extension_ocs_stickers_stickers->forProducts(array_column($data['products'], 'product_id'));
+
+			foreach ($data['products'] as $i => $card) {
+				if (isset($map[(int)$card['product_id']])) {
+					$data['products'][$i]['stickers'] = $map[(int)$card['product_id']];
+				}
+			}
+		}
+
 		$data['heading_title'] = $this->language->get('heading_title');
 		$data['text_tax'] = $this->language->get('text_tax');
 		$data['button_cart'] = $this->language->get('button_cart');

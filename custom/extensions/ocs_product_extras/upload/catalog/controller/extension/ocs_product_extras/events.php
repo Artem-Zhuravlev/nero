@@ -117,6 +117,40 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 			$x['thumb_w'] = (int)$this->config->get('theme_ocs_image_thumb_width');
 			$x['thumb_h'] = (int)$this->config->get('theme_ocs_image_thumb_height');
 
+			// REQ-SWP-004: every image in the main size for the swipeable gallery (core gives only small thumbs for the additional ones)
+			$this->load->model('tool/image');
+
+			$size = function ($role, $w, $h) {
+				return array((int)$this->config->get('theme_ocs_image_' . $role . '_width') ?: $w, (int)$this->config->get('theme_ocs_image_' . $role . '_height') ?: $h);
+			};
+
+			list($mw, $mh) = $size('thumb', 500, 500);
+			list($pw, $ph) = $size('popup', 1000, 1000);
+			list($aw, $ah) = $size('additional', 74, 74);
+
+			$paths = array();
+
+			if ($product['image']) {
+				$paths[] = $product['image'];
+			}
+
+			foreach ($this->model_catalog_product->getProductImages($product_id) as $row) {
+				$paths[] = $row['image'];
+			}
+
+			$x['gallery'] = array();
+
+			foreach ($paths as $path) {
+				$x['gallery'][] = array(
+					'main'  => $this->model_tool_image->resize($path, $mw, $mh),
+					'popup' => $this->model_tool_image->resize($path, $pw, $ph),
+					'thumb' => $this->model_tool_image->resize($path, $aw, $ah)
+				);
+			}
+
+			$x['main_w'] = $mw;
+			$x['main_h'] = $mh;
+
 			$data['ocs_px'] = $x;
 		} catch (\Exception $ex) {
 			$this->log->write('[ocs_product_extras] ' . $ex->getMessage());

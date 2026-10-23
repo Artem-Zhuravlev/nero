@@ -65,4 +65,37 @@ class ModelExtensionOcsStickersStickers extends Model {
 
 		return $out;
 	}
+
+	/**
+	 * Stickers of the given products by position, text already escaped (templates print it unescaped). Empty when the module is off.
+	 * Used by the listing events, quick view and the module blocks (SPEC-029 REQ-STK-006, SPEC-037 REQ-STK-010).
+	 *
+	 * @param int[] $ids
+	 * @return array product_id => array(position => list of array(text, bg, fg))
+	 */
+	public function forProducts($ids) {
+		$ids = array_values(array_unique(array_filter(array_map('intval', (array)$ids))));
+
+		if (!$ids || !$this->config->get('module_ocs_stickers_status') || $this->config->get('config_theme') != 'ocs') {
+			return array();
+		}
+
+		$defs = $this->getDefinitions();
+
+		if (!$defs) {
+			return array();
+		}
+
+		$map = \Ocs\Stickers::resolve($defs, $this->getFacts($ids), time(), (int)$this->config->get('module_ocs_stickers_limit') ?: 2);
+
+		foreach ($map as $product_id => $positions) {
+			foreach ($positions as $position => $list) {
+				foreach ($list as $i => $sticker) {
+					$map[$product_id][$position][$i]['text'] = htmlspecialchars($sticker['text'], ENT_QUOTES, 'UTF-8');
+				}
+			}
+		}
+
+		return $map;
+	}
 }

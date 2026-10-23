@@ -2,6 +2,6 @@
   "title": { "en-gb": "OCS Back in Stock", "uk-ua": "OCS: повідомлення про надходження" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
   "spec": "SPEC-025", "tables": ["oc_ocs_back_in_stock"],
-  "settings": ["module_ocs_back_in_stock_status"],
-  "events": ["ocs_back_in_stock_product_before", "ocs_back_in_stock_product_edit_after"],
-  "routes": ["extension/module/ocs_back_in_stock", "extension/ocs_back_in_stock/events"] }
+  "settings": ["module_ocs_back_in_stock_status", "module_ocs_back_in_stock_cron_key"],
+  "events": ["ocs_back_in_stock_product_before", "ocs_back_in_stock_product_edit_after", "ocs_back_in_stock_options"],
+  "routes": ["extension/module/ocs_back_in_stock", "extension/module/ocs_back_in_stock_cron", "extension/ocs_back_in_stock/events"] }

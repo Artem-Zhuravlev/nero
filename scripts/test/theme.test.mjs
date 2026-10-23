@@ -1,7 +1,7 @@
 // SPEC-023 / SPEC-006 theme checks: design tokens, contrast, override discipline.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { REPO_ROOT } from './helpers.mjs';
 
@@ -307,7 +307,7 @@ test('request extensions: manifests match migrations and language files have ide
     assert.equal(ext.code, code);
     assert.equal(ext.spec, 'SPEC-025');
     if (ext.type !== 'module') continue;
-    const mig = read(`custom/extensions/${code}/db/001_install.php`);
+    const mig = readdirSync(join(REPO_ROOT, `custom/extensions/${code}/db`)).map((n) => read(`custom/extensions/${code}/db/${n}`)).join('\n');
     for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `${code}: migration does not register ${e}`);
     for (const s of ext.settings.filter((k) => k.endsWith('_status'))) assert.match(mig, new RegExp(`'${s}'(\\s*=>\\s*|,\\s*)0`), `${code}: ${s} must default to 0`);
     const cat = (l) => keys(`custom/extensions/${code}/upload/catalog/language/${l}/extension/module/${code}.php`);
@@ -379,7 +379,7 @@ test('ajax cart: manifest, endpoints, panel markup and theme.js are consistent a
   }
   assert.ok(js.includes("data-ocs-cart") && js.includes('checkout/cart/add') && js.includes("variant: 'side'"));
   assert.match(js, /base = document\.body\.getAttribute\('data-ocs-cart'\)/, 'body attribute is read after the DOM exists');
-  assert.match(read('custom/theme/ocs/template/common/header.twig'), /<body\{% if ocs_cart %\} data-ocs-cart="\{\{ ocs_cart\.url \}\}"\{% endif %\}>/);
+  assert.match(read('custom/theme/ocs/template/common/header.twig'), /<body\{% if ocs_cart %\} data-ocs-cart="\{\{ ocs_cart\.url \}\}"\{% endif %\}/);
   assert.match(read('custom/theme/ocs/template/ocs/card.twig'), /product\.ocs_stock/);
   assert.match(read('custom/theme/ocs/template/product/product.twig'), /ocs_stock\.label/);
 
@@ -415,8 +415,8 @@ test('ajax search: manifest, endpoint, template hooks and theme.js are consisten
 
   const js = read('custom/theme/ocs/javascript/theme.js');
   const from = js.indexOf('AJAX search (SPEC-028)');
-  const to = js.indexOf('City selector (SPEC-032');
-  const block = js.slice(from, to > from ? to : undefined);
+  const ends = ['Product gallery on two linked', 'Quick view (SPEC-037', 'Option-level stock (SPEC-037', 'City selector (SPEC-032'].map((m) => js.indexOf(m)).filter((i) => i > from);
+  const block = js.slice(from, ends.length ? Math.min(...ends) : undefined);
   for (const s of ['ocs.search.recent', "'ArrowDown'", "'Escape'", "'Enter'", 'textContent', 'ocs-search-clear', 'encodeURIComponent']) assert.ok(block.includes(s), `search JS lacks ${s}`);
   assert.doesNotMatch(block.replace(/dd\.innerHTML = '';/g, ''), /\.innerHTML\s*=/, 'server data is never written with innerHTML');
 
@@ -459,7 +459,7 @@ test('stickers: manifest, OCMOD anchors, template slots and escaping are consist
   assert.match(card, /--badge-bg: \{\{ s\.bg \}\}; --badge-fg: \{\{ s\.fg \}\}/);
   assert.match(card, /product\.discount_pct and not product\.stickers/, 'built-in discount badge steps aside when stickers are shown');
 
-  const catalogEv = read('custom/extensions/ocs_stickers/upload/catalog/controller/extension/ocs_stickers/events.php');
+  const catalogEv = read('custom/extensions/ocs_stickers/upload/catalog/model/extension/ocs_stickers/stickers.php');
   assert.match(catalogEv, /htmlspecialchars\(\$sticker\['text'\]/, 'sticker text is escaped before the unescaped Twig output');
   const model = read('custom/extensions/ocs_stickers/upload/catalog/model/extension/ocs_stickers/stickers.php');
   assert.equal((model.match(/->query\(/g) || []).length, 2, 'definitions (cached) + one batched facts query');
@@ -721,4 +721,117 @@ test('trade-in: guarded endpoint, storage outside the docroot, admin-only photo 
   assert.match(adm, /photoExists/);
   assert.match(read('custom/theme/ocs/template/product/product.twig'), /\{\{ ocs_credit_block \}\}[\s\S]*\{\{ ocs_tradein_banner \}\}/);
   assert.ok(read('custom/theme/ocs/template/product/category.twig').includes('{{ ocs_tradein_banner }}'));
+});
+
+// TEST-SWP-001 - verifies REQ-SWP-001, REQ-SWP-003, REQ-SWP-005, REQ-SWP-010 (carousels run on Swiper from the same markup; no second engine; Swiper loaded once)
+test('swiper: carousels use core Swiper, the header loads it once, markup contract and fallback CSS remain', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.match(js, /new window\.Swiper\(root, options\)/);
+  assert.match(js, /slidesPerView: single \? 1 : 'auto'/);
+  assert.match(js, /autoplayDisableOnInteraction: false/);
+  assert.match(js, /prefers-reduced-motion/);
+  assert.match(js, /typeof window\.Swiper !== 'function'/, 'no Swiper = the plain scroller stays');
+  assert.ok(!js.includes('scrollTo({left'), 'the hand-written scroll carousel is gone');
+  assert.ok(!js.includes('data-playing'), 'the hand-written autoplay is gone');
+  const header = read('custom/theme/ocs/template/common/header.twig');
+  assert.match(header, /jquery\/swiper\/js\/swiper\.jquery\.min\.js/);
+  assert.match(header, /'jquery\/swiper\/js\/swiper' not in script/, 'a core module cannot load Swiper a second time');
+  assert.match(header, /'jquery\/swiper\/css\/swiper' not in style\.href/);
+  for (const code of ['ocs_home_slider', 'ocs_brand_strip', 'ocs_product_carousel']) {
+    const twig = read(`custom/extensions/${code}/upload/catalog/view/theme/default/template/extension/module/${code}.twig`);
+    assert.match(twig, /ocs-carousel-track/);
+    assert.match(twig, /ocs-carousel-item/);
+  }
+  assert.ok(css.includes('.ocs-carousel.swiper-container .ocs-carousel-track'));
+  assert.ok(css.includes('scroll-snap-type: x mandatory'), 'fallback scroller without Swiper');
+});
+
+// TEST-SWP-002 - verifies REQ-SWP-004 (gallery: linked Swipers, core hooks kept, explicit size and priority on the first image)
+test('product gallery: linked swipers keep the core zoom hooks and the LCP attributes', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const twig = read('custom/theme/ocs/template/product/product.twig');
+  for (const hook of ['data-ocs-gallery="1"', 'ocs-gal-main swiper-container', 'ocs-gal-thumbs swiper-container', 'class="thumbnails swiper-wrapper"', 'class="thumbnail"', 'fetchpriority="high"']) assert.ok(twig.includes(hook), hook);
+  assert.ok(twig.includes('<ul class="thumbnails">'), 'the core markup is the fallback when the extras are off');
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.match(js, /querySelector\('\[data-ocs-gallery\]'\)/);
+  assert.match(js, /main\.slideTo\(n\)/);
+  assert.ok(twig.includes("$('.thumbnails').magnificPopup"), 'the zoom popup is still bound to the core hook');
+  const ev = read('custom/extensions/ocs_product_extras/upload/catalog/controller/extension/ocs_product_extras/events.php');
+  assert.match(ev, /getProductImages/);
+  assert.ok(css.includes('.ocs-gal-thumbs'));
+});
+
+// TEST-QVW-001, TEST-SWP-003 - verifies REQ-QVW-001..004, REQ-SWP-011, REQ-SWP-012 (quick view: manifest, endpoint, buttons, shared options partial, no caching)
+test('quick view: manifest, endpoint, shared options and theme hooks are consistent and the module is off by default', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const code = 'ocs_quick_view';
+  const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
+  assert.equal(ext.spec, 'SPEC-037');
+  const mig = read(`custom/extensions/${code}/db/001_install.php`);
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `event ${e}`);
+  assert.match(mig, /'module_ocs_quick_view_status', 0/);
+  const keys = (side, l) => [...read(`custom/extensions/${code}/upload/${side}/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  for (const l of ['en-gb', 'ru-ru']) assert.deepEqual(keys('catalog', l), keys('catalog', 'uk-ua'), `catalog ${l}`);
+  assert.deepEqual(keys('admin', 'en-gb'), keys('admin', 'uk-ua'), 'admin strings');
+  const ctl = read(`custom/extensions/${code}/upload/catalog/controller/extension/module/${code}.php`);
+  assert.match(ctl, /Cache-Control: no-store/);
+  assert.match(ctl, /module_ocs_quick_view_status/);
+  assert.match(ctl, /ocs_request\/options/, 'options come from the shared builder');
+  const twig = read(`custom/extensions/${code}/upload/catalog/view/theme/default/template/extension/module/${code}.twig`);
+  for (const hook of ['data-ocs-product="1"', "include 'ocs/template/ocs/options.twig'", 'ocs-qv-add', 'ocs-quick-btn', 'ocs-preorder-btn', 'ocs-subscribe-btn', 'ocs-qv-slides swiper-container']) assert.ok(twig.includes(hook), hook);
+  assert.ok(read('custom/theme/ocs/template/product/product.twig').includes("include 'ocs/template/ocs/options.twig'"), 'the product page uses the same partial');
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  for (const hook of ['data-ocs-qv', 'ocs-qv-btn', 'OCS.qv = {open: open}', "closest('[data-ocs-product]')", 'ocs-qv-add']) assert.ok(js.includes(hook), hook);
+  assert.match(read('custom/theme/ocs/template/common/header.twig'), /data-ocs-qv="\{\{ ocs_qv\.url \}\}"/);
+});
+
+// TEST-STK-010 - verifies REQ-STK-010 (stickers in quick view and in the module blocks come from the one shared model method)
+test('stickers: quick view and module blocks use forProducts, escaping happens once in the model', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const model = read('custom/extensions/ocs_stickers/upload/catalog/model/extension/ocs_stickers/stickers.php');
+  assert.match(model, /public function forProducts\(\$ids\)/);
+  assert.match(model, /htmlspecialchars\(\$sticker\['text'\]/);
+  for (const p of [
+    'custom/extensions/ocs_quick_view/upload/catalog/controller/extension/module/ocs_quick_view.php',
+    'custom/extensions/ocs_product_carousel/upload/catalog/controller/extension/module/ocs_product_carousel.php',
+    'custom/extensions/ocs_viewed/upload/catalog/controller/extension/module/ocs_viewed.php',
+    'custom/extensions/ocs_product_extras/upload/catalog/model/extension/ocs_product_extras/extras.php',
+    'custom/extensions/ocs_stickers/upload/catalog/controller/extension/ocs_stickers/events.php'
+  ]) assert.match(read(p), /forProducts\(/, p);
+  assert.ok(read('custom/extensions/ocs_quick_view/upload/catalog/view/theme/default/template/extension/module/ocs_quick_view.twig').includes('stickers.tl'));
+});
+
+// TEST-OPT-001 - verifies REQ-OPT-001 (out-of-stock values are flagged in the shared partial; the theme switches the buttons; endpoints use the same rule)
+test('option-level stock: partial flags, JS switch and both endpoints use the shared rule', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const partial = read('custom/theme/ocs/template/ocs/options.twig');
+  assert.ok((partial.match(/data-out="1"/g) || []).length >= 2, 'select and the input types are flagged');
+  assert.ok(partial.includes('ocs_text_out'));
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.match(js, /option\[data-out\]:checked, input\[data-out\]:checked/);
+  assert.ok(css.includes('.ocs-out-only[hidden]'));
+  assert.match(read('custom/extensions/ocs_preorder/upload/catalog/controller/extension/module/ocs_preorder.php'), /Stock::preorderAppliesFor/);
+  assert.match(read('custom/extensions/ocs_back_in_stock/upload/catalog/controller/extension/module/ocs_back_in_stock.php'), /Stock::selectionNeedsRequest/);
+  assert.match(read('custom/extensions/ocs_request/upload/catalog/model/extension/ocs_request/options.php'), /optionOut/);
+  const twig = read('custom/theme/ocs/template/product/product.twig');
+  assert.ok(twig.includes('ocs_preorder_opt') && twig.includes('ocs_subscribe_opt'));
+  const req = read('custom/theme/ocs/javascript/theme.js');
+  assert.match(req, /snapshot\.forEach/, 'the product fields are read when the request popup opens, not at submit');
+});
+
+// TEST-OPT-002 - verifies REQ-OPT-002, REQ-OPT-003 (cron endpoint: key check, empty answer otherwise; at-most-once marking; admin shows option and date)
+test('back in stock: cron endpoint is keyed, each subscription is marked before its mail', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const cron = read('custom/extensions/ocs_back_in_stock/upload/catalog/controller/extension/module/ocs_back_in_stock_cron.php');
+  assert.match(cron, /BackInStock::keyValid/);
+  assert.match(cron, /HTTP\/1\.1 404/);
+  const lib = read('custom/extensions/ocs_back_in_stock/upload/system/library/ocs/backinstock.php');
+  assert.ok(lib.indexOf("SET status = '1'") < lib.indexOf('$mail->send()'), 'marked first');
+  assert.match(lib, /countAffected/, 'two overlapping runs cannot both send');
+  assert.match(read('custom/extensions/ocs_back_in_stock/upload/admin/controller/extension/ocs_back_in_stock/events.php'), /BackInStock::run/);
+  const adm = read('custom/extensions/ocs_back_in_stock/upload/admin/controller/extension/module/ocs_back_in_stock.php');
+  assert.match(adm, /module_ocs_back_in_stock_cron_key'\] = /, 'saving the settings keeps the key');
+  assert.match(adm, /optionNames/);
+  assert.match(read('custom/extensions/ocs_back_in_stock/db/003_cron_key.php'), /random_bytes\(16\)/);
 });

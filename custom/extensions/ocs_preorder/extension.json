@@ -5,5 +5,5 @@
   "settings": ["module_ocs_preorder_status", "module_ocs_preorder_global", "module_ocs_preorder_name", "module_ocs_preorder_phone", "module_ocs_preorder_email",
     "module_ocs_preorder_comment", "module_ocs_preorder_notify_admin", "module_ocs_preorder_create_order", "module_ocs_preorder_order_status_id",
     "module_ocs_preorder_overrides", "module_ocs_preorder_l"],
-  "events": ["ocs_preorder_product_before"],
+  "events": ["ocs_preorder_product_before", "ocs_preorder_options"],
   "routes": ["extension/module/ocs_preorder", "extension/ocs_preorder/events"] }

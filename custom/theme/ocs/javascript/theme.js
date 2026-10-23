@@ -524,8 +524,9 @@
 		return form.querySelector('[data-error-for="' + name + '"]');
 	}
 
-	function collect(data) {
-		var box = document.getElementById('product');
+	// the product fields (quantity, options) are read when the popup opens: the quick view that holds them closes at that moment
+	function collect(data, box) {
+		box = box || document.getElementById('product');
 
 		if (!box) {
 			return;
@@ -548,7 +549,7 @@
 		}
 	}
 
-	function bind(root, collectFields) {
+	function bind(root, snapshot) {
 		var form = root.querySelector('.ocs-req-form');
 		var done = root.querySelector('.ocs-req-done');
 
@@ -568,8 +569,10 @@
 				errs[i].textContent = '';
 			}
 
-			if (collectFields) {
-				collect(data);
+			if (snapshot) {
+				snapshot.forEach(function (value, key) {
+					data.append(key, value);
+				});
 			}
 
 			btn.disabled = true;
@@ -609,7 +612,12 @@
 		open: function (button) {
 			var url = button.getAttribute('data-form');
 			var id = button.getAttribute('data-product-id');
-			var collectFields = button.getAttribute('data-collect') === '1';
+			var snapshot = null;
+
+			if (button.getAttribute('data-collect') === '1') {
+				snapshot = new window.FormData();
+				collect(snapshot, button.closest('[data-ocs-product]'));
+			}
 
 			if (!url || !id || !window.fetch || !OCS.modal) {
 				return;
@@ -633,7 +641,7 @@
 				var root = holder.querySelector('.ocs-req');
 
 				OCS.modal.open({content: holder, closeLabel: root ? root.getAttribute('data-close') : '', labelledBy: 'ocs-req-title'});
-				bind(holder, collectFields);
+				bind(holder, snapshot);
 
 				// SPEC-036 REQ-CRD-003: a chosen instalment plan goes into the quick-order comment (the visitor can edit it)
 				if (button.classList.contains('ocs-quick-btn') && OCS.credit && OCS.credit.note) {
@@ -1303,125 +1311,99 @@
 	}
 }(window, document));
 
-/* Carousel (SPEC-033 REQ-HOM-050/051): CSS scroll-snap track + prev/next buttons, optional dots and autoplay. No library.
-   Markup: .ocs-carousel[data-autoplay=ms][data-dots=1] > .ocs-carousel-track > .ocs-carousel-item ... + buttons .ocs-carousel-prev/next.
-   Autoplay pauses on hover/focus and is off under prefers-reduced-motion. Without JS the track is still a swipeable scroller. */
+/* Carousels on Swiper (SPEC-037 REQ-SWP-001..005). Swiper 3.4.2 ships with OpenCart core and is loaded by the theme header.
+   Markup contract: .ocs-carousel[data-autoplay=ms] > .ocs-carousel-track > .ocs-carousel-item ... + buttons .ocs-carousel-prev/next
+   and an optional .ocs-carousel-dots[data-label]. The swiper-* classes are added here, so without Swiper (or JS) the track stays a
+   plain swipeable scroller. Autoplay pauses on hover/focus and is off under prefers-reduced-motion. */
 (function (window, document) {
 	'use strict';
 
 	var OCS = window.OCS = window.OCS || {};
+	var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 	function init(root) {
 		var track = root.querySelector('.ocs-carousel-track');
 		var prev = root.querySelector('.ocs-carousel-prev');
 		var next = root.querySelector('.ocs-carousel-next');
-		var dotsBox = root.querySelector('.ocs-carousel-dots');
-		var items = track ? track.children : [];
-		var timer = null;
-		var paused = false;
-		var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		var dots = root.querySelector('.ocs-carousel-dots');
 
-		if (!track || !items.length) {
+		if (!track || !track.children.length || typeof window.Swiper !== 'function' || root.swiper) {
 			return;
 		}
 
-		function step() {
-			var first = items[0];
-			var gap = parseFloat(window.getComputedStyle(track).columnGap || window.getComputedStyle(track).gap) || 0;
+		var every = reduced ? 0 : (parseInt(root.getAttribute('data-autoplay'), 10) || 0);
+		var single = root.classList.contains('ocs-hero');
+		var items = track.children;
 
-			return first.getBoundingClientRect().width + gap;
+		root.classList.add('swiper-container');
+		track.classList.add('swiper-wrapper');
+
+		for (var i = 0; i < items.length; i++) {
+			items[i].classList.add('swiper-slide');
 		}
 
-		function index() {
-			return Math.round(track.scrollLeft / step());
-		}
+		var options = {
+			slidesPerView: single ? 1 : 'auto',
+			spaceBetween: single ? 0 : 16,
+			freeMode: !single,
+			autoplay: every > 0 && items.length > 1 ? every : 0,
+			autoplayDisableOnInteraction: false,
+			nextButton: next || null,
+			prevButton: prev || null,
+			pagination: dots && items.length > 1 ? dots : null,
+			paginationClickable: true,
+			a11y: true,
+			prevSlideMessage: prev ? prev.getAttribute('aria-label') : '',
+			nextSlideMessage: next ? next.getAttribute('aria-label') : '',
+			paginationBulletMessage: (dots ? dots.getAttribute('data-label') : '') + ' {{index}}',
+			watchSlidesVisibility: true
+		};
 
-		function go(i) {
-			var max = Math.max(0, items.length - Math.max(1, Math.round(track.clientWidth / step())));
+		var swiper = new window.Swiper(root, options);
 
-			i = i < 0 ? max : (i > max ? 0 : i);
-			track.scrollTo({left: i * step(), behavior: reduced ? 'auto' : 'smooth'});
-		}
+		function buttons() {
+			// Swiper 3 has no "hide when everything fits": the arrows follow the measured widths
+			var fits = swiper.virtualSize <= swiper.size + 1;
 
-		function update() {
-			var i = index();
-			var max = items.length - Math.max(1, Math.round(track.clientWidth / step()));
-
-			if (prev) {
-				prev.hidden = items.length <= 1 || max <= 0;
-			}
-
-			if (next) {
-				next.hidden = items.length <= 1 || max <= 0;
-			}
-
-			if (dotsBox) {
-				var dots = dotsBox.children;
-
-				for (var d = 0; d < dots.length; d++) {
-					dots[d].setAttribute('aria-current', d === i ? 'true' : 'false');
+			[prev, next].forEach(function (b) {
+				if (b) {
+					b.hidden = fits || items.length <= 1;
 				}
+			});
+
+			if (dots) {
+				dots.hidden = items.length <= 1;
 			}
 		}
 
-		if (dotsBox && items.length > 1) {
-			for (var n = 0; n < items.length; n++) {
-				(function (k) {
-					var b = document.createElement('button');
-
-					b.type = 'button';
-					b.setAttribute('aria-label', (dotsBox.getAttribute('data-label') || '') + ' ' + (k + 1));
-					b.addEventListener('click', function () {
-						go(k);
-					});
-					dotsBox.appendChild(b);
-				}(n));
-			}
+		function refresh() {
+			swiper.update(true);
+			buttons();
 		}
 
-		if (prev) {
-			prev.addEventListener('click', function () {
-				go(index() - 1);
-			});
+		window.addEventListener('resize', refresh);
+		window.addEventListener('load', refresh);
+
+		if (options.autoplay) {
+			root.addEventListener('mouseenter', function () { swiper.stopAutoplay(); });
+			root.addEventListener('mouseleave', function () { swiper.startAutoplay(); });
+			root.addEventListener('focusin', function () { swiper.stopAutoplay(); });
+			root.addEventListener('focusout', function () { swiper.startAutoplay(); });
 		}
 
-		if (next) {
-			next.addEventListener('click', function () {
-				go(index() + 1);
-			});
-		}
+		// keyboard users tab through the links inside the slides: bring the focused slide into view
+		root.addEventListener('focusin', function (e) {
+			var slide = e.target.closest ? e.target.closest('.swiper-slide') : null;
 
-		track.addEventListener('scroll', function () {
-			window.clearTimeout(timer);
-			timer = window.setTimeout(update, 80);
-		}, {passive: true});
+			root.scrollLeft = 0;
 
-		root.addEventListener('keydown', function (e) {
-			if (e.key === 'ArrowLeft') {
-				go(index() - 1);
-			} else if (e.key === 'ArrowRight') {
-				go(index() + 1);
+			if (slide) {
+				swiper.slideTo([].indexOf.call(items, slide));
 			}
 		});
 
-		var every = parseInt(root.getAttribute('data-autoplay'), 10) || 0;
-
-		if (every > 0 && !reduced && items.length > 1) {
-			var play = window.setInterval(function () {
-				if (!paused && !document.hidden) {
-					go(index() + 1);
-				}
-			}, every);
-
-			root.addEventListener('mouseenter', function () { paused = true; });
-			root.addEventListener('mouseleave', function () { paused = false; });
-			root.addEventListener('focusin', function () { paused = true; });
-			root.addEventListener('focusout', function () { paused = false; });
-			root.setAttribute('data-playing', String(play));
-		}
-
-		window.addEventListener('resize', update);
-		update();
+		root.swiper = swiper;
+		buttons();
 	}
 
 	OCS.carousel = {init: init};
@@ -1439,6 +1421,288 @@
 	} else {
 		boot();
 	}
+}(window, document));
+
+/* Product gallery on two linked Swipers (SPEC-037 REQ-SWP-004): the main image swipes, the thumbnail strip follows and selects.
+   The links keep the core hooks (.thumbnails > a.thumbnail), so the Magnific zoom popup of the product page still works. */
+(function (window, document) {
+	'use strict';
+
+	function boot() {
+		var box = document.querySelector('[data-ocs-gallery]');
+
+		if (!box || typeof window.Swiper !== 'function') {
+			return;
+		}
+
+		var mainEl = box.querySelector('.ocs-gal-main');
+		var thumbEl = box.querySelector('.ocs-gal-thumbs');
+		var thumbs = null;
+		var main = new window.Swiper(mainEl, {
+			spaceBetween: 8,
+			pagination: box.querySelector('.ocs-gal-dots'),
+			paginationClickable: true,
+			onSlideChangeStart: function (s) {
+				mark(s.activeIndex);
+			}
+		});
+
+		function mark(i) {
+			if (!thumbs) {
+				return;
+			}
+
+			[].forEach.call(thumbEl.querySelectorAll('.swiper-slide'), function (el, n) {
+				el.classList.toggle('is-current', n === i);
+			});
+
+			thumbs.slideTo(Math.max(0, i - 1));
+		}
+
+		if (thumbEl) {
+			thumbs = new window.Swiper(thumbEl, {slidesPerView: 'auto', spaceBetween: 8, freeMode: true, slideToClickedSlide: false});
+
+			[].forEach.call(thumbEl.querySelectorAll('.swiper-slide'), function (el, n) {
+				el.setAttribute('tabindex', '0');
+				el.setAttribute('role', 'button');
+				el.addEventListener('click', function () {
+					main.slideTo(n);
+				});
+				el.addEventListener('keydown', function (e) {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						main.slideTo(n);
+					}
+				});
+			});
+
+			mark(0);
+		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
+
+/* Quick view (SPEC-037 REQ-QVW-001..004): a button on every card opens the server-rendered body in OCS.modal; "Add to cart" posts to
+   the core checkout/cart/add endpoint (the cart panel of SPEC-026 opens from its ajaxSuccess hook), the request buttons are handled by OCS.req. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+	var url = '';
+	var label = '';
+
+	function decorate(root) {
+		var cards = (root || document).querySelectorAll('.product-layout[data-product-id] .image');
+
+		for (var i = 0; i < cards.length; i++) {
+			if (cards[i].querySelector('.ocs-qv-btn')) {
+				continue;
+			}
+
+			var b = document.createElement('button');
+
+			b.type = 'button';
+			b.className = 'ocs-qv-btn';
+			b.setAttribute('aria-label', label);
+			b.title = label;
+			b.setAttribute('data-product-id', cards[i].closest('.product-layout').getAttribute('data-product-id'));
+			b.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
+			cards[i].appendChild(b);
+		}
+	}
+
+	function errors(form, json) {
+		[].forEach.call(form.querySelectorAll('.text-danger'), function (e) {
+			e.parentNode.removeChild(e);
+		});
+		[].forEach.call(form.querySelectorAll('.has-error'), function (e) {
+			e.classList.remove('has-error');
+		});
+
+		if (!json.error) {
+			return;
+		}
+
+		var opts = json.error.option || {};
+
+		Object.keys(opts).forEach(function (id) {
+			var field = form.querySelector('[name="option[' + id.replace('option', '') + ']"], [name="option[' + id.replace('option', '') + '][]"]');
+			var holder = field ? (field.closest('.form-group') || field.parentNode) : form;
+			var msg = document.createElement('div');
+
+			msg.className = 'text-danger';
+			msg.textContent = opts[id];
+			holder.appendChild(msg);
+			holder.classList.add('has-error');
+		});
+
+		if (json.error.warning) {
+			var w = document.createElement('div');
+
+			w.className = 'text-danger';
+			w.textContent = json.error.warning;
+			form.insertBefore(w, form.firstChild);
+		}
+	}
+
+	function add(form, btn) {
+		if (!window.jQuery) {
+			return;
+		}
+
+		var $ = window.jQuery;
+
+		btn.disabled = true;
+
+		$.ajax({
+			url: form.getAttribute('action'),
+			type: 'post',
+			data: $(form).serialize(),
+			dataType: 'json',
+			complete: function () {
+				btn.disabled = false;
+			},
+			success: function (json) {
+				errors(form, json);
+
+				if (json.success) {
+					// the cart panel (ajaxSuccess hook of theme.js) replaces this popup; without the panel module just close it
+					if (!document.body.getAttribute('data-ocs-cart')) {
+						OCS.modal.close();
+						$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json.total + '</span>');
+					}
+				}
+			}
+		});
+	}
+
+	function open(id) {
+		if (!url || !window.fetch || !OCS.modal) {
+			return;
+		}
+
+		window.fetch(url + (url.indexOf('?') === -1 ? '?' : '&') + 'product_id=' + encodeURIComponent(id), {credentials: 'same-origin'}).then(function (r) {
+			return r.text();
+		}).then(function (html) {
+			if (!html) {
+				return;
+			}
+
+			var holder = document.createElement('div');
+
+			holder.innerHTML = html;
+
+			var root = holder.querySelector('.ocs-qv');
+			var dialog = OCS.modal.open({content: holder, closeLabel: root ? root.getAttribute('data-close') : '', labelledBy: 'ocs-qv-title'});
+			var slides = dialog.querySelector('.ocs-qv-slides');
+
+			if (slides && typeof window.Swiper === 'function') {
+				new window.Swiper(slides, {pagination: dialog.querySelector('.ocs-qv-dots'), paginationClickable: true});
+			}
+
+			var form = dialog.querySelector('.ocs-qv-form');
+			var addBtn = dialog.querySelector('.ocs-qv-add');
+
+			if (form && OCS.out) {
+				OCS.out.sync(form);
+			}
+
+			if (form && addBtn) {
+				addBtn.addEventListener('click', function () {
+					add(form, addBtn);
+				});
+				form.addEventListener('submit', function (e) {
+					e.preventDefault();
+				});
+			}
+		});
+	}
+
+	OCS.qv = {open: open};
+
+	function boot() {
+		url = document.body.getAttribute('data-ocs-qv') || '';
+		label = document.body.getAttribute('data-ocs-qv-label') || '';
+
+		if (!url) {
+			return;
+		}
+
+		decorate(document);
+
+		// cards that arrive later (load more, AJAX blocks)
+		if (window.MutationObserver) {
+			new window.MutationObserver(function (list) {
+				for (var i = 0; i < list.length; i++) {
+					if (list[i].addedNodes.length) {
+						decorate(document);
+
+						return;
+					}
+				}
+			}).observe(document.body, {childList: true, subtree: true});
+		}
+
+		document.addEventListener('click', function (e) {
+			var b = e.target.closest ? e.target.closest('.ocs-qv-btn') : null;
+
+			if (b) {
+				e.preventDefault();
+				open(b.getAttribute('data-product-id'));
+			}
+		});
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
+
+/* Option-level stock (SPEC-037 REQ-OPT-001): a chosen option value that is out of stock swaps "Add to cart" for the pre-order / notify buttons. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+
+	function sync(box) {
+		var out = !!box.querySelector('option[data-out]:checked, input[data-out]:checked');
+		var only = box.querySelectorAll('.ocs-out-only');
+		var buy = box.querySelectorAll('#button-cart, .ocs-qv-add, .ocs-quick-btn');
+		var i;
+
+		for (i = 0; i < only.length; i++) {
+			only[i].hidden = !out;
+		}
+
+		for (i = 0; i < buy.length; i++) {
+			buy[i].hidden = out;
+		}
+	}
+
+	OCS.out = {sync: sync};
+
+	document.addEventListener('change', function (e) {
+		var box = e.target.closest ? e.target.closest('#product, .ocs-qv-form') : null;
+
+		if (box) {
+			sync(box);
+		}
+	});
+
+	document.addEventListener('DOMContentLoaded', function () {
+		var box = document.getElementById('product');
+
+		if (box) {
+			sync(box);
+		}
+	});
 }(window, document));
 
 /* Newsletter form (SPEC-033 REQ-HOM-030): posts the block form as JSON and shows the answer in place. */

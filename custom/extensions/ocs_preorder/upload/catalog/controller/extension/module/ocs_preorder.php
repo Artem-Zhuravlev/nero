@@ -90,7 +90,11 @@ class ControllerExtensionModuleOcsPreorder extends Controller {
 		$overrides = \Ocs\OrderRequest::parseOverrides($this->config->get('module_ocs_preorder_overrides'));
 		$override = isset($overrides[$product_id]) ? $overrides[$product_id] : array();
 
-		if (!$product || !\Ocs\OrderRequest::preorderApplies($this->config->get('module_ocs_preorder_global'), $product['quantity'], $override)) {
+		$this->load->model('extension/ocs_request/options');
+
+		$post_options = isset($this->request->post['option']) && is_array($this->request->post['option']) ? $this->request->post['option'] : array();
+
+		if (!$product || !\Ocs\Stock::preorderAppliesFor($this->config->get('module_ocs_preorder_global'), $product['quantity'], $override, \Ocs\Stock::selectedValueIds($post_options), $this->model_extension_ocs_request_options->outValues($product_id))) {
 			$guard->json(array('error' => $this->language->get('error_product')));
 
 			return;

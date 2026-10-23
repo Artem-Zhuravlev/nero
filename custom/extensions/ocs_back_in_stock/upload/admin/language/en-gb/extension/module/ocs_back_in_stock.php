@@ -27,3 +27,6 @@ $_['column_status']         = 'Status';
 $_['help_notify']           = 'Subscribers are e-mailed once when a product is saved in the admin with stock above zero. Stock changes made by orders or imports do not trigger the e-mail. Requires a mail engine in Settings > Mail.';
 
 $_['error_permission']      = 'Warning: You do not have permission to modify back-in-stock subscriptions!';
+
+$_['text_cron']             = 'Cron address';
+$_['help_cron']             = 'Call this address from the server cron (for example every 10 minutes): subscribers are notified when stock comes back by any route (order cancel, import, option edit). Keep the key secret.';

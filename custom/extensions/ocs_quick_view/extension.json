@@ -1,0 +1,7 @@
+{ "code": "ocs_quick_view", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Quick View", "uk-ua": "OCS: швидкий перегляд" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
+  "spec": "SPEC-037", "tables": [],
+  "settings": ["module_ocs_quick_view_status"],
+  "events": ["ocs_quick_view_header"],
+  "routes": ["extension/module/ocs_quick_view", "extension/module/ocs_quick_view/view", "extension/ocs_quick_view/events"] }

@@ -12,13 +12,26 @@ class ControllerExtensionOcsBackInStockEvents extends Controller {
 
 		$product = $this->model_catalog_product->getProduct((int)$data['product_id']);
 
-		if (!$product || (int)$product['quantity'] > 0) {
+		if (!$product) {
 			return;
+		}
+
+		$key = 'ocs_subscribe';
+
+		if ((int)$product['quantity'] > 0) {
+			// REQ-OPT-001: in stock, but a chosen option value may not be: the button is rendered hidden for that case
+			$this->load->model('extension/ocs_request/options');
+
+			if (!$this->model_extension_ocs_request_options->outValues((int)$product['product_id'])) {
+				return;
+			}
+
+			$key = 'ocs_subscribe_opt';
 		}
 
 		$strings = $this->load->language('extension/module/ocs_back_in_stock');
 
-		$data['ocs_subscribe'] = array(
+		$data[$key] = array(
 			'text' => is_array($strings) && isset($strings['button_subscribe']) ? $strings['button_subscribe'] : '',
 			'form' => $this->url->link('extension/module/ocs_back_in_stock/form', '', true)
 		);

@@ -590,21 +590,28 @@ li .ocs-stock { font-size: inherit; }
 
 /* ==== 20. Home blocks: carousel, hero, brand strip, product carousel, newsletter, SEO (SPEC-033) ==== */
 .ocs-carousel { position: relative; margin: var(--sp-5) 0; }
+/* without Swiper the track is a plain swipeable scroller (REQ-SWP-005) */
 .ocs-carousel-track {
 	display: flex; gap: var(--sp-4); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
 .ocs-carousel-track::-webkit-scrollbar { display: none; }
 .ocs-carousel-item { flex: 0 0 auto; scroll-snap-align: start; }
+/* with Swiper the library does the sliding */
+.ocs-carousel.swiper-container .ocs-carousel-track { overflow: visible; gap: 0; scroll-snap-type: none; }
+.ocs-carousel.swiper-container .ocs-carousel-item { scroll-snap-align: none; }
 .ocs-carousel-prev, .ocs-carousel-next {
-	position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 44px; height: 44px; border: 0; border-radius: 50%;
+	position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 44px; height: 44px; border: 0; border-radius: 50%;
 	background: var(--bg); color: var(--text); box-shadow: var(--shadow); font-size: var(--fs-lg); cursor: pointer;
 }
-.ocs-carousel-prev[hidden], .ocs-carousel-next[hidden] { display: none; }
+.ocs-carousel-prev[hidden], .ocs-carousel-next[hidden], .ocs-carousel-dots[hidden] { display: none; }
+.ocs-carousel-prev.swiper-button-disabled, .ocs-carousel-next.swiper-button-disabled { opacity: .4; cursor: default; }
 .ocs-carousel-prev { left: var(--sp-3); }
 .ocs-carousel-next { right: var(--sp-3); }
-.ocs-carousel-dots { display: flex; justify-content: center; gap: var(--sp-2); margin-top: var(--sp-3); }
-.ocs-carousel-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: var(--border); cursor: pointer; }
-.ocs-carousel-dots button[aria-current="true"] { background: var(--accent); }
+.ocs-carousel-dots.swiper-pagination { position: static; display: flex; justify-content: center; gap: var(--sp-2); margin-top: var(--sp-3); width: 100%; }
+.ocs-carousel-dots .swiper-pagination-bullet { width: 8px; height: 8px; margin: 0; border-radius: 50%; background: var(--border); opacity: 1; cursor: pointer; }
+.ocs-carousel-dots .swiper-pagination-bullet-active { background: var(--accent); }
+.ocs-hero.swiper-container { overflow: hidden; }
+.ocs-hero .ocs-carousel-dots.swiper-pagination { position: absolute; left: 0; bottom: var(--sp-3); z-index: 10; margin: 0; }
 
 .ocs-hero { margin: var(--sp-4) 0; }
 .ocs-hero .ocs-carousel-item { width: 100%; position: relative; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-alt); }
@@ -692,3 +699,40 @@ li .ocs-stock { font-size: inherit; }
 .ocs-tradein { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); margin: var(--sp-4) 0; padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
 .ocs-tradein p { margin: var(--sp-1) 0 0; color: var(--text-muted); }
 .ocs-req-form input[type="file"] { width: 100%; }
+
+/* ==== 24. Swipeable product gallery (SPEC-037) ==== */
+.ocs-gal-main .thumbnails { margin: 0; padding: 0; list-style: none; }
+.ocs-gal-main .thumbnails > li { margin: 0; padding: 0; float: none; }
+.ocs-gal-main .thumbnail { display: block; border: 0; padding: 0; background: none; }
+.ocs-gal-main img { display: block; width: 100%; height: auto; border-radius: var(--r-lg); }
+.ocs-gal-dots.swiper-pagination { position: absolute; bottom: var(--sp-2); left: 0; right: 0; text-align: center; z-index: 5; }
+.ocs-gal-dots .swiper-pagination-bullet { background: var(--border); opacity: 1; }
+.ocs-gal-dots .swiper-pagination-bullet-active { background: var(--accent); }
+.ocs-gal-thumbs { margin-top: var(--sp-3); }
+.ocs-gal-thumbs .swiper-slide { width: 74px; height: 74px; border: 2px solid transparent; border-radius: var(--r-md); overflow: hidden; cursor: pointer; background: var(--bg-alt); }
+.ocs-gal-thumbs .swiper-slide.is-current { border-color: var(--accent); }
+.ocs-gal-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ocs-gal-main { position: relative; }
+
+/* ==== 25. Quick view (SPEC-037) ==== */
+.product-thumb .image { position: relative; }
+.ocs-qv-btn {
+	position: absolute; right: var(--sp-3); bottom: var(--sp-3); z-index: 4; width: 40px; height: 40px; border: 0; border-radius: 50%;
+	background: var(--bg); color: var(--text); box-shadow: var(--shadow); cursor: pointer; opacity: 0; transition: opacity .15s;
+}
+.product-thumb:hover .ocs-qv-btn, .ocs-qv-btn:focus-visible { opacity: 1; }
+@media (hover: none) { .ocs-qv-btn { opacity: 1; } }
+.ocs-qv { display: grid; grid-template-columns: 1fr; gap: var(--sp-5); }
+@media (min-width: 768px) { .ocs-qv { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); width: min(860px, 90vw); } }
+.ocs-qv-gallery { position: relative; min-width: 0; }
+.ocs-qv-slides img { display: block; width: 100%; height: auto; border-radius: var(--r-lg); }
+.ocs-qv-dots.swiper-pagination { position: absolute; bottom: var(--sp-2); left: 0; right: 0; text-align: center; z-index: 5; }
+.ocs-qv-dots .swiper-pagination-bullet { background: var(--border); opacity: 1; }
+.ocs-qv-dots .swiper-pagination-bullet-active { background: var(--accent); }
+.ocs-qv-info { min-width: 0; max-height: 70vh; overflow-y: auto; }
+.ocs-qv-info h3 { margin-top: 0; }
+.ocs-qv-price { font-size: var(--fs-lg); }
+.ocs-qv-more { margin-top: var(--sp-3); text-align: center; }
+
+/* ==== 26. Option-level stock switch (SPEC-037) ==== */
+.ocs-out-only[hidden], #button-cart[hidden], .ocs-qv-add[hidden], .ocs-quick-btn[hidden] { display: none !important; }

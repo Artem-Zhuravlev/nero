@@ -14,7 +14,10 @@ class ControllerExtensionModuleOcsBackInStock extends Controller {
 		$token = 'user_token=' . $this->session->data['user_token'];
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$this->model_setting_setting->editSetting('module_ocs_back_in_stock', $this->request->post);
+			$post = $this->request->post;
+			$post['module_ocs_back_in_stock_cron_key'] = (string)$this->config->get('module_ocs_back_in_stock_cron_key');
+
+			$this->model_setting_setting->editSetting('module_ocs_back_in_stock', $post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -38,6 +41,7 @@ class ControllerExtensionModuleOcsBackInStock extends Controller {
 			$data['module_ocs_back_in_stock_status'] = $this->config->get('module_ocs_back_in_stock_status');
 		}
 
+		$data['cron_url'] = $this->config->get('module_ocs_back_in_stock_cron_key') ? HTTP_CATALOG . 'index.php?route=extension/module/ocs_back_in_stock_cron&key=' . $this->config->get('module_ocs_back_in_stock_cron_key') : '';
 		$data['version'] = '1.0.0';
 
 		$data['header'] = $this->load->controller('common/header');
@@ -81,10 +85,10 @@ class ControllerExtensionModuleOcsBackInStock extends Controller {
 				'id'       => $row['subscription_id'],
 				'product'  => $row['product_name'],
 				'href'     => $this->url->link('catalog/product/edit', $token . '&product_id=' . (int)$row['product_id'], true),
-				'options'  => $row['option_key'],
+				'options'  => $this->optionNames($row['option_key']),
 				'email'    => $row['email'],
 				'language' => $row['language_code'],
-				'status'   => $row['status'] ? $this->language->get('text_notified') : $this->language->get('text_waiting'),
+				'status'   => $row['status'] ? $this->language->get('text_notified') . ($row['date_notified'] ? ' ' . date($this->language->get('datetime_format'), strtotime($row['date_notified'])) : '') : $this->language->get('text_waiting'),
 				'date'     => date($this->language->get('datetime_format'), strtotime($row['date_added']))
 			);
 		}
@@ -105,6 +109,27 @@ class ControllerExtensionModuleOcsBackInStock extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 
 		$this->response->setOutput($this->load->view('extension/module/ocs_back_in_stock_subscriptions', $data));
+	}
+
+	/**
+	 * "Size: Large; Colour: Red" for the chosen option values of a subscription (the ids are digits only).
+	 */
+	private function optionNames($key) {
+		$ids = array_values(array_filter(array_map('intval', explode(',', (string)$key))));
+
+		if (!$ids) {
+			return '';
+		}
+
+		$query = $this->db->query("SELECT od.name AS option_name, ovd.name AS value_name FROM " . DB_PREFIX . "product_option_value pov LEFT JOIN " . DB_PREFIX . "option_description od ON (od.option_id = pov.option_id AND od.language_id = '" . (int)$this->config->get('config_language_id') . "') LEFT JOIN " . DB_PREFIX . "option_value_description ovd ON (ovd.option_value_id = pov.option_value_id AND ovd.language_id = '" . (int)$this->config->get('config_language_id') . "') WHERE pov.product_option_value_id IN (" . implode(',', $ids) . ")");
+
+		$parts = array();
+
+		foreach ($query->rows as $row) {
+			$parts[] = htmlspecialchars($row['option_name'] . ': ' . $row['value_name'], ENT_QUOTES, 'UTF-8');
+		}
+
+		return $parts ? implode('; ', $parts) : htmlspecialchars((string)$key, ENT_QUOTES, 'UTF-8');
 	}
 
 	/**

@@ -19,8 +19,17 @@ class ControllerExtensionOcsPreorderEvents extends Controller {
 		$overrides = \Ocs\OrderRequest::parseOverrides($this->config->get('module_ocs_preorder_overrides'));
 		$override = isset($overrides[(int)$product['product_id']]) ? $overrides[(int)$product['product_id']] : array();
 
+		$key = 'ocs_preorder';
+
 		if (!\Ocs\OrderRequest::preorderApplies($this->config->get('module_ocs_preorder_global'), $product['quantity'], $override)) {
-			return;
+			// REQ-OPT-001: the product is in stock, but a chosen option value may not be: the button is rendered hidden for that case
+			$this->load->model('extension/ocs_request/options');
+
+			if (!\Ocs\Stock::optionRuleOn($this->config->get('module_ocs_preorder_global'), $override) || !$this->model_extension_ocs_request_options->outValues((int)$product['product_id'])) {
+				return;
+			}
+
+			$key = 'ocs_preorder_opt';
 		}
 
 		$strings = $this->load->language('extension/module/ocs_preorder');
@@ -35,7 +44,7 @@ class ControllerExtensionOcsPreorderEvents extends Controller {
 			$note .= ' ' . sprintf($strings['text_expected'], \Ocs\OrderRequest::e(date($this->language->get('date_format_short'), strtotime($override['date']))));
 		}
 
-		$data['ocs_preorder'] = array(
+		$data[$key] = array(
 			'text' => !empty($l['button']) ? \Ocs\OrderRequest::e($l['button']) : (isset($strings['button_preorder']) ? $strings['button_preorder'] : ''),
 			'note' => trim($note),
 			'form' => $this->url->link('extension/module/ocs_preorder/form', '', true)

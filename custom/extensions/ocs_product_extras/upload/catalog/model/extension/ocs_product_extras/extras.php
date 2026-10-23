@@ -117,6 +117,19 @@ class ModelExtensionOcsProductExtrasExtras extends Model {
 			);
 		}
 
+		// REQ-STK-010: stickers in the accessories and similar carousels
+		if ($out && $this->config->get('module_ocs_stickers_status')) {
+			$this->load->model('extension/ocs_stickers/stickers');
+
+			$map = $this->model_extension_ocs_stickers_stickers->forProducts(array_column($out, 'product_id'));
+
+			foreach ($out as $i => $card) {
+				if (isset($map[(int)$card['product_id']])) {
+					$out[$i]['stickers'] = $map[(int)$card['product_id']];
+				}
+			}
+		}
+
 		return $out;
 	}
 }

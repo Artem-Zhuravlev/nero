@@ -29,6 +29,25 @@
         <div class="{{ class }}"> {% if thumb or images %}
           <div class="ocs-gallery"><div class="ocs-slot ocs-slot-tl">{% for s in ocs_stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl">{% for s in ocs_stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
 
+          {% if ocs_px.gallery %}
+          <div class="ocs-gal" data-ocs-gallery="1">
+            <div class="ocs-gal-main swiper-container">
+              <ul class="thumbnails swiper-wrapper">
+                {% for g in ocs_px.gallery %}
+                <li class="swiper-slide"><a class="thumbnail" href="{{ g.popup }}" title="{{ heading_title }}"><img src="{{ g.main }}" title="{{ heading_title }}" alt="{{ heading_title }}" width="{{ ocs_px.main_w }}" height="{{ ocs_px.main_h }}"{% if loop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %} /></a></li>
+                {% endfor %}
+              </ul>
+              {% if ocs_px.gallery|length > 1 %}<div class="ocs-gal-dots swiper-pagination"></div>{% endif %}
+            </div>
+            {% if ocs_px.gallery|length > 1 %}
+            <div class="ocs-gal-thumbs swiper-container">
+              <div class="swiper-wrapper">
+                {% for g in ocs_px.gallery %}<div class="swiper-slide"><img src="{{ g.thumb }}" alt="" loading="lazy" /></div>{% endfor %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% else %}
           <ul class="thumbnails">
             {% if thumb %}
             <li><a class="thumbnail" href="{{ popup }}" title="{{ heading_title }}"><img src="{{ thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}"{% if ocs_px.thumb_w %} width="{{ ocs_px.thumb_w }}" height="{{ ocs_px.thumb_h }}" fetchpriority="high"{% endif %} /></a></li>
@@ -39,6 +58,7 @@
             {% endfor %}
             {% endif %}
           </ul>
+          {% endif %}
           </div>
           {% endif %}
           <ul class="nav nav-tabs">
@@ -201,107 +221,7 @@
             {% endif %}
           </ul>
           {% endif %}
-          <div id="product"{% if ocs_preorder %} class="ocs-preorder"{% endif %}> {% if options %}
-            <hr>
-            <h3>{{ text_option }}</h3>
-            {% for option in options %}
-            {% if option.type == 'select' %}
-            <div class="form-group{% if option.required %} required {% endif %}">
-              <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-              <select name="option[{{ option.product_option_id }}]" id="input-option{{ option.product_option_id }}" class="form-control">
-                <option value="">{{ text_select }}</option>
-                {% for option_value in option.product_option_value %}
-                <option value="{{ option_value.product_option_value_id }}">{{ option_value.name }}
-                {% if option_value.price %}
-                ({{ option_value.price_prefix }}{{ option_value.price }})
-                {% endif %} </option>
-                {% endfor %}
-              </select>
-            </div>
-            {% endif %}
-            {% if option.type == 'radio' %}
-            <div class="form-group{% if option.required %} required {% endif %}">
-              <label class="control-label">{{ option.name }}</label>
-              <div id="input-option{{ option.product_option_id }}"> {% for option_value in option.product_option_value %}
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" />
-                    {% if option_value.image %} <img src="{{ option_value.image }}" alt="{{ option_value.name }} {% if option_value.price %} {{ option_value.price_prefix }} {{ option_value.price }} {% endif %}" class="img-thumbnail" /> {% endif %}                  
-                    {{ option_value.name }}
-                    {% if option_value.price %}
-                    ({{ option_value.price_prefix }}{{ option_value.price }})
-                    {% endif %} </label>
-                </div>
-                {% endfor %} </div>
-            </div>
-            {% endif %}
-            {% if option.type == 'checkbox' %}
-            <div class="form-group{% if option.required %} required {% endif %}">
-              <label class="control-label">{{ option.name }}</label>
-              <div id="input-option{{ option.product_option_id }}"> {% for option_value in option.product_option_value %}
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" />
-                    {% if option_value.image %} <img src="{{ option_value.image }}" alt="{{ option_value.name }} {% if option_value.price %} {{ option_value.price_prefix }} {{ option_value.price }} {% endif %}" class="img-thumbnail" /> {% endif %}
-                    {{ option_value.name }}
-                    {% if option_value.price %}
-                    ({{ option_value.price_prefix }}{{ option_value.price }})
-                    {% endif %} </label>
-                </div>
-                {% endfor %} </div>
-            </div>
-            {% endif %}
-            {% if option.type == 'text' %}
-            <div class="form-group{% if option.required %} required {% endif %}">
-              <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-              <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control" />
-            </div>
-            {% endif %}
-            {% if option.type == 'textarea' %}
-            <div class="form-group{% if option.required %} required {% endif %}">
-              <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-              <textarea name="option[{{ option.product_option_id }}]" rows="5" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control">{{ option.value }}</textarea>
-            </div>
-            {% endif %}
-            {% if option.type == 'file' %}
-            <div class="form-group{% if option.required %} required {% endif %}">
-              <label class="control-label">{{ option.name }}</label>
-              <button type="button" id="button-upload{{ option.product_option_id }}" data-loading-text="{{ text_loading }}" class="btn btn-default btn-block"><i class="fa fa-upload"></i> {{ button_upload }}</button>
-              <input type="hidden" name="option[{{ option.product_option_id }}]" value="" id="input-option{{ option.product_option_id }}" />
-            </div>
-            {% endif %}
-            {% if option.type == 'date' %}
-            <div class="form-group{% if option.required %} required {% endif %}">
-              <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-              <div class="input-group date">
-                <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD" id="input-option{{ option.product_option_id }}" class="form-control" />
-                <span class="input-group-btn">
-                <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
-                </span></div>
-            </div>
-            {% endif %}
-            {% if option.type == 'datetime' %}
-            <div class="form-group{% if option.required %} required {% endif %}">
-              <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-              <div class="input-group datetime">
-                <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
-                <span class="input-group-btn">
-                <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-                </span></div>
-            </div>
-            {% endif %}
-            {% if option.type == 'time' %}
-            <div class="form-group{% if option.required %} required {% endif %}">
-              <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-              <div class="input-group time">
-                <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
-                <span class="input-group-btn">
-                <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-                </span></div>
-            </div>
-            {% endif %}
-            {% endfor %}
-            {% endif %}
+          <div id="product"{% if ocs_preorder %} class="ocs-preorder"{% endif %}> {% include 'ocs/template/ocs/options.twig' %}
             {% if recurrings %}
             <hr>
             <h3>{{ text_payment_recurring }}</h3>
@@ -324,6 +244,8 @@
               <div class="ocs-buy-slot" id="ocs-buy-slot">
                 {% if ocs_preorder %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-req-btn ocs-preorder-btn" data-form="{{ ocs_preorder.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_preorder.text }}</button>{% if ocs_preorder.note %}<p class="ocs-req-note">{{ ocs_preorder.note }}</p>{% endif %}{% endif %}
                 {% if ocs_quick and not ocs_preorder %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-quick-btn" data-form="{{ ocs_quick.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_quick.text }}</button>{% endif %}
+                {% if ocs_preorder_opt %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-req-btn ocs-preorder-btn ocs-out-only" hidden data-form="{{ ocs_preorder_opt.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_preorder_opt.text }}</button>{% endif %}
+                {% if ocs_subscribe_opt %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-subscribe-btn ocs-out-only" hidden data-form="{{ ocs_subscribe_opt.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_subscribe_opt.text }}</button>{% endif %}
                 {% if ocs_subscribe %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-subscribe-btn" data-form="{{ ocs_subscribe.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_subscribe.text }}</button>{% endif %}
               </div>
             </div>
