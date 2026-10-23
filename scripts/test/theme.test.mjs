@@ -270,7 +270,7 @@ test('mega menu markup keeps core hooks and matches theme.js and css selectors',
   for (const hook of ['id="menu"', 'id="category"', 'navbar-toggle', 'data-toggle="collapse"', 'navbar-ex1-collapse', 'aria-expanded="false"', 'data-behaviour']) assert.ok(tpl.includes(hook), `mega template lost ${hook}`);
   const js = read('custom/theme/ocs/javascript/theme.js');
   const css = read('custom/theme/ocs/stylesheet/stylesheet.css');
-  for (const cls of ['ocs-mega-open', 'ocs-mega-expand', 'ocs-has-children', 'ocs-mega-fly', 'ocs-mega-l1']) {
+  for (const cls of ["ocs-mega-open", "ocs-mega-expand", "ocs-has-children", "ocs-mega-fly", "ocs-mega-l1", "ocs-mega-close"]) {
     assert.ok(tpl.includes(cls), `template lacks ${cls}`);
     assert.ok(css.includes(`.${cls}`) || js.includes(cls), `${cls} unused by css/js`);
   }
@@ -284,4 +284,11 @@ test('mega menu markup keeps core hooks and matches theme.js and css selectors',
   const wall = read('custom/extensions/ocs_category_wall/upload/catalog/view/theme/default/template/extension/module/ocs_category_wall.twig');
   for (const v of ['--ocs-wall-d', '--ocs-wall-t', '--ocs-wall-m']) assert.ok(wall.includes(v) && css.includes(v), `${v} not wired`);
   assert.match(wall, /loading="lazy"/);
+});
+
+// TEST-SHL-001 - verifies REQ-SHL-001 (regression of the first live run: per-language settings use the language directory code)
+test('shell events key per-language settings by config_language, not the HTML language code', () => {
+  const src = readFileSync(join(REPO_ROOT, 'custom/extensions/ocs_shell/upload/catalog/controller/extension/ocs_shell/events.php'), 'utf8');
+  assert.match(src, /\$code = \$this->config->get\('config_language'\)/);
+  assert.doesNotMatch(src, /\$code = \$this->language->get\('code'\)/);
 });

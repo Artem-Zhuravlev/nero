@@ -434,7 +434,7 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 		background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow);
 	}
 	.ocs-mega-item.open > .ocs-mega-fly {
-		display: block; position: absolute; top: 0; left: 100%; width: 760px; min-height: 100%;
+		display: block; position: absolute; top: 0; left: 100%; width: min(760px, calc(100vw - 340px)); min-height: 100%;
 		background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow);
 		padding: var(--sp-5); margin-left: var(--sp-1);
 	}
@@ -474,3 +474,40 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 .ocs-cmenu-item.open > .ocs-cmenu-toggle .fa { transform: rotate(180deg); }
 .ocs-cmenu-l2, .ocs-cmenu-l3 { display: none; padding-left: var(--sp-4); }
 .ocs-cmenu-item.open > .ocs-cmenu-l2, .ocs-cmenu-item.open > .ocs-cmenu-l3 { display: block; }
+
+/* ==== 14. Live-check fixes: equal-height cards, header strip layout ================= */
+#ocs-grid { display: flex; flex-wrap: wrap; }
+#ocs-grid:before, #ocs-grid:after { display: none; }
+#ocs-grid > .product-layout { display: flex; }
+#ocs-grid > .product-layout > .product-thumb { width: 100%; display: flex; flex-direction: column; }
+#ocs-grid > .product-layout > .product-thumb > div:last-child { display: flex; flex-direction: column; flex: 1; }
+#ocs-grid > .product-layout .caption { flex: 1; }
+
+#top > .container { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-4); }
+#top > .container:before, #top > .container:after { display: none; }
+#top > .container > .pull-left, #top > .container > .btn-group, #top > .container > .pull-right { float: none !important; }
+#top #top-links { margin-left: auto; }
+.ocs-strip { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-3); }
+.ocs-strip > li { padding: 0; }
+
+/* ==== 15. Live-check fixes (mobile header, mega menu bar) =========================== */
+.ocs-mega .navbar-header { display: flex; align-items: center; justify-content: space-between; padding: var(--sp-2) var(--sp-4); }
+.ocs-mega .navbar-header:before, .ocs-mega .navbar-header:after { display: none; }
+#menu #category { font-weight: 600; color: var(--text); font-size: var(--fs-md); }
+.ocs-mega .navbar-toggle { float: none; margin: 0; background: transparent; border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text); }
+@media (max-width: 767px) {
+	#top .ocs-strip { display: none; }
+	#top > .container { gap: var(--sp-1) var(--sp-3); }
+	#top #top-links { margin-left: 0; }
+	.ocs-mega .navbar-collapse.in .ocs-mega-open { display: none; }
+}
+
+.ocs-icon-gap { display: inline-block; width: 24px; flex: none; }
+.ocs-mega-close { display: none; }
+@media (max-width: 767px) {
+	.ocs-mega .navbar-collapse.in .ocs-mega-close {
+		display: block; position: fixed; top: var(--sp-3); right: var(--sp-3); z-index: 1070;
+		width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--bg-alt); color: var(--text); font-size: var(--fs-2xl); line-height: 1;
+	}
+}
+.thumbnails { list-style: none; padding-left: 0; }

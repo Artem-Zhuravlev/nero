@@ -277,3 +277,13 @@ Developer settings in admin: Developer Settings (theme cache, SASS cache) and
    and `oc_seo_url`.
 10. PHP >= 8 deprecations (e.g. dynamic things, `each`, implicit float->int) may log noise;
     don't "fix" core — configure error reporting.
+11. **Two different "language codes".** `$this->language->get('code')` is the HTML code from the language
+    file (`uk`, `en`), while the language *directory* / `oc_language.code` is `uk-ua` / `en-gb` and is in
+    `$this->config->get('config_language')`. Per-language settings keyed by language code must use
+    `config_language` (found in the first live run of SPEC-031: announcement and links were empty).
+12. **`$disallow_params` core bug.** `catalog/controller/product/{category,search,manufacturer_info,special}.php`
+    use `in_array('sort', $disallow_params, true)` but define it only when `config_noindex_disallow_params`
+    is non-empty: any request with `sort`, `order`, `page` or `limit` logs a Notice + Warning (TypeError on
+    PHP 8). Migration `0003_noindex_disallow_params` sets it to `page`.
+13. The default `config_timezone` is `Europe/Kyiv`, unknown to older PHP tz databases (PHP 7.4.33 Windows
+    build): a Notice per request in the log. Harmless; update tzdata or set `Europe/Kiev` in the admin.

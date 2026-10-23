@@ -33,7 +33,7 @@ class ControllerExtensionOcsShellEvents extends Controller {
 		$strings = $this->load->language('extension/ocs_shell/shell');
 		$strings = is_array($strings) ? $strings : array();
 
-		$code = $this->language->get('code');
+		$code = $this->config->get('config_language'); // language directory code (uk-ua); language->get('code') is the HTML code (uk)
 		$settings = array(
 			'l'                 => (array)$this->config->get('module_ocs_shell_l'),
 			'announcement_from' => $this->config->get('module_ocs_shell_announcement_from'),
