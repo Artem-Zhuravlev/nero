@@ -670,3 +670,55 @@ test('order tracking: guarded, generic mismatch answer, no comments in the histo
   assert.ok(!/oh\.comment|\.comment/.test(model), 'comments of the staff are never selected');
   assert.match(model, /order_status_id > '0'/);
 });
+
+// TEST-CRD-004 - verifies REQ-CRD-021, REQ-EXT-051 (manifests match migrations; strings identical across languages; both blocks off by default)
+test('credit and trade-in: manifests match migrations, strings are identical, off by default', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  for (const code of ['ocs_credit', 'ocs_tradein']) {
+    const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
+    assert.equal(ext.spec, 'SPEC-036');
+    const mig = read(`custom/extensions/${code}/db/001_install.php`);
+    for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `event ${e}`);
+    for (const t of ext.tables) assert.ok(mig.includes(`{{PREFIX}}${t.replace(/^oc_/, '')} (`), `table ${t}`);
+    for (const s of ext.settings) assert.ok(mig.includes(`'${s}'`), `setting ${s}`);
+    assert.match(mig, new RegExp(`'module_${code}_status' => 0`));
+    const keys = (side, l) => [...read(`custom/extensions/${code}/upload/${side}/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+    for (const l of ['en-gb', 'ru-ru']) assert.deepEqual(keys('catalog', l), keys('catalog', 'uk-ua'), `${code} catalog ${l}`);
+    assert.deepEqual(keys('admin', 'en-gb'), keys('admin', 'uk-ua'), `${code} admin strings`);
+  }
+});
+
+// TEST-CRD-001 - verifies REQ-CRD-001, REQ-CRD-002, REQ-CRD-003 (block markup, disclaimer, JS formula and quick-order hand-off agree)
+test('instalment block: hooks, disclaimer and hand-off are consistent', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const twig = read('custom/extensions/ocs_credit/upload/catalog/view/theme/default/template/extension/module/ocs_credit.twig');
+  for (const hook of ['data-ocs-credit="{{ config_json }}"', 'ocs-credit-disclaimer', 'name="ocs-credit-plan"', 'ocs-credit-pay', 'data-ocs-credit-details', 'ocs-credit-terms']) assert.ok(twig.includes(hook), hook);
+  assert.match(twig, /\{% if not any %\} hidden\{% endif %\}/, 'the block hides itself when no plan fits');
+  const ev = read('custom/extensions/ocs_credit/upload/catalog/controller/extension/ocs_credit/events.php');
+  assert.match(ev, /text_disclaimer/, 'the disclaimer always has a default text');
+  assert.match(ev, /htmlspecialchars\(json_encode\(/, 'the JSON of the attribute is entity-encoded as a whole');
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.match(js, /amount \* r \/ \(1 - Math\.pow\(1 \+ r, -months\)\)/, 'same annuity formula as Ocs\\Credit::payment');
+  assert.match(js, /ocs-quick-btn'\) && OCS\.credit && OCS\.credit\.note/);
+  assert.ok(css.includes('.ocs-credit'));
+});
+
+// TEST-CRD-003 - verifies REQ-CRD-020 (trade-in: token, rate limit, honeypot, uploads outside the docroot, photos served only through the admin)
+test('trade-in: guarded endpoint, storage outside the docroot, admin-only photo access', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ctl = read('custom/extensions/ocs_tradein/upload/catalog/controller/extension/module/ocs_tradein.php');
+  assert.match(ctl, /tokenValid/);
+  assert.match(ctl, /allow\('tradein'\)/);
+  assert.match(ctl, /DIR_STORAGE/);
+  assert.match(ctl, /Tradein::check/);
+  assert.match(ctl, /move_uploaded_file/);
+  const form = read('custom/extensions/ocs_tradein/upload/catalog/view/theme/default/template/extension/module/ocs_tradein_form.twig');
+  for (const hook of ['enctype="multipart/form-data"', 'class="ocs-req-form"', 'name="photos[]"', 'name="website"', 'data-error-for="photos"']) assert.ok(form.includes(hook), hook);
+  const adm = read('custom/extensions/ocs_tradein/upload/admin/controller/extension/module/ocs_tradein.php');
+  assert.match(adm, /hasPermission\('access'/);
+  assert.match(adm, /validStoredName/);
+  assert.match(adm, /nosniff/);
+  assert.match(adm, /photoExists/);
+  assert.match(read('custom/theme/ocs/template/product/product.twig'), /\{\{ ocs_credit_block \}\}[\s\S]*\{\{ ocs_tradein_banner \}\}/);
+  assert.ok(read('custom/theme/ocs/template/product/category.twig').includes('{{ ocs_tradein_banner }}'));
+});

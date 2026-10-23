@@ -1,0 +1,81 @@
+{# Extension: ocs_tradein. Admin settings and leads. Owner: SPEC-036. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-tradein" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>{% endif %}
+    {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>{% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3></div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" id="form-tradein" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10"><select name="module_ocs_tradein_status" id="input-status" class="form-control">
+              <option value="1"{% if status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+              <option value="0"{% if not status %} selected="selected"{% endif %}>{{ text_disabled }}</option></select></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-categories"><span data-toggle="tooltip" title="{{ help_categories }}">{{ entry_categories }}</span></label>
+            <div class="col-sm-10"><input type="text" name="module_ocs_tradein_categories" value="{{ categories }}" id="input-categories" class="form-control" placeholder="20, 18" />
+              {% if error_categories %}<div class="text-danger">{{ error_categories }}</div>{% endif %}</div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-email"><span data-toggle="tooltip" title="{{ help_email }}">{{ entry_email }}</span></label>
+            <div class="col-sm-10"><input type="text" name="module_ocs_tradein_email" value="{{ email }}" id="input-email" class="form-control" />
+              {% if error_email %}<div class="text-danger">{{ error_email }}</div>{% endif %}</div>
+          </div>
+          <ul class="nav nav-tabs">
+            {% for language in languages %}<li{% if loop.first %} class="active"{% endif %}><a href="#lang{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>{% endfor %}
+          </ul>
+          <div class="tab-content">
+            {% for language in languages %}
+            <div class="tab-pane{% if loop.first %} active{% endif %}" id="lang{{ language.language_id }}"><br />
+              <div class="form-group"><label class="col-sm-2 control-label">{{ entry_title }}</label>
+                <div class="col-sm-10"><input type="text" name="module_ocs_tradein_l[{{ language.code }}][title]" value="{{ l[language.code].title }}" class="form-control" /></div></div>
+              <div class="form-group"><label class="col-sm-2 control-label">{{ entry_text }}</label>
+                <div class="col-sm-10"><input type="text" name="module_ocs_tradein_l[{{ language.code }}][text]" value="{{ l[language.code].text }}" class="form-control" /></div></div>
+              <div class="form-group"><label class="col-sm-2 control-label">{{ entry_button }}</label>
+                <div class="col-sm-10"><input type="text" name="module_ocs_tradein_l[{{ language.code }}][button]" value="{{ l[language.code].button }}" class="form-control" /></div></div>
+            </div>
+            {% endfor %}
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-exchange"></i> {{ text_leads }} ({{ total }})</h3></div>
+      <div class="panel-body">
+        {% for lead in leads %}
+        <div class="well well-sm">
+          <p><strong>#{{ lead.lead_id }}</strong> {{ lead.name }} &middot; {{ lead.phone }} {{ lead.email }} &middot; {{ lead.date_added }}
+            {% if lead.status %}<span class="label label-success">{{ text_processed }}</span>{% else %}<span class="label label-warning">{{ text_new }}</span>{% endif %}
+            {% if lead.product %}&middot; <a href="{{ lead.product }}" target="_blank">{{ text_product }}</a>{% endif %}</p>
+          <p>{{ lead.device }}</p>
+          {% if lead.photos %}<p>{% for p in lead.photos %}<a href="{{ p.href }}" target="_blank"><i class="fa fa-picture-o"></i> {{ loop.index }}</a> {% endfor %}</p>{% endif %}
+          <form action="{{ action }}" method="post" style="display:inline">
+            <input type="hidden" name="done_lead" value="{{ lead.lead_id }}" /><input type="hidden" name="done_value" value="{{ lead.status ? 0 : 1 }}" />
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i> {{ lead.status ? text_reopen : text_mark_done }}</button></form>
+          <form action="{{ action }}" method="post" style="display:inline"><input type="hidden" name="delete_lead" value="{{ lead.lead_id }}" />
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ text_confirm }}');"><i class="fa fa-trash-o"></i></button></form>
+        </div>
+        {% else %}
+        <p class="text-center">{{ text_none }}</p>
+        {% endfor %}
+        <div class="row"><div class="col-sm-12 text-left">{{ pagination }}</div></div>
+        <p class="text-muted">ocs_tradein v{{ version }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

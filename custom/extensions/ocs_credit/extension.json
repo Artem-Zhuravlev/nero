@@ -1,0 +1,7 @@
+{ "code": "ocs_credit", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Instalments", "uk-ua": "OCS: розстрочка" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
+  "spec": "SPEC-036", "tables": [],
+  "settings": ["module_ocs_credit_status", "module_ocs_credit_plans", "module_ocs_credit_l"],
+  "events": ["ocs_credit_product"],
+  "routes": ["extension/module/ocs_credit", "extension/ocs_credit/events"] }

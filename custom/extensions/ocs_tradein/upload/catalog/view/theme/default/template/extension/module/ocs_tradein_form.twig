@@ -1,0 +1,39 @@
+{# Extension: ocs_tradein. Trade-in popup body. Same class names as the shared request form, so OCS.req posts it (multipart, with photos). Owner: SPEC-036. #}
+<div class="ocs-req" data-close="{{ text_close }}">
+  <h3 class="ocs-req-title" id="ocs-req-title">{{ heading_form }}</h3>
+  <p class="ocs-req-note">{{ text_note }}</p>
+  <form action="{{ action }}" method="post" enctype="multipart/form-data" class="ocs-req-form" data-failed="{{ error_generic }}" novalidate>
+    <input type="hidden" name="token" value="{{ token }}" />
+    <input type="hidden" name="product_id" value="{{ product_id }}" />
+    <div class="ocs-req-hp" aria-hidden="true"><input type="text" name="website" value="" tabindex="-1" autocomplete="off" /></div>
+    <div class="form-group required">
+      <label class="control-label" for="ocs-req-comment">{{ entry_device }}</label>
+      <textarea name="comment" id="ocs-req-comment" rows="3" class="form-control"></textarea>
+      <div class="text-danger" data-error-for="comment"></div>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="ocs-req-name">{{ entry_name }}</label>
+      <input type="text" name="name" id="ocs-req-name" class="form-control" autocomplete="name" />
+      <div class="text-danger" data-error-for="name"></div>
+    </div>
+    <div class="form-group required">
+      <label class="control-label" for="ocs-req-phone">{{ entry_phone }}</label>
+      <input type="tel" name="phone" id="ocs-req-phone" class="form-control" autocomplete="tel" />
+      <div class="text-danger" data-error-for="phone"></div>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="ocs-req-email">{{ entry_email }}</label>
+      <input type="email" name="email" id="ocs-req-email" class="form-control" autocomplete="email" />
+      <div class="text-danger" data-error-for="email"></div>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="ocs-req-photos">{{ entry_photos }}</label>
+      <input type="file" name="photos[]" id="ocs-req-photos" accept="image/jpeg,image/png,image/webp,image/gif" multiple />
+      <p class="help-block">{{ help_photos }}</p>
+      <div class="text-danger" data-error-for="photos"></div>
+    </div>
+    <div class="text-danger ocs-req-error" data-error-for="_form"></div>
+    <button type="submit" class="btn btn-primary btn-lg btn-block">{{ button_submit }}</button>
+  </form>
+  <div class="ocs-req-done" hidden></div>
+</div>

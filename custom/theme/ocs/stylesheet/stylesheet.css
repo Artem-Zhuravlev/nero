@@ -680,3 +680,15 @@ li .ocs-stock { font-size: inherit; }
 .ocs-track-form { display: flex; flex-wrap: wrap; gap: var(--sp-3); max-width: 640px; margin: var(--sp-4) 0; }
 .ocs-track-form .form-control { flex: 1 1 200px; }
 .ocs-track-result { padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); max-width: 640px; }
+
+/* ==== 23. Instalments and trade-in (SPEC-036) ==== */
+.ocs-credit { margin: var(--sp-4) 0; padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
+.ocs-credit[hidden], .ocs-credit-plans li[hidden] { display: none; }
+.ocs-credit h4 { margin-top: 0; }
+.ocs-credit-plans li { margin-bottom: var(--sp-2); }
+.ocs-credit-plans label { font-weight: 400; cursor: pointer; }
+.ocs-credit-disclaimer { font-size: var(--fs-sm); margin: var(--sp-2) 0; }
+.ocs-credit-details { padding: 0; }
+.ocs-tradein { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); margin: var(--sp-4) 0; padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
+.ocs-tradein p { margin: var(--sp-1) 0 0; color: var(--text-muted); }
+.ocs-req-form input[type="file"] { width: 100%; }

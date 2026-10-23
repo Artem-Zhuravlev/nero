@@ -1,0 +1,8 @@
+{ "code": "ocs_tradein", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Trade-in", "uk-ua": "OCS: trade-in" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
+  "spec": "SPEC-036",
+  "tables": ["oc_ocs_tradein_lead"],
+  "settings": ["module_ocs_tradein_status", "module_ocs_tradein_categories", "module_ocs_tradein_email", "module_ocs_tradein_l"],
+  "events": ["ocs_tradein_product", "ocs_tradein_category"],
+  "routes": ["extension/module/ocs_tradein", "extension/module/ocs_tradein/form", "extension/module/ocs_tradein/submit", "extension/ocs_tradein/events"] }

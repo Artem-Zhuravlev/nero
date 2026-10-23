@@ -15,6 +15,7 @@
     {% set class = 'col-sm-12' %}
     {% endif %}
     <div id="content" class="{{ class }}">{{ content_top }}
+      {{ ocs_tradein_banner }}
       <h1>{{ heading_title }}</h1>
       {% if thumb or (description and not ocs_listing) %}
       <div class="row"> {% if thumb %}
