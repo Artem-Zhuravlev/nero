@@ -81,7 +81,8 @@ function loadModal() {
   });
   const classes = new Set();
   const document = {
-    body: el(), activeElement: null,
+    body: el(), activeElement: null, readyState: 'loading',
+    getElementById: () => null, querySelector: () => null, querySelectorAll: () => [],
     documentElement: { classList: { add: (c) => classes.add(c), remove: (c) => classes.delete(c) } },
     createElement: el,
     addEventListener: (t, f) => { handlers[t] = f; },
@@ -144,4 +145,37 @@ test('category and product overrides add slots, keep core JS hooks, are not copi
     assert.ok(prod.includes(hook), `product lost hook ${hook}`);
   }
   assert.doesNotMatch(prod, /addthis/i);
+});
+
+// TEST-SHL-004 - verifies REQ-SHL-010, REQ-SHL-011, REQ-SHL-020, REQ-SHL-041 (templates degrade to core when ocs_shell is absent, no literal text)
+test('header and footer overrides are guarded by ocs_shell and keep core hooks', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const header = read('custom/theme/ocs/template/common/header.twig');
+  const footer = read('custom/theme/ocs/template/common/footer.twig');
+  assert.ok(footer.startsWith('{# @core-file catalog/view/theme/default/template/common/footer.twig @core-version 3.0.3.7 #}'));
+  for (const hook of ['id="wishlist-total"', 'id="top-links"', '{{ search }}', '{{ cart }}', '{{ menu }}']) assert.ok(header.includes(hook), `header lost ${hook}`);
+  for (const hook of ['{{ powered }}', '{{ text_information }}']) assert.ok(footer.includes(hook), `footer lost ${hook}`);
+  for (const [name, tpl] of [['header', header], ['footer', footer]]) {
+    const uses = tpl.match(/ocs_shell\.[a-z_.]+/g) || [];
+    assert.ok(uses.length > 0);
+    for (const line of tpl.split('\n').filter((l) => /ocs_shell\./.test(l) && !/\{% (if|for)/.test(l) && !/\{% (else|endif|endfor)/.test(l))) {
+      assert.doesNotMatch(line.replace(/\{\{[^}]*\}\}|\{%[^%]*%\}|<[^>]*>|&[a-z]+;/g, ''), /[A-Za-zА-Яа-я]{3,}/, `${name}: literal text near ocs_shell`);
+    }
+  }
+  assert.match(header, /id="compare-total"/);
+  assert.match(footer, /class="ocs-tabbar"/);
+});
+
+// TEST-SHL-005 - verifies REQ-SHL-020, REQ-SHL-041 (strings exist in uk-ua, en-gb, ru-ru with identical keys; extension.json lists settings/events)
+test('ocs_shell language files have identical keys and extension.json is consistent', () => {
+  const keys = (code) => [...readFileSync(join(REPO_ROOT, `custom/extensions/ocs_shell/upload/catalog/language/${code}/extension/ocs_shell/shell.php`), 'utf8').matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  const uk = keys('uk-ua');
+  assert.ok(uk.length >= 12);
+  assert.deepEqual(keys('en-gb'), uk);
+  assert.deepEqual(keys('ru-ru'), uk);
+  const ext = JSON.parse(readFileSync(join(REPO_ROOT, 'custom/extensions/ocs_shell/extension.json'), 'utf8'));
+  assert.equal(ext.code, 'ocs_shell');
+  assert.ok(ext.events.includes('ocs_shell_header_before') && ext.events.includes('ocs_shell_footer_before'));
+  const mig = readFileSync(join(REPO_ROOT, 'custom/extensions/ocs_shell/db/001_install.php'), 'utf8');
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
 });

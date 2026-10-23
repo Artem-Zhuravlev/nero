@@ -1,0 +1,9 @@
+{ "code": "ocs_shell", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Header, Footer and Mobile Shell", "uk-ua": "OCS: шапка, футер і мобільна панель" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
+  "spec": "SPEC-031", "tables": [],
+  "settings": ["module_ocs_shell_status", "module_ocs_shell_mobile_bar", "module_ocs_shell_announcement_from", "module_ocs_shell_announcement_to",
+    "module_ocs_shell_phones", "module_ocs_shell_telegram", "module_ocs_shell_viber", "module_ocs_shell_messenger",
+    "module_ocs_shell_social", "module_ocs_shell_apps", "module_ocs_shell_l"],
+  "events": ["ocs_shell_header_before", "ocs_shell_footer_before"],
+  "routes": ["extension/module/ocs_shell", "extension/ocs_shell/events"] }

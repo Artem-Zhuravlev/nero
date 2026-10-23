@@ -1,0 +1,135 @@
+{# Extension: ocs_shell. Admin settings form. Owner: SPEC-031. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-shell" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-shell" class="form-horizontal">
+          <fieldset>
+            <legend>{{ text_general }}</legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+              <div class="col-sm-10">
+                <select name="module_ocs_shell_status" id="input-status" class="form-control">
+                  <option value="1"{% if module_ocs_shell_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                  <option value="0"{% if not module_ocs_shell_status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-mobile-bar">{{ entry_mobile_bar }}</label>
+              <div class="col-sm-10">
+                <select name="module_ocs_shell_mobile_bar" id="input-mobile-bar" class="form-control">
+                  <option value="1"{% if module_ocs_shell_mobile_bar %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                  <option value="0"{% if not module_ocs_shell_mobile_bar %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>{{ text_announcement }}</legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-from">{{ entry_from }}</label>
+              <div class="col-sm-4"><input type="text" name="module_ocs_shell_announcement_from" value="{{ module_ocs_shell_announcement_from }}" id="input-from" class="form-control" /></div>
+              <label class="col-sm-2 control-label" for="input-to">{{ entry_to }}</label>
+              <div class="col-sm-4"><input type="text" name="module_ocs_shell_announcement_to" value="{{ module_ocs_shell_announcement_to }}" id="input-to" class="form-control" /></div>
+              {% if error_date %}<div class="col-sm-offset-2 col-sm-10 text-danger">{{ error_date }}</div>{% endif %}
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>{{ text_contacts }}</legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-phones">{{ entry_phones }}</label>
+              <div class="col-sm-10"><textarea name="module_ocs_shell_phones" rows="3" id="input-phones" class="form-control">{{ module_ocs_shell_phones }}</textarea></div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-telegram">{{ entry_telegram }}</label>
+              <div class="col-sm-10"><input type="text" name="module_ocs_shell_telegram" value="{{ module_ocs_shell_telegram }}" id="input-telegram" class="form-control" /></div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-viber">{{ entry_viber }}</label>
+              <div class="col-sm-10"><input type="text" name="module_ocs_shell_viber" value="{{ module_ocs_shell_viber }}" id="input-viber" class="form-control" /></div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-messenger">{{ entry_messenger }}</label>
+              <div class="col-sm-10"><input type="text" name="module_ocs_shell_messenger" value="{{ module_ocs_shell_messenger }}" id="input-messenger" class="form-control" /></div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>{{ text_footer }}</legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-social">{{ entry_social }}</label>
+              <div class="col-sm-10"><textarea name="module_ocs_shell_social" rows="4" id="input-social" class="form-control">{{ module_ocs_shell_social }}</textarea></div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-apps">{{ entry_apps }}</label>
+              <div class="col-sm-10"><textarea name="module_ocs_shell_apps" rows="3" id="input-apps" class="form-control">{{ module_ocs_shell_apps }}</textarea></div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>{{ text_per_language }}</legend>
+            <ul class="nav nav-tabs" id="language">
+              {% for language in languages %}
+              <li{% if loop.first %} class="active"{% endif %}><a href="#language{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>
+              {% endfor %}
+            </ul>
+            <div class="tab-content">
+              {% for language in languages %}
+              <div class="tab-pane{% if loop.first %} active{% endif %}" id="language{{ language.language_id }}">
+                <br />
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_announcement }}</label>
+                  <div class="col-sm-10"><input type="text" name="module_ocs_shell_l[{{ language.code }}][announcement_text]" value="{{ l[language.code].announcement_text }}" class="form-control" /></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_announcement_url }}</label>
+                  <div class="col-sm-10"><input type="text" name="module_ocs_shell_l[{{ language.code }}][announcement_url]" value="{{ l[language.code].announcement_url }}" class="form-control" /></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_hours }}</label>
+                  <div class="col-sm-10"><input type="text" name="module_ocs_shell_l[{{ language.code }}][hours]" value="{{ l[language.code].hours }}" class="form-control" /></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_links }}</label>
+                  <div class="col-sm-10"><textarea name="module_ocs_shell_l[{{ language.code }}][links]" rows="4" class="form-control">{{ l[language.code].links }}</textarea></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_address }}</label>
+                  <div class="col-sm-10"><input type="text" name="module_ocs_shell_l[{{ language.code }}][address]" value="{{ l[language.code].address }}" class="form-control" /></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_footer_groups }}">{{ entry_footer_groups }}</span></label>
+                  <div class="col-sm-10"><textarea name="module_ocs_shell_l[{{ language.code }}][footer_groups]" rows="10" class="form-control">{{ l[language.code].footer_groups }}</textarea></div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </fieldset>
+        </form>
+        <p class="text-muted">ocs_shell v{{ version }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

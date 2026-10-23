@@ -323,3 +323,46 @@ footer hr { border-color: var(--border); }
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
 	color: var(--text); background: transparent; border: 0; border-bottom: 2px solid var(--accent);
 }
+
+/* ==== 10. Shell: announcement, strip, footer groups, mobile tab bar (SPEC-031) ====== */
+.ocs-announce { background: var(--accent); color: var(--on-accent); font-size: var(--fs-sm); text-align: center; }
+.ocs-announce .container { position: relative; padding-top: var(--sp-2); padding-bottom: var(--sp-2); }
+.ocs-announce a { color: var(--on-accent); text-decoration: underline; }
+.ocs-announce-close {
+	position: absolute; right: var(--sp-3); top: 50%; transform: translateY(-50%);
+	background: transparent; border: 0; color: var(--on-accent); font-size: var(--fs-xl); line-height: 1; cursor: pointer;
+}
+
+.ocs-strip { margin: 0 var(--sp-4); display: inline-block; }
+.ocs-strip > li { vertical-align: middle; }
+.ocs-msg {
+	display: inline-block; padding: 0 var(--sp-3); border: 1px solid var(--border); border-radius: var(--r-pill);
+	font-size: var(--fs-xs); line-height: 22px; color: var(--text-muted);
+}
+.ocs-msg:hover { border-color: var(--accent); color: var(--link); text-decoration: none; }
+.ocs-hours { color: var(--text-muted); font-size: var(--fs-xs); }
+
+header { position: sticky; top: 0; z-index: 1020; }
+
+.ocs-footer-groups summary { list-style: none; cursor: default; }
+.ocs-footer-groups summary::-webkit-details-marker { display: none; }
+.ocs-footer-extra { margin-top: var(--sp-4); }
+footer details.ocs-fgroup:not([open]) > ul { display: none; }
+
+.ocs-tabbar { display: none; }
+@media (max-width: 767px) {
+	.ocs-tabbar {
+		display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 1030;
+		background: var(--header-bg); border-top: 1px solid var(--border);
+		-webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+	}
+	.ocs-tabbar > a, .ocs-tabbar > button {
+		flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+		min-height: 56px; padding: var(--sp-2) 0; background: transparent; border: 0;
+		color: var(--text-muted); font-size: var(--fs-xs); text-decoration: none;
+	}
+	.ocs-tabbar > a:hover, .ocs-tabbar > button:hover, .ocs-tabbar > a:focus { color: var(--link); }
+	.ocs-tabbar .fa { font-size: var(--fs-xl); }
+	body { padding-bottom: 64px; }
+	.ocs-strip { display: none; }
+}

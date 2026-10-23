@@ -1,6 +1,6 @@
 # SPEC-031 — Header, Footer, Announcement Bar, Mobile Shell
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-020, 021, 023, 024, 025, 060 · **Depends on:** SPEC-023, SPEC-006

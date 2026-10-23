@@ -144,3 +144,74 @@
 		}
 	};
 }(window, document));
+
+/* Shell behaviour (SPEC-031): announcement dismissal, footer groups on mobile, mobile catalogue tab. */
+(function (window, document) {
+	'use strict';
+
+	var KEY = 'ocs.announce.dismissed';
+
+	function read() {
+		try {
+			return window.localStorage.getItem(KEY);
+		} catch (e) {
+			return null;
+		}
+	}
+
+	function write(value) {
+		try {
+			window.localStorage.setItem(KEY, value);
+		} catch (e) {
+			/* storage unavailable: the bar simply reappears on the next page */
+		}
+	}
+
+	function init() {
+		var bar = document.getElementById('ocs-announce');
+
+		if (bar) {
+			if (read() === bar.getAttribute('data-id')) {
+				bar.parentNode.removeChild(bar);
+			} else {
+				var close = bar.querySelector('.ocs-announce-close');
+
+				if (close) {
+					close.addEventListener('click', function () {
+						write(bar.getAttribute('data-id'));
+						bar.parentNode.removeChild(bar);
+					});
+				}
+			}
+		}
+
+		if (window.innerWidth < 768) {
+			var groups = document.querySelectorAll('details.ocs-fgroup');
+
+			for (var i = 0; i < groups.length; i++) {
+				groups[i].removeAttribute('open');
+			}
+		}
+
+		var tab = document.getElementById('ocs-tab-catalog');
+
+		if (tab) {
+			tab.addEventListener('click', function () {
+				var toggle = document.querySelector('#menu .navbar-toggle');
+
+				if (toggle) {
+					toggle.click();
+					window.scrollTo(0, 0);
+				} else {
+					window.location.href = (document.querySelector('base') || {}).href || '/';
+				}
+			});
+		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+}(window, document));

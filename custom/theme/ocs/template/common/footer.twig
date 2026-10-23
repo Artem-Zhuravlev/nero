@@ -1,0 +1,119 @@
+{# @core-file catalog/view/theme/default/template/common/footer.twig @core-version 3.0.3.7 #}
+<footer>
+  <div class="container">
+    {% if ocs_shell and ocs_shell.groups %}
+    <div class="row ocs-footer-groups">
+      {% for group in ocs_shell.groups %}
+      <div class="col-sm-3">
+        <details class="ocs-fgroup" open>
+          <summary><h5>{{ group.title }}</h5></summary>
+          <ul class="list-unstyled">
+            {% for link in group.links %}
+            <li>{% if link.href %}<a href="{{ link.href }}">{{ link.text }}</a>{% else %}{{ link.text }}{% endif %}</li>
+            {% endfor %}
+          </ul>
+        </details>
+      </div>
+      {% endfor %}
+      <div class="col-sm-3 ocs-footer-contacts">
+        <h5>{{ ocs_shell.t.ocs_contacts }}</h5>
+        <ul class="list-unstyled">
+          {% for phone in ocs_shell.phones %}
+          <li><a href="{{ phone.href }}">{{ phone.text }}</a></li>
+          {% endfor %}
+          {% if ocs_shell.hours %}<li>{{ ocs_shell.t.ocs_hours }}: {{ ocs_shell.hours }}</li>{% endif %}
+          {% if ocs_shell.address %}<li>{{ ocs_shell.t.ocs_address }}: {{ ocs_shell.address }}</li>{% endif %}
+        </ul>
+        {% if ocs_shell.messengers %}
+        <ul class="list-inline ocs-footer-messengers">
+          {% for messenger in ocs_shell.messengers %}
+          <li><a href="{{ messenger.href }}" class="ocs-msg ocs-msg-{{ messenger.key }}" target="_blank" rel="noopener">{{ messenger.name }}</a></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="row">
+      {% if informations %}
+      <div class="col-sm-3">
+        <h5>{{ text_information }}</h5>
+        <ul class="list-unstyled">
+         {% for information in informations %}
+          <li><a href="{{ information.href }}">{{ information.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      <div class="col-sm-3">
+        <h5>{{ text_service }}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ contact }}">{{ text_contact }}</a></li>
+          <li><a href="{{ return }}">{{ text_return }}</a></li>
+          <li><a href="{{ sitemap }}">{{ text_sitemap }}</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-3">
+        <h5>{{ text_extra }}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ manufacturer }}">{{ text_manufacturer }}</a></li>
+          <li><a href="{{ voucher }}">{{ text_voucher }}</a></li>
+          <li><a href="{{ affiliate }}">{{ text_affiliate }}</a></li>
+          <li><a href="{{ special }}">{{ text_special }}</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-3">
+        <h5>{{ text_account }}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ account }}">{{ text_account }}</a></li>
+          <li><a href="{{ order }}">{{ text_order }}</a></li>
+          <li><a href="{{ wishlist }}">{{ text_wishlist }}</a></li>
+          <li><a href="{{ newsletter }}">{{ text_newsletter }}</a></li>
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+    {% if ocs_shell and (ocs_shell.social or ocs_shell.apps) %}
+    <div class="row ocs-footer-extra">
+      {% if ocs_shell.social %}
+      <div class="col-sm-6">
+        <h5>{{ ocs_shell.t.ocs_social }}</h5>
+        <ul class="list-inline">
+          {% for link in ocs_shell.social %}
+          <li>{% if link.href %}<a href="{{ link.href }}" target="_blank" rel="noopener">{{ link.text }}</a>{% else %}{{ link.text }}{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% if ocs_shell.apps %}
+      <div class="col-sm-6">
+        <h5>{{ ocs_shell.t.ocs_apps }}</h5>
+        <ul class="list-inline">
+          {% for link in ocs_shell.apps %}
+          <li>{% if link.href %}<a href="{{ link.href }}" target="_blank" rel="noopener">{{ link.text }}</a>{% else %}{{ link.text }}{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+    <hr>
+    <p>{{ powered }}</p>
+  </div>
+</footer>
+{% if ocs_shell and ocs_shell.mobile_bar %}
+<nav class="ocs-tabbar" aria-label="{{ ocs_shell.t.ocs_tabbar }}">
+  <a href="{{ ocs_shell.home }}"><i class="fa fa-home"></i><span>{{ ocs_shell.t.ocs_tab_home }}</span></a>
+  <button type="button" id="ocs-tab-catalog"><i class="fa fa-bars"></i><span>{{ ocs_shell.t.ocs_tab_catalog }}</span></button>
+  <a href="{{ ocs_shell.cart }}"><i class="fa fa-shopping-cart"></i><span>{{ ocs_shell.t.ocs_tab_cart }}</span></a>
+  <a href="{{ wishlist }}"><i class="fa fa-heart"></i><span>{{ ocs_shell.t.ocs_tab_lists }}</span></a>
+  <a href="{{ account }}"><i class="fa fa-user"></i><span>{{ ocs_shell.t.ocs_tab_profile }}</span></a>
+</nav>
+{% endif %}
+{% for style in styles %}
+<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />
+{% endfor %}
+{% for script in scripts %}
+<script src="{{ script }}" type="text/javascript"></script>
+{% endfor %}
+</body></html>

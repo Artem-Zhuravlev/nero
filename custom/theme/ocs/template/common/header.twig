@@ -51,10 +51,32 @@
 {% endfor %}
 </head>
 <body>
+{% if ocs_shell and ocs_shell.announcement %}
+<div class="ocs-announce" id="ocs-announce" data-id="{{ ocs_shell.announcement.id }}" role="region" aria-label="{{ ocs_shell.t.ocs_announce }}">
+  <div class="container">
+    <span class="ocs-announce-text">{% if ocs_shell.announcement.href %}<a href="{{ ocs_shell.announcement.href }}">{{ ocs_shell.announcement.text }}</a>{% else %}{{ ocs_shell.announcement.text }}{% endif %}</span>
+    <button type="button" class="ocs-announce-close" aria-label="{{ ocs_shell.t.ocs_close }}">&times;</button>
+  </div>
+</div>
+{% endif %}
 <nav id="top">
   <div class="container">{{ currency }}
     {{ language }}
 	{{ blog_menu }}
+    {% if ocs_shell %}
+    <ul class="list-inline ocs-strip">
+      {% for link in ocs_shell.links %}
+      <li>{% if link.href %}<a href="{{ link.href }}">{{ link.text }}</a>{% else %}<span>{{ link.text }}</span>{% endif %}</li>
+      {% endfor %}
+      {% for messenger in ocs_shell.messengers %}
+      <li><a href="{{ messenger.href }}" class="ocs-msg ocs-msg-{{ messenger.key }}" target="_blank" rel="noopener">{{ messenger.name }}</a></li>
+      {% endfor %}
+      {% for phone in ocs_shell.phones %}
+      <li><a href="{{ phone.href }}" class="ocs-phone"><i class="fa fa-phone"></i> {{ phone.text }}</a></li>
+      {% endfor %}
+      {% if ocs_shell.hours %}<li class="ocs-hours hidden-xs hidden-sm">{{ ocs_shell.hours }}</li>{% endif %}
+    </ul>
+    {% endif %}
     <div id="top-links" class="nav pull-right">
       <ul class="list-inline">
         <li><a href="{{ contact }}"><i class="fa fa-phone"></i></a> <span class="hidden-xs hidden-sm hidden-md">{{ telephone }}</span></li>
@@ -73,6 +95,9 @@
           </ul>
         </li>
         <li><a href="{{ wishlist }}" id="wishlist-total" title="{{ text_wishlist }}"><i class="fa fa-heart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_wishlist }}</span></a></li>
+        {% if ocs_shell %}
+        <li><a href="{{ ocs_shell.compare }}" title="{{ ocs_shell.compare_text }}"><i class="fa fa-exchange"></i> <span id="compare-total" class="hidden-xs hidden-sm hidden-md">{{ ocs_shell.compare_text }}</span></a></li>
+        {% endif %}
         <li><a href="{{ shopping_cart }}" title="{{ text_shopping_cart }}"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_shopping_cart }}</span></a></li>
         <li><a href="{{ checkout }}" title="{{ text_checkout }}"><i class="fa fa-share"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_checkout }}</span></a></li>
       </ul>
