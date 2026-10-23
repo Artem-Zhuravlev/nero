@@ -9,17 +9,18 @@ class Shell {
 	private static $schemes = array('http', 'https', 'tel', 'mailto', 'tg', 'viber');
 
 	/**
-	 * Escapes a value for HTML output.
+	 * Escapes a value for HTML output. Admin POST data reaches the settings already entity-encoded
+	 * (core Request::clean), so it is decoded first: "A &amp; B" and "A & B" both print as "A &amp; B".
 	 */
 	public static function e($value) {
-		return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+		return htmlspecialchars(htmlspecialchars_decode((string)$value, ENT_QUOTES), ENT_QUOTES, 'UTF-8');
 	}
 
 	/**
 	 * Returns an escaped URL when its scheme is allowed (or it is site-relative), otherwise ''.
 	 */
 	public static function safeUrl($url) {
-		$url = trim((string)$url);
+		$url = htmlspecialchars_decode(trim((string)$url), ENT_QUOTES);
 
 		if ($url === '') {
 			return '';
@@ -66,7 +67,10 @@ class Shell {
 	public static function parseGroups($text) {
 		$out = array();
 
-		foreach (preg_split('/(\r\n|\r|\n){2,}/', trim((string)$text)) as $block) {
+		// Browsers submit textareas with CRLF: normalise first, otherwise a single CRLF would look like an empty line.
+		$text = str_replace(array("\r\n", "\r"), "\n", (string)$text);
+
+		foreach (preg_split('/\n[ \t]*\n/', trim($text)) as $block) {
 			$lines = preg_split('/\r\n|\r|\n/', trim($block));
 			$title = trim((string)array_shift($lines));
 

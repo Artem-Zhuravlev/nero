@@ -20,6 +20,10 @@ final class ShellTest extends TestCase
         $this->assertSame('&lt;b&gt;Plain&lt;/b&gt;', $links[2]['text']);
         $this->assertSame('tel:+380441234567', $links[3]['href']);
         $this->assertSame('', \Ocs\Shell::safeUrl('//evil.example'));
+        // regression (live run): settings arrive entity-encoded from core, no double escaping
+        $this->assertSame('/p?a=1&amp;b=2', \Ocs\Shell::safeUrl('/p?a=1&amp;b=2'));
+        $this->assertSame('A &amp; B &lt;i&gt;', \Ocs\Shell::e('A &amp; B <i>'));
+        $this->assertSame('', \Ocs\Shell::safeUrl('java&#115;cript:alert(1)'));
         $this->assertSame('https://t.me/x?a=1&amp;b=2', \Ocs\Shell::safeUrl('https://t.me/x?a=1&b=2'));
 
         $phones = \Ocs\Shell::parsePhones("044 333 64 18\n+38 (0 800) 507 800");
@@ -50,6 +54,12 @@ final class ShellTest extends TestCase
         $this->assertSame('Customers', $g[0]['title']);
         $this->assertCount(2, $g[0]['links']);
         $this->assertSame('/kyiv', $g[1]['links'][0]['href']);
+
+        // regression (live run): textareas arrive with CRLF, a single CRLF must not split a group
+        $crlf = \Ocs\Shell::parseGroups("Customers\r\nDelivery|/delivery\r\nReturns|/returns\r\n\r\nStores\r\nKyiv|/kyiv\r\n");
+        $this->assertCount(2, $crlf);
+        $this->assertCount(2, $crlf[0]['links']);
+        $this->assertSame('Stores', $crlf[1]['title']);
 
         $m = \Ocs\Shell::messengers(['telegram' => 'https://t.me/shop', 'viber' => 'javascript:x', 'messenger' => '']);
         $this->assertCount(1, $m);
