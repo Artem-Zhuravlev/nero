@@ -1,5 +1,6 @@
 {# @core-file catalog/view/theme/default/template/product/product.twig @core-version 3.0.3.7 #}
 {{ header }}
+<div class="ocs-sticky-buy" id="ocs-sticky-buy" hidden aria-hidden="true"><div class="container ocs-sticky-inner">{% if thumb %}<img src="{{ thumb }}" alt="" width="40" height="40" />{% endif %}<strong>{{ heading_title }}</strong>{% if price %}<span class="ocs-sticky-price">{{ special ? special : price }}</span>{% endif %}<button type="button" class="btn btn-primary" data-ocs-buy>{{ button_cart }}</button></div></div>
 <div id="product-product" class="container">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}

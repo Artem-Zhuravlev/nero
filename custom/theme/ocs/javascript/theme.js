@@ -1332,7 +1332,7 @@
 		}
 
 		var every = reduced ? 0 : (parseInt(root.getAttribute('data-autoplay'), 10) || 0);
-		var single = root.classList.contains('ocs-hero');
+		var single = root.classList.contains('ocs-hero') && !root.classList.contains('ocs-hero-multi');
 		var items = track.children;
 
 		root.classList.add('swiper-container');
@@ -1403,6 +1403,7 @@
 		});
 
 		root.swiper = swiper;
+		root.ocsRefresh = refresh;
 		buttons();
 	}
 
@@ -1586,10 +1587,19 @@
 			return;
 		}
 
+		// a skeleton opens at once; the real body replaces it when it arrives (REQ-VIS-009)
+		var shell = document.createElement('div');
+
+		shell.innerHTML = '<div class="ocs-skel" aria-busy="true"><span class="ocs-skel-img"></span><span class="ocs-skel-line"></span><span class="ocs-skel-line w-60"></span><span class="ocs-skel-line w-60"></span><span class="ocs-skel-btn"></span></div>';
+
+		OCS.modal.open({content: shell, closeLabel: ''});
+
 		window.fetch(url + (url.indexOf('?') === -1 ? '?' : '&') + 'product_id=' + encodeURIComponent(id), {credentials: 'same-origin'}).then(function (r) {
 			return r.text();
 		}).then(function (html) {
 			if (!html) {
+				OCS.modal.close();
+
 				return;
 			}
 
@@ -1598,6 +1608,9 @@
 			holder.innerHTML = html;
 
 			var root = holder.querySelector('.ocs-qv');
+
+			OCS.modal.close();
+
 			var dialog = OCS.modal.open({content: holder, closeLabel: root ? root.getAttribute('data-close') : '', labelledBy: 'ocs-qv-title'});
 			var slides = dialog.querySelector('.ocs-qv-slides');
 
@@ -1728,6 +1741,174 @@
 		} else {
 			window.addEventListener('resize', set);
 		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
+
+/* Header action counters (SPEC-039 REQ-VIS-002): core and the cart panel write the counts as text ("Wish List (3)", "3 item(s) - 10.00");
+   the badges and the cart label mirror them, so nothing of the core markup has to change. */
+(function (window, document) {
+	'use strict';
+
+	function digits(text) {
+		var m = /(\d+)/.exec(text || '');
+
+		return m ? m[1] : '0';
+	}
+
+	function boot() {
+		var wish = document.getElementById('wishlist-total');
+		var compare = document.getElementById('compare-total');
+		var cartWrap = document.querySelector('.ocs-head-cart');
+
+		function mirrorLink(src, link) {
+			if (!src || !link) {
+				return;
+			}
+
+			function set() {
+				var n = digits(src.textContent);
+
+				link.setAttribute('data-count', n === '0' ? '0' : (parseInt(n, 10) > 99 ? '99+' : n));
+			}
+
+			set();
+
+			if (window.MutationObserver) {
+				new window.MutationObserver(set).observe(src, {childList: true, characterData: true, subtree: true});
+			}
+		}
+
+		mirrorLink(wish && wish.querySelector('.ocs-sr'), wish);
+		mirrorLink(compare, document.getElementById('ocs-compare-link'));
+
+		var btn = cartWrap && cartWrap.querySelector('#cart > button');
+
+		if (!btn) {
+			return;
+		}
+
+		var obs = null;
+
+		function render() {
+			var n = digits((btn.querySelector('#cart-total') || btn).textContent);
+
+			cartWrap.setAttribute('data-count', n);
+			cartWrap.setAttribute('data-badge', parseInt(n, 10) > 99 ? '99+' : n);
+
+			if (!btn.querySelector('.ocs-act-label')) {
+				var label = document.createElement('small');
+
+				label.className = 'ocs-act-label';
+				label.textContent = cartWrap.getAttribute('data-label') || '';
+
+				if (obs) {
+					obs.disconnect();
+				}
+
+				btn.appendChild(label);
+
+				if (obs) {
+					obs.observe(btn, {childList: true, subtree: true, characterData: true});
+				}
+			}
+		}
+
+		render();
+
+		if (window.MutationObserver) {
+			obs = new window.MutationObserver(render);
+			obs.observe(btn, {childList: true, subtree: true, characterData: true});
+		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
+
+/* Tabs of a product shelf (SPEC-039 REQ-VIS-003): the chips switch server-rendered panels; a carousel that was hidden is measured again when it appears. */
+(function (document) {
+	'use strict';
+
+	document.addEventListener('click', function (e) {
+		var chip = e.target.closest ? e.target.closest('[data-ocs-tab]') : null;
+
+		if (!chip) {
+			return;
+		}
+
+		var box = chip.closest('.ocs-pcarousel');
+		var index = chip.getAttribute('data-ocs-tab');
+
+		[].forEach.call(box.querySelectorAll('[data-ocs-tab]'), function (c) {
+			var on = c === chip;
+
+			c.classList.toggle('is-active', on);
+			c.setAttribute('aria-selected', on ? 'true' : 'false');
+		});
+
+		[].forEach.call(box.querySelectorAll('[data-ocs-panel]'), function (p) {
+			var on = p.getAttribute('data-ocs-panel') === index;
+
+			p.hidden = !on;
+
+			if (on) {
+				var car = p.querySelector('.ocs-carousel');
+
+				if (car && car.ocsRefresh) {
+					car.ocsRefresh();
+				}
+			}
+		});
+	});
+}(document));
+
+/* Sticky product summary (SPEC-039 REQ-VIS-006): shown after the buy button has scrolled above the viewport; its button repeats the page's own. */
+(function (window, document) {
+	'use strict';
+
+	function boot() {
+		var bar = document.getElementById('ocs-sticky-buy');
+		var anchor = document.getElementById('product');
+
+		if (!bar || !anchor || !window.IntersectionObserver) {
+			return;
+		}
+
+		bar.hidden = false;
+
+		new window.IntersectionObserver(function (entries) {
+			var e = entries[0];
+			var on = !e.isIntersecting && e.boundingClientRect.bottom < 0;
+
+			bar.classList.toggle('is-on', on);
+			bar.setAttribute('aria-hidden', on ? 'false' : 'true');
+		}).observe(anchor);
+
+		bar.querySelector('[data-ocs-buy]').addEventListener('click', function () {
+			var buttons = anchor.querySelectorAll('#button-cart, .ocs-out-only, .ocs-req-btn');
+			var target = null;
+
+			[].forEach.call(buttons, function (b) {
+				if (!target && !b.hidden && b.offsetParent !== null) {
+					target = b;
+				}
+			});
+
+			if (target) {
+				target.click();
+			} else {
+				anchor.scrollIntoView({behavior: 'smooth', block: 'center'});
+			}
+		});
 	}
 
 	if (document.readyState === 'loading') {
@@ -1920,11 +2101,17 @@
 			prompt.hidden = true;
 		}
 
-		document.querySelectorAll('.ocs-city-strip .ocs-city-btn').forEach(function (b) {
+		document.querySelectorAll('.ocs-city-top').forEach(function (b) {
 			b.setAttribute('data-city', cityId);
 
 			if (label) {
-				b.innerHTML = '<i class="fa fa-map-marker"></i> ' + label;
+				var icon = b.querySelector('svg');
+
+				while (b.lastChild && b.lastChild !== icon) {
+					b.removeChild(b.lastChild);
+				}
+
+				b.appendChild(document.createTextNode(' ' + label));
 			}
 		});
 
@@ -1971,7 +2158,7 @@
 
 	function boot() {
 		var prompt = document.getElementById('ocs-city-prompt');
-		var btn = document.querySelector('.ocs-city-strip .ocs-city-btn');
+		var btn = document.querySelector('.ocs-city-top');
 
 		if (prompt && !getCookie('ocs_city_ok')) {
 			prompt.hidden = false;

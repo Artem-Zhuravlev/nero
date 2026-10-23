@@ -34,6 +34,22 @@
             <div class="col-sm-4"><input type="number" name="module_ocs_home_slider_autoplay" value="{{ module_ocs_home_slider_autoplay }}" id="input-autoplay" min="0" max="30000" step="500" class="form-control" /></div>
           </div>
           <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-menu"><span data-toggle="tooltip" title="{{ help_menu }}">{{ entry_menu }}</span></label>
+            <div class="col-sm-4">
+              <select name="module_ocs_home_slider_menu" id="input-menu" class="form-control">
+                <option value="1"{% if module_ocs_home_slider_menu %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_home_slider_menu %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+            <label class="col-sm-2 control-label" for="input-multi"><span data-toggle="tooltip" title="{{ help_multi }}">{{ entry_multi }}</span></label>
+            <div class="col-sm-4">
+              <select name="module_ocs_home_slider_multi" id="input-multi" class="form-control">
+                <option value="1"{% if module_ocs_home_slider_multi %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_home_slider_multi %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="col-sm-2 control-label" for="input-tiles"><span data-toggle="tooltip" title="{{ help_tiles }}">{{ entry_tiles }}</span></label>
             <div class="col-sm-4">
               <select name="module_ocs_home_slider_tiles" id="input-tiles" class="form-control">

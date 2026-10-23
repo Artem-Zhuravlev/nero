@@ -28,3 +28,6 @@ $_['error_name']           = 'Module name must be between 3 and 64 characters!';
 $_['error_limit']          = 'Number of products must be from 1 to 30!';
 $_['error_ids']            = 'Enter product IDs separated by commas!';
 $_['error_mode']           = 'Unknown mode!';
+$_['entry_tabs']           = 'Category tabs';
+$_['help_tabs']            = 'One tab per line: Label|category id|mode (newest, bestsellers, discounted). Several lines turn the block into chips that switch product lists; the mode above is then ignored. Use [[word]] in the heading for an accent colour.';
+$_['error_tabs']           = 'Every tab line must look like Label|category id|mode!';

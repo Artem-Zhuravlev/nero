@@ -55,6 +55,28 @@ class ControllerExtensionModuleOcsHomeSlider extends Controller {
 			return '';
 		}
 
+		// REQ-VIS-003: the category menu stays open next to the banners (same tree as the mega menu, flyouts are pure CSS)
+		$data['menu'] = array();
+
+		if ($this->config->get('module_ocs_home_slider_menu') && $this->config->get('module_ocs_mega_menu_status')) {
+			$this->load->model('extension/ocs_menu/tree');
+
+			foreach ($this->model_extension_ocs_menu_tree->getTree(2) as $node) {
+				if (!$node['top'] || count($data['menu']) >= 14) {
+					continue;
+				}
+
+				$icon = \Ocs\CategoryTree::icon($node['icon']);
+
+				if ($icon['type'] == 'image') {
+					$icon['src'] = $this->model_tool_image->resize($icon['value'], 24, 24);
+				}
+
+				$data['menu'][] = array('name' => $node['name'], 'href' => $node['href'], 'icon' => $icon, 'children' => array_slice($node['children'], 0, 8));
+			}
+		}
+
+		$data['multi'] = (bool)$this->config->get('module_ocs_home_slider_multi');
 		$data['tiles'] = array();
 
 		if ($tiles && count($data['slides']) >= 3) {
@@ -67,7 +89,7 @@ class ControllerExtensionModuleOcsHomeSlider extends Controller {
 		$data['mobile_height'] = $mh;
 		$data['autoplay'] = max(0, min(30000, (int)$this->config->get('module_ocs_home_slider_autoplay')));
 
-		foreach (array('text_label', 'text_prev', 'text_next', 'text_slide') as $k) {
+		foreach (array('text_label', 'text_prev', 'text_next', 'text_slide', 'text_catalog') as $k) {
 			$data[$k] = $this->language->get($k);
 		}
 

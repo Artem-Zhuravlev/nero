@@ -52,3 +52,20 @@ no `!important` is needed (only the reduced-motion and `[hidden]` guards keep it
 - **Units:** rem (the root is back to 16px), `clamp()` for the type and gutter scale, `dvh`, `aspect-ratio`, logical properties,
   `color-mix()` for hover and surface tones (no new colour literals outside section 1).
 - **Sticky offsets:** `--head-h` is set from the real header height (0 when the header scrolls away on phones).
+
+## Visual identity (SPEC-039)
+
+- **Type:** Inter variable (latin + cyrillic woff2, self-hosted in `fonts/`, OFL, preloaded, `font-display: swap`) with a metric-compatible
+  fallback face; headings weight 800 with `letter-spacing: -0.02em`; prices use tabular numerals.
+- **Vendor CSS in the lowest layer:** Bootstrap 3, Swiper and Font Awesome are `@import`ed with `layer(reset)`; unlayered vendor CSS would
+  otherwise beat every theme rule. Core module CSS (magnific popup, date picker) stays unlayered; it only targets its own classes.
+- **Icons:** the SVG sprite `ocs/template/ocs/sprite.twig` (`<svg class="ocs-i"><use href="#i-cart"/></svg>`, stroke icons coloured by
+  `currentColor`); Font Awesome stays for core and third-party markup.
+- **Header:** slim utility row (city, "Contacts" dropdown, links, language, currency) + main row (logo, catalogue pill, search, labelled
+  actions). Counters are mirrored by `theme.js` from the core text into `data-count` badges; the core cart button keeps its markup (an icon
+  mask and a JS label take over), and labels are `<small>` because core rewrites every `<span>` inside `#wishlist-total`.
+- **Card:** overlay tools (wishlist, compare) revealed on hover/focus (always on touch), product code, stock dot, price row with a round cart
+  button; seven subgrid rows (image, title, text, rating, stock, price row, quick order).
+- **Home:** category menu column (CSS-only flyouts), multi-banner carousel, promo tiles, benefits strip, brand strip, chips-driven product
+  shelf (`Label|category|mode` lines), `[[word]]` accent in module titles.
+- **Demo data:** `php -d extension=mysqli scripts/seed-demo.php` switches the blocks on and fills a LOCAL stand (refuses unless APP_ENV=local).

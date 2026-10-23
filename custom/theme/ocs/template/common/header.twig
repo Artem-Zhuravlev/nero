@@ -33,7 +33,9 @@
 <script src="catalog/view/javascript/jquery/jquery-2.1.1.min.js" type="text/javascript"></script>
 <!-- Bootstrap 3 CSS is imported into the lowest cascade layer by the theme stylesheet (SPEC-038) -->
 <script src="catalog/view/javascript/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<link href="catalog/view/javascript/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<!-- Font Awesome CSS is imported into the lowest cascade layer by the theme stylesheet (SPEC-039) -->
+<link rel="preload" href="catalog/view/theme/ocs/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="catalog/view/theme/ocs/fonts/inter-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link href="catalog/view/theme/ocs/stylesheet/stylesheet.css?v={{ asset_version }}" rel="stylesheet">
 <!-- Swiper CSS is imported into the lowest cascade layer by the theme stylesheet (SPEC-038) -->
 <script src="catalog/view/javascript/jquery/swiper/js/swiper.jquery.min.js" type="text/javascript"></script>
@@ -57,6 +59,7 @@
 {% endfor %}
 </head>
 <body{% if ocs_cart %} data-ocs-cart="{{ ocs_cart.url }}"{% endif %}{% if ocs_qv %} data-ocs-qv="{{ ocs_qv.url }}" data-ocs-qv-label="{{ ocs_qv.label }}"{% endif %}>
+{% include 'ocs/template/ocs/sprite.twig' %}
 {% if ocs_shell and ocs_shell.announcement %}
 <div class="ocs-announce" id="ocs-announce" data-id="{{ ocs_shell.announcement.id }}" role="region" aria-label="{{ ocs_shell.t.ocs_announce }}">
   <div class="container">
@@ -65,32 +68,33 @@
   </div>
 </div>
 {% endif %}
-<nav id="top" class="ocs-util">
+<nav id="top" class="ocs-util" aria-label="{{ text_account }}">
   <div class="container">
-{{ currency }}
-    {{ language }}
-	{{ blog_menu }}
     {% if ocs_city %}
-    <ul class="list-inline ocs-city-strip">
-      <li><button type="button" class="ocs-city-btn" data-ocs-city-open="1" data-city="{{ ocs_city.id }}" data-select="{{ ocs_city.select_url }}"><i class="fa fa-map-marker"></i> {{ ocs_city.name }}</button></li>
-      <li class="hidden-xs hidden-sm"><a href="{{ ocs_city.stores }}">{{ ocs_city.stores_text }}</a></li>
-      {% if ocs_city.track %}<li class="hidden-xs hidden-sm"><a href="{{ ocs_city.track }}">{{ ocs_city.track_text }}</a></li>{% endif %}
-    </ul>
+    <button type="button" class="ocs-city-btn ocs-city-top" data-ocs-city-open="1" data-city="{{ ocs_city.id }}" data-select="{{ ocs_city.select_url }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-pin"/></svg> {{ ocs_city.name }}</button>
+    {% endif %}
+    {% if ocs_shell and (ocs_shell.phones or ocs_shell.messengers) %}
+    <div class="dropdown ocs-contact">
+      <button type="button" class="ocs-util-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">{{ ocs_shell.t.ocs_contacts }} <svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+      <ul class="dropdown-menu">
+        {% for phone in ocs_shell.phones %}<li><a href="{{ phone.href }}" class="ocs-phone"><svg class="ocs-i" aria-hidden="true"><use href="#i-phone"/></svg> {{ phone.text }}</a></li>{% endfor %}
+        {% for messenger in ocs_shell.messengers %}<li><a href="{{ messenger.href }}" class="ocs-msg ocs-msg-{{ messenger.key }}" target="_blank" rel="noopener">{{ messenger.name }}</a></li>{% endfor %}
+        {% if ocs_shell.hours %}<li class="ocs-hours-row">{{ ocs_shell.hours }}</li>{% endif %}
+      </ul>
+    </div>
     {% endif %}
     {% if ocs_shell %}
     <ul class="list-inline ocs-strip">
       {% for link in ocs_shell.links %}
       <li>{% if link.href %}<a href="{{ link.href }}">{{ link.text }}</a>{% else %}<span>{{ link.text }}</span>{% endif %}</li>
       {% endfor %}
-      {% for messenger in ocs_shell.messengers %}
-      <li><a href="{{ messenger.href }}" class="ocs-msg ocs-msg-{{ messenger.key }}" target="_blank" rel="noopener">{{ messenger.name }}</a></li>
-      {% endfor %}
-      {% for phone in ocs_shell.phones %}
-      <li><a href="{{ phone.href }}" class="ocs-phone"><i class="fa fa-phone"></i> {{ phone.text }}</a></li>
-      {% endfor %}
-      {% if ocs_shell.hours %}<li class="ocs-hours hidden-xs hidden-sm">{{ ocs_shell.hours }}</li>{% endif %}
+      {% if ocs_city %}
+      <li class="hidden-xs hidden-sm"><a href="{{ ocs_city.stores }}">{{ ocs_city.stores_text }}</a></li>
+      {% if ocs_city.track %}<li class="hidden-xs hidden-sm"><a href="{{ ocs_city.track }}">{{ ocs_city.track_text }}</a></li>{% endif %}
+      {% endif %}
     </ul>
     {% endif %}
+    <div class="ocs-util-end">{{ blog_menu }}{{ language }}{{ currency }}</div>
   </div>
 {% if ocs_city %}
 <div class="ocs-city-prompt" id="ocs-city-prompt" hidden role="region" aria-label="{{ ocs_city.prompt }}">
@@ -115,33 +119,27 @@
     </div>
     <div class="ocs-head-cat">{{ menu }}</div>
     <div class="ocs-head-search">{{ search }}</div>
-    <div class="ocs-head-actions">
-      <div id="top-links" class="nav pull-right">
-            <ul class="list-inline">
-              <li><a href="{{ contact }}"><i class="fa fa-phone"></i></a> <span class="hidden-xs hidden-sm hidden-md">{{ telephone }}</span></li>
-              <li class="dropdown"><a href="{{ account }}" title="{{ text_account }}" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_account }}</span> <span class="caret"></span></a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                  {% if logged %}
-                  <li><a href="{{ account }}">{{ text_account }}</a></li>
-                  <li><a href="{{ order }}">{{ text_order }}</a></li>
-                  <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
-                  <li><a href="{{ download }}">{{ text_download }}</a></li>
-                  <li><a href="{{ logout }}">{{ text_logout }}</a></li>
-                  {% else %}
-                  <li><a href="{{ register }}">{{ text_register }}</a></li>
-                  <li><a href="{{ login }}">{{ text_login }}</a></li>
-                  {% endif %}
-                </ul>
-              </li>
-              <li><a href="{{ wishlist }}" id="wishlist-total" title="{{ text_wishlist }}"><i class="fa fa-heart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_wishlist }}</span></a></li>
-              {% if ocs_shell %}
-              <li><a href="{{ ocs_shell.compare }}" title="{{ ocs_shell.compare_text }}"><i class="fa fa-exchange"></i> <span id="compare-total" class="hidden-xs hidden-sm hidden-md">{{ ocs_shell.compare_text }}</span></a></li>
-              {% endif %}
-              <li><a href="{{ shopping_cart }}" title="{{ text_shopping_cart }}"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_shopping_cart }}</span></a></li>
-              <li><a href="{{ checkout }}" title="{{ text_checkout }}"><i class="fa fa-share"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_checkout }}</span></a></li>
-            </ul>
+    <div class="ocs-head-actions" id="top-links">
+      <div class="dropdown ocs-act">
+        <a href="{{ account }}" class="ocs-act-btn dropdown-toggle" data-toggle="dropdown" title="{{ text_account }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg><small class="ocs-act-label">{{ logged ? text_account : text_login }}</small></a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          {% if logged %}
+          <li><a href="{{ account }}">{{ text_account }}</a></li>
+          <li><a href="{{ order }}">{{ text_order }}</a></li>
+          <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
+          <li><a href="{{ download }}">{{ text_download }}</a></li>
+          <li><a href="{{ logout }}">{{ text_logout }}</a></li>
+          {% else %}
+          <li><a href="{{ register }}">{{ text_register }}</a></li>
+          <li><a href="{{ login }}">{{ text_login }}</a></li>
+          {% endif %}
+        </ul>
       </div>
-      <div class="ocs-head-cart">{{ cart }}</div>
+      {% if ocs_shell %}
+      <a href="{{ ocs_shell.compare }}" class="ocs-act ocs-act-btn" id="ocs-compare-link" title="{{ ocs_shell.compare_text }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg><small class="ocs-act-label">{{ (ocs_shell.compare_text|split(' ('))[0] }}</small><span id="compare-total" class="ocs-sr">{{ ocs_shell.compare_text }}</span></a>
+      {% endif %}
+      <a href="{{ wishlist }}" class="ocs-act ocs-act-btn" id="wishlist-total" title="{{ text_wishlist }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg><small class="ocs-act-label">{{ (text_wishlist|split(' ('))[0] }}</small><span class="ocs-sr">{{ text_wishlist }}</span></a>
+      <div class="ocs-act ocs-head-cart" data-label="{{ text_shopping_cart }}">{{ cart }}</div>
     </div>
   </div>
 </header>

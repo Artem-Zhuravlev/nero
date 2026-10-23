@@ -5,3 +5,4 @@ $_['text_label'] = 'Promotions';
 $_['text_prev']  = 'Previous slide';
 $_['text_next']  = 'Next slide';
 $_['text_slide'] = 'Slide';
+$_['text_catalog']       = 'Product catalogue';

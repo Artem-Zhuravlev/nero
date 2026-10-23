@@ -1,4 +1,4 @@
-{# Product card partial for listing overrides (SPEC-034 REQ-LST-010, 012). Core has no product/thumb.twig; the markup is derived from the inlined card of product/category.twig. #}
+{# Product card partial for listing overrides (SPEC-034 REQ-LST-010, 012; SPEC-039 REQ-VIS-004). Core has no product/thumb.twig; the markup is derived from the inlined card of product/category.twig. #}
 {# Context: product, text_tax, button_cart, button_wishlist, button_compare. Extra keys added by ocs_listing events: model, reviews, discount_pct. #}
 <div class="product-layout product-list col-xs-12" data-product-id="{{ product.product_id }}">
   <div class="product-thumb">
@@ -6,31 +6,34 @@
       <div class="ocs-slot ocs-slot-tl" data-product-id="{{ product.product_id }}">{% for s in product.stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-tr" data-product-id="{{ product.product_id }}">{% for s in product.stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl" data-product-id="{{ product.product_id }}">{% for s in product.stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
 
       {% if product.discount_pct and not product.stickers %}<span class="ocs-badge ocs-badge-discount">-{{ product.discount_pct }}%</span>{% endif %}
-      <a href="{{ product.href }}"><img src="{{ product.thumb }}" loading="lazy" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a>
+      {% if product.model %}<span class="ocs-code">{{ product.model }}</span>{% endif %}
+      <div class="ocs-card-tools">
+        <button type="button" class="ocs-tool" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>
+        <button type="button" class="ocs-tool" title="{{ button_compare }}" aria-label="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
+      </div>
+      <a href="{{ product.href }}" class="ocs-card-img"><img src="{{ product.thumb }}" loading="lazy" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a>
     </div>
     <div>
       <div class="caption">
-        {% if product.model %}<div class="ocs-code">{{ product.model }}</div>{% endif %}
         <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
         <p class="ocs-desc">{{ product.description }}</p>
-        {% if product.ocs_stock %}<div class="ocs-stock ocs-stock-{{ product.ocs_stock.state }}">{{ product.ocs_stock.label }}</div>{% endif %}
-        {% if product.price %}
-        <p class="price"> {% if not product.special %}
-          {{ product.price }}
-          {% else %} <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span> {% endif %}
-          {% if product.tax %} <span class="price-tax">{{ text_tax }} {{ product.tax }}</span> {% endif %} </p>
-        {% endif %}
         {% if product.rating %}
         <div class="rating"> {% for i in 1..5 %}
           {% if product.rating < i %} <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> {% else %} <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>{% endif %}
           {% endfor %}{% if product.reviews %} <span class="ocs-reviews">({{ product.reviews }})</span>{% endif %} </div>
-        {% endif %} </div>
-      {% if ocs_quick %}<div class="ocs-quick-card"><button type="button" class="btn btn-default btn-sm btn-block ocs-req-btn ocs-quick-btn" data-form="{{ ocs_quick.form }}" data-product-id="{{ product.product_id }}">{{ ocs_quick.text }}</button></div>{% endif %}
-      <div class="button-group">
-        <button type="button" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ button_cart }}</span></button>
-        <button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button>
-        <button type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="fa fa-exchange"></i></button>
+        {% endif %}
+        {% if product.ocs_stock %}<div class="ocs-stock ocs-stock-{{ product.ocs_stock.state }}"><i class="ocs-dot" aria-hidden="true"></i>{{ product.ocs_stock.label }}</div>{% endif %}
+        <div class="ocs-buy-row">
+          {% if product.price %}
+          <p class="price"> {% if not product.special %}
+            <span class="price-cur">{{ product.price }}</span>
+            {% else %} <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span> {% endif %}
+            {% if product.tax %} <span class="price-tax">{{ text_tax }} {{ product.tax }}</span> {% endif %} </p>
+          {% endif %}
+          <button type="button" class="ocs-cart-btn" title="{{ button_cart }}" aria-label="{{ button_cart }}" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg></button>
+        </div>
       </div>
+      {% if ocs_quick %}<div class="ocs-quick-card"><button type="button" class="ocs-req-btn ocs-quick-btn ocs-link-btn" data-form="{{ ocs_quick.form }}" data-product-id="{{ product.product_id }}">{{ ocs_quick.text }}</button></div>{% endif %}
     </div>
   </div>
 </div>

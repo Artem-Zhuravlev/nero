@@ -113,6 +113,7 @@
       {% if ocs_listing and ocs_listing.reset %}
       <div class="ocs-active-filters"><a class="btn btn-default btn-sm" href="{{ ocs_listing.reset }}">{{ ocs_listing.t.ocs_reset }}</a></div>
       {% endif %}
+      <div class="ocs-sortchips ocs-chips" role="group" aria-label="{{ text_sort }}">{% for s in sorts %}<a class="ocs-chip{% if s.value == '%s-%s'|format(sort, order) %} is-active{% endif %}" href="{{ s.href }}">{{ s.text }}</a>{% endfor %}</div>
       <div class="row" id="ocs-grid">
         {% for product in products %}
         {% include 'ocs/template/ocs/card.twig' %}

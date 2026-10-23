@@ -1,6 +1,26 @@
 {# Extension: ocs_home_slider. Hero slider (SPEC-033 REQ-HOM-001); behaviour: OCS.carousel in theme.js. #}
-<div class="ocs-hero-wrap{% if tiles %} has-tiles{% endif %}">
-<section class="ocs-hero ocs-carousel" data-autoplay="{{ autoplay }}" role="region" aria-roledescription="carousel" aria-label="{{ text_label }}">
+<div class="ocs-hero-wrap{% if tiles %} has-tiles{% endif %}{% if menu %} has-menu{% endif %}">
+{% if menu %}
+<nav class="ocs-home-menu" aria-label="{{ text_catalog }}">
+  <ul>
+    {% for c in menu %}
+    <li>
+      <a href="{{ c.href }}" class="ocs-home-link">{% if c.icon.type == 'fa' %}<i class="fa {{ c.icon.value }}" aria-hidden="true"></i>{% elseif c.icon.type == 'image' %}<img src="{{ c.icon.src }}" alt="" width="24" height="24" loading="lazy" />{% else %}<i class="fa fa-angle-right" aria-hidden="true"></i>{% endif %}<span>{{ c.name }}</span>{% if c.children %}<svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-right"/></svg>{% endif %}</a>
+      {% if c.children %}
+      <div class="ocs-home-fly">
+        {% for g in c.children %}
+        <div class="ocs-home-group"><a class="ocs-home-gtitle" href="{{ g.href }}">{{ g.name }}</a>
+          {% if g.children %}<ul>{% for l in g.children|slice(0, 6) %}<li><a href="{{ l.href }}">{{ l.name }}</a></li>{% endfor %}</ul>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}
+<section class="ocs-hero ocs-carousel{% if multi %} ocs-hero-multi{% endif %}" data-autoplay="{{ autoplay }}" role="region" aria-roledescription="carousel" aria-label="{{ text_label }}">
   <div class="ocs-carousel-track">
     {% for s in slides %}
     <div class="ocs-carousel-item" role="group" aria-roledescription="slide" aria-label="{{ loop.index }} / {{ slides|length }}">

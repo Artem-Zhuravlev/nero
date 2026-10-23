@@ -649,7 +649,7 @@ test('city extension: manifest matches migration and language files have identic
 test('city selector: header, product slot, theme.js and css hooks are consistent', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
   const header = read('custom/theme/ocs/template/common/header.twig');
-  for (const hook of ['id="ocs-city-prompt"', 'data-ocs-city-yes', 'data-ocs-city-open', 'ocs-city-strip']) assert.ok(header.includes(hook), hook);
+  for (const hook of ['id="ocs-city-prompt"', 'data-ocs-city-yes', 'data-ocs-city-open', 'ocs-city-top']) assert.ok(header.includes(hook), hook);
   assert.ok(read('custom/theme/ocs/template/product/product.twig').includes('id="ocs-delivery-wrap"'));
   const js = read('custom/theme/ocs/javascript/theme.js');
   for (const hook of ['ocs-delivery-wrap', 'ocs-city-choice', 'ocs-city-search', 'ocs_city_ok']) assert.ok(js.includes(hook), hook);
@@ -865,9 +865,9 @@ test('modern layout: header grid with container queries', () => {
 
 // TEST-LAY-003 - verifies REQ-LAY-004, REQ-LAY-005, REQ-LAY-012 (card is a container; listing rows align through subgrid behind @supports)
 test('modern layout: card container queries and subgrid listing', () => {
-  for (const rule of ['.product-layout { container: card / inline-size;', '@container card (max-width: 12.5rem)', '@container card (min-width: 36rem)', '@supports (grid-template-rows: subgrid)', 'grid-template-rows: subgrid', 'grid-row: span 9', 'repeat(auto-fill, minmax(min(100%, var(--card-min)), 1fr))']) assert.ok(css.includes(rule), rule);
+  for (const rule of ['.product-layout { container: card / inline-size;', '@container card (max-width: 12.5rem)', '@container card (min-width: 36rem)', '@supports (grid-template-rows: subgrid)', 'grid-template-rows: subgrid', 'grid-row: span 7', 'repeat(auto-fill, minmax(min(100%, var(--card-min)), 1fr))']) assert.ok(css.includes(rule), rule);
   const sub = css.slice(css.indexOf('@supports (grid-template-rows: subgrid)'));
-  assert.ok(sub.indexOf('grid-template-rows: subgrid') > 0 && sub.includes('.product-thumb .price { grid-row: 6; }'), 'rows are placed explicitly, so a missing rating cannot shift the price row');
+  assert.ok(sub.indexOf('grid-template-rows: subgrid') > 0 && sub.includes('.product-thumb .ocs-buy-row { grid-row: 6; }'), 'rows are placed explicitly, so a missing rating cannot shift the price row');
 });
 
 // TEST-LAY-004 - verifies REQ-LAY-006 (home grid by container width, promo tiles, benefits strip module)
@@ -906,4 +906,101 @@ test('modern layout: product page grid keeps the core hooks', () => {
 test('modern layout: footer subgrid, dialog containers and the stylesheet budget', () => {
   for (const rule of ['footer { container: foot / inline-size;', 'grid-template-columns: subgrid', '@container foot (max-width: 62rem)', '.ocs-modal-dialog { container: dialog / inline-size; }', '@container dialog (min-width: 44rem)', ':has(.ocs-qv)']) assert.ok(css.includes(rule), rule);
   assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'stylesheet within 200 KB');
+});
+
+// TEST-VIS-001 - verifies REQ-VIS-001 (Inter is self-hosted: latin + cyrillic woff2 files, licence note, preload, swap, metric fallback)
+test('visual identity: Inter is self-hosted with preload, swap and a metric-compatible fallback', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  for (const file of ['inter-latin.woff2', 'inter-cyrillic.woff2']) {
+    const bytes = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/fonts', file));
+    assert.equal(bytes.subarray(0, 4).toString('latin1'), 'wOF2', file);
+    assert.ok(bytes.length < 80 * 1024, file + ' stays small');
+  }
+  assert.match(read('custom/theme/ocs/fonts/README.txt'), /SIL Open Font License/);
+  assert.match(css, /font-family: "Inter"; font-style: normal; font-weight: 400 800; font-display: swap;/);
+  assert.match(css, /unicode-range: U\+0301, U\+0400-045F/);
+  assert.match(css, /@font-face \{ font-family: "Inter Fallback"; src: local\("Arial"\)/);
+  assert.match(css, /--font: "Inter", "Inter Fallback"/);
+  const header = read('custom/theme/ocs/template/common/header.twig');
+  assert.ok(header.includes('inter-latin.woff2') && header.includes('inter-cyrillic.woff2') && header.includes('rel="preload"'));
+  assert.ok(!/fonts\.(googleapis|gstatic)\.com/.test(css + header), 'no third-party font request');
+  assert.ok(css.includes('font-variant-numeric: tabular-nums'));
+});
+
+// TEST-VIS-002 - verifies REQ-VIS-007 (base components are restyled inside the components layer)
+test('visual identity: Bootstrap components are re-skinned in the components layer', () => {
+  const start = css.indexOf('/* ==== 36. SPEC-039 base components');
+  const end = css.indexOf('/* ==== 37.');
+  assert.ok(start > 0 && end > start);
+  const block = css.slice(start, end);
+  for (const sel of ['.btn {', '.btn-primary {', '.btn-default', '.form-control', '.dropdown-menu {', '.nav-tabs', '.breadcrumb {', '.pagination', '.panel {', '.table', '.alert {', '.tooltip-inner']) assert.ok(block.includes(sel), sel);
+  assert.ok(block.includes('outline: 2px solid var(--focus)'), 'focus ring');
+  assert.match(block, /box-shadow: 0 0 0 3px color-mix\(in srgb, var\(--accent\) 20%, transparent\)/);
+});
+
+// TEST-VIS-003 - verifies REQ-VIS-004 (card: tools overlay, code, round cart button, stock dot; hooks of the core JS kept)
+test('visual identity: product card markup and styles', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const card = read('custom/theme/ocs/template/ocs/card.twig');
+  for (const hook of ['ocs-card-tools', 'ocs-tool', 'class="ocs-code"', 'ocs-buy-row', 'ocs-cart-btn', 'ocs-dot', "wishlist.add('{{ product.product_id }}')", "compare.add('{{ product.product_id }}')", "cart.add('{{ product.product_id }}'", 'ocs-quick-btn', 'loading="lazy"']) assert.ok(card.includes(hook), hook);
+  for (const rule of ['.ocs-tool {', '.ocs-cart-btn {', '.ocs-card-tools {', '@media (hover: none) { .ocs-tool', '@container card (max-width: 12.5rem)']) assert.ok(css.includes(rule), rule);
+});
+
+// TEST-VIS-004 - verifies REQ-VIS-002, REQ-VIS-008 (header: sprite, labelled actions with badges, core ids kept; counters mirrored by JS)
+test('visual identity: header actions, sprite and counter mirror', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const header = read('custom/theme/ocs/template/common/header.twig');
+  for (const hook of ["include 'ocs/template/ocs/sprite.twig'", 'class="ocs-head-actions" id="top-links"', 'id="wishlist-total"', 'id="compare-total"', 'ocs-head-cart', 'ocs-city-top', 'ocs-contact', 'data-label="{{ text_shopping_cart }}"']) assert.ok(header.includes(hook), hook);
+  assert.ok(!/<span class="ocs-act-label">/.test(header), 'labels are <small>: core JS rewrites every span inside #wishlist-total');
+  const sprite = read('custom/theme/ocs/template/ocs/sprite.twig');
+  for (const id of ['search', 'cart', 'heart', 'compare', 'user', 'grid', 'chevron-right', 'chevron-down', 'truck', 'shield', 'return', 'headset', 'eye', 'phone', 'pin', 'mail', 'x', 'check', 'star']) assert.ok(sprite.includes('id="i-' + id + '"'), 'icon ' + id);
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.match(js, /data-badge/);
+  assert.match(js, /getElementById\('ocs-compare-link'\)/);
+  assert.ok(css.includes('.ocs-act-btn[data-count]::after'));
+});
+
+// TEST-VIS-005 - verifies REQ-VIS-003 (home: category menu, multi banners, accent heading, tabbed shelf)
+test('visual identity: home composition pieces', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const slider = read('custom/extensions/ocs_home_slider/upload/catalog/view/theme/default/template/extension/module/ocs_home_slider.twig');
+  for (const hook of ['ocs-home-menu', 'ocs-home-fly', 'has-menu', 'ocs-hero-multi']) assert.ok(slider.includes(hook), hook);
+  const pc = read('custom/extensions/ocs_product_carousel/upload/catalog/view/theme/default/template/extension/module/ocs_product_carousel.twig');
+  for (const hook of ['data-ocs-tab', 'data-ocs-panel', 'role="tablist"', 'ocs-sec-title']) assert.ok(pc.includes(hook), hook);
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.match(js, /data-ocs-tab/);
+  assert.match(js, /ocsRefresh/);
+  for (const rule of ['.ocs-home-menu li:hover > .ocs-home-fly', '.ocs-accent', '.ocs-chip.is-active', '@container home (min-width: 76rem)']) assert.ok(css.includes(rule), rule);
+});
+
+// TEST-VIS-006 - verifies REQ-VIS-005 (category: tree sidebar, sort chips in every listing template)
+test('visual identity: category tree and sort chips', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  for (const t of ['category', 'search', 'special', 'manufacturer_info']) assert.ok(read('custom/theme/ocs/template/product/' + t + '.twig').includes('ocs-sortchips'), t);
+  for (const rule of ['.list-group-item, a.list-group-item', '.ocs-sortchips', 'a.list-group-item.active']) assert.ok(css.includes(rule), rule);
+});
+
+// TEST-VIS-007 - verifies REQ-VIS-006 (product: sticky summary bar and zebra specification table)
+test('visual identity: product sticky summary and specification table', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  assert.ok(read('custom/theme/ocs/template/product/product.twig').includes('id="ocs-sticky-buy"'));
+  assert.match(read('custom/theme/ocs/javascript/theme.js'), /getElementById\('ocs-sticky-buy'\)/);
+  assert.ok(css.includes('.ocs-sticky-buy.is-on') && css.includes('#tab-specification tbody tr:nth-child(odd) td'));
+});
+
+// TEST-VIS-008 - verifies REQ-VIS-009 (motion: keyframes, skeleton, empty state, reduced-motion switch)
+test('visual identity: motion, skeleton and empty states respect reduced motion', () => {
+  for (const rule of ['@keyframes ocs-fade', '@keyframes ocs-shimmer', '.ocs-skel', '.ocs-cart-empty::before']) assert.ok(css.includes(rule), rule);
+  const reduce = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)\n{') >= 0 ? 0 : css.lastIndexOf('@media (prefers-reduced-motion: reduce)'));
+  assert.ok(reduce.includes('.ocs-skel > span { animation: none; }'));
+  assert.match(readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8'), /ocs-skel/);
+});
+
+// TEST-VIS-009 - verifies REQ-VIS-010, REQ-VIS-021 (demo seed is local-only and idempotent; budgets)
+test('visual identity: demo seed is local-only; theme budgets hold', () => {
+  const seed = readFileSync(join(REPO_ROOT, 'scripts/seed-demo.php'), 'utf8');
+  assert.match(seed, /APP_ENV=local/);
+  assert.match(seed, /ON DUPLICATE KEY UPDATE/);
+  assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'css within 200 KB');
+  assert.ok(Buffer.byteLength(readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8')) <= 60 * 1024, 'theme.js within 60 KB');
 });

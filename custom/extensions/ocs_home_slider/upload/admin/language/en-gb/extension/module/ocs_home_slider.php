@@ -43,3 +43,7 @@ $_['error_date']         = 'Dates must be in YYYY-MM-DD format!';
 $_['error_link']         = 'The link must start with / or http(s)://!';
 $_['entry_tiles']        = 'Side promo tiles';
 $_['help_tiles']         = 'With three or more slides the last two become two promo tiles beside the slider on wide screens.';
+$_['entry_menu']         = 'Category menu beside the banners';
+$_['help_menu']          = 'Shows the main categories (from the mega menu) in a permanent column next to the slider on wide screens.';
+$_['entry_multi']        = 'Several banners at once';
+$_['help_multi']         = 'Slides keep their own width and sit side by side (tall banners work best).';

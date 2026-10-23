@@ -1,5 +1,6 @@
 <?php
 // Extension: ocs_product_carousel. Product carousel by category and mode; several instances (core module table). Owner: SPEC-033 (REQ-HOM-020).
+// SPEC-039 (REQ-VIS-003): optional category tabs ("Best in categories") and an accent word in the heading ([[word]]).
 
 class ControllerExtensionModuleOcsProductCarousel extends Controller {
 	public function index($setting) {
@@ -12,21 +13,71 @@ class ControllerExtensionModuleOcsProductCarousel extends Controller {
 		$category_id = (int)(isset($setting['category_id']) ? $setting['category_id'] : 0);
 		$manual = isset($setting['ids']) ? (string)$setting['ids'] : '';
 
-		$ids = $this->ids($mode, $category_id, $manual, $limit);
-
-		if (!$ids) {
-			return '';
-		}
-
 		$this->load->model('catalog/product');
 		$this->load->model('tool/image');
 		$this->load->language('extension/module/ocs_product_carousel');
 
+		// tabs: one panel per "label|category_id|mode" line; the panels are rendered up front, so nothing is loaded when a chip is clicked
+		$data['panels'] = array();
+
+		foreach (\Ocs\ProductCarousel::parseTabs(isset($setting['tabs']) ? $setting['tabs'] : '') as $tab) {
+			$cards = $this->cards($this->ids($tab['mode'], $tab['category_id'], '', $limit));
+
+			if ($cards) {
+				$data['panels'][] = array('label' => htmlspecialchars($tab['label'], ENT_QUOTES, 'UTF-8'), 'products' => $cards, 'href' => $tab['category_id'] ? $this->url->link('product/category', 'path=' . $tab['category_id']) : '');
+			}
+		}
+
+		$data['products'] = array();
+
+		if (!$data['panels']) {
+			$data['products'] = $this->cards($this->ids($mode, $category_id, $manual, $limit));
+
+			if (!$data['products']) {
+				return '';
+			}
+		}
+
+		$titles = isset($setting['title']) && is_array($setting['title']) ? $setting['title'] : array();
+		$code = $this->config->get('config_language_id');
+		$title = '';
+
+		foreach ($titles as $lang_id => $text) {
+			if ((int)$lang_id === (int)$code && trim((string)$text) !== '') {
+				$title = $text;
+			}
+		}
+
+		$data['heading_title'] = \Ocs\ProductCarousel::heading(html_entity_decode($title !== '' ? $title : $this->language->get('heading_title'), ENT_QUOTES, 'UTF-8'));
+		$data['lists'] = $data['panels'] ? $data['panels'] : array(array('label' => '', 'products' => $data['products'], 'href' => ''));
+		$data['show_all'] = '';
+
+		if ($category_id && !empty($setting['show_all'])) {
+			$data['show_all'] = $this->url->link('product/category', 'path=' . $category_id);
+		} elseif (!$category_id && !empty($setting['show_all']) && $mode == 'discounted') {
+			$data['show_all'] = $this->url->link('product/special');
+		}
+
+		$data['text_show_all'] = $this->language->get('text_show_all');
+		$data['text_prev'] = $this->language->get('text_prev');
+		$data['text_next'] = $this->language->get('text_next');
+		$data['text_tax'] = $this->language->get('text_tax');
+		$data['button_cart'] = $this->language->get('button_cart');
+		$data['button_wishlist'] = $this->language->get('button_wishlist');
+		$data['button_compare'] = $this->language->get('button_compare');
+		$data['uid'] = 'ocs-pc-' . substr(md5(json_encode($setting)), 0, 8);
+
+		return $this->load->view('extension/module/ocs_product_carousel', $data);
+	}
+
+	/**
+	 * Card data of the visible products among $ids, with their stickers (REQ-STK-010).
+	 */
+	private function cards($ids) {
 		$width = (int)$this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width') ?: 400;
 		$height = (int)$this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height') ?: 400;
 		$show_price = $this->customer->isLogged() || !$this->config->get('config_customer_price');
-
-		$data['products'] = array();
+		$products = array();
 
 		foreach ($ids as $product_id) {
 			$product = $this->model_catalog_product->getProduct($product_id);
@@ -49,10 +100,11 @@ class ControllerExtensionModuleOcsProductCarousel extends Controller {
 				}
 			}
 
-			$data['products'][] = array(
+			$products[] = array(
 				'product_id'   => $product['product_id'],
 				'thumb'        => $this->model_tool_image->resize($product['image'] ? $product['image'] : 'placeholder.png', $width, $height),
 				'name'         => $product['name'],
+				'model'        => $product['model'],
 				'description'  => utf8_substr(trim(strip_tags(html_entity_decode($product['description'], ENT_QUOTES, 'UTF-8'))), 0, 100) . '..',
 				'price'        => $price,
 				'special'      => $special,
@@ -64,51 +116,19 @@ class ControllerExtensionModuleOcsProductCarousel extends Controller {
 			);
 		}
 
-		if (!$data['products']) {
-			return '';
-		}
-
-		// REQ-STK-010: stickers in module blocks
-		if ($this->config->get('module_ocs_stickers_status')) {
+		if ($products && $this->config->get('module_ocs_stickers_status')) {
 			$this->load->model('extension/ocs_stickers/stickers');
 
-			$map = $this->model_extension_ocs_stickers_stickers->forProducts(array_column($data['products'], 'product_id'));
+			$map = $this->model_extension_ocs_stickers_stickers->forProducts(array_column($products, 'product_id'));
 
-			foreach ($data['products'] as $i => $card) {
+			foreach ($products as $i => $card) {
 				if (isset($map[(int)$card['product_id']])) {
-					$data['products'][$i]['stickers'] = $map[(int)$card['product_id']];
+					$products[$i]['stickers'] = $map[(int)$card['product_id']];
 				}
 			}
 		}
 
-		$titles = isset($setting['title']) && is_array($setting['title']) ? $setting['title'] : array();
-		$code = $this->config->get('config_language_id');
-		$title = '';
-
-		foreach ($titles as $lang_id => $text) {
-			if ((int)$lang_id === (int)$code && trim((string)$text) !== '') {
-				$title = $text;
-			}
-		}
-
-		$data['heading_title'] = $title !== '' ? \Ocs\OrderRequest::e($title) : $this->language->get('heading_title');
-		$data['show_all'] = '';
-
-		if ($category_id && !empty($setting['show_all'])) {
-			$data['show_all'] = $this->url->link('product/category', 'path=' . $category_id);
-		} elseif (!$category_id && !empty($setting['show_all']) && $mode == 'discounted') {
-			$data['show_all'] = $this->url->link('product/special');
-		}
-
-		$data['text_show_all'] = $this->language->get('text_show_all');
-		$data['text_prev'] = $this->language->get('text_prev');
-		$data['text_next'] = $this->language->get('text_next');
-		$data['text_tax'] = $this->language->get('text_tax');
-		$data['button_cart'] = $this->language->get('button_cart');
-		$data['button_wishlist'] = $this->language->get('button_wishlist');
-		$data['button_compare'] = $this->language->get('button_compare');
-
-		return $this->load->view('extension/module/ocs_product_carousel', $data);
+		return $products;
 	}
 
 	/**

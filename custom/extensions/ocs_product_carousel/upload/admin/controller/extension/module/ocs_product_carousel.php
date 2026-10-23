@@ -30,6 +30,7 @@ class ControllerExtensionModuleOcsProductCarousel extends Controller {
 		$data['error_name'] = isset($this->error['name']) ? $this->error['name'] : '';
 		$data['error_ids'] = isset($this->error['ids']) ? $this->error['ids'] : '';
 		$data['error_limit'] = isset($this->error['limit']) ? $this->error['limit'] : '';
+		$data['error_tabs'] = isset($this->error['tabs']) ? $this->error['tabs'] : '';
 
 		$data['breadcrumbs'] = array();
 		$data['breadcrumbs'][] = array('text' => $this->language->get('text_home'), 'href' => $this->url->link('common/dashboard', $token, true));
@@ -45,7 +46,7 @@ class ControllerExtensionModuleOcsProductCarousel extends Controller {
 			$info = $this->model_setting_module->getModule($this->request->get['module_id']);
 		}
 
-		$fields = array('name' => '', 'status' => 1, 'mode' => 'newest', 'category_id' => 0, 'ids' => '', 'limit' => 10, 'show_all' => 1);
+		$fields = array('name' => '', 'status' => 1, 'mode' => 'newest', 'category_id' => 0, 'ids' => '', 'limit' => 10, 'show_all' => 1, 'tabs' => '');
 
 		foreach ($fields as $field => $default) {
 			if (isset($this->request->post[$field])) {
@@ -98,6 +99,14 @@ class ControllerExtensionModuleOcsProductCarousel extends Controller {
 
 		if (isset($post['mode']) && $post['mode'] == 'manual' && !preg_match('/^\d+(\s*,\s*\d+)*$/', isset($post['ids']) ? trim($post['ids']) : '')) {
 			$this->error['ids'] = $this->language->get('error_ids');
+		}
+
+		if (isset($post['tabs']) && trim($post['tabs']) !== '') {
+			$lines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $post['tabs'])), 'strlen');
+
+			if (count(\Ocs\ProductCarousel::parseTabs($post['tabs'])) < count($lines)) {
+				$this->error['tabs'] = $this->language->get('error_tabs');
+			}
 		}
 
 		if (!isset($post['mode']) || !in_array($post['mode'], array('newest', 'bestsellers', 'discounted', 'manual'), true)) {
