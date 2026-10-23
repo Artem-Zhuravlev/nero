@@ -36,6 +36,8 @@ final class SqliteDb implements Db
 
     public function exec(string $sql): int
     {
+        // MySQL table options are meaningless for SQLite (tests only)
+        $sql = preg_replace('/\)\s*ENGINE\s*=\s*\w+(\s+DEFAULT\s+CHARSET\s*=\s*\w+)?/i', ')', $sql);
         $this->log[] = $sql;
         return (int) $this->pdo->exec($sql);
     }

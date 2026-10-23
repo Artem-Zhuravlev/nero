@@ -1,0 +1,89 @@
+{# Extension: ocs_category_wall. Admin settings form. Owner: SPEC-027. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-wall" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-wall" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="module_ocs_category_wall_status" id="input-status" class="form-control">
+                <option value="1"{% if module_ocs_category_wall_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_category_wall_status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-cd">{{ entry_columns }}</label>
+            <div class="col-sm-3"><input type="number" name="module_ocs_category_wall_cols_desktop" value="{{ module_ocs_category_wall_cols_desktop }}" id="input-cd" min="1" max="6" class="form-control" /><span class="help-block">{{ text_desktop }}</span></div>
+            <div class="col-sm-3"><input type="number" name="module_ocs_category_wall_cols_tablet" value="{{ module_ocs_category_wall_cols_tablet }}" min="1" max="4" class="form-control" /><span class="help-block">{{ text_tablet }}</span></div>
+            <div class="col-sm-3"><input type="number" name="module_ocs_category_wall_cols_mobile" value="{{ module_ocs_category_wall_cols_mobile }}" min="1" max="3" class="form-control" /><span class="help-block">{{ text_mobile }}</span></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-sort">{{ entry_sort }}</label>
+            <div class="col-sm-10">
+              <select name="module_ocs_category_wall_sort" id="input-sort" class="form-control">
+                <option value="sort"{% if module_ocs_category_wall_sort == 'sort' %} selected="selected"{% endif %}>{{ text_sort_order }}</option>
+                <option value="name"{% if module_ocs_category_wall_sort == 'name' %} selected="selected"{% endif %}>{{ text_sort_name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-source">{{ entry_source }}</label>
+            <div class="col-sm-10">
+              <select name="module_ocs_category_wall_source" id="input-source" class="form-control">
+                <option value="top"{% if module_ocs_category_wall_source == 'top' %} selected="selected"{% endif %}>{{ text_source_top }}</option>
+                <option value="selected"{% if module_ocs_category_wall_source == 'selected' %} selected="selected"{% endif %}>{{ text_source_selected }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-selected">{{ entry_selected }}</label>
+            <div class="col-sm-10"><input type="text" name="module_ocs_category_wall_selected" value="{{ module_ocs_category_wall_selected }}" id="input-selected" class="form-control" /><span class="help-block">{{ help_selected }}</span></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-children">{{ entry_show_children }}</label>
+            <div class="col-sm-4">
+              <select name="module_ocs_category_wall_show_children" id="input-children" class="form-control">
+                <option value="1"{% if module_ocs_category_wall_show_children %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_category_wall_show_children %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+            <label class="col-sm-2 control-label" for="input-limit">{{ entry_children_limit }}</label>
+            <div class="col-sm-4"><input type="number" name="module_ocs_category_wall_children_limit" value="{{ module_ocs_category_wall_children_limit }}" id="input-limit" min="1" class="form-control" /></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-iw">{{ entry_image }}</label>
+            <div class="col-sm-3"><input type="number" name="module_ocs_category_wall_image_width" value="{{ module_ocs_category_wall_image_width }}" id="input-iw" min="1" class="form-control" /></div>
+            <div class="col-sm-3"><input type="number" name="module_ocs_category_wall_image_height" value="{{ module_ocs_category_wall_image_height }}" min="1" class="form-control" /></div>
+          </div>
+        </form>
+        <p>{{ text_page }}: <a href="{{ page_url }}" target="_blank" rel="noopener">{{ page_url }}</a></p>
+        <p class="text-muted">ocs_category_wall v{{ version }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

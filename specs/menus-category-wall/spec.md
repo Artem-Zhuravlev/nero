@@ -1,6 +1,6 @@
 # SPEC-027 — Mega Menu, Category Wall, Side Category Menu
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-010 · **Brief:** modules 5, 6, 8 · **Depends on:** SPEC-023, SPEC-012

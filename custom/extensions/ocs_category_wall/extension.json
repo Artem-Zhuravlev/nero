@@ -1,0 +1,9 @@
+{ "code": "ocs_category_wall", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Category Wall", "uk-ua": "OCS: стіна категорій" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs_menu"] },
+  "spec": "SPEC-027", "tables": [],
+  "settings": ["module_ocs_category_wall_status", "module_ocs_category_wall_cols_desktop", "module_ocs_category_wall_cols_tablet", "module_ocs_category_wall_cols_mobile",
+    "module_ocs_category_wall_sort", "module_ocs_category_wall_source", "module_ocs_category_wall_selected", "module_ocs_category_wall_show_children",
+    "module_ocs_category_wall_children_limit", "module_ocs_category_wall_image_width", "module_ocs_category_wall_image_height"],
+  "events": [],
+  "routes": ["extension/module/ocs_category_wall"] }

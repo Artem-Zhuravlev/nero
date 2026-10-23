@@ -1,0 +1,7 @@
+{ "code": "ocs_mega_menu", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Mega Menu", "uk-ua": "OCS: мегаменю" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_menu", "ocs_shell"] },
+  "spec": "SPEC-027", "tables": [],
+  "settings": ["module_ocs_mega_menu_status", "module_ocs_mega_menu_levels", "module_ocs_mega_menu_columns", "module_ocs_mega_menu_behaviour"],
+  "events": ["ocs_mega_menu_menu_before"],
+  "routes": ["extension/module/ocs_mega_menu", "extension/ocs_mega_menu/events"] }

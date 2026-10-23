@@ -227,3 +227,61 @@ test('listing overrides use the card partial, expose load-more/reset hooks and d
   const mig = read('custom/extensions/ocs_listing/db/001_install.php');
   for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
 });
+
+// --- SPEC-027 navigation ---
+const MENU_EXT = ['ocs_menu', 'ocs_mega_menu', 'ocs_category_wall', 'ocs_category_menu'];
+
+// TEST-MNU-006 - verifies REQ-MNU-031, REQ-EXT-051 (declared events/settings match migrations; module strings identical across languages)
+test('menu extensions: manifests match migrations and language files have identical keys', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  for (const code of MENU_EXT) {
+    const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
+    assert.equal(ext.code, code);
+    assert.equal(ext.spec, 'SPEC-027');
+    const mig = read(`custom/extensions/${code}/db/001_install.php`);
+    for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `${code}: migration does not register ${e}`);
+    for (const s of ext.settings.filter((k) => k.endsWith('_status'))) assert.ok(mig.includes(`'${s}' => 0`), `${code}: ${s} must default to 0`);
+    for (const lang of ['uk-ua', 'en-gb', 'ru-ru']) {
+      const dir = `custom/extensions/${code}/upload/catalog/language/${lang}/extension/module/${code}.php`;
+      if (ext.type !== 'module') continue;
+      const keys = (l) => [...read(`custom/extensions/${code}/upload/catalog/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+      assert.deepEqual(keys(lang), keys('uk-ua'), dir);
+      const akeys = (l) => [...read(`custom/extensions/${code}/upload/admin/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+      assert.deepEqual(akeys('en-gb'), akeys('uk-ua'), `${code} admin strings`);
+    }
+  }
+});
+
+// TEST-MNU-001 - verifies REQ-MNU-030 (the single cached query only reads columns that the install migration creates)
+test('menu model reads only columns of ocs_menu_category', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ddl = read('custom/extensions/ocs_menu/db/001_install.php');
+  const cols = [...ddl.matchAll(/^\s+([a-z_]+) (?:INT|VARCHAR|TINYINT)/gm)].map((m) => m[1]);
+  const model = read('custom/extensions/ocs_menu/upload/catalog/model/extension/ocs_menu/tree.php');
+  for (const used of model.matchAll(/\bx\.([a-z_]+)/g)) assert.ok(cols.includes(used[1]), `model reads missing column ${used[1]}`);
+  assert.ok(/ENGINE=InnoDB DEFAULT CHARSET=utf8/.test(ddl));
+  assert.equal((model.match(/->query\(/g) || []).length, 1, 'tree model must run exactly one query');
+});
+
+// TEST-MNU-002, TEST-MNU-003 - verifies REQ-MNU-001, REQ-MNU-004 (markup keeps core menu hooks and the classes theme.js drives)
+test('mega menu markup keeps core hooks and matches theme.js and css selectors', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const tpl = read('custom/extensions/ocs_mega_menu/upload/catalog/view/theme/default/template/extension/module/ocs_mega_menu.twig');
+  for (const hook of ['id="menu"', 'id="category"', 'navbar-toggle', 'data-toggle="collapse"', 'navbar-ex1-collapse', 'aria-expanded="false"', 'data-behaviour']) assert.ok(tpl.includes(hook), `mega template lost ${hook}`);
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  const css = read('custom/theme/ocs/stylesheet/stylesheet.css');
+  for (const cls of ['ocs-mega-open', 'ocs-mega-expand', 'ocs-has-children', 'ocs-mega-fly', 'ocs-mega-l1']) {
+    assert.ok(tpl.includes(cls), `template lacks ${cls}`);
+    assert.ok(css.includes(`.${cls}`) || js.includes(cls), `${cls} unused by css/js`);
+  }
+  const menu = read('custom/theme/ocs/template/common/menu.twig');
+  assert.ok(menu.startsWith('{# @core-file catalog/view/theme/default/template/common/menu.twig @core-version 3.0.3.7 #}'));
+  assert.match(menu, /\{% if ocs_mega %\}\s*\{\{ ocs_mega \}\}\s*\{% else %\}/, 'falls back to the core menu when the module is off');
+  assert.ok(menu.includes('navbar-ex1-collapse'), 'core markup kept as fallback');
+  const side = read('custom/extensions/ocs_category_menu/upload/catalog/view/theme/default/template/extension/module/ocs_category_menu.twig');
+  for (const cls of ['ocs-cmenu', 'ocs-cmenu-toggle', 'data-id', 'aria-current']) assert.ok(side.includes(cls));
+  assert.ok(js.includes('ocs-cmenu-toggle') && js.includes('sessionStorage'));
+  const wall = read('custom/extensions/ocs_category_wall/upload/catalog/view/theme/default/template/extension/module/ocs_category_wall.twig');
+  for (const v of ['--ocs-wall-d', '--ocs-wall-t', '--ocs-wall-m']) assert.ok(wall.includes(v) && css.includes(v), `${v} not wired`);
+  assert.match(wall, /loading="lazy"/);
+});

@@ -1,0 +1,15 @@
+{# Extension: ocs_category_wall. Tile grid (SPEC-027). #}
+<ul class="ocs-wall list-unstyled" style="--ocs-wall-d: {{ cols_desktop }}; --ocs-wall-t: {{ cols_tablet }}; --ocs-wall-m: {{ cols_mobile }}">
+  {% for c in categories %}
+  <li class="ocs-wall-item{% if c.popular %} ocs-popular{% endif %}">
+    <a href="{{ c.href }}" class="ocs-wall-link"><img src="{{ c.thumb }}" alt="{{ c.name }}" width="{{ width }}" height="{{ height }}" loading="lazy" /><span class="ocs-wall-name">{{ c.name }}</span></a>
+    {% if c.children %}
+    <ul class="ocs-wall-sub list-unstyled">
+      {% for child in c.children %}
+      <li><a href="{{ child.href }}">{{ child.name }}</a></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>

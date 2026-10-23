@@ -93,7 +93,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-024 | [Storefront Functionality Reference (moyo.ua)](storefront-reference/spec.md) | `in-progress` |
 | SPEC-025 | [Quick Order, Pre-order, Back-in-stock](quick-order-preorder/spec.md) | `draft` |
 | SPEC-026 | [AJAX Cart and Availability](ajax-cart/spec.md) | `draft` |
-| SPEC-027 | [Mega Menu, Category Wall, Side Menu](menus-category-wall/spec.md) | `draft` |
+| SPEC-027 | [Mega Menu, Category Wall, Side Menu](menus-category-wall/spec.md) | `in-progress` |
 | SPEC-028 | [AJAX Search](ajax-search/spec.md) | `draft` |
 | SPEC-029 | [Product Stickers](stickers/spec.md) | `draft` |
 | SPEC-030 | [Recently Viewed Products](viewed-products/spec.md) | `draft` |
