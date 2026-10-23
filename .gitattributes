@@ -1,0 +1,11 @@
+# Line endings: our files are LF; the vendored core must be checked out byte-for-byte (its manifest hashes depend on it).
+* text=auto eol=lf
+core/** -text
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
