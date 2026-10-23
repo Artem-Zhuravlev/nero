@@ -366,3 +366,26 @@ footer details.ocs-fgroup:not([open]) > ul { display: none; }
 	body { padding-bottom: 64px; }
 	.ocs-strip { display: none; }
 }
+
+/* ==== 11. Listing: card details, chips, toolbar, load more, SEO text (SPEC-034) ===== */
+.ocs-code { color: var(--text-muted); font-size: var(--fs-xs); margin-bottom: var(--sp-1); }
+.ocs-reviews { color: var(--text-muted); font-size: var(--fs-xs); }
+.ocs-badge-discount { position: absolute; top: var(--sp-3); left: var(--sp-3); z-index: 3; background: var(--danger); color: var(--bg); }
+.ocs-slot-tl { top: calc(var(--sp-3) + 28px); }
+.product-thumb .rating .fa-stack { width: 1em; height: 1em; line-height: 1; }
+.product-thumb .rating .fa { color: var(--warning); }
+.ocs-desc { color: var(--text-muted); font-size: var(--fs-sm); }
+
+.ocs-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-5); }
+.ocs-chip {
+	display: inline-block; padding: var(--sp-1) var(--sp-4); border-radius: var(--r-pill);
+	background: var(--bg-alt); color: var(--text); font-size: var(--fs-sm);
+}
+.ocs-chip:hover { background: var(--border); text-decoration: none; color: var(--text); }
+.ocs-active-filters { margin-bottom: var(--sp-3); }
+.ocs-more { margin: var(--sp-5) 0; }
+.ocs-more button[hidden] { display: none; }
+
+.ocs-seo { margin: var(--sp-6) 0; color: var(--text-muted); }
+.ocs-seo summary { cursor: pointer; color: var(--link); }
+.ocs-seo[open] summary { margin-bottom: var(--sp-3); }

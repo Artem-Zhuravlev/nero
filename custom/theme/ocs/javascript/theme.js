@@ -215,3 +215,100 @@
 		init();
 	}
 }(window, document));
+
+/* Listing: "show more" button (SPEC-034 REQ-LST-002). Works without JS through the normal pagination links. */
+(function (window, document) {
+	'use strict';
+
+	function nextHref(root) {
+		var active = root.querySelector('.pagination li.active');
+		var next = active ? active.nextElementSibling : null;
+		var link = next ? next.querySelector('a') : null;
+
+		return link ? link.getAttribute('href') : '';
+	}
+
+	function init() {
+		var button = document.getElementById('ocs-load-more');
+		var grid = document.getElementById('ocs-grid');
+
+		if (!button || !grid || !window.DOMParser || !window.fetch) {
+			return;
+		}
+
+		var href = nextHref(document);
+		var busy = false;
+
+		if (!href) {
+			return;
+		}
+
+		button.hidden = false;
+
+		button.addEventListener('click', function () {
+			if (busy || !href) {
+				return;
+			}
+
+			busy = true;
+			button.disabled = true;
+
+			window.fetch(href, {credentials: 'same-origin'}).then(function (r) {
+				return r.text();
+			}).then(function (html) {
+				var doc = new DOMParser().parseFromString(html, 'text/html');
+				var cards = doc.querySelectorAll('#ocs-grid .product-layout');
+				var first = grid.querySelector('.product-layout');
+				var cls = first ? first.className : '';
+				var known = {};
+				var i;
+				var items = grid.querySelectorAll('.product-layout');
+
+				for (i = 0; i < items.length; i++) {
+					known[items[i].getAttribute('data-product-id')] = true;
+				}
+
+				for (i = 0; i < cards.length; i++) {
+					var id = cards[i].getAttribute('data-product-id');
+
+					if (id && known[id]) {
+						continue;
+					}
+
+					var node = document.importNode(cards[i], true);
+
+					if (cls) {
+						node.className = cls;
+					}
+
+					grid.appendChild(node);
+				}
+
+				var oldPager = document.querySelector('.pagination');
+				var newPager = doc.querySelector('.pagination');
+
+				if (oldPager && newPager) {
+					oldPager.parentNode.replaceChild(document.importNode(newPager, true), oldPager);
+				}
+
+				if (window.history && window.history.replaceState) {
+					window.history.replaceState(null, '', href);
+				}
+
+				href = nextHref(document);
+				button.hidden = !href;
+				button.disabled = false;
+				busy = false;
+			}).catch(function () {
+				button.disabled = false;
+				busy = false;
+			});
+		});
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+}(window, document));

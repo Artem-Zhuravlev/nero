@@ -134,9 +134,9 @@ test('category and product overrides add slots, keep core JS hooks, are not copi
     const core = read(`core/upload/catalog/view/theme/default/template/${t}.twig`);
     assert.notEqual(ours, core);
     assert.ok(ours.startsWith(`{# @core-file catalog/view/theme/default/template/${t}.twig @core-version 3.0.3.7 #}`));
-    assert.match(ours, /ocs-slot-tl/);
+    assert.match(ours, t === 'product/product' ? /ocs-slot-tl/ : /ocs\/template\/ocs\/card\.twig/);
   }
-  const cat = read('custom/theme/ocs/template/product/category.twig');
+  const cat = read('custom/theme/ocs/template/product/category.twig') + read('custom/theme/ocs/template/ocs/card.twig');
   for (const hook of ['id="list-view"', 'id="grid-view"', "cart.add('{{ product.product_id }}'", 'wishlist.add', 'compare.add', 'class="product-layout']) {
     assert.ok(cat.includes(hook), `category lost hook ${hook}`);
   }
@@ -177,5 +177,53 @@ test('ocs_shell language files have identical keys and extension.json is consist
   assert.equal(ext.code, 'ocs_shell');
   assert.ok(ext.events.includes('ocs_shell_header_before') && ext.events.includes('ocs_shell_footer_before'));
   const mig = readFileSync(join(REPO_ROOT, 'custom/extensions/ocs_shell/db/001_install.php'), 'utf8');
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
+});
+
+// TEST-LST-002 - verifies REQ-LST-001 (every sort key offered is accepted by core, OCMOD anchor is unique in pristine core)
+test('listing sort keys are whitelisted by core (plus OCMOD for p.viewed)', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const events = read('custom/extensions/ocs_listing/upload/catalog/controller/extension/ocs_listing/events.php');
+  const core = read('core/upload/catalog/model/catalog/product.php').replace(/\r/g, '');
+  const whitelist = /\$sort_data = array\(([\s\S]*?)\);/.exec(core)[1].match(/'[a-z0-9_.]+'/g).map((s) => s.slice(1, -1));
+  const offered = [...events.matchAll(/array\('([a-z_.]+)', '(ASC|DESC)', 'ocs_sort_/g)].map((m) => m[1]);
+  assert.ok(offered.length >= 6);
+  const ocmod = read('custom/ocmod/ocs_listing_sort.ocmod.xml');
+  const added = /<add position="replace"><!\[CDATA\[[\s\S]*?'p\.viewed'\]\]>/.test(ocmod) ? ['p.viewed'] : [];
+  for (const key of offered) assert.ok(whitelist.includes(key) || added.includes(key), `core does not accept sort ${key}`);
+  const anchor = /<search><!\[CDATA\[(.*?)\]\]><\/search>/.exec(ocmod)[1];
+  assert.equal(core.split(anchor).length - 1, 1, 'OCMOD search anchor must be unique in core');
+  assert.match(ocmod, /@core-file catalog\/model\/catalog\/product\.php/);
+});
+
+// TEST-LST-001, TEST-LST-003, TEST-LST-004 - verifies REQ-LST-002, REQ-LST-003, REQ-LST-010, REQ-LST-011, REQ-LST-012, REQ-LST-013
+test('listing overrides use the card partial, expose load-more/reset hooks and degrade without ocs_listing', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  const card = read('custom/theme/ocs/template/ocs/card.twig');
+  for (const hook of ['data-product-id', 'loading="lazy"', 'product.model', 'product.discount_pct', 'product.reviews', 'cart.add(']) assert.ok(card.includes(hook), `card lost ${hook}`);
+  for (const t of ['category', 'search', 'special', 'manufacturer_info']) {
+    const ours = read(`custom/theme/ocs/template/product/${t}.twig`);
+    const coreTpl = read(`core/upload/catalog/view/theme/default/template/product/${t}.twig`);
+    assert.notEqual(ours, coreTpl);
+    assert.ok(ours.startsWith(`{# @core-file catalog/view/theme/default/template/product/${t}.twig @core-version 3.0.3.7 #}`));
+    assert.ok(ours.includes("{% include 'ocs/template/ocs/card.twig' %}"), `${t}: no card include`);
+    assert.ok(!ours.includes('product-thumb'), `${t}: inlined card left`);
+    for (const id of ['ocs-grid', 'ocs-load-more']) {
+      assert.ok(ours.includes(`id="${id}"`) && js.includes(`'${id}'`), `${t}: ${id} not wired to theme.js`);
+    }
+    assert.match(ours, /\{% if ocs_listing and ocs_listing\.reset %\}/);
+    assert.match(ours, /\{\{ pagination \}\}/, `${t}: numbered pagination must stay (no-JS fallback)`);
+  }
+  const cat = read('custom/theme/ocs/template/product/category.twig');
+  assert.match(cat, /\{% if description and not ocs_listing %\}/, 'description stays on top when the module is off');
+  assert.match(cat, /class="ocs-seo"/);
+  assert.match(cat, /class="ocs-chips"/);
+  const keys = (code) => [...read(`custom/extensions/ocs_listing/upload/catalog/language/${code}/extension/ocs_listing/listing.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  assert.deepEqual(keys('en-gb'), keys('uk-ua'));
+  assert.deepEqual(keys('ru-ru'), keys('uk-ua'));
+  for (const used of cat.matchAll(/ocs_listing\.t\.(ocs_[a-z_]+)/g)) assert.ok(keys('uk-ua').includes(used[1]), `missing string ${used[1]}`);
+  const ext = JSON.parse(read('custom/extensions/ocs_listing/extension.json'));
+  const mig = read('custom/extensions/ocs_listing/db/001_install.php');
   for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
 });

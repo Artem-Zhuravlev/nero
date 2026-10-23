@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Purpose: allow sorting product listings by popularity (p.viewed) for the "Popular" option of the ocs listing toolbar.
+  Owner: SPEC-034 (REQ-LST-001). Event insufficient because: model events cannot change the hard-coded sort whitelist
+  inside ModelCatalogProduct::getProducts().
+  @core-file catalog/model/catalog/product.php
+  @core-version 3.0.3.7
+-->
+<modification>
+  <name>OCS listing: allow sort by p.viewed</name>
+  <code>ocs_listing_sort</code>
+  <version>1.0.0</version>
+  <author>OCS</author>
+  <link></link>
+  <file path="catalog/model/catalog/product.php">
+    <operation>
+      <search><![CDATA['p.date_added']]></search>
+      <add position="replace"><![CDATA['p.date_added',
+			'p.viewed']]></add>
+    </operation>
+  </file>
+</modification>

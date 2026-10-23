@@ -100,7 +100,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-031 | [Header, Footer, Mobile Shell](header-footer-shell/spec.md) | `in-progress` |
 | SPEC-032 | [Cities, Delivery, Stores, Tracking](cities-delivery-stores/spec.md) | `draft` |
 | SPEC-033 | [Home Page Blocks](home-blocks/spec.md) | `draft` |
-| SPEC-034 | [Category Listing](category-listing/spec.md) | `approved` |
+| SPEC-034 | [Category Listing](category-listing/spec.md) | `in-progress` |
 | SPEC-035 | [Product Page Extras](product-page/spec.md) | `draft` |
 | SPEC-036 | [Instalments and Trade-in](credit-tradein/spec.md) | `draft` |
 

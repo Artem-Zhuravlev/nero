@@ -1,0 +1,7 @@
+{ "code": "ocs_listing", "type": "library", "version": "1.0.0",
+  "title": { "en-gb": "OCS Listing Enhancements", "uk-ua": "OCS: покращення листингу" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
+  "spec": "SPEC-034", "tables": [],
+  "settings": ["library_ocs_listing_status"],
+  "events": ["ocs_listing_category_before", "ocs_listing_search_before", "ocs_listing_manufacturer_before", "ocs_listing_special_before"],
+  "routes": ["extension/ocs_listing/events"] }

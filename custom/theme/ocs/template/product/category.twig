@@ -16,16 +16,18 @@
     {% endif %}
     <div id="content" class="{{ class }}">{{ content_top }}
       <h1>{{ heading_title }}</h1>
-      {% if thumb or description %}
+      {% if thumb or (description and not ocs_listing) %}
       <div class="row"> {% if thumb %}
         <div class="col-sm-2"><img src="{{ thumb }}" alt="{{ heading_title }}" title="{{ heading_title }}" class="img-thumbnail" /></div>
         {% endif %}
-        {% if description %}
+        {% if description and not ocs_listing %}
         <div class="col-sm-10">{{ description }}</div>
         {% endif %}</div>
       <hr>
       {% endif %}
-      {% if categories %}
+      {% if categories and ocs_listing %}
+      <div class="ocs-chips">{% for category in categories %}<a class="ocs-chip" href="{{ category.href }}">{{ category.name }}</a>{% endfor %}</div>
+      {% elseif categories %}
       <h3>{{ text_refine }}</h3>
       {% if categories|length <= 5 %}
       <div class="row">
@@ -126,34 +128,15 @@
           </div>
         </div>
       </div>
-      <div class="row"> {% for product in products %}
-        <div class="product-layout product-list col-xs-12">
-          <div class="product-thumb">
-            <div class="image"><div class="ocs-slot ocs-slot-tl" data-product-id="{{ product.product_id }}"></div><div class="ocs-slot ocs-slot-tr" data-product-id="{{ product.product_id }}"></div><div class="ocs-slot ocs-slot-bl" data-product-id="{{ product.product_id }}"></div><a href="{{ product.href }}"><img src="{{ product.thumb }}" loading="lazy" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
-            <div>
-              <div class="caption">
-                <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
-                <p>{{ product.description }}</p>
-                {% if product.price %}
-                <p class="price"> {% if not product.special %}
-                  {{ product.price }}
-                  {% else %} <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span> {% endif %}
-                  {% if product.tax %} <span class="price-tax">{{ text_tax }} {{ product.tax }}</span> {% endif %} </p>
-                {% endif %}
-                {% if product.rating %}
-                <div class="rating"> {% for i in 1..5 %}
-                  {% if product.rating < i %} <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> {% else %} <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>{% endif %}
-                  {% endfor %} </div>
-                {% endif %} </div>
-              <div class="button-group">
-                <button type="button" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ button_cart }}</span></button>
-                <button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button>
-                <button type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="fa fa-exchange"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {% if ocs_listing and ocs_listing.reset %}
+      <div class="ocs-active-filters"><a class="btn btn-default btn-sm" href="{{ ocs_listing.reset }}">{{ ocs_listing.t.ocs_reset }}</a></div>
+      {% endif %}
+      <div class="row" id="ocs-grid"> {% for product in products %}
+        {% include 'ocs/template/ocs/card.twig' %}
         {% endfor %} </div>
+      {% if ocs_listing %}
+      <div class="text-center ocs-more"><button type="button" id="ocs-load-more" class="btn btn-default btn-lg" hidden>{{ ocs_listing.load_more }}</button></div>
+      {% endif %}
       <div class="row">
         <div class="col-sm-6 text-left">{{ pagination }}</div>
         <div class="col-sm-6 text-right">{{ results }}</div>
@@ -164,6 +147,9 @@
       <div class="buttons">
         <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
       </div>
+      {% endif %}
+      {% if description and ocs_listing %}
+      <details class="ocs-seo"><summary>{{ ocs_listing.t.ocs_read_more }}</summary><div>{{ description }}</div></details>
       {% endif %}
       {{ content_bottom }}</div>
     {{ column_right }}</div>
