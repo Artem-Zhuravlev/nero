@@ -1,0 +1,7 @@
+{ "code": "ocs_brand_strip", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Brand Strip", "uk-ua": "OCS: смуга брендів" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
+  "spec": "SPEC-033", "tables": [],
+  "settings": ["module_ocs_brand_strip_status", "module_ocs_brand_strip_source", "module_ocs_brand_strip_selected", "module_ocs_brand_strip_sort", "module_ocs_brand_strip_limit", "module_ocs_brand_strip_width", "module_ocs_brand_strip_height"],
+  "events": [],
+  "routes": ["extension/module/ocs_brand_strip"] }

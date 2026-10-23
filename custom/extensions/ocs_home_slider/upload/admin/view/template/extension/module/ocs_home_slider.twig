@@ -1,0 +1,78 @@
+{# Extension: ocs_home_slider. Admin settings and slide list. Owner: SPEC-033. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+        <button type="submit" form="form-slider" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-success"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>{% endif %}
+    {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>{% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-cog"></i> {{ text_settings }}</h3></div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-slider" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-4">
+              <select name="module_ocs_home_slider_status" id="input-status" class="form-control">
+                <option value="1"{% if module_ocs_home_slider_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_home_slider_status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+            <label class="col-sm-2 control-label" for="input-autoplay"><span data-toggle="tooltip" title="{{ help_autoplay }}">{{ entry_autoplay }}</span></label>
+            <div class="col-sm-4"><input type="number" name="module_ocs_home_slider_autoplay" value="{{ module_ocs_home_slider_autoplay }}" id="input-autoplay" min="0" max="30000" step="500" class="form-control" /></div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_size }}</label>
+            <div class="col-sm-2"><input type="number" name="module_ocs_home_slider_width" value="{{ module_ocs_home_slider_width }}" class="form-control" /></div>
+            <div class="col-sm-2"><input type="number" name="module_ocs_home_slider_height" value="{{ module_ocs_home_slider_height }}" class="form-control" /></div>
+            <label class="col-sm-2 control-label">{{ entry_size_mobile }}</label>
+            <div class="col-sm-2"><input type="number" name="module_ocs_home_slider_mobile_width" value="{{ module_ocs_home_slider_mobile_width }}" class="form-control" /></div>
+            <div class="col-sm-2"><input type="number" name="module_ocs_home_slider_mobile_height" value="{{ module_ocs_home_slider_mobile_height }}" class="form-control" /></div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-picture-o"></i> {{ text_list }}</h3></div>
+      <div class="panel-body table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead><tr><td>{{ column_image }}</td><td>{{ column_title }}</td><td>{{ column_sort }}</td><td>{{ column_period }}</td><td>{{ column_status }}</td><td></td></tr></thead>
+          <tbody>
+            {% for s in slides %}
+            <tr>
+              <td><img src="{{ s.thumb }}" alt="" class="img-thumbnail" /></td>
+              <td>{{ s.title }}</td>
+              <td>{{ s.sort_order }}</td>
+              <td>{{ s.period }}</td>
+              <td>{{ s.status }}</td>
+              <td class="text-right">
+                <a href="{{ s.edit }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="{{ button_edit }}"><i class="fa fa-pencil"></i></a>
+                <form action="{{ action }}" method="post" style="display: inline;" onsubmit="return confirm('{{ text_confirm }}');">
+                  <input type="hidden" name="delete_id" value="{{ s.slide_id }}" />
+                  <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td class="text-center" colspan="6">{{ text_no_results }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="text-muted">ocs_home_slider v{{ version }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

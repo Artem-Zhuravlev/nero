@@ -1,0 +1,7 @@
+{ "code": "ocs_seo_text", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Home SEO Text", "uk-ua": "OCS: SEO-текст головної" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
+  "spec": "SPEC-033", "tables": [],
+  "settings": ["module_ocs_seo_text_status", "module_ocs_seo_text_l"],
+  "events": [],
+  "routes": ["extension/module/ocs_seo_text"] }

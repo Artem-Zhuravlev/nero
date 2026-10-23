@@ -1,0 +1,30 @@
+<?php
+// Extension: ocs_product_carousel. Admin strings, uk-ua. Owner: SPEC-033.
+
+$_['heading_title']        = 'OCS: карусель товарів';
+
+$_['text_extension']       = 'Доповнення';
+$_['text_success']         = 'Карусель збережено';
+$_['text_edit']            = 'Налаштування каруселі товарів';
+$_['text_all_categories']  = 'Усі категорії';
+$_['text_mode_newest']     = 'Новинки';
+$_['text_mode_bestsellers'] = 'Хіти продажів';
+$_['text_mode_discounted'] = 'Зі знижкою';
+$_['text_mode_manual']     = 'Ручний список';
+
+$_['entry_name']           = 'Назва модуля';
+$_['entry_title']          = 'Заголовок';
+$_['entry_mode']           = 'Товари';
+$_['entry_category']       = 'Категорія';
+$_['entry_ids']            = 'ID товарів (ручний список)';
+$_['entry_limit']          = 'Кількість товарів';
+$_['entry_show_all']       = 'Посилання «Дивитись усі»';
+$_['entry_status']         = 'Статус';
+
+$_['help_ids']             = 'ID товарів через кому; використовується лише в ручному режимі.';
+
+$_['error_permission']     = 'Увага: у вас немає прав для зміни каруселі!';
+$_['error_name']           = 'Назва модуля має бути від 3 до 64 символів!';
+$_['error_limit']          = 'Кількість товарів — від 1 до 30!';
+$_['error_ids']            = 'Вкажіть ID товарів через кому!';
+$_['error_mode']           = 'Невідомий режим!';

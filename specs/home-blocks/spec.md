@@ -1,6 +1,6 @@
 # SPEC-033 — Home Page Blocks
 
-**Status:** draft
+**Status:** implemented
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-030..034 · **Depends on:** SPEC-023, SPEC-016, SPEC-027

@@ -507,3 +507,78 @@ test('recently viewed: manifest, cookie flags, shared card partial and strings a
   const adm = (l) => keys(`custom/extensions/ocs_viewed/upload/admin/language/${l}/extension/module/ocs_viewed.php`);
   assert.deepEqual(adm('en-gb'), adm('uk-ua'));
 });
+
+const HOME_EXT = ['ocs_home_slider', 'ocs_brand_strip', 'ocs_product_carousel', 'ocs_newsletter', 'ocs_seo_text'];
+
+// TEST-HOM-002 - verifies REQ-HOM-001, REQ-HOM-010, REQ-HOM-020, REQ-HOM-030, REQ-HOM-040, REQ-HOM-051 (manifests match migrations; off by default; strings identical across languages)
+test('home block extensions: manifests match migrations, are off by default and strings are identical', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  for (const code of HOME_EXT) {
+    const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
+    assert.equal(ext.code, code);
+    assert.equal(ext.spec, 'SPEC-033');
+    const mig = read(`custom/extensions/${code}/db/001_install.php`);
+    assert.ok(mig.includes(`register('module', '${code}')`), `${code}: not registered`);
+    for (const t of ext.tables) assert.ok(mig.includes(`{{PREFIX}}${t.replace(/^oc_/, "")}`), `${code}: table ${t}`);
+    for (const s of ext.settings.filter((k) => k.endsWith('_status'))) assert.match(mig, new RegExp(`'${s}'(\\s*=>\\s*|,\\s*)0`), `${code}: ${s} must default to 0`);
+    const keys = (side, l) => [...read(`custom/extensions/${code}/upload/${side}/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+    for (const l of ['en-gb', 'ru-ru']) assert.deepEqual(keys('catalog', l), keys('catalog', 'uk-ua'), `${code} catalog strings ${l}`);
+    assert.deepEqual(keys('admin', 'en-gb'), keys('admin', 'uk-ua'), `${code} admin strings`);
+  }
+});
+
+// TEST-HOM-001 - verifies REQ-HOM-050, REQ-HOM-051 (carousel hooks used by the blocks exist in theme.js and css; controls are labelled)
+test('home blocks: carousel markup matches theme.js and css; controls have labels', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.match(js, /OCS\.carousel\s*=/);
+  assert.match(js, /prefers-reduced-motion/);
+  for (const code of ['ocs_home_slider', 'ocs_brand_strip', 'ocs_product_carousel']) {
+    const twig = read(`custom/extensions/${code}/upload/catalog/view/theme/default/template/extension/module/${code}.twig`);
+    assert.match(twig, /ocs-carousel-prev" aria-label="\{\{ text_prev \}\}"/, `${code} prev label`);
+    assert.match(twig, /ocs-carousel-next" aria-label="\{\{ text_next \}\}"/, `${code} next label`);
+    assert.match(twig, /ocs-carousel-track/);
+  }
+  for (const sel of ['.ocs-hero', '.ocs-brands', '.ocs-pcarousel', '.ocs-news', '.ocs-seo-home']) assert.ok(css.includes(sel), `css misses ${sel}`);
+});
+
+// TEST-HOM-002 - verifies REQ-HOM-001, REQ-HOM-050 (first slide is the LCP image: explicit size and high priority; others lazy; one cached query)
+test('hero slider: LCP attributes, lazy rest, cached query', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const twig = read('custom/extensions/ocs_home_slider/upload/catalog/view/theme/default/template/extension/module/ocs_home_slider.twig');
+  assert.match(twig, /fetchpriority/);
+  assert.match(twig, /loading="lazy"/);
+  assert.match(twig, /width="/);
+  assert.match(read('custom/extensions/ocs_home_slider/upload/catalog/controller/extension/module/ocs_home_slider.php'), /cache->get/);
+});
+
+// TEST-HOM-005 - verifies REQ-HOM-030 (newsletter: token, rate limit, honeypot, consent; the core customer flag only for the signed-in owner of the address)
+test('newsletter endpoint: token, rate limit, honeypot, consent and signed-in-only customer flag', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ctl = read('custom/extensions/ocs_newsletter/upload/catalog/controller/extension/module/ocs_newsletter.php');
+  assert.match(ctl, /tokenValid/);
+  assert.match(ctl, /allow\('newsletter'\)/);
+  assert.match(ctl, /\$post\['website'\]/);
+  assert.match(ctl, /\$post\['agree'\]/);
+  assert.match(ctl, /\$own = \$this->customer->isLogged\(\) && strtolower\(\$this->customer->getEmail\(\)\) === \$email/);
+  assert.match(ctl, /X-Robots-Tag: noindex/);
+  const twig = read('custom/extensions/ocs_newsletter/upload/catalog/view/theme/default/template/extension/module/ocs_newsletter.twig');
+  assert.match(twig, /class="ocs-news-form"/);
+  assert.match(twig, /name="website"/);
+  assert.match(twig, /name="agree"/);
+  assert.match(twig, /aria-live="polite"/);
+  assert.match(read('custom/theme/ocs/javascript/theme.js'), /\.ocs-news-form/);
+});
+
+// TEST-HOM-004 - verifies REQ-HOM-020 (instances are validated; ids are cast to integers; all four modes exist)
+test('product carousel: admin validation and id sources', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const adm = read('custom/extensions/ocs_product_carousel/upload/admin/controller/extension/module/ocs_product_carousel.php');
+  assert.match(adm, /addModule\('ocs_product_carousel'/);
+  assert.match(adm, /editModule/);
+  assert.match(adm, /in_array\(\$post\['mode'\]/);
+  const ctl = read('custom/extensions/ocs_product_carousel/upload/catalog/controller/extension/module/ocs_product_carousel.php');
+  assert.match(ctl, /array_map\('intval'/);
+  assert.match(ctl, /\$category_id = \(int\)/);
+  for (const mode of ['newest', 'bestsellers', 'discounted', 'manual']) assert.ok(ctl.includes(mode), mode);
+});

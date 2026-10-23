@@ -1,0 +1,89 @@
+{# Extension: ocs_product_carousel. Admin instance form. Owner: SPEC-033. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-pcar" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>{% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3></div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-pcar" class="form-horizontal">
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+            <div class="col-sm-10"><input type="text" name="name" value="{{ name }}" id="input-name" class="form-control" />
+              {% if error_name %}<div class="text-danger">{{ error_name }}</div>{% endif %}</div>
+          </div>
+          {% for language in languages %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_title }} ({{ language.code }})</label>
+            <div class="col-sm-10"><input type="text" name="title[{{ language.language_id }}]" value="{{ title[language.language_id] }}" class="form-control" /></div>
+          </div>
+          {% endfor %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-mode">{{ entry_mode }}</label>
+            <div class="col-sm-10">
+              <select name="mode" id="input-mode" class="form-control">
+                <option value="newest"{% if mode == 'newest' %} selected="selected"{% endif %}>{{ text_mode_newest }}</option>
+                <option value="bestsellers"{% if mode == 'bestsellers' %} selected="selected"{% endif %}>{{ text_mode_bestsellers }}</option>
+                <option value="discounted"{% if mode == 'discounted' %} selected="selected"{% endif %}>{{ text_mode_discounted }}</option>
+                <option value="manual"{% if mode == 'manual' %} selected="selected"{% endif %}>{{ text_mode_manual }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-category">{{ entry_category }}</label>
+            <div class="col-sm-10">
+              <select name="category_id" id="input-category" class="form-control">
+                <option value="0">{{ text_all_categories }}</option>
+                {% for c in categories %}
+                <option value="{{ c.category_id }}"{% if c.category_id == category_id %} selected="selected"{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-ids"><span data-toggle="tooltip" title="{{ help_ids }}">{{ entry_ids }}</span></label>
+            <div class="col-sm-10"><input type="text" name="ids" value="{{ ids }}" id="input-ids" class="form-control" placeholder="42, 43, 50" />
+              {% if error_ids %}<div class="text-danger">{{ error_ids }}</div>{% endif %}</div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-limit">{{ entry_limit }}</label>
+            <div class="col-sm-10"><input type="text" name="limit" value="{{ limit }}" id="input-limit" class="form-control" />
+              {% if error_limit %}<div class="text-danger">{{ error_limit }}</div>{% endif %}</div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-show-all">{{ entry_show_all }}</label>
+            <div class="col-sm-10">
+              <select name="show_all" id="input-show-all" class="form-control">
+                <option value="1"{% if show_all %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not show_all %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="status" id="input-status" class="form-control">
+                <option value="1"{% if status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

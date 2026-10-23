@@ -1293,3 +1293,195 @@
 		init();
 	}
 }(window, document));
+
+/* Carousel (SPEC-033 REQ-HOM-050/051): CSS scroll-snap track + prev/next buttons, optional dots and autoplay. No library.
+   Markup: .ocs-carousel[data-autoplay=ms][data-dots=1] > .ocs-carousel-track > .ocs-carousel-item ... + buttons .ocs-carousel-prev/next.
+   Autoplay pauses on hover/focus and is off under prefers-reduced-motion. Without JS the track is still a swipeable scroller. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+
+	function init(root) {
+		var track = root.querySelector('.ocs-carousel-track');
+		var prev = root.querySelector('.ocs-carousel-prev');
+		var next = root.querySelector('.ocs-carousel-next');
+		var dotsBox = root.querySelector('.ocs-carousel-dots');
+		var items = track ? track.children : [];
+		var timer = null;
+		var paused = false;
+		var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		if (!track || !items.length) {
+			return;
+		}
+
+		function step() {
+			var first = items[0];
+			var gap = parseFloat(window.getComputedStyle(track).columnGap || window.getComputedStyle(track).gap) || 0;
+
+			return first.getBoundingClientRect().width + gap;
+		}
+
+		function index() {
+			return Math.round(track.scrollLeft / step());
+		}
+
+		function go(i) {
+			var max = Math.max(0, items.length - Math.max(1, Math.round(track.clientWidth / step())));
+
+			i = i < 0 ? max : (i > max ? 0 : i);
+			track.scrollTo({left: i * step(), behavior: reduced ? 'auto' : 'smooth'});
+		}
+
+		function update() {
+			var i = index();
+			var max = items.length - Math.max(1, Math.round(track.clientWidth / step()));
+
+			if (prev) {
+				prev.hidden = items.length <= 1 || max <= 0;
+			}
+
+			if (next) {
+				next.hidden = items.length <= 1 || max <= 0;
+			}
+
+			if (dotsBox) {
+				var dots = dotsBox.children;
+
+				for (var d = 0; d < dots.length; d++) {
+					dots[d].setAttribute('aria-current', d === i ? 'true' : 'false');
+				}
+			}
+		}
+
+		if (dotsBox && items.length > 1) {
+			for (var n = 0; n < items.length; n++) {
+				(function (k) {
+					var b = document.createElement('button');
+
+					b.type = 'button';
+					b.setAttribute('aria-label', (dotsBox.getAttribute('data-label') || '') + ' ' + (k + 1));
+					b.addEventListener('click', function () {
+						go(k);
+					});
+					dotsBox.appendChild(b);
+				}(n));
+			}
+		}
+
+		if (prev) {
+			prev.addEventListener('click', function () {
+				go(index() - 1);
+			});
+		}
+
+		if (next) {
+			next.addEventListener('click', function () {
+				go(index() + 1);
+			});
+		}
+
+		track.addEventListener('scroll', function () {
+			window.clearTimeout(timer);
+			timer = window.setTimeout(update, 80);
+		}, {passive: true});
+
+		root.addEventListener('keydown', function (e) {
+			if (e.key === 'ArrowLeft') {
+				go(index() - 1);
+			} else if (e.key === 'ArrowRight') {
+				go(index() + 1);
+			}
+		});
+
+		var every = parseInt(root.getAttribute('data-autoplay'), 10) || 0;
+
+		if (every > 0 && !reduced && items.length > 1) {
+			var play = window.setInterval(function () {
+				if (!paused && !document.hidden) {
+					go(index() + 1);
+				}
+			}, every);
+
+			root.addEventListener('mouseenter', function () { paused = true; });
+			root.addEventListener('mouseleave', function () { paused = false; });
+			root.addEventListener('focusin', function () { paused = true; });
+			root.addEventListener('focusout', function () { paused = false; });
+			root.setAttribute('data-playing', String(play));
+		}
+
+		window.addEventListener('resize', update);
+		update();
+	}
+
+	OCS.carousel = {init: init};
+
+	function boot() {
+		var roots = document.querySelectorAll('.ocs-carousel');
+
+		for (var i = 0; i < roots.length; i++) {
+			init(roots[i]);
+		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
+
+/* Newsletter form (SPEC-033 REQ-HOM-030): posts the block form as JSON and shows the answer in place. */
+(function (window, document) {
+	'use strict';
+
+	function bind(form) {
+		var box = form.querySelector('.ocs-news-msg');
+
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+
+			var btn = form.querySelector('button[type="submit"]');
+
+			box.textContent = '';
+			box.className = 'ocs-news-msg';
+			btn.disabled = true;
+
+			window.fetch(form.getAttribute('action'), {method: 'POST', body: new FormData(form), credentials: 'same-origin'}).then(function (r) {
+				return r.json();
+			}).then(function (json) {
+				btn.disabled = false;
+
+				if (json.success) {
+					box.textContent = json.success;
+					box.className = 'ocs-news-msg ocs-news-ok';
+					form.reset();
+				} else {
+					var errors = json.errors ? Object.keys(json.errors).map(function (k) { return json.errors[k]; }) : [];
+
+					box.textContent = errors.length ? errors.join(' ') : (json.error || '');
+					box.className = 'ocs-news-msg ocs-news-err';
+				}
+			}).catch(function () {
+				btn.disabled = false;
+				box.textContent = form.getAttribute('data-failed') || '';
+				box.className = 'ocs-news-msg ocs-news-err';
+			});
+		});
+	}
+
+	function boot() {
+		var forms = document.querySelectorAll('.ocs-news-form');
+
+		for (var i = 0; i < forms.length; i++) {
+			bind(forms[i]);
+		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));

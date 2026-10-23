@@ -1,0 +1,13 @@
+{# Extension: ocs_newsletter. Subscribe block (SPEC-033 REQ-HOM-030); posted as JSON by OCS theme.js (.ocs-news-form). #}
+<section class="ocs-news">
+  <h3>{{ heading_title }}</h3>
+  <p>{{ text }}</p>
+  <form class="ocs-news-form" action="{{ action }}" method="post" data-failed="{{ failed }}" novalidate>
+    <input type="hidden" name="token" value="{{ token }}" />
+    <div class="ocs-news-hp" aria-hidden="true"><label>Website <input type="text" name="website" value="" tabindex="-1" autocomplete="off" /></label></div>
+    <input type="email" name="email" value="{{ email }}" class="form-control" placeholder="{{ entry_email }}" aria-label="{{ entry_email }}" autocomplete="email" required />
+    <button type="submit" class="btn btn-primary">{{ button_subscribe }}</button>
+    <label class="ocs-news-consent"><input type="checkbox" name="agree" value="1" /> {{ consent }}</label>
+    <div class="ocs-news-msg" role="status" aria-live="polite"></div>
+  </form>
+</section>

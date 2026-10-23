@@ -1,0 +1,18 @@
+{# Extension: ocs_product_carousel. Product cards in a scroll-snap carousel (SPEC-033 REQ-HOM-020); cards are the shared ocs partial. #}
+<section class="ocs-pcarousel" aria-label="{{ heading_title }}">
+  <div class="ocs-pcarousel-head">
+    <h3>{{ heading_title }}</h3>
+    {% if show_all %}<a href="{{ show_all }}">{{ text_show_all }}</a>{% endif %}
+  </div>
+  <div class="ocs-carousel" role="region" aria-label="{{ heading_title }}">
+    <div class="ocs-carousel-track">
+      {% for product in products %}
+      <div class="ocs-carousel-item">
+        {% include 'ocs/template/ocs/card.twig' %}
+      </div>
+      {% endfor %}
+    </div>
+    <button type="button" class="ocs-carousel-prev" aria-label="{{ text_prev }}">&lsaquo;</button>
+    <button type="button" class="ocs-carousel-next" aria-label="{{ text_next }}">&rsaquo;</button>
+  </div>
+</section>

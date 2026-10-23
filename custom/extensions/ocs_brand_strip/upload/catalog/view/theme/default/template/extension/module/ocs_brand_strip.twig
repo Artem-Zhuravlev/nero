@@ -1,0 +1,10 @@
+{# Extension: ocs_brand_strip. Brand logos (SPEC-033 REQ-HOM-010); horizontal scroll, buttons by OCS.carousel. #}
+<section class="ocs-brands ocs-carousel" role="region" aria-label="{{ heading_title }}">
+  <div class="ocs-carousel-track">
+    {% for b in brands %}
+    <a href="{{ b.href }}" class="ocs-carousel-item" title="{{ b.name }}"><img src="{{ b.thumb }}" alt="{{ b.name }}" width="{{ width }}" height="{{ height }}" loading="lazy" /></a>
+    {% endfor %}
+  </div>
+  <button type="button" class="ocs-carousel-prev" aria-label="{{ text_prev }}">&lsaquo;</button>
+  <button type="button" class="ocs-carousel-next" aria-label="{{ text_next }}">&rsaquo;</button>
+</section>

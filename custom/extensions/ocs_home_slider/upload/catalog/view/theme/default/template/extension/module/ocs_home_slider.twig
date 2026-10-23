@@ -1,0 +1,22 @@
+{# Extension: ocs_home_slider. Hero slider (SPEC-033 REQ-HOM-001); behaviour: OCS.carousel in theme.js. #}
+<section class="ocs-hero ocs-carousel" data-autoplay="{{ autoplay }}" role="region" aria-roledescription="carousel" aria-label="{{ text_label }}">
+  <div class="ocs-carousel-track">
+    {% for s in slides %}
+    <div class="ocs-carousel-item" role="group" aria-roledescription="slide" aria-label="{{ loop.index }} / {{ slides|length }}">
+      {% set tag = s.link ? 'a' : 'span' %}
+      <{{ tag }}{% if s.link %} href="{{ s.link }}"{% endif %} class="ocs-hero-slide">
+        <picture>
+          {% if s.mobile %}<source media="(max-width: 767px)" srcset="{{ s.mobile }}" width="{{ mobile_width }}" height="{{ mobile_height }}" />{% endif %}
+          <img src="{{ s.desktop }}" width="{{ width }}" height="{{ height }}" alt="{{ s.title }}"{% if loop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %} />
+        </picture>
+      </{{ tag }}>
+      {% if s.title or s.text %}<div class="ocs-hero-caption">{% if s.title %}<strong>{{ s.title }}</strong>{% endif %}{{ s.text }}</div>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% if slides|length > 1 %}
+  <button type="button" class="ocs-carousel-prev" aria-label="{{ text_prev }}">&lsaquo;</button>
+  <button type="button" class="ocs-carousel-next" aria-label="{{ text_next }}">&rsaquo;</button>
+  <div class="ocs-carousel-dots" data-label="{{ text_slide }}"></div>
+  {% endif %}
+</section>

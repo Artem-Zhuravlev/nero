@@ -1,0 +1,99 @@
+{# Extension: ocs_newsletter. Admin settings and subscriber list. Owner: SPEC-033. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <a href="{{ export }}" data-toggle="tooltip" title="{{ button_export }}" class="btn btn-info"><i class="fa fa-download"></i></a>
+        <button type="submit" form="form-news" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>{% endif %}
+    {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>{% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3></div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-news" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="module_ocs_newsletter_status" id="input-status" class="form-control">
+                <option value="1"{% if module_ocs_newsletter_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_newsletter_status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-double"><span data-toggle="tooltip" title="{{ help_double }}">{{ entry_double }}</span></label>
+            <div class="col-sm-10">
+              <select name="module_ocs_newsletter_double_optin" id="input-double" class="form-control">
+                <option value="1"{% if module_ocs_newsletter_double_optin %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_newsletter_double_optin %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+          <ul class="nav nav-tabs">
+            {% for language in languages %}
+            <li{% if loop.first %} class="active"{% endif %}><a href="#language{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>
+            {% endfor %}
+          </ul>
+          <div class="tab-content">
+            {% for language in languages %}
+            <div class="tab-pane{% if loop.first %} active{% endif %}" id="language{{ language.language_id }}">
+              <br />
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_title }}</label>
+                <div class="col-sm-10"><input type="text" name="module_ocs_newsletter_l[{{ language.code }}][title]" value="{{ l[language.code].title }}" class="form-control" /></div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_text }}</label>
+                <div class="col-sm-10"><input type="text" name="module_ocs_newsletter_l[{{ language.code }}][text]" value="{{ l[language.code].text }}" class="form-control" /></div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">{{ entry_consent }}</label>
+                <div class="col-sm-10"><input type="text" name="module_ocs_newsletter_l[{{ language.code }}][consent]" value="{{ l[language.code].consent }}" class="form-control" /></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-envelope"></i> {{ text_subscribers }} ({{ total }})</h3></div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead><tr><td>{{ column_email }}</td><td>{{ column_confirmed }}</td><td>{{ column_date }}</td><td class="text-right"></td></tr></thead>
+            <tbody>
+              {% for s in subscribers %}
+              <tr>
+                <td>{{ s.email }}</td>
+                <td>{% if s.confirmed %}{{ text_yes }}{% else %}{{ text_no }}{% endif %}</td>
+                <td>{{ s.date_added }}</td>
+                <td class="text-right">
+                  <form action="{{ action }}" method="post" style="display:inline"><input type="hidden" name="delete_id" value="{{ s.subscriber_id }}" />
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ text_confirm }}');"><i class="fa fa-trash-o"></i></button></form>
+                </td>
+              </tr>
+              {% else %}
+              <tr><td class="text-center" colspan="4">{{ text_none }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="row"><div class="col-sm-12 text-left">{{ pagination }}</div></div>
+        <p class="text-muted">ocs_newsletter v{{ version }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
