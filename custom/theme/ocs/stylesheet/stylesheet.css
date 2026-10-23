@@ -511,3 +511,12 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 	}
 }
 .thumbnails { list-style: none; padding-left: 0; }
+
+/* ==== 16. Request popups: quick order, pre-order, back in stock (SPEC-025) ========== */
+.ocs-req-title { margin-top: 0; }
+.ocs-req-note { color: var(--text-muted); font-size: var(--fs-sm); }
+.ocs-req-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.ocs-req-done { padding: var(--sp-4); border-radius: var(--r-md); background: var(--success-bg); color: var(--success); }
+.ocs-req .required .control-label:after { content: " *"; color: var(--danger); }
+.ocs-quick-card { padding: 0 var(--sp-5) var(--sp-2); }
+.ocs-preorder #button-cart { display: none; }

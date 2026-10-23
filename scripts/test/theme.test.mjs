@@ -240,7 +240,7 @@ test('menu extensions: manifests match migrations and language files have identi
     assert.equal(ext.spec, 'SPEC-027');
     const mig = read(`custom/extensions/${code}/db/001_install.php`);
     for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `${code}: migration does not register ${e}`);
-    for (const s of ext.settings.filter((k) => k.endsWith('_status'))) assert.ok(mig.includes(`'${s}' => 0`), `${code}: ${s} must default to 0`);
+    for (const s of ext.settings.filter((k) => k.endsWith('_status'))) assert.match(mig, new RegExp(`'${s}'(\\s*=>\\s*|,\\s*)0`), `${code}: ${s} must default to 0`);
     for (const lang of ['uk-ua', 'en-gb', 'ru-ru']) {
       const dir = `custom/extensions/${code}/upload/catalog/language/${lang}/extension/module/${code}.php`;
       if (ext.type !== 'module') continue;
@@ -293,4 +293,64 @@ test('shell events key per-language settings by config_language, not the HTML la
   const src = readFileSync(join(REPO_ROOT, 'custom/extensions/ocs_shell/upload/catalog/controller/extension/ocs_shell/events.php'), 'utf8');
   assert.match(src, /\$code = \$this->config->get\('config_language'\)/);
   assert.doesNotMatch(src, /\$code = \$this->language->get\('code'\)/);
+});
+
+// --- SPEC-025 request forms ---
+const REQ_EXT = ['ocs_request', 'ocs_quick_order', 'ocs_preorder', 'ocs_back_in_stock'];
+
+// TEST-QOR-001..004 - verifies REQ-QOR-030, REQ-EXT-051 (manifests match migrations; language files have identical keys; modules default to disabled)
+test('request extensions: manifests match migrations and language files have identical keys', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const keys = (p) => [...read(p).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  for (const code of REQ_EXT) {
+    const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
+    assert.equal(ext.code, code);
+    assert.equal(ext.spec, 'SPEC-025');
+    if (ext.type !== 'module') continue;
+    const mig = read(`custom/extensions/${code}/db/001_install.php`);
+    for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `${code}: migration does not register ${e}`);
+    for (const s of ext.settings.filter((k) => k.endsWith('_status'))) assert.match(mig, new RegExp(`'${s}'(\\s*=>\\s*|,\\s*)0`), `${code}: ${s} must default to 0`);
+    const cat = (l) => keys(`custom/extensions/${code}/upload/catalog/language/${l}/extension/module/${code}.php`);
+    assert.deepEqual(cat('en-gb'), cat('uk-ua'));
+    assert.deepEqual(cat('ru-ru'), cat('uk-ua'));
+    const adm = (l) => keys(`custom/extensions/${code}/upload/admin/language/${l}/extension/module/${code}.php`);
+    assert.deepEqual(adm('en-gb'), adm('uk-ua'), `${code} admin strings`);
+    for (const t of ext.tables || []) assert.ok(mig.includes(t.replace(/^oc_/, '{{PREFIX}}')), `${code}: table ${t} not created by migration`);
+  }
+});
+
+// TEST-QOR-002, TEST-QOR-003, TEST-QOR-004 - verifies REQ-QOR-001, REQ-QOR-010, REQ-QOR-020 (theme hooks, JS and shared form template are wired)
+test('request popups: buttons, JS handler, shared form and error codes are consistent', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.ok(js.includes("'ocs-req-btn'") && js.includes('OCS.req') && js.includes('data-collect'));
+  const prod = read('custom/theme/ocs/template/product/product.twig');
+  for (const cls of ['ocs-preorder-btn', 'ocs-quick-btn', 'ocs-subscribe-btn', 'data-form', 'data-collect="1"']) assert.ok(prod.includes(cls), `product.twig lacks ${cls}`);
+  assert.match(prod, /class="ocs-preorder"/);
+  assert.match(read('custom/theme/ocs/template/ocs/card.twig'), /ocs-req-btn[^>]*data-form="\{\{ ocs_quick\.form \}\}"/);
+  const css = read('custom/theme/ocs/stylesheet/stylesheet.css');
+  assert.match(css, /\.ocs-preorder #button-cart \{ display: none; \}/);
+  const form = read('custom/extensions/ocs_request/upload/catalog/view/theme/default/template/extension/ocs_request/form.twig');
+  for (const hook of ['name="token"', 'name="website"', 'data-error-for="_form"', 'data-failed', 'data-close', 'ocs-req-done']) assert.ok(form.includes(hook), `form lacks ${hook}`);
+  for (const code of ['ocs_quick_order', 'ocs_preorder', 'ocs_back_in_stock']) {
+    const strings = [...read(`custom/extensions/${code}/upload/catalog/language/uk-ua/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]);
+    for (const k of ['error_required', 'error_format', 'error_rate', 'error_token', 'error_generic', 'text_success', 'text_close']) assert.ok(strings.includes(k), `${code} lacks ${k}`);
+    const ctl = read(`custom/extensions/${code}/upload/catalog/controller/extension/module/${code}.php`);
+    assert.match(ctl, /tokenValid/);
+    assert.match(ctl, /allow\(/);
+  }
+});
+
+// TEST-QOR-002 - verifies REQ-QOR-002 (the order is built by the private cart, prices are never read from the request)
+test('quick order never trusts posted prices and does not touch the visitor cart', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const order = read('custom/extensions/ocs_request/upload/catalog/model/extension/ocs_request/order.php');
+  assert.match(order, /new \\Ocs\\IsolatedSession\(\)/);
+  assert.match(order, /new \\Ocs\\IsolatedCustomer\(\)/);
+  assert.match(order, /new \\Cart\\Cart\(\$registry\)/);
+  assert.doesNotMatch(order, /request->post/);
+  assert.doesNotMatch(order, /\$this->cart->/);
+  const pre = read('custom/extensions/ocs_preorder/upload/catalog/controller/extension/module/ocs_preorder.php');
+  assert.match(pre, /config_processing_status/, 'pre-order order status must exclude stock-subtracting statuses');
+  assert.match(pre, /order_id/);
 });

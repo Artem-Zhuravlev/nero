@@ -1,0 +1,24 @@
+{# Extension: ocs_request. Shared form body for the OCS.modal request popups (SPEC-025). Submitted by theme.js (OCS.req) as JSON. #}
+<div class="ocs-req" data-close="{{ text_close }}">
+  <h3 class="ocs-req-title" id="ocs-req-title">{{ heading }}</h3>
+  {% if note %}<p class="ocs-req-note">{{ note }}</p>{% endif %}
+  <form action="{{ action }}" method="post" class="ocs-req-form" data-failed="{{ failed }}" novalidate>
+    <input type="hidden" name="token" value="{{ token }}" />
+    <input type="hidden" name="product_id" value="{{ product_id }}" />
+    <div class="ocs-req-hp" aria-hidden="true"><input type="text" name="website" value="" tabindex="-1" autocomplete="off" /></div>
+    {% for f in fields %}
+    <div class="form-group{% if f.required %} required{% endif %}">
+      <label class="control-label" for="ocs-req-{{ f.name }}">{{ f.label }}</label>
+      {% if f.type == 'textarea' %}
+      <textarea name="{{ f.name }}" id="ocs-req-{{ f.name }}" rows="3" class="form-control"></textarea>
+      {% else %}
+      <input type="{{ f.type }}" name="{{ f.name }}" id="ocs-req-{{ f.name }}" class="form-control" autocomplete="{{ f.name == 'name' ? 'name' : (f.name == 'phone' ? 'tel' : 'email') }}" />
+      {% endif %}
+      <div class="text-danger" data-error-for="{{ f.name }}"></div>
+    </div>
+    {% endfor %}
+    <div class="text-danger ocs-req-error" data-error-for="_form"></div>
+    <button type="submit" class="btn btn-primary btn-lg btn-block">{{ button }}</button>
+  </form>
+  <div class="ocs-req-done" hidden></div>
+</div>

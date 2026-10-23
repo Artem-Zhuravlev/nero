@@ -162,7 +162,7 @@
             {% endif %}
           </ul>
           {% endif %}
-          <div id="product"> {% if options %}
+          <div id="product"{% if ocs_preorder %} class="ocs-preorder"{% endif %}> {% if options %}
             <hr>
             <h3>{{ text_option }}</h3>
             {% for option in options %}
@@ -282,7 +282,11 @@
               <input type="hidden" name="product_id" value="{{ product_id }}" />
               <br />
               <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-primary btn-lg btn-block">{{ button_cart }}</button>
-              <div class="ocs-buy-slot" id="ocs-buy-slot"></div>
+              <div class="ocs-buy-slot" id="ocs-buy-slot">
+                {% if ocs_preorder %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-req-btn ocs-preorder-btn" data-form="{{ ocs_preorder.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_preorder.text }}</button>{% if ocs_preorder.note %}<p class="ocs-req-note">{{ ocs_preorder.note }}</p>{% endif %}{% endif %}
+                {% if ocs_quick and not ocs_preorder %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-quick-btn" data-form="{{ ocs_quick.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_quick.text }}</button>{% endif %}
+                {% if ocs_subscribe %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-subscribe-btn" data-form="{{ ocs_subscribe.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_subscribe.text }}</button>{% endif %}
+              </div>
             </div>
             {% if minimum > 1 %}
             <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_minimum }}</div>

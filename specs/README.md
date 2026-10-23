@@ -91,7 +91,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-022 | [Multi-store and Environment Profiles](multi-store-environments/spec.md) | `draft` |
 | SPEC-023 | [Storefront Visual Design (Apple-style)](theme-design/spec.md) | `in-progress` |
 | SPEC-024 | [Storefront Functionality Reference (moyo.ua)](storefront-reference/spec.md) | `in-progress` |
-| SPEC-025 | [Quick Order, Pre-order, Back-in-stock](quick-order-preorder/spec.md) | `draft` |
+| SPEC-025 | [Quick Order, Pre-order, Back-in-stock](quick-order-preorder/spec.md) | `in-progress` |
 | SPEC-026 | [AJAX Cart and Availability](ajax-cart/spec.md) | `draft` |
 | SPEC-027 | [Mega Menu, Category Wall, Side Menu](menus-category-wall/spec.md) | `in-progress` |
 | SPEC-028 | [AJAX Search](ajax-search/spec.md) | `draft` |

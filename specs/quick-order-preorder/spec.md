@@ -1,6 +1,6 @@
 # SPEC-025 — Quick Order, Pre-order, Back-in-stock
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-013 · **Brief:** modules 1, 2, 14 · **Depends on:** SPEC-023 (`OCS.modal`, `#ocs-buy-slot`), SPEC-004, SPEC-011

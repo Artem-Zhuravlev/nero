@@ -1,0 +1,7 @@
+{ "code": "ocs_quick_order", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Quick Order", "uk-ua": "OCS: швидке замовлення" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
+  "spec": "SPEC-025", "tables": [],
+  "settings": ["module_ocs_quick_order_status", "module_ocs_quick_order_name", "module_ocs_quick_order_phone", "module_ocs_quick_order_email", "module_ocs_quick_order_comment", "module_ocs_quick_order_order_status_id"],
+  "events": ["ocs_quick_order_product_before", "ocs_quick_order_category_before", "ocs_quick_order_search_before", "ocs_quick_order_manufacturer_before", "ocs_quick_order_special_before"],
+  "routes": ["extension/module/ocs_quick_order", "extension/ocs_quick_order/events"] }

@@ -23,6 +23,7 @@
           {% if product.rating < i %} <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> {% else %} <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>{% endif %}
           {% endfor %}{% if product.reviews %} <span class="ocs-reviews">({{ product.reviews }})</span>{% endif %} </div>
         {% endif %} </div>
+      {% if ocs_quick %}<div class="ocs-quick-card"><button type="button" class="btn btn-default btn-sm btn-block ocs-req-btn ocs-quick-btn" data-form="{{ ocs_quick.form }}" data-product-id="{{ product.product_id }}">{{ ocs_quick.text }}</button></div>{% endif %}
       <div class="button-group">
         <button type="button" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ button_cart }}</span></button>
         <button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button>

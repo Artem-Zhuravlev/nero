@@ -1,0 +1,7 @@
+{ "code": "ocs_back_in_stock", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Back in Stock", "uk-ua": "OCS: повідомлення про надходження" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
+  "spec": "SPEC-025", "tables": ["oc_ocs_back_in_stock"],
+  "settings": ["module_ocs_back_in_stock_status"],
+  "events": ["ocs_back_in_stock_product_before", "ocs_back_in_stock_product_edit_after"],
+  "routes": ["extension/module/ocs_back_in_stock", "extension/ocs_back_in_stock/events"] }

@@ -38,6 +38,9 @@ final class SqliteDb implements Db
     {
         // MySQL table options are meaningless for SQLite (tests only)
         $sql = preg_replace('/\)\s*ENGINE\s*=\s*\w+(\s+DEFAULT\s+CHARSET\s*=\s*\w+)?/i', ')', $sql);
+        // secondary keys and AUTO_INCREMENT are MySQL syntax; the integer primary key is already a rowid alias in SQLite
+        $sql = preg_replace('/,\s*(UNIQUE\s+)?KEY\s+\w+\s*\([^)]*\)/i', '', $sql);
+        $sql = preg_replace('/\s+AUTO_INCREMENT/i', '', $sql);
         $this->log[] = $sql;
         return (int) $this->pdo->exec($sql);
     }

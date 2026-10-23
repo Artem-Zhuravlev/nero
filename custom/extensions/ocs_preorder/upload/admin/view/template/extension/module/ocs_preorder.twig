@@ -1,0 +1,118 @@
+{# Extension: ocs_preorder. Admin settings form. Owner: SPEC-025. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <a href="{{ requests }}" class="btn btn-info" data-toggle="tooltip" title="{{ heading_requests }}"><i class="fa fa-list"></i></a>
+        <button type="submit" form="form-preorder" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-preorder" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-4">
+              <select name="module_ocs_preorder_status" id="input-status" class="form-control">
+                <option value="1"{% if module_ocs_preorder_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_preorder_status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+            <label class="col-sm-2 control-label" for="input-global"><span data-toggle="tooltip" title="{{ help_global }}">{{ entry_global }}</span></label>
+            <div class="col-sm-4">
+              <select name="module_ocs_preorder_global" id="input-global" class="form-control">
+                <option value="1"{% if module_ocs_preorder_global %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_preorder_global %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-overrides"><span data-toggle="tooltip" title="{{ help_overrides }}">{{ entry_overrides }}</span></label>
+            <div class="col-sm-10"><textarea name="module_ocs_preorder_overrides" rows="4" id="input-overrides" class="form-control" placeholder="42|on|2026-12-01">{{ module_ocs_preorder_overrides }}</textarea></div>
+          </div>
+          {% for field in fields %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-{{ field }}">{{ attribute(_context, 'entry_' ~ field) }}</label>
+            <div class="col-sm-10">
+              {% set current = attribute(_context, 'module_ocs_preorder_' ~ field) %}
+              <select name="module_ocs_preorder_{{ field }}" id="input-{{ field }}" class="form-control">
+                <option value="off"{% if current == 'off' %} selected="selected"{% endif %}>{{ text_off }}</option>
+                <option value="optional"{% if current == 'optional' %} selected="selected"{% endif %}>{{ text_optional }}</option>
+                <option value="required"{% if current == 'required' %} selected="selected"{% endif %}>{{ text_required }}</option>
+              </select>
+            </div>
+          </div>
+          {% endfor %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-notify">{{ entry_notify_admin }}</label>
+            <div class="col-sm-4">
+              <select name="module_ocs_preorder_notify_admin" id="input-notify" class="form-control">
+                <option value="1"{% if module_ocs_preorder_notify_admin %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_preorder_notify_admin %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+            <label class="col-sm-2 control-label" for="input-create"><span data-toggle="tooltip" title="{{ help_create_order }}">{{ entry_create_order }}</span></label>
+            <div class="col-sm-4">
+              <select name="module_ocs_preorder_create_order" id="input-create" class="form-control">
+                <option value="1"{% if module_ocs_preorder_create_order %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not module_ocs_preorder_create_order %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-order-status"><span data-toggle="tooltip" title="{{ help_order_status }}">{{ entry_order_status }}</span></label>
+            <div class="col-sm-10">
+              <select name="module_ocs_preorder_order_status_id" id="input-order-status" class="form-control">
+                {% for s in order_statuses %}
+                <option value="{{ s.order_status_id }}"{% if s.order_status_id == module_ocs_preorder_order_status_id %} selected="selected"{% endif %}>{{ s.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <fieldset>
+            <legend>{{ text_per_language }}</legend>
+            <ul class="nav nav-tabs">
+              {% for language in languages %}
+              <li{% if loop.first %} class="active"{% endif %}><a href="#language{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>
+              {% endfor %}
+            </ul>
+            <div class="tab-content">
+              {% for language in languages %}
+              <div class="tab-pane{% if loop.first %} active{% endif %}" id="language{{ language.language_id }}">
+                <br />
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_button }}</label>
+                  <div class="col-sm-10"><input type="text" name="module_ocs_preorder_l[{{ language.code }}][button]" value="{{ l[language.code].button }}" class="form-control" /></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_message }}</label>
+                  <div class="col-sm-10"><textarea name="module_ocs_preorder_l[{{ language.code }}][message]" rows="3" class="form-control">{{ l[language.code].message }}</textarea></div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </fieldset>
+        </form>
+        <p class="text-muted">ocs_preorder v{{ version }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

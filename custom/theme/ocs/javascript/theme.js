@@ -511,3 +511,147 @@
 		init();
 	}
 }(window, document));
+
+/* Request popups (SPEC-025): quick order, pre-order and back-in-stock forms in OCS.modal.
+   A button carries data-form (form URL) and data-product-id; data-collect="1" also sends the product page fields
+   (quantity, options) like core's cart.add. The server re-validates everything. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+
+	function field(form, name) {
+		return form.querySelector('[data-error-for="' + name + '"]');
+	}
+
+	function collect(data) {
+		var box = document.getElementById('product');
+
+		if (!box) {
+			return;
+		}
+
+		var inputs = box.querySelectorAll('input, select, textarea');
+
+		for (var i = 0; i < inputs.length; i++) {
+			var el = inputs[i];
+
+			if (!el.name || el.disabled || el.name === 'product_id') {
+				continue;
+			}
+
+			if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) {
+				continue;
+			}
+
+			data.append(el.name, el.value);
+		}
+	}
+
+	function bind(root, collectFields) {
+		var form = root.querySelector('.ocs-req-form');
+		var done = root.querySelector('.ocs-req-done');
+
+		if (!form) {
+			return;
+		}
+
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+
+			var data = new FormData(form);
+			var errs = form.querySelectorAll('[data-error-for]');
+			var btn = form.querySelector('button[type="submit"]');
+			var i;
+
+			for (i = 0; i < errs.length; i++) {
+				errs[i].textContent = '';
+			}
+
+			if (collectFields) {
+				collect(data);
+			}
+
+			btn.disabled = true;
+
+			window.fetch(form.getAttribute('action'), {method: 'POST', body: data, credentials: 'same-origin'}).then(function (r) {
+				return r.json();
+			}).then(function (json) {
+				btn.disabled = false;
+
+				if (json.success) {
+					form.hidden = true;
+					done.textContent = json.success;
+					done.hidden = false;
+
+					return;
+				}
+
+				if (json.errors) {
+					for (var name in json.errors) {
+						if (Object.prototype.hasOwnProperty.call(json.errors, name) && field(form, name)) {
+							field(form, name).textContent = json.errors[name];
+						}
+					}
+
+					return;
+				}
+
+				field(form, '_form').textContent = json.error || '';
+			}).catch(function () {
+				btn.disabled = false;
+				field(form, '_form').textContent = form.getAttribute('data-failed') || '';
+			});
+		});
+	}
+
+	OCS.req = {
+		open: function (button) {
+			var url = button.getAttribute('data-form');
+			var id = button.getAttribute('data-product-id');
+			var collectFields = button.getAttribute('data-collect') === '1';
+
+			if (!url || !id || !window.fetch || !OCS.modal) {
+				return;
+			}
+
+			button.disabled = true;
+
+			window.fetch(url + (url.indexOf('?') === -1 ? '?' : '&') + 'product_id=' + encodeURIComponent(id), {credentials: 'same-origin'}).then(function (r) {
+				return r.text();
+			}).then(function (html) {
+				button.disabled = false;
+
+				if (!html) {
+					return;
+				}
+
+				var holder = document.createElement('div');
+
+				holder.innerHTML = html;
+
+				var root = holder.querySelector('.ocs-req');
+
+				OCS.modal.open({content: holder, closeLabel: root ? root.getAttribute('data-close') : '', labelledBy: 'ocs-req-title'});
+				bind(holder, collectFields);
+			}).catch(function () {
+				button.disabled = false;
+			});
+		}
+	};
+
+	document.addEventListener('click', function (e) {
+		var el = e.target;
+
+		while (el && el !== document) {
+			if (el.classList && el.classList.contains('ocs-req-btn')) {
+				e.preventDefault();
+				OCS.req.open(el);
+
+				return;
+			}
+
+			el = el.parentNode;
+		}
+	});
+}(window, document));

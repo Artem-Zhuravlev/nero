@@ -1,0 +1,63 @@
+{# Extension: ocs_preorder. Request list. Owner: SPEC-025 (REQ-QOR-012). #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right"><a href="{{ back }}" data-toggle="tooltip" title="{{ button_back }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_requests }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>{% endif %}
+    {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>{% endif %}
+    <div class="panel panel-default">
+      <div class="panel-body table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <td>{{ column_date }}</td><td>{{ column_product }}</td><td>{{ column_contact }}</td><td>{{ column_comment }}</td>
+              <td>{{ column_expected }}</td><td>{{ column_order }}</td><td>{{ column_status }}</td><td></td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in requests %}
+            <tr>
+              <td>{{ r.date }}</td>
+              <td><a href="{{ r.product_href }}">{{ r.product }}</a> &times; {{ r.quantity }}{% if r.options %}<br /><small>{{ r.options }}</small>{% endif %}</td>
+              <td>{{ r.name }}<br />{{ r.phone }}{% if r.email %}<br />{{ r.email }}{% endif %}</td>
+              <td>{{ r.comment }}</td>
+              <td>{{ r.expected_date }}</td>
+              <td>{% if r.order_href %}<a href="{{ r.order_href }}">#{{ r.order_id }}</a>{% endif %}</td>
+              <td>
+                <form action="{{ action }}" method="post" class="form-inline">
+                  <input type="hidden" name="preorder_id" value="{{ r.preorder_id }}" />
+                  <select name="status" class="form-control input-sm" onchange="this.form.submit()">
+                    <option value="0"{% if r.status == 0 %} selected="selected"{% endif %}>{{ text_new }}</option>
+                    <option value="1"{% if r.status == 1 %} selected="selected"{% endif %}>{{ text_processed }}</option>
+                    <option value="2"{% if r.status == 2 %} selected="selected"{% endif %}>{{ text_cancelled }}</option>
+                  </select>
+                </form>
+              </td>
+              <td>
+                <form action="{{ action }}" method="post" onsubmit="return confirm('{{ text_confirm }}');">
+                  <input type="hidden" name="preorder_id" value="{{ r.preorder_id }}" />
+                  <button type="submit" name="delete" value="1" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td class="text-center" colspan="8">{{ text_no_results }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="text-left">{{ pagination }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
