@@ -5,3 +5,6 @@ node_modules/
 *.log
 .DS_Store
 Thumbs.db
+
+# core/ is vendored byte-for-byte (see core/.manifest.sha256): nothing under it may be ignored.
+!core/**
