@@ -1,6 +1,6 @@
 # SPEC-029 — Product Stickers
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-012 · **Brief:** module 9 · **Depends on:** SPEC-023 (`.ocs-slot-*`, `.ocs-badge`)

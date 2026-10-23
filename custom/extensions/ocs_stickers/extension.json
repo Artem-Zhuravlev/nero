@@ -1,0 +1,8 @@
+{ "code": "ocs_stickers", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Stickers", "uk-ua": "OCS: стікери" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_listing"] },
+  "spec": "SPEC-029",
+  "tables": ["oc_ocs_sticker", "oc_ocs_sticker_description", "oc_ocs_sticker_product"],
+  "settings": ["module_ocs_stickers_status", "module_ocs_stickers_limit"],
+  "events": ["ocs_stickers_product_before", "ocs_stickers_category_before", "ocs_stickers_search_before", "ocs_stickers_manufacturer_before", "ocs_stickers_special_before", "ocs_stickers_form_before", "ocs_stickers_add_after", "ocs_stickers_edit_after"],
+  "routes": ["extension/module/ocs_stickers", "extension/ocs_stickers/events"] }

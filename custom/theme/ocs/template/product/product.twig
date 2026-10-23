@@ -21,7 +21,8 @@
         {% set class = 'col-sm-8' %}
         {% endif %}
         <div class="{{ class }}"> {% if thumb or images %}
-          <div class="ocs-gallery"><div class="ocs-slot ocs-slot-tl"></div><div class="ocs-slot ocs-slot-tr"></div><div class="ocs-slot ocs-slot-bl"></div>
+          <div class="ocs-gallery"><div class="ocs-slot ocs-slot-tl">{% for s in ocs_stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl">{% for s in ocs_stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
+
           <ul class="thumbnails">
             {% if thumb %}
             <li><a class="thumbnail" href="{{ popup }}" title="{{ heading_title }}"><img src="{{ thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" /></a></li>

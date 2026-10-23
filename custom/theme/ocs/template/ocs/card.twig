@@ -3,8 +3,9 @@
 <div class="product-layout product-list col-xs-12" data-product-id="{{ product.product_id }}">
   <div class="product-thumb">
     <div class="image">
-      <div class="ocs-slot ocs-slot-tl" data-product-id="{{ product.product_id }}"></div><div class="ocs-slot ocs-slot-tr" data-product-id="{{ product.product_id }}"></div><div class="ocs-slot ocs-slot-bl" data-product-id="{{ product.product_id }}"></div>
-      {% if product.discount_pct %}<span class="ocs-badge ocs-badge-discount">-{{ product.discount_pct }}%</span>{% endif %}
+      <div class="ocs-slot ocs-slot-tl" data-product-id="{{ product.product_id }}">{% for s in product.stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-tr" data-product-id="{{ product.product_id }}">{% for s in product.stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl" data-product-id="{{ product.product_id }}">{% for s in product.stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
+
+      {% if product.discount_pct and not product.stickers %}<span class="ocs-badge ocs-badge-discount">-{{ product.discount_pct }}%</span>{% endif %}
       <a href="{{ product.href }}"><img src="{{ product.thumb }}" loading="lazy" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a>
     </div>
     <div>

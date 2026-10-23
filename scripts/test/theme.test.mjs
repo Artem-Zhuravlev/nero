@@ -425,3 +425,51 @@ test('ajax search: manifest, endpoint, template hooks and theme.js are consisten
   const events = read('custom/extensions/ocs_ajax_search/upload/catalog/controller/extension/ocs_ajax_search/events.php');
   for (const k of [...events.matchAll(/'(recent|popular|clear|all|empty|error|products|categories|brands)'/g)].map((m) => m[1])) assert.ok(keys('uk-ua', 'catalog').includes(`text_${k}`), `missing text_${k}`);
 });
+
+// --- SPEC-029 stickers ---
+// TEST-STK-001, 003, 004 - verifies REQ-STK-003, REQ-STK-006, REQ-EXT-051 (manifest vs migration, OCMOD anchors unique in core, templates, language parity, escaping)
+test('stickers: manifest, OCMOD anchors, template slots and escaping are consistent', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ext = JSON.parse(read('custom/extensions/ocs_stickers/extension.json'));
+  const mig = read('custom/extensions/ocs_stickers/db/001_install.php');
+  assert.equal(ext.spec, 'SPEC-029');
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
+  for (const t of ext.tables) assert.ok(mig.includes(t.replace(/^oc_/, '{{PREFIX}}')), `table ${t} not created`);
+  assert.match(mig, /'module_ocs_stickers_status' => 0/);
+
+  const core = read('core/upload/admin/view/template/catalog/product_form.twig').replace(/\r/g, '');
+  const ocmod = read('custom/ocmod/ocs_stickers_product_form.ocmod.xml');
+  const anchors = [...ocmod.matchAll(/<search><!\[CDATA\[(.*?)\]\]><\/search>/g)].map((m) => m[1]);
+  assert.equal(anchors.length, 2);
+  for (const a of anchors) assert.equal(core.split(a).length - 1, 1, `OCMOD anchor must be unique in core: ${a}`);
+  assert.match(ocmod, /@core-file admin\/view\/template\/catalog\/product_form\.twig/);
+  for (const v of ['ocs_stickers_tab_link', 'ocs_stickers_tab_pane']) assert.ok(ocmod.includes(`{{ ${v} }}`));
+  const ev = read('custom/extensions/ocs_stickers/upload/admin/controller/extension/ocs_stickers/events.php');
+  for (const v of ['ocs_stickers_tab_link', 'ocs_stickers_tab_pane', 'ocs_stickers_present', 'ocs_sticker_ids']) assert.ok(ev.includes(v), `admin events lack ${v}`);
+  assert.ok(read('custom/extensions/ocs_stickers/upload/admin/view/template/extension/ocs_stickers/tab.twig').includes('ocs_stickers_present'));
+
+  const card = read('custom/theme/ocs/template/ocs/card.twig');
+  const prod = read('custom/theme/ocs/template/product/product.twig');
+  for (const pos of ['tl', 'tr', 'bl']) {
+    assert.ok(card.includes(`product.stickers.${pos}`), `card lacks ${pos}`);
+    assert.ok(prod.includes(`ocs_stickers.${pos}`), `product page lacks ${pos}`);
+  }
+  assert.match(card, /--badge-bg: \{\{ s\.bg \}\}; --badge-fg: \{\{ s\.fg \}\}/);
+  assert.match(card, /product\.discount_pct and not product\.stickers/, 'built-in discount badge steps aside when stickers are shown');
+
+  const catalogEv = read('custom/extensions/ocs_stickers/upload/catalog/controller/extension/ocs_stickers/events.php');
+  assert.match(catalogEv, /htmlspecialchars\(\$sticker\['text'\]/, 'sticker text is escaped before the unescaped Twig output');
+  const model = read('custom/extensions/ocs_stickers/upload/catalog/model/extension/ocs_stickers/stickers.php');
+  assert.equal((model.match(/->query\(/g) || []).length, 2, 'definitions (cached) + one batched facts query');
+  assert.match(model, /cache->set\(/);
+
+  const keys = (p) => [...read(p).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  const adm = (l) => keys(`custom/extensions/ocs_stickers/upload/admin/language/${l}/extension/module/ocs_stickers.php`);
+  assert.deepEqual(adm('en-gb'), adm('uk-ua'));
+  const tab = (l) => keys(`custom/extensions/ocs_stickers/upload/admin/language/${l}/extension/ocs_stickers/tab.php`);
+  assert.deepEqual(tab('en-gb'), tab('uk-ua'));
+  assert.ok(tab('uk-ua').every((k) => k.startsWith('ocs_')), 'tab strings are prefixed (the file is loaded while another form renders)');
+  const ctl = read('custom/extensions/ocs_stickers/upload/admin/controller/extension/module/ocs_stickers.php');
+  const coreAdminKeys = ['text_home', 'text_enabled', 'text_disabled']; // defined by core's admin default language file
+  for (const k of [...ctl.matchAll(/language->get\('((?:error|heading|text)_[a-z_]+)'\)/g)].map((m) => m[1]).filter((k) => !coreAdminKeys.includes(k))) assert.ok(adm('uk-ua').includes(k), `missing admin string ${k}`);
+});

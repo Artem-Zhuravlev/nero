@@ -1,0 +1,16 @@
+{# Extension: ocs_stickers. Tab pane of the admin product form (injected by OCMOD ocs_stickers_product_form). Owner: SPEC-029 (REQ-STK-003). #}
+<div class="tab-pane" id="tab-ocs-stickers">
+  <input type="hidden" name="ocs_stickers_present" value="1" />
+  <p class="text-muted">{{ ocs_text_help }}</p>
+  {% for s in stickers %}
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" name="ocs_sticker_ids[]" value="{{ s.sticker_id }}"{% if s.checked %} checked="checked"{% endif %} />
+      <span class="label" style="background: {{ s.bg }}; color: {{ s.fg }}; padding: 4px 10px; font-size: 12px;">{{ s.name }}</span>
+      {% if s.auto %}<small class="text-muted">{{ ocs_text_auto }}</small>{% endif %}
+    </label>
+  </div>
+  {% else %}
+  <p>{{ ocs_text_none }}</p>
+  {% endfor %}
+</div>

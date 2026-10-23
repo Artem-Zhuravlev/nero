@@ -371,7 +371,6 @@ footer details.ocs-fgroup:not([open]) > ul { display: none; }
 .ocs-code { color: var(--text-muted); font-size: var(--fs-xs); margin-bottom: var(--sp-1); }
 .ocs-reviews { color: var(--text-muted); font-size: var(--fs-xs); }
 .ocs-badge-discount { position: absolute; top: var(--sp-3); left: var(--sp-3); z-index: 3; background: var(--danger); color: var(--bg); }
-.ocs-slot-tl { top: calc(var(--sp-3) + 28px); }
 .product-thumb .rating .fa-stack { width: 1em; height: 1em; line-height: 1; }
 .product-thumb .rating .fa { color: var(--warning); }
 .ocs-desc { color: var(--text-muted); font-size: var(--fs-sm); }
