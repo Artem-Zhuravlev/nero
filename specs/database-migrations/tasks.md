@@ -11,7 +11,7 @@
 | TASK-DB-007 | Helpers: event, seoUrl, layout, module | REQ-DB-023..026 | TEST-DB-007 | done |
 | TASK-DB-008 | Helpers: ocmod, lookups, schema (own tables) | REQ-DB-027, 028, 030 | TEST-DB-008 | done |
 | TASK-DB-009 | Seeds runner | REQ-DB-014 | TEST-DB-009 | pending |
-| TASK-DB-010 | `refresh.php` headless OCMOD + cache clear | REQ-DB-040, 041 | TEST-DB-010 output equals admin refresh | pending |
+| TASK-DB-010 | `refresh.php` headless OCMOD + cache clear | REQ-DB-040, 041 | TEST-DB-010 output equals admin refresh | done |
 | TASK-DB-011 | Table/column conventions lint | REQ-DB-050..053 | TEST-DB-011 | in-progress |
 | TASK-DB-012 | Verify checks + idempotence + schema snapshot | REQ-DB-060, 061 | TEST-DB-012 | pending |
 | TASK-DB-013 | Perf check | REQ-DB-071 | review | pending |

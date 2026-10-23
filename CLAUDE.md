@@ -56,7 +56,8 @@ Implemented so far (SPEC-001/003/009, see task statuses): `npm run core:check` (
 `npm run test:php` (dependency-free PHP runner; SQLite-backed tests of the migration runner, helpers and installer) and
 `npm run db:migrate|db:status|db:install` (code and tests exist but have NEVER been run against a real MySQL/MariaDB server;
 they need `php -d extension=mysqli` and a built `build/www/config.php`).
-Not implemented yet: seeds, `refresh.php` (OCMOD refresh), extension scaffolder, smoke tests, jobs — do not invent them; implement from the
+`php -d extension=mysqli scripts/refresh.php` (headless OCMOD refresh reusing core's own algorithm; verified against real core files with a fake DB, the CLI itself never run on a real DB).
+Not implemented yet: seeds, extension scaffolder, smoke tests, jobs — do not invent them; implement from the
 approved specs. Nothing is deployed from this repo.
 
 - Docs: `docs/ocstore-internals.md`, `docs/agent-playbook.md`, `docs/coding-rules.md`,

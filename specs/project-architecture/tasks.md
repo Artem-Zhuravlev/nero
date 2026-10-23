@@ -10,7 +10,7 @@
 | TASK-ARCH-006 | `.htaccess` generation + deny-list | REQ-ARCH-061 | TEST-ARCH-006 smoke denied paths | in-progress |
 | TASK-ARCH-007 | `scripts/migrate.php` + `oc_ocs_migration` + checksums + `0001_baseline.sql` | REQ-ARCH-051, 053, 055 | TEST-ARCH-007 edited-migration negative test | in-progress |
 | TASK-ARCH-008 | `scripts/seed.php` (idempotent) | REQ-ARCH-052 | TEST-ARCH-008 double-run no diff | pending |
-| TASK-ARCH-009 | `scripts/refresh.php` (OCMOD refresh + cache clear) | REQ-ARCH-054, 021 | TEST-ARCH-009 modification dir populated | pending |
+| TASK-ARCH-009 | `scripts/refresh.php` (OCMOD refresh + cache clear) | REQ-ARCH-054, 021 | TEST-ARCH-009 modification dir populated | done |
 | TASK-ARCH-010 | Extension scaffolder `scripts/new-extension.mjs` + sample `ocs_hello` module | REQ-ARCH-024..027, 030, 031, 034 | TEST-ARCH-010 builds & renders in storefront | pending |
 | TASK-ARCH-011 | Theme skeleton `custom/theme/ocs` + `extension/theme/ocs` admin entry, selected by migration | REQ-ARCH-020 | TEST-ARCH-011 home renders with theme `ocs` | pending |
 | TASK-ARCH-012 | `lint-layers.mjs` (no SQL in controllers/views, no `@`, no `eval`, namespace in libs) | REQ-ARCH-031, 034, 035, 063 | TEST-ARCH-012 fixtures | pending |
