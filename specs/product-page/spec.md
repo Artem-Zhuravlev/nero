@@ -1,6 +1,6 @@
 # SPEC-035 — Product Page: Tabs, Key Attributes, Questions, Accessories, Similar
 
-**Status:** draft
+**Status:** implemented
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-051..053, 055 · **Depends on:** SPEC-023, SPEC-032 (delivery block), SPEC-029

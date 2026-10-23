@@ -1,0 +1,12 @@
+{# Extension: ocs_product_extras. Tab pane of the admin product form (injected by OCMOD ocs_product_extras_form). Owner: SPEC-035 (REQ-PRD-020). #}
+<div class="tab-pane" id="tab-ocs-extras">
+  <input type="hidden" name="ocs_extras_present" value="1" />
+  <div class="form-group">
+    <label class="col-sm-2 control-label" for="input-ocs-accessories">{{ ocs_entry_ids }}</label>
+    <div class="col-sm-10">
+      <input type="text" name="ocs_accessory_ids" value="{{ ids }}" id="input-ocs-accessories" class="form-control" placeholder="42, 43, 50" />
+      <p class="help-block">{{ ocs_text_help }}</p>
+      {% if accessories %}<ul class="list-unstyled">{% for a in accessories %}<li>{{ a }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+  </div>
+</div>

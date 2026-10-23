@@ -582,3 +582,47 @@ test('product carousel: admin validation and id sources', () => {
   assert.match(ctl, /\$category_id = \(int\)/);
   for (const mode of ['newest', 'bestsellers', 'discounted', 'manual']) assert.ok(ctl.includes(mode), mode);
 });
+
+// TEST-PRD-006 - verifies REQ-PRD-041, REQ-EXT-051 (manifest matches the migration; strings identical across languages; off by default)
+test('product extras: manifest matches migration and language files have identical keys', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const code = 'ocs_product_extras';
+  const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
+  assert.equal(ext.spec, 'SPEC-035');
+  const mig = read(`custom/extensions/${code}/db/001_install.php`);
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `event ${e}`);
+  for (const t of ext.tables) assert.ok(mig.includes(`{{PREFIX}}${t.replace(/^oc_/, '')}`), `table ${t}`);
+  for (const s of ext.settings) assert.ok(mig.includes(`'${s}'`), `setting ${s}`);
+  assert.match(mig, /'module_ocs_product_extras_status' => 0/);
+  const keys = (side, l, f) => [...read(`custom/extensions/${code}/upload/${side}/language/${l}/extension/${f}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  for (const l of ['en-gb', 'ru-ru']) assert.deepEqual(keys('catalog', l, `module/${code}`), keys('catalog', 'uk-ua', `module/${code}`), `catalog ${l}`);
+  assert.deepEqual(keys('admin', 'en-gb', `module/${code}`), keys('admin', 'uk-ua', `module/${code}`));
+  assert.deepEqual(keys('admin', 'en-gb', `${code}/tab`), keys('admin', 'uk-ua', `${code}/tab`));
+});
+
+// TEST-PRD-005 - verifies REQ-PRD-001, REQ-PRD-031, REQ-THM-013 (the override keeps the core hooks and adds the section bar, tabs and carousels)
+test('product override keeps core hooks and adds section bar, questions tab and carousels', () => {
+  const twig = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/product/product.twig'), 'utf8');
+  for (const hook of ['id="button-cart"', 'id="product"', 'id="input-quantity"', 'name="product_id"', 'id="tab-description"', 'id="tab-review"', 'id="button-review"', 'wishlist.add', 'compare.add', 'class="thumbnails"']) assert.ok(twig.includes(hook), hook);
+  for (const el of ['id="ocs-sections"', 'id="tab-questions"', "'id': 'ocs-accessories'", "'id': 'ocs-similar'", 'ocs-buy-slot', 'application/ld+json', 'fetchpriority="high"']) assert.ok(twig.includes(el), el);
+  const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
+  assert.match(js, /getElementById\('ocs-sections'\)/);
+  assert.match(js, /IntersectionObserver/);
+  assert.ok(css.includes('.ocs-sections'));
+});
+
+// TEST-PRD-003 - verifies REQ-PRD-010 (questions: token, rate limit, honeypot, moderation by default, raw storage and single escaping)
+test('questions: guarded endpoint, moderated by default, escaped once on output', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ctl = read('custom/extensions/ocs_product_extras/upload/catalog/controller/extension/module/ocs_product_extras.php');
+  assert.match(ctl, /tokenValid/);
+  assert.match(ctl, /allow\('question'\)/);
+  assert.match(ctl, /\$post\['website'\]/);
+  assert.match(ctl, /html_entity_decode/);
+  const model = read('custom/extensions/ocs_product_extras/upload/catalog/model/extension/ocs_product_extras/extras.php');
+  assert.match(model, /status = '0'/);
+  assert.match(model, /status = '1'/);
+  const adm = read('custom/extensions/ocs_product_extras/upload/admin/controller/extension/module/ocs_product_extras.php');
+  assert.match(adm, /htmlspecialchars\(\$row\['text'\]/);
+  assert.match(adm, /htmlspecialchars\(\$row\['answer'\]/);
+});

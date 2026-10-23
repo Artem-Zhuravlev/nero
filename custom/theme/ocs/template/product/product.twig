@@ -6,6 +6,12 @@
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
+  {% if ocs_px %}
+  <script type="application/ld+json">{{ ocs_px.schema }}</script>
+  <nav class="ocs-sections" id="ocs-sections" aria-label="{{ heading_title }}">
+    {% for s in ocs_px.sections %}<a href="{{ s.href }}"{% if s.tab %} data-ocs-tab="1"{% endif %}>{{ s.text }}</a>{% endfor %}
+  </nav>
+  {% endif %}
   <div class="row">{{ column_left }}
     {% if column_left and column_right %}
     {% set class = 'col-sm-6' %}
@@ -25,7 +31,7 @@
 
           <ul class="thumbnails">
             {% if thumb %}
-            <li><a class="thumbnail" href="{{ popup }}" title="{{ heading_title }}"><img src="{{ thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" /></a></li>
+            <li><a class="thumbnail" href="{{ popup }}" title="{{ heading_title }}"><img src="{{ thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}"{% if ocs_px.thumb_w %} width="{{ ocs_px.thumb_w }}" height="{{ ocs_px.thumb_h }}" fetchpriority="high"{% endif %} /></a></li>
             {% endif %}
             {% if images %}
             {% for image in images %}
@@ -42,6 +48,9 @@
             {% endif %}
             {% if review_status %}
             <li><a href="#tab-review" data-toggle="tab">{{ tab_review }}</a></li>
+            {% endif %}
+            {% if ocs_px.qa %}
+            <li><a href="#tab-questions" data-toggle="tab">{{ ocs_px.qa.label }}</a></li>
             {% endif %}
           </ul>
           <div class="tab-content">
@@ -112,6 +121,30 @@
                 {% endif %}
               </form>
             </div>
+            {% endif %}
+            {% if ocs_px.qa %}
+            <div class="tab-pane" id="tab-questions">
+              {% for q in ocs_px.qa.list %}
+              <div class="ocs-q">
+                <p><strong>{{ q.name }}</strong> <span class="text-muted">{{ q.date }}</span></p>
+                <p>{{ q.text }}</p>
+                {% if q.answer %}<p class="ocs-q-answer"><strong>{{ ocs_px.qa.ask.text_answer }}</strong> {{ q.answer }}</p>{% endif %}
+              </div>
+              {% else %}
+              <p class="text-muted">{{ ocs_px.qa.ask.text_no_questions }}</p>
+              {% endfor %}
+              <h3>{{ ocs_px.qa.ask.text_ask_title }}</h3>
+              <form class="ocs-news-form ocs-q-form" action="{{ ocs_px.qa.action }}" method="post" data-failed="{{ ocs_px.qa.ask.error_generic }}" novalidate>
+                <input type="hidden" name="token" value="{{ ocs_px.qa.token }}" />
+                <input type="hidden" name="product_id" value="{{ product_id }}" />
+                <div class="ocs-news-hp" aria-hidden="true"><label>Website <input type="text" name="website" value="" tabindex="-1" autocomplete="off" /></label></div>
+                <input type="text" name="name" value="{{ ocs_px.qa.name }}" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_name }}" aria-label="{{ ocs_px.qa.ask.entry_name }}" autocomplete="name" />
+                <input type="email" name="email" value="{{ ocs_px.qa.email }}" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_email }}" aria-label="{{ ocs_px.qa.ask.entry_email }}" autocomplete="email" />
+                <textarea name="text" rows="4" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_question }}" aria-label="{{ ocs_px.qa.ask.entry_question }}"></textarea>
+                <button type="submit" class="btn btn-primary">{{ ocs_px.qa.ask.button_ask }}</button>
+                <div class="ocs-news-msg" role="status" aria-live="polite"></div>
+              </form>
+            </div>
             {% endif %}</div>
         </div>
         {% if column_left or column_right %}
@@ -125,6 +158,11 @@
             <button type="button" data-toggle="tooltip" class="btn btn-default" title="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><i class="fa fa-exchange"></i></button>
           </div>
           <h1>{{ heading_title }}</h1>
+          {% if ocs_px.key_attrs %}
+          <ul class="ocs-key-attrs list-unstyled" aria-label="{{ ocs_px.text_key_attrs }}">
+            {% for a in ocs_px.key_attrs %}<li><span class="text-muted">{{ a.name }}:</span> {{ a.text }}</li>{% endfor %}
+          </ul>
+          {% endif %}
           <ul class="list-unstyled">
             {% if manufacturer %}
             <li>{{ text_manufacturer }} <a href="{{ manufacturers }}">{{ manufacturer }}</a></li>
@@ -301,6 +339,22 @@
                       </div>
           {% endif %} </div>
       </div>
+      {% for block in [{'id': 'ocs-accessories', 'title': ocs_px.text_accessories, 'items': ocs_px.accessories}, {'id': 'ocs-similar', 'title': ocs_px.text_similar, 'items': ocs_px.similar}] %}
+      {% if block.items %}
+      <section class="ocs-pcarousel" id="{{ block.id }}" aria-label="{{ block.title }}">
+        <div class="ocs-pcarousel-head"><h3>{{ block.title }}</h3></div>
+        <div class="ocs-carousel" role="region" aria-label="{{ block.title }}">
+          <div class="ocs-carousel-track">
+            {% for product in block.items %}
+            <div class="ocs-carousel-item">{% include 'ocs/template/ocs/card.twig' %}</div>
+            {% endfor %}
+          </div>
+          <button type="button" class="ocs-carousel-prev" aria-label="{{ ocs_px.text_prev }}">&lsaquo;</button>
+          <button type="button" class="ocs-carousel-next" aria-label="{{ ocs_px.text_next }}">&rsaquo;</button>
+        </div>
+      </section>
+      {% endif %}
+      {% endfor %}
       {% if products %}
       <h3>{{ text_related }}</h3>
       <div class="row"> {% set i = 0 %}

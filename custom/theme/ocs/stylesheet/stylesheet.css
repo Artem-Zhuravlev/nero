@@ -643,3 +643,17 @@ li .ocs-stock { font-size: inherit; }
 .ocs-seo-home summary { cursor: pointer; color: var(--link); font-weight: 500; }
 .ocs-seo-home[open] summary { margin-bottom: var(--sp-3); }
 .ocs-seo-home .ocs-seo-body { max-width: 72ch; }
+
+/* ==== 21. Product page extras: section bar, key attributes, questions (SPEC-035) ==== */
+.ocs-sections {
+	position: sticky; top: var(--ocs-hdr, 0); z-index: 1010; display: flex; gap: var(--sp-4); overflow-x: auto; white-space: nowrap;
+	margin: 0 0 var(--sp-4); padding: var(--sp-2) 0; background: var(--bg); border-bottom: 1px solid var(--border); scrollbar-width: none;
+}
+.ocs-sections::-webkit-scrollbar { display: none; }
+.ocs-sections a { padding: var(--sp-2) 0; color: var(--text-muted); border-bottom: 2px solid transparent; text-decoration: none; }
+.ocs-sections a.is-current { color: var(--text); border-bottom-color: var(--accent); }
+.ocs-key-attrs { margin: var(--sp-3) 0; }
+.ocs-q { padding: var(--sp-3) 0; border-bottom: 1px solid var(--border); }
+.ocs-q-answer { padding: var(--sp-3); background: var(--bg-alt); border-radius: var(--r-md); }
+.ocs-q-form textarea { flex-basis: 100%; }
+#ocs-accessories, #ocs-similar { scroll-margin-top: calc(var(--ocs-hdr, 0px) + 56px); }

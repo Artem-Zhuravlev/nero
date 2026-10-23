@@ -1485,3 +1485,85 @@
 		boot();
 	}
 }(window, document));
+
+/* Product section bar (SPEC-035 REQ-PRD-001): tab anchors open the Bootstrap tab, the others scroll; the current section is highlighted. */
+(function (window, document) {
+	'use strict';
+
+	function boot() {
+		var bar = document.getElementById('ocs-sections');
+
+		if (!bar) {
+			return;
+		}
+
+		var links = [].slice.call(bar.querySelectorAll('a'));
+		var header = document.querySelector('header');
+		var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		function mark(href) {
+			links.forEach(function (a) {
+				a.classList.toggle('is-current', a.getAttribute('href') === href);
+			});
+		}
+
+		function offset() {
+			return (header ? header.offsetHeight : 0) + bar.offsetHeight + 8;
+		}
+
+		bar.style.setProperty('--ocs-hdr', (header ? header.offsetHeight : 0) + 'px');
+
+		links.forEach(function (a) {
+			a.addEventListener('click', function (e) {
+				var href = a.getAttribute('href');
+				var target = document.querySelector(href);
+
+				if (!target) {
+					return;
+				}
+
+				e.preventDefault();
+
+				if (a.getAttribute('data-ocs-tab') && window.jQuery) {
+					window.jQuery('.nav-tabs a[href="' + href + '"]').tab('show');
+					target = document.querySelector('.nav-tabs');
+				}
+
+				window.scrollTo({top: target.getBoundingClientRect().top + window.pageYOffset - offset(), behavior: reduce ? 'auto' : 'smooth'});
+				mark(href);
+			});
+		});
+
+		if (window.jQuery) {
+			window.jQuery(document).on('shown.bs.tab', '.nav-tabs a[data-toggle="tab"]', function () {
+				mark(this.getAttribute('href'));
+			});
+		}
+
+		if ('IntersectionObserver' in window) {
+			var io = new window.IntersectionObserver(function (entries) {
+				entries.forEach(function (en) {
+					if (en.isIntersecting) {
+						mark('#' + en.target.id);
+					}
+				});
+			}, {rootMargin: '-20% 0px -60% 0px'});
+
+			['ocs-accessories', 'ocs-similar'].forEach(function (id) {
+				var el = document.getElementById(id);
+
+				if (el) {
+					io.observe(el);
+				}
+			});
+		}
+
+		mark('#tab-description');
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));

@@ -1,0 +1,8 @@
+{ "code": "ocs_product_extras", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Product Page Extras", "uk-ua": "OCS: додатки сторінки товару" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
+  "spec": "SPEC-035",
+  "tables": ["oc_ocs_question", "oc_ocs_product_accessory"],
+  "settings": ["module_ocs_product_extras_status", "module_ocs_product_extras_key_attrs", "module_ocs_product_extras_questions", "module_ocs_product_extras_accessories", "module_ocs_product_extras_similar", "module_ocs_product_extras_similar_limit"],
+  "events": ["ocs_product_extras_view", "ocs_product_extras_form", "ocs_product_extras_add", "ocs_product_extras_edit", "ocs_product_extras_delete"],
+  "routes": ["extension/module/ocs_product_extras", "extension/module/ocs_product_extras/ask", "extension/ocs_product_extras/events"] }

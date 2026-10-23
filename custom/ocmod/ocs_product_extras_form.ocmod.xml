@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Purpose: adds an "Accessories" tab to the admin product form.
+  Owner: SPEC-035 (REQ-PRD-020). Event insufficient because: view events can add variables but not new markup to the core template.
+  The tab is rendered by the ocs_product_extras admin event and handed over as {{ ocs_extras_tab_link }} / {{ ocs_extras_tab_pane }}.
+  @core-file admin/view/template/catalog/product_form.twig
+  @core-version 3.0.3.7
+-->
+<modification>
+  <name>OCS product extras: product form tab</name>
+  <code>ocs_product_extras_form</code>
+  <version>1.0.0</version>
+  <author>OCS</author>
+  <link></link>
+  <file path="admin/view/template/catalog/product_form.twig">
+    <operation>
+      <search><![CDATA[<li><a href="#tab-design" data-toggle="tab">{{ tab_design }}</a></li>]]></search>
+      <add position="after"><![CDATA[{{ ocs_extras_tab_link }}]]></add>
+    </operation>
+    <operation>
+      <search><![CDATA[<div class="tab-pane" id="tab-design">]]></search>
+      <add position="before"><![CDATA[{{ ocs_extras_tab_pane }}]]></add>
+    </operation>
+  </file>
+</modification>
