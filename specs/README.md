@@ -72,7 +72,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-003 | [Build Overlay and Generated Configuration](build-overlay/spec.md) | `in-progress` |
 | SPEC-004 | [Extension Contracts](extension-contracts/spec.md)       | `approved` |
 | SPEC-005 | [Database, Migrations, Settings-as-Code](database-migrations/spec.md) | `in-progress` |
-| SPEC-006 | [Storefront Theme Architecture](theme-architecture/spec.md) | `draft` |
+| SPEC-006 | [Storefront Theme Architecture](theme-architecture/spec.md) | `in-progress` |
 | SPEC-007 | [OCMOD and Event Policy](ocmod-and-events/spec.md)       | `draft` |
 | SPEC-008 | [Localisation](localisation/spec.md)                     | `draft` |
 | SPEC-009 | [Quality Gates, Lint, Security Checklist](quality-gates/spec.md) | `in-progress` |
@@ -89,6 +89,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-020 | [Agent Workflow and Knowledge Base](agent-workflow/spec.md) | `draft` |
 | SPEC-021 | [Testing Strategy and Harness](testing-strategy/spec.md) | `draft` |
 | SPEC-022 | [Multi-store and Environment Profiles](multi-store-environments/spec.md) | `draft` |
+| SPEC-023 | [Storefront Visual Design (Apple-style)](theme-design/spec.md) | `in-progress` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

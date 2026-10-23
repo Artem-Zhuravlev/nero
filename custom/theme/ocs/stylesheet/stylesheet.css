@@ -1,0 +1,273 @@
+/* Theme ocs - single entry stylesheet (SPEC-006 REQ-THM-020, SPEC-023). Committed CSS, no build step.
+   Section 1 is the ONLY place colour literals may appear (REQ-DSG-001). Re-brand = edit section 1 only (REQ-DSG-042). */
+
+/* ==== 1. Design tokens ============================================================== */
+:root {
+	/* colour: surfaces and text (REQ-DSG-002) */
+	--bg: #ffffff;
+	--bg-alt: #f5f5f7;
+	--text: #1d1d1f;
+	--text-muted: #6e6e73;
+	--border: #d2d2d7;
+	--accent: #0071e3;
+	--accent-hover: #0066cc;
+	--accent-active: #0058b0;
+	--on-accent: #ffffff;
+	--link: #0066cc;
+	--focus: #0071e3;
+	--overlay: rgba(0, 0, 0, 0.4);
+	--header-bg: rgba(255, 255, 255, 0.8);
+
+	/* colour: status (REQ-DSG-003) */
+	--success: #1d7a34;
+	--warning: #b25000;
+	--danger: #d70015;
+	--success-bg: #e8f5ec;
+	--warning-bg: #fff3e5;
+	--danger-bg: #fdeaec;
+
+	/* badges (REQ-DSG-014): modules only set these two */
+	--badge-bg: #1d1d1f;
+	--badge-fg: #ffffff;
+
+	/* typography (REQ-DSG-005) */
+	--font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--fs-xs: 12px;
+	--fs-sm: 14px;
+	--fs-md: 16px;
+	--fs-lg: 19px;
+	--fs-xl: 24px;
+	--fs-2xl: 32px;
+	--fs-3xl: 48px;
+
+	/* spacing, radius, shadow, motion (REQ-DSG-006) */
+	--sp-1: 4px;
+	--sp-2: 8px;
+	--sp-3: 12px;
+	--sp-4: 16px;
+	--sp-5: 24px;
+	--sp-6: 32px;
+	--sp-7: 48px;
+	--sp-8: 80px;
+	--r-sm: 8px;
+	--r-md: 12px;
+	--r-lg: 18px;
+	--r-pill: 980px;
+	--shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+	--t: 200ms ease;
+}
+
+/* dark mode: same tokens, redefined (REQ-DSG-004) */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #000000;
+		--bg-alt: #1d1d1f;
+		--text: #f5f5f7;
+		--text-muted: #a1a1a6;
+		--border: #424245;
+		--accent: #2997ff;
+		--accent-hover: #4aa8ff;
+		--accent-active: #0a84ff;
+		--on-accent: #000000;
+		--link: #2997ff;
+		--focus: #2997ff;
+		--overlay: rgba(0, 0, 0, 0.6);
+		--header-bg: rgba(0, 0, 0, 0.72);
+		--success: #30d158;
+		--warning: #ff9f0a;
+		--danger: #ff453a;
+		--success-bg: #0d2a16;
+		--warning-bg: #2e1f05;
+		--danger-bg: #330d0b;
+		--badge-bg: #f5f5f7;
+		--badge-fg: #000000;
+		--shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+	}
+}
+
+/* ==== 2. Base ======================================================================= */
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+	font-family: var(--font);
+	font-size: var(--fs-md);
+	line-height: 1.5;
+	color: var(--text);
+	background: var(--bg);
+	-webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--font);
+	font-weight: 600;
+	color: var(--text);
+	letter-spacing: -0.01em;
+}
+h1 { font-size: var(--fs-2xl); letter-spacing: -0.02em; }
+h2 { font-size: var(--fs-xl); letter-spacing: -0.015em; }
+h3 { font-size: var(--fs-lg); }
+
+a { color: var(--link); text-decoration: none; transition: color var(--t); }
+a:hover, a:focus { color: var(--accent-hover); text-decoration: underline; }
+
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+hr { border-top-color: var(--border); }
+.text-muted { color: var(--text-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+	* { transition: none !important; animation: none !important; }
+}
+
+/* ==== 3. Buttons (REQ-DSG-010) ====================================================== */
+.btn {
+	font-family: var(--font);
+	font-size: var(--fs-sm);
+	font-weight: 500;
+	min-height: 44px;
+	padding: var(--sp-2) var(--sp-5);
+	border-radius: var(--r-pill);
+	border: 1px solid transparent;
+	transition: background-color var(--t), border-color var(--t), color var(--t);
+}
+.btn-sm, .btn-xs { min-height: 32px; padding: var(--sp-1) var(--sp-4); }
+.btn-lg { font-size: var(--fs-md); min-height: 52px; padding: var(--sp-3) var(--sp-6); }
+
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn-primary:hover, .btn-primary:focus { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.btn-primary:active, .btn-primary.active { background: var(--accent-active); border-color: var(--accent-active); color: var(--on-accent); }
+
+.btn-default, .btn-info {
+	background: transparent;
+	border-color: var(--accent);
+	color: var(--link);
+}
+.btn-default:hover, .btn-default:focus, .btn-info:hover, .btn-info:focus {
+	background: var(--accent);
+	border-color: var(--accent);
+	color: var(--on-accent);
+}
+
+.btn-danger { background: var(--danger); border-color: var(--danger); color: var(--bg); }
+.btn-success { background: var(--success); border-color: var(--success); color: var(--bg); }
+.btn-link { color: var(--link); border-color: transparent; background: transparent; }
+
+.btn[disabled], .btn.disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ==== 4. Forms (REQ-DSG-011) ======================================================== */
+.form-control {
+	font-family: var(--font);
+	font-size: var(--fs-md);
+	min-height: 44px;
+	height: auto;
+	color: var(--text);
+	background: var(--bg);
+	border: 1px solid var(--border);
+	border-radius: var(--r-sm);
+	box-shadow: none;
+	transition: border-color var(--t), box-shadow var(--t);
+}
+.form-control:focus { border-color: var(--focus); box-shadow: 0 0 0 3px var(--overlay); }
+.form-control::placeholder { color: var(--text-muted); }
+.has-error .form-control, .form-control.error { border-color: var(--danger); }
+.text-danger { color: var(--danger); }
+.control-label { font-weight: 500; color: var(--text); }
+
+/* ==== 5. Alerts, breadcrumbs, pagination, panels (REQ-DSG-015) ====================== */
+.alert { border: 0; border-radius: var(--r-md); }
+.alert-success { background: var(--success-bg); color: var(--success); }
+.alert-warning { background: var(--warning-bg); color: var(--warning); }
+.alert-danger { background: var(--danger-bg); color: var(--danger); }
+.alert-info { background: var(--bg-alt); color: var(--text); }
+
+.breadcrumb { background: transparent; padding-left: 0; margin-bottom: var(--sp-5); font-size: var(--fs-sm); }
+.breadcrumb > li + li:before { color: var(--text-muted); content: "\203A"; padding: 0 var(--sp-2); }
+
+.pagination > li > a, .pagination > li > span {
+	color: var(--link);
+	background: transparent;
+	border: 0;
+	border-radius: var(--r-sm);
+	margin: 0 2px;
+	min-width: 40px;
+	text-align: center;
+}
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover {
+	background: var(--accent);
+	color: var(--on-accent);
+	border-radius: var(--r-sm);
+}
+
+.panel, .well {
+	background: var(--bg-alt);
+	border: 0;
+	border-radius: var(--r-lg);
+	box-shadow: none;
+}
+.panel-default > .panel-heading { background: transparent; border-color: var(--border); color: var(--text); }
+
+.table > thead > tr > th, .table > tbody > tr > td { border-color: var(--border); }
+.table-bordered { border-color: var(--border); }
+
+.dropdown-menu { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: var(--shadow); }
+.dropdown-menu > li > a { color: var(--text); }
+.dropdown-menu > li > a:hover { background: var(--bg-alt); color: var(--text); }
+
+/* ==== 6. Header and footer shells (REQ-DSG-020, 021) ================================ */
+#top { background: var(--bg-alt); border: 0; min-height: 0; padding: var(--sp-2) 0; font-size: var(--fs-sm); }
+#top a, #top .btn-link { color: var(--text-muted); }
+#top a:hover { color: var(--text); }
+header { padding: var(--sp-4) 0; background: var(--header-bg); }
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+	header { -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
+}
+footer { background: var(--bg-alt); border: 0; margin-top: var(--sp-7); color: var(--text-muted); font-size: var(--fs-sm); }
+footer a { color: var(--text-muted); }
+footer a:hover { color: var(--text); }
+footer h5 { color: var(--text); font-size: var(--fs-sm); }
+footer hr { border-color: var(--border); }
+
+/* ==== 7. Product card and badges (REQ-DSG-012, 014) ================================= */
+.product-thumb {
+	position: relative;
+	background: var(--bg-alt);
+	border: 0;
+	border-radius: var(--r-lg);
+	overflow: hidden;
+	margin-bottom: var(--sp-5);
+	transition: box-shadow var(--t), transform var(--t);
+}
+.product-thumb:hover { box-shadow: var(--shadow); }
+.product-thumb .image { background: var(--bg); text-align: center; }
+.product-thumb .image img { margin: 0 auto; }
+.product-thumb .caption { padding: var(--sp-4) var(--sp-5); min-height: 0; }
+.product-thumb .caption h4 { font-size: var(--fs-md); font-weight: 600; }
+.product-thumb .caption h4 a {
+	color: var(--text);
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+.product-thumb .price { color: var(--text); font-weight: 600; }
+.product-thumb .price-old { color: var(--text-muted); font-weight: 400; text-decoration: line-through; }
+.product-thumb .price-tax { color: var(--text-muted); }
+.product-thumb .button-group { background: transparent; border: 0; display: flex; gap: var(--sp-2); padding: 0 var(--sp-5) var(--sp-4); }
+.product-thumb .button-group button { flex: 1; background: transparent; border: 0; color: var(--link); }
+.product-thumb .button-group button:hover { background: transparent; color: var(--accent-hover); }
+
+.ocs-slot { position: absolute; z-index: 2; display: flex; flex-direction: column; gap: var(--sp-1); }
+.ocs-slot-tl { top: var(--sp-3); left: var(--sp-3); }
+.ocs-slot-tr { top: var(--sp-3); right: var(--sp-3); align-items: flex-end; }
+.ocs-slot-bl { bottom: var(--sp-3); left: var(--sp-3); }
+
+.ocs-badge {
+	display: inline-block;
+	padding: 2px var(--sp-3);
+	border-radius: var(--r-pill);
+	font-size: var(--fs-xs);
+	font-weight: 600;
+	line-height: 1.6;
+	background: var(--badge-bg);
+	color: var(--badge-fg);
+}
