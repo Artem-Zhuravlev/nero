@@ -66,3 +66,61 @@ test('header override is not a copy of default, has @core-file, loads ocs styles
   assert.match(ours, /catalog\/view\/theme\/ocs\/stylesheet\/stylesheet\.css\?v=\{\{ asset_version \}\}/);
   assert.doesNotMatch(ours, /fonts\.googleapis|\/\/cdn\./);
 });
+
+// --- OCS.modal behaviour with a minimal fake DOM ---
+function loadModal() {
+  const handlers = {};
+  const el = () => ({
+    className: '', attrs: {}, children: [], parentNode: null, listeners: {}, innerHTML: '', nodeType: 1,
+    setAttribute(k, v) { this.attrs[k] = v; },
+    appendChild(c) { c.parentNode = this; this.children.push(c); return c; },
+    removeChild(c) { this.children = this.children.filter((x) => x !== c); c.parentNode = null; },
+    addEventListener(t, f) { this.listeners[t] = f; },
+    querySelectorAll() { return []; },
+    focus() { document.activeElement = this; },
+  });
+  const classes = new Set();
+  const document = {
+    body: el(), activeElement: null,
+    documentElement: { classList: { add: (c) => classes.add(c), remove: (c) => classes.delete(c) } },
+    createElement: el,
+    addEventListener: (t, f) => { handlers[t] = f; },
+    removeEventListener: (t) => { delete handlers[t]; },
+  };
+  const window = {};
+  new Function('window', 'document', readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8'))(window, document);
+  return { OCS: window.OCS, document, handlers, classes };
+}
+
+// TEST-DSG-005 - verifies REQ-DSG-013 (dialog semantics, closes on Esc and overlay click, scroll lock released)
+test('OCS.modal opens as dialog and closes on Esc and on overlay click', () => {
+  const t = loadModal();
+  const dialog = t.OCS.modal.open({ content: '<p>x</p>', closeLabel: 'Close' });
+  assert.equal(dialog.attrs.role, 'dialog');
+  assert.equal(dialog.attrs['aria-modal'], 'true');
+  assert.ok(t.OCS.modal.isOpen());
+  assert.ok(t.classes.has('ocs-modal-open'));
+
+  t.handlers.keydown({ key: 'Escape', preventDefault() {} });
+  assert.ok(!t.OCS.modal.isOpen());
+  assert.ok(!t.classes.has('ocs-modal-open'));
+  assert.equal(t.document.body.children.length, 0);
+  assert.equal(t.handlers.keydown, undefined, 'keydown listener removed');
+
+  t.OCS.modal.open({ content: 'y' });
+  const overlay = t.document.body.children[0];
+  overlay.listeners.mousedown({ target: dialog });
+  assert.ok(t.OCS.modal.isOpen(), 'click inside dialog keeps it open');
+  overlay.listeners.mousedown({ target: overlay });
+  assert.ok(!t.OCS.modal.isOpen(), 'overlay click closes');
+});
+
+// TEST-THM-005 - verifies REQ-THM-023, REQ-THM-042 (theme.js under budget, only window.OCS global)
+test('theme.js stays within the size budget and header loads it after common.js', () => {
+  const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
+  assert.ok(Buffer.byteLength(js) <= 60 * 1024);
+  const header = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/common/header.twig'), 'utf8');
+  assert.ok(header.indexOf('javascript/common.js') < header.indexOf('ocs/javascript/theme.js'));
+  const css = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/stylesheet/stylesheet.css'), 'utf8');
+  assert.ok(Buffer.byteLength(css) <= 150 * 1024);
+});

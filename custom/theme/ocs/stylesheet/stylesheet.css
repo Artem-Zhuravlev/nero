@@ -271,3 +271,44 @@ footer hr { border-color: var(--border); }
 	background: var(--badge-bg);
 	color: var(--badge-fg);
 }
+
+/* ==== 8. Modal (REQ-DSG-013), behaviour in javascript/theme.js ====================== */
+.ocs-modal-open { overflow: hidden; }
+.ocs-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 1050;
+	display: flex;
+	background: var(--overlay);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+}
+.ocs-modal-center { align-items: center; justify-content: center; padding: var(--sp-4); }
+.ocs-modal-side { justify-content: flex-end; }
+.ocs-modal-dialog {
+	position: relative;
+	background: var(--bg);
+	color: var(--text);
+	box-shadow: var(--shadow);
+	overflow: auto;
+	max-height: 100%;
+	outline: 0;
+}
+.ocs-modal-center .ocs-modal-dialog { width: 100%; max-width: 520px; border-radius: var(--r-lg); }
+.ocs-modal-side .ocs-modal-dialog { width: 100%; max-width: 420px; height: 100%; border-radius: var(--r-lg) 0 0 var(--r-lg); }
+.ocs-modal-body { padding: var(--sp-6) var(--sp-5) var(--sp-5); }
+.ocs-modal-close {
+	position: absolute;
+	top: var(--sp-3);
+	right: var(--sp-3);
+	width: 36px;
+	height: 36px;
+	border: 0;
+	border-radius: 50%;
+	background: var(--bg-alt);
+	color: var(--text);
+	font-size: var(--fs-xl);
+	line-height: 1;
+	cursor: pointer;
+}
+.ocs-modal-close:hover { background: var(--border); }
