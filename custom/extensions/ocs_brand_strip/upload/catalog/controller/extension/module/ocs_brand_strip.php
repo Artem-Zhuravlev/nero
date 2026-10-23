@@ -67,6 +67,8 @@ class ControllerExtensionModuleOcsBrandStrip extends Controller {
 		$data['width'] = $width;
 		$data['height'] = $height;
 		$data['heading_title'] = $this->language->get('heading_title');
+		$data['text_more'] = $this->language->get('text_more');
+		$data['more'] = $this->url->link('product/manufacturer');
 		$data['text_prev'] = $this->language->get('text_prev');
 		$data['text_next'] = $this->language->get('text_next');
 

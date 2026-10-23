@@ -56,6 +56,29 @@ class ProductExtras {
 	}
 
 	/**
+	 * Star distribution of the reviews: rating (5..1) => count -> total, average and one row per rating with its share in percent.
+	 */
+	public static function stars($counts) {
+		$total = 0;
+		$sum = 0;
+
+		foreach ((array)$counts as $rating => $n) {
+			$total += (int)$n;
+			$sum += (int)$rating * (int)$n;
+		}
+
+		$rows = array();
+
+		foreach (array(5, 4, 3, 2, 1) as $rating) {
+			$n = isset($counts[$rating]) ? (int)$counts[$rating] : 0;
+
+			$rows[] = array('rating' => $rating, 'count' => $n, 'pct' => $total ? (int)round($n * 100 / $total) : 0);
+		}
+
+		return array('total' => $total, 'avg' => $total ? round($sum / $total, 1) : 0, 'rows' => $rows);
+	}
+
+	/**
 	 * Validates a question. Returns array('errors' => field => code, 'clean' => ...).
 	 */
 	public static function validateQuestion($post) {

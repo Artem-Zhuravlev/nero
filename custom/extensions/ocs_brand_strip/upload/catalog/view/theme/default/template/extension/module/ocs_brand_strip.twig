@@ -4,6 +4,7 @@
     {% for b in brands %}
     <a href="{{ b.href }}" class="ocs-carousel-item" title="{{ b.name }}"><img src="{{ b.thumb }}" alt="{{ b.name }}" width="{{ width }}" height="{{ height }}" loading="lazy" /></a>
     {% endfor %}
+    <a href="{{ more }}" class="ocs-carousel-item ocs-brand-more">{{ text_more }} <svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
   </div>
   <button type="button" class="ocs-carousel-prev" aria-label="{{ text_prev }}">&lsaquo;</button>
   <button type="button" class="ocs-carousel-next" aria-label="{{ text_next }}">&rsaquo;</button>

@@ -89,10 +89,8 @@ white placeholder images), an icon-font replacement beyond the listed set.
 
 ## Delivery notes (deviations from the requirements above)
 
-- REQ-VIS-006: thumbnails stay in a horizontal strip below the main image (vertical thumbnails are not done); the review summary with the star
-  distribution is not done; the sticky summary, buy row, zebra table and delivery/credit blocks are.
 - REQ-VIS-005: the filter container for OCFilter is not added as markup (the sidebar tree and sort chips are); active-filter chips remain
   OCFilter's own job.
 - REQ-VIS-007: floating labels are not done; every other listed component is restyled.
 - REQ-VIS-008: the sprite covers the new header, card, home menu and benefits; Font Awesome stays for core and third-party markup.
-- REQ-VIS-003: the "More" brand tile is not added; the brand strip keeps its arrows.
+- Delivered in the follow-up pass: vertical thumbnails on wide galleries, the review summary with the star distribution, the brand "More" tile.

@@ -1004,3 +1004,18 @@ test('visual identity: demo seed is local-only; theme budgets hold', () => {
   assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'css within 200 KB');
   assert.ok(Buffer.byteLength(readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8')) <= 60 * 1024, 'theme.js within 60 KB');
 });
+
+// TEST-VIS-007 - verifies REQ-VIS-006, REQ-VIS-003 (vertical thumbnails by container width, review summary markup, brand "More" tile)
+test('visual identity: vertical gallery thumbnails, review summary and the brand More tile', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.match(js, /direction: box\.getBoundingClientRect\(\)\.width >= 512 \? 'vertical' : 'horizontal'/);
+  assert.ok(css.includes('.ocs-pdp > :first-child { container: gal / inline-size; }'), 'the container is the column, not the gallery itself');
+  assert.ok(css.includes('@container gal (min-width: 32rem)') && css.includes('grid-template-areas: "thumbs main"') && css.includes('contain: size'));
+  const twig = read('custom/theme/ocs/template/product/product.twig');
+  for (const hook of ['ocs-stars-sum', 'ocs-stars-bars', '--pct: {{ r.pct }}%']) assert.ok(twig.includes(hook), hook);
+  assert.ok(css.includes('.ocs-stars-bars i::after'));
+  const brands = read('custom/extensions/ocs_brand_strip/upload/catalog/view/theme/default/template/extension/module/ocs_brand_strip.twig');
+  assert.ok(brands.includes('ocs-brand-more') && brands.includes('{{ more }}'));
+  assert.ok(css.includes('.ocs-sticky-buy:not(.is-on) { visibility: hidden;'), 'the hidden summary bar cannot show through the translucent header');
+});

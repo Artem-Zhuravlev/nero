@@ -1461,7 +1461,8 @@
 		}
 
 		if (thumbEl) {
-			thumbs = new window.Swiper(thumbEl, {slidesPerView: 'auto', spaceBetween: 8, freeMode: true, slideToClickedSlide: false});
+			// wide galleries put the strip beside the photo (vertical), narrow ones under it; the CSS container query uses the same width
+			thumbs = new window.Swiper(thumbEl, {direction: box.getBoundingClientRect().width >= 512 ? 'vertical' : 'horizontal', slidesPerView: 'auto', spaceBetween: 8, freeMode: true, slideToClickedSlide: false});
 
 			[].forEach.call(thumbEl.querySelectorAll('.swiper-slide'), function (el, n) {
 				el.setAttribute('tabindex', '0');

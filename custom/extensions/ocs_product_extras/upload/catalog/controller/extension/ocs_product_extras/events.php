@@ -117,6 +117,22 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 			$x['thumb_w'] = (int)$this->config->get('theme_ocs_image_thumb_width');
 			$x['thumb_h'] = (int)$this->config->get('theme_ocs_image_thumb_height');
 
+			// REQ-VIS-006: review summary with the star distribution
+			$x['stars'] = array('total' => 0, 'avg' => 0, 'rows' => array());
+
+			if ($this->config->get('config_review_status')) {
+				$counts = array(5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0);
+
+				foreach ($this->db->query("SELECT rating, COUNT(*) AS n FROM " . DB_PREFIX . "review WHERE product_id = '" . $product_id . "' AND status = '1' GROUP BY rating")->rows as $row) {
+					if (isset($counts[(int)$row['rating']])) {
+						$counts[(int)$row['rating']] = (int)$row['n'];
+					}
+				}
+
+				$x['stars'] = \Ocs\ProductExtras::stars($counts);
+				$x['stars']['title'] = $this->language->get('text_reviews_summary');
+			}
+
 			// REQ-SWP-004: every image in the main size for the swipeable gallery (core gives only small thumbs for the additional ones)
 			$this->load->model('tool/image');
 

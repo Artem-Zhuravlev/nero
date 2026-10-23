@@ -1621,3 +1621,34 @@ li .ocs-stock { font-size: inherit; }
 		#top.ocs-util .ocs-util-end .btn-link span.hidden-xs, #top.ocs-util .ocs-util-end .hidden-xs { display: none; }
 	}
 }
+
+/* ==== 42. SPEC-039 gallery: vertical thumbnails beside the photo on wide containers, review summary ===== */
+@layer components {
+	/* the query container is the column that holds the gallery: a container cannot restyle itself */
+	.ocs-pdp > :first-child { container: gal / inline-size; }
+	.ocs-gal { max-inline-size: none; }
+	@container gal (min-width: 32rem) {
+		.ocs-gal { display: grid; grid-template-columns: 4.75rem minmax(0, 1fr); grid-template-areas: "thumbs main"; gap: var(--sp-3); align-items: start; }
+		.ocs-gal-main { grid-area: main; min-inline-size: 0; }
+		.ocs-gal-thumbs { grid-area: thumbs; position: relative; align-self: stretch; contain: size; margin: 0; overflow: hidden; }
+		.ocs-gal-thumbs .swiper-slide { inline-size: 4.5rem; block-size: 4.5rem; }
+	}
+
+	.ocs-stars-sum { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-5); margin-block-end: var(--sp-5); padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
+	.ocs-stars-avg { display: grid; justify-items: center; min-inline-size: 7rem; }
+	.ocs-stars-avg strong { font-size: var(--fs-3xl); font-weight: 800; letter-spacing: var(--track); line-height: 1; }
+	.ocs-stars-avg span { color: var(--text-muted); font-size: var(--fs-sm); }
+	.ocs-stars-bars { flex: 1 1 14rem; list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-1); }
+	.ocs-stars-bars li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) 2rem; align-items: center; gap: var(--sp-3); font-size: var(--fs-sm); }
+	.ocs-stars-bars li > span:first-child { display: inline-flex; align-items: center; gap: 0.2rem; color: var(--text-muted); }
+	.ocs-stars-bars .ocs-i-fill { color: var(--warning); }
+	.ocs-stars-bars i { display: block; block-size: 0.5rem; border-radius: var(--r-pill); background: color-mix(in srgb, var(--border) 60%, transparent); position: relative; overflow: clip; }
+	.ocs-stars-bars i::after { content: ""; position: absolute; inset: 0; inline-size: var(--pct); background: var(--warning); border-radius: inherit; }
+	.ocs-stars-bars li > span:last-child { text-align: end; color: var(--text-muted); }
+	.ocs-brand-more { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-1); inline-size: 8.75rem; block-size: 5rem; border-radius: var(--r-md); background: var(--bg-alt); color: var(--link); font-weight: 700; }
+	.ocs-brand-more:hover { background: color-mix(in srgb, var(--accent) 10%, var(--bg-alt)); text-decoration: none; }
+}
+
+@layer components {
+	.ocs-sticky-buy:not(.is-on) { visibility: hidden; pointer-events: none; }
+}

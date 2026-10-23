@@ -104,4 +104,19 @@ final class ProductExtrasTest extends TestCase
         $this->assertSame('1', (string) $m->setting->get('module_ocs_product_extras', 'module_ocs_product_extras_questions'));
         $this->assertCount(5, $db->pdo->query("SELECT code FROM oc_event WHERE code LIKE 'ocs_product_extras_%'")->fetchAll());
     }
+
+    // TEST-VIS-007 - verifies REQ-VIS-006 (review summary: total, average, one row per rating with its share)
+    public function test_star_distribution(): void
+    {
+        $s = \Ocs\ProductExtras::stars([5 => 6, 4 => 3, 3 => 1, 2 => 0, 1 => 0]);
+        $this->assertSame(10, $s['total']);
+        $this->assertSame(4.5, $s['avg']);
+        $this->assertSame([5, 4, 3, 2, 1], array_column($s['rows'], 'rating'));
+        $this->assertSame([60, 30, 10, 0, 0], array_column($s['rows'], 'pct'));
+
+        $none = \Ocs\ProductExtras::stars([]);
+        $this->assertSame(0, $none['total']);
+        $this->assertSame(0, $none['avg']);
+        $this->assertSame([0, 0, 0, 0, 0], array_column($none['rows'], 'pct'));
+    }
 }

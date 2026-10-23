@@ -28,3 +28,4 @@ $_['error_q_name']        = 'Enter your name (2-64 characters).';
 $_['error_q_email']       = 'Enter a valid e-mail address.';
 $_['error_q_text']        = 'The question must be 5 to 1000 characters long.';
 $_['error_q_links']       = 'Links are not allowed in a question.';
+$_['text_reviews_summary'] = 'Reviews';
