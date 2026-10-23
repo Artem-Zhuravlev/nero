@@ -90,7 +90,19 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-021 | [Testing Strategy and Harness](testing-strategy/spec.md) | `draft` |
 | SPEC-022 | [Multi-store and Environment Profiles](multi-store-environments/spec.md) | `draft` |
 | SPEC-023 | [Storefront Visual Design (Apple-style)](theme-design/spec.md) | `in-progress` |
-| SPEC-024 | [Storefront Functionality Reference (moyo.ua)](storefront-reference/spec.md) | `draft` |
+| SPEC-024 | [Storefront Functionality Reference (moyo.ua)](storefront-reference/spec.md) | `in-progress` |
+| SPEC-025 | [Quick Order, Pre-order, Back-in-stock](quick-order-preorder/spec.md) | `draft` |
+| SPEC-026 | [AJAX Cart and Availability](ajax-cart/spec.md) | `draft` |
+| SPEC-027 | [Mega Menu, Category Wall, Side Menu](menus-category-wall/spec.md) | `draft` |
+| SPEC-028 | [AJAX Search](ajax-search/spec.md) | `draft` |
+| SPEC-029 | [Product Stickers](stickers/spec.md) | `draft` |
+| SPEC-030 | [Recently Viewed Products](viewed-products/spec.md) | `draft` |
+| SPEC-031 | [Header, Footer, Mobile Shell](header-footer-shell/spec.md) | `draft` |
+| SPEC-032 | [Cities, Delivery, Stores, Tracking](cities-delivery-stores/spec.md) | `draft` |
+| SPEC-033 | [Home Page Blocks](home-blocks/spec.md) | `draft` |
+| SPEC-034 | [Category Listing](category-listing/spec.md) | `draft` |
+| SPEC-035 | [Product Page Extras](product-page/spec.md) | `draft` |
+| SPEC-036 | [Instalments and Trade-in](credit-tradein/spec.md) | `draft` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

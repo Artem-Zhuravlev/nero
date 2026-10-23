@@ -1,6 +1,6 @@
 # SPEC-024 — Storefront Functionality Reference (moyo.ua)
 
-**Status:** draft
+**Status:** in-progress
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-023 (visual design), client brief `Список модулей.docx` · **Source:** observation of https://www.moyo.ua on 2026-10-23 (home, category "Ноутбуки", product page, footer; narrow browser pane, so some desktop-only blocks may be missing)
@@ -31,6 +31,12 @@ Implementation of any feature here (each owner spec does it after approval). Cop
 layout pixel-for-pixel: only the functional idea is borrowed. Features of a single large retailer that make no sense as a
 reusable template (own mobile app, 60-store network, own loyalty programme backend, trade-in valuation engine) are
 listed under P3 or excluded explicitly in REQ-MOY-090.
+
+## Owner decision (2026-10-23)
+
+The owner asked for functionality close to the reference. Accepted: **all P1 and P2** requirements of section B and all of
+section A. **P3** requirements (REQ-MOY-025, 057, 062) are deferred: owner specs may include them as optional blocks but
+they are not required. Exclusions of REQ-MOY-090 stand. Owner specs SPEC-025..036 are created as `draft` and approved one by one.
 
 ## Cross-cutting rules (all features)
 
