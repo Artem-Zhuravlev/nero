@@ -1,9 +1,8 @@
 /* Theme ocs - namespaced helpers (SPEC-006 REQ-THM-023, SPEC-023 REQ-DSG-013). ES5, no globals except window.OCS.
    OCS.modal is the ONLY popup implementation; modules must use it. Closes on overlay click and Esc. */
 
-/* Same-origin endpoints. Module URLs and <base href> come from config_url; when the shop is opened under another host (127.0.0.1 instead
-   of localhost, a second domain, a tunnel) a request to that absolute URL is cross-origin and fails silently (quick order, cart panel,
-   search, quick view all do nothing). Requests that resolve to the configured origin are therefore sent to the page's own origin. */
+/* Same-origin endpoints (SPEC-025 REQ-QOR-032): URLs are built from config_url; opened under another host, they would be cross-origin and
+   fail silently, so requests to the configured origin go to the page's own origin. */
 (function (window, document) {
 	'use strict';
 
@@ -25,14 +24,12 @@
 
 	OCS.sameOrigin = fix;
 
-	/* Inline SVG icon from the sprite in the header (SPEC-042 REQ-ICN-001); names are the sprite ids without the i- prefix. */
+	/* inline SVG icon from the sprite (SPEC-042); name = sprite id without i- */
 	OCS.icon = function (name) {
 		return '<svg class="ocs-i" aria-hidden="true"><use href="#i-' + name + '"/></svg>';
 	};
 
-	/* SeoPro (ocStore) answers every GET that carries product_id with a 301 to the SEO URL unless the request is a POST (its AJAX
-	   detection runs before the request object exists, so X-Requested-With does not help). Popup bodies are therefore requested with POST
-	   and the product id travels in the body, never in the URL. */
+	/* SeoPro 301-redirects every non-POST request with product_id (its AJAX detection never fires), so popup bodies are POSTed. */
 	OCS.productBody = function (id) {
 		var body = new window.FormData();
 
@@ -395,6 +392,45 @@
 		}
 
 		var hover = nav.getAttribute('data-behaviour') !== 'click';
+		var collapse = nav.querySelector('.navbar-collapse');
+
+		// the full-screen mobile catalogue locks the page scroll and closes on Escape (SPEC-043 REQ-MNU-002)
+		if (collapse && window.jQuery) {
+			// the header is a size container (a stacking context): while open the panel goes to the top layer (Popover API), else --z-menu
+			var topLayer = typeof collapse.showPopover === 'function';
+
+			window.jQuery(collapse).on('shown.bs.collapse', function () {
+				document.documentElement.classList.add('ocs-menu-open');
+
+				if (topLayer && isMobile()) {
+					collapse.setAttribute('popover', 'manual');
+
+					try {
+						collapse.showPopover();
+					} catch (e) {
+						collapse.removeAttribute('popover');
+					}
+				}
+			}).on('hide.bs.collapse', function () {
+				if (topLayer && collapse.hasAttribute('popover')) {
+					try {
+						collapse.hidePopover();
+					} catch (e) { /* already closed */ }
+
+					collapse.removeAttribute('popover');
+				}
+			}).on('hidden.bs.collapse', function () {
+				document.documentElement.classList.remove('ocs-menu-open');
+			});
+
+			document.addEventListener('keydown', function (e) {
+				var close = nav.querySelector('.ocs-mega-close');
+
+				if (e.key === 'Escape' && isMobile() && collapse.classList.contains('in') && close) {
+					close.click();
+				}
+			});
+		}
 		var openBtn = nav.querySelector('.ocs-mega-open');
 		var items = nav.querySelectorAll('.ocs-mega-item.ocs-has-children');
 		var timers = [];

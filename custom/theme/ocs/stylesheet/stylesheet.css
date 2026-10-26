@@ -64,6 +64,8 @@
 	--r-pill: 980px;
 	--shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 	--t: 200ms ease;
+	--gap-icon: 0.5rem;   /* icon to label, side by side: never below 6px (SPEC-043 REQ-BTN-002) */
+	--gap-stack: 0.5rem;  /* icon over label */
 
 	/* layer scale (SPEC-042 REQ-Z-001): the ONLY place z-index numbers may appear.
 	   Root level, low to high: base < raised < sticky < tabbar < header < overlay < toast.
@@ -75,8 +77,9 @@
 	--z-sticky: 100;
 	--z-tabbar: 900;
 	--z-header: 1000;
-	--z-overlay: 1300;
-	--z-toast: 1400;
+	--z-menu: 2147483000; /* full-screen mobile catalogue: above third-party popups (SPEC-043 REQ-MNU-001, REQ-Z-010) */
+	--z-overlay: 2147483100;
+	--z-toast: 2147483200;
 }
 
 }
@@ -270,7 +273,7 @@ footer hr { border-color: var(--border); }
 }
 
 /* ==== 8. Modal (REQ-DSG-013), behaviour in javascript/theme.js ====================== */
-.ocs-modal-open { overflow: hidden; }
+.ocs-modal-open, html.ocs-menu-open { overflow: hidden; }
 .ocs-modal {
 	position: fixed;
 	inset: 0;
@@ -436,7 +439,7 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 }
 
 @media (max-width: 767px) {
-	.ocs-mega .navbar-collapse.in { position: fixed; inset: 0; z-index: var(--z-pop); background: var(--bg); overflow-y: auto; padding-top: var(--sp-8); }
+	.ocs-mega .navbar-collapse.in { position: fixed; inset: 0; inline-size: 100%; block-size: 100%; max-inline-size: none; max-block-size: none; margin: 0; border: 0; z-index: var(--z-menu); background: var(--bg); overflow-y: auto; padding-top: var(--sp-8); }
 	.ocs-mega-fly { padding-left: var(--sp-5); }
 	.ocs-mega-item.open > .ocs-mega-fly { display: block; }
 	.ocs-mega-item.open > .ocs-mega-expand .ocs-i { transform: rotate(90deg); }
@@ -1132,13 +1135,14 @@ li .ocs-stock { font-size: inherit; }
 	#top.ocs-util .btn-link, #top.ocs-util .dropdown-toggle { padding: 0; line-height: 1.6; min-block-size: 0; color: var(--text-muted); font-size: var(--fs-xs); }
 	#top.ocs-util .caret { margin-inline-start: var(--sp-1); }
 	#top.ocs-util > .container { min-block-size: 2rem; }
-	.ocs-head-cat .ocs-mega .navbar-header {
-		display: flex; align-items: center; justify-content: space-between; inline-size: 100%; min-block-size: 2.75rem; padding-inline: var(--sp-4) var(--sp-1);
-		background: var(--accent); color: var(--on-accent); border-radius: var(--r-pill); float: none; margin: 0;
-	}
+	/* the whole pill is one button (REQ-MNU-002): label and icon both toggle the catalogue */
+	.ocs-head-cat .ocs-mega .navbar-header { display: block; inline-size: 100%; padding: 0; margin: 0; float: none; background: transparent; }
 	.ocs-head-cat .ocs-mega #category { color: inherit; font-weight: 600; float: none; padding: 0; }
-	.ocs-head-cat .ocs-mega .navbar-toggle { float: none; margin: 0; border: 0; background: transparent; color: inherit; display: grid; place-items: center; }
-	.ocs-head-cat .ocs-mega .navbar-toggle:hover, .ocs-head-cat .ocs-mega .navbar-toggle:focus { background: color-mix(in srgb, var(--on-accent) 18%, transparent); }
+	.ocs-head-cat .ocs-mega .navbar-toggle {
+		float: none; margin: 0; display: flex; align-items: center; justify-content: space-between; inline-size: 100%; min-block-size: 2.75rem;
+		padding-inline: var(--sp-4); border: 0; border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent);
+	}
+	.ocs-head-cat .ocs-mega .navbar-toggle:hover, .ocs-head-cat .ocs-mega .navbar-toggle:focus { background: var(--accent-hover); }
 	@media (min-width: 768px) { .ocs-head-cat .ocs-mega .navbar-header { display: none; } }
 }
 
@@ -1320,7 +1324,7 @@ li .ocs-stock { font-size: inherit; }
 	/* --- slim top row --- */
 	#top.ocs-util { background: color-mix(in srgb, var(--bg-alt) 70%, var(--bg)); border-block-end: 1px solid color-mix(in srgb, var(--border) 45%, transparent); font-size: var(--fs-xs); }
 	#top.ocs-util > .container { display: flex; align-items: center; gap: var(--sp-1) var(--sp-5); min-block-size: 2.25rem; flex-wrap: nowrap; }
-	#top.ocs-util .ocs-city-top, #top.ocs-util .ocs-util-btn { display: inline-flex; align-items: center; gap: var(--sp-1); padding: 0.25rem 0; border: 0; background: none; color: var(--text); font: inherit; font-weight: 600; cursor: pointer; }
+	#top.ocs-util .ocs-city-top, #top.ocs-util .ocs-util-btn { display: inline-flex; align-items: center; gap: var(--gap-icon); padding: 0.25rem 0; border: 0; background: none; color: var(--text); font: inherit; font-weight: 600; cursor: pointer; }
 	#top.ocs-util .ocs-city-top .ocs-i { color: var(--accent); inline-size: 1rem; block-size: 1rem; }
 	#top.ocs-util .ocs-strip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-5); margin: 0; padding: 0; flex: 1 1 auto; }
 	#top.ocs-util .ocs-strip > li { padding: 0; }
@@ -1638,6 +1642,29 @@ li .ocs-stock { font-size: inherit; }
 /* ==== Icon sizes and rating stars (SPEC-042). Last block of the components layer so it wins over the generic .ocs-i size. ========= */
 @layer components {
 	/* five SVG stars on one 1em grid (REQ-STR-001); filled = .is-on */
+	/* ---- buttons (SPEC-043 REQ-BTN-001/002): centred by layout, one line-height, icon gap from the token ---- */
+	.btn, .ocs-mega-open, .ocs-link-btn, .ocs-chip, .ocs-city-btn, #top .btn-link, #top .dropdown-toggle {
+		display: inline-flex; align-items: center; justify-content: center; gap: var(--gap-icon); line-height: 1.25; text-align: center; vertical-align: middle;
+	}
+	.btn-block { display: flex; inline-size: 100%; }
+	input.btn { display: inline-block; line-height: normal; }
+	.btn:not(.btn-xs):not(.btn-sm):not(.btn-link):not(.close) { min-block-size: 2.5rem; }
+	#top .btn-link, #top .dropdown-toggle, #top .ocs-city-btn { justify-content: flex-start; }
+	.ocs-link-btn { min-block-size: 2.5rem; padding: var(--sp-2) var(--sp-3); }
+	.ocs-chip, .ocs-city-btn:not(#top *) { min-block-size: 2.5rem; padding-inline: var(--sp-3); }
+	/* ---- page forms (account, checkout, contact, returns; SPEC-043 REQ-TPL-003): labels above the fields on every width ---- */
+	.form-horizontal .form-group { display: grid; gap: var(--sp-2); margin-inline: 0; margin-block-end: var(--sp-4); }
+	.form-horizontal .form-group::before, .form-horizontal .form-group::after { display: none; }
+	.form-horizontal .form-group > [class*="col-"] { float: none; inline-size: 100%; padding-inline: 0; }
+	.form-horizontal .control-label { text-align: start; padding-block: 0; }
+	fieldset > legend { border: 0; margin-block: var(--sp-5) var(--sp-3); padding: 0; font-size: var(--fs-xl); font-weight: 700; }
+	.form-horizontal .buttons, .buttons { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center; justify-content: space-between; margin-block: var(--sp-5); }
+	.buttons .pull-left, .buttons .pull-right { float: none; }
+	.ocs-act-btn, .ocs-head-cart #cart > .btn, .ocs-tabbar > a, .ocs-tabbar > button { gap: var(--gap-stack); }
+	.ocs-act-btn, .ocs-head-cart #cart > .btn { min-block-size: 3.5rem; }
+	.ocs-act-btn .caret { display: none; } /* the account button shows icon + label like its neighbours; the menu opens on click */
+	.ocs-tabbar > a, .ocs-tabbar > button { padding: var(--sp-1); min-inline-size: 0; }
+	.ocs-tabbar > a > span, .ocs-tabbar > button > span { max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 	.ocs-stars { display: inline-flex; align-items: center; gap: 2px; line-height: 0; color: var(--warning); vertical-align: middle; }
 	.ocs-stars .ocs-star { inline-size: 1em; block-size: 1em; margin: 0; vertical-align: baseline; fill: none; stroke: currentColor; stroke-width: 1.7; }
 	.ocs-stars .ocs-star.is-on { fill: currentColor; }
@@ -1653,6 +1680,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-head-cart #cart-total .ocs-i { inline-size: 1.3rem; block-size: 1.3rem; }
 	@media (max-width: 767px) {
 		.ocs-tabbar .ocs-i { inline-size: 1.5rem; block-size: 1.5rem; }
+		.btn:not(.btn-xs):not(.btn-sm):not(.btn-link):not(.close), .ocs-link-btn, .ocs-chip, .ocs-city-btn:not(#top *) { min-block-size: 2.75rem; }
 		/* REQ-TAB-003: the bottom bar is out of the way while a modal is open */
 		.ocs-modal-open .ocs-tabbar { visibility: hidden; }
 	}

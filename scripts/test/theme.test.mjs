@@ -1106,7 +1106,8 @@ test('rating stars are an accessible SVG component', () => {
 // TEST-Z-001 - verifies REQ-Z-001, REQ-Z-002 (one ordered scale; no numeric z-index outside the token block)
 test('z-index values come from the token scale', () => {
   const tokens = Object.fromEntries([...css.matchAll(/--z-([a-z-]+):\s*(\d+);/g)].map((m) => [m[1], Number(m[2])]));
-  const order = ['base', 'raised', 'pop', 'pop-top', 'sticky', 'tabbar', 'header', 'overlay', 'toast'];
+  const order = ['base', 'raised', 'pop', 'pop-top', 'sticky', 'tabbar', 'header', 'menu', 'overlay', 'toast'];
+  assert.ok(tokens.menu > 5000000, 'menu above third-party popups (REQ-Z-010)');
   for (const n of order) assert.ok(n in tokens, `--z-${n}`);
   for (let i = 1; i < order.length; i++) assert.ok(tokens[order[i - 1]] < tokens[order[i]], `--z-${order[i - 1]} < --z-${order[i]}`);
   const withoutTokens = css.replace(/--z-[a-z-]+:\s*\d+;/g, '');
@@ -1126,4 +1127,61 @@ test('bottom bar has no Home link and uses the header icons', () => {
   for (const id of ['i-compare', 'i-cart', 'i-heart', 'i-user']) assert.ok(bar.includes(`#${id}`) && header.includes(`#${id}`), id);
   assert.ok(bar.includes('#i-menu'));
   assert.ok(css.includes('.ocs-modal-open .ocs-tabbar { visibility: hidden; }'));
+});
+
+// ---- SPEC-043: mobile menu, button metrics, full template set ----
+
+// TEST-MNU-001 - verifies REQ-MNU-001, REQ-Z-010 (top layer for the open panel, z-index fallback above third-party popups)
+test('mobile catalogue panel is lifted to the top layer and keeps a top-range z-index fallback', () => {
+  const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
+  assert.ok(js.includes("collapse.setAttribute('popover', 'manual')") && js.includes('collapse.showPopover()') && js.includes('collapse.hidePopover()'));
+  assert.match(css, /\.ocs-mega \.navbar-collapse\.in \{[^}]*z-index: var\(--z-menu\)/);
+  assert.ok(Number(/--z-menu:\s*(\d+)/.exec(css)[1]) > 5000000);
+});
+
+// TEST-MNU-002 - verifies REQ-MNU-002 (the whole bar is one toggle button; Escape closes; scroll is locked while open)
+test('the catalogue bar is a single toggle button with scroll lock and Escape', () => {
+  const mega = readFileSync(join(REPO_ROOT, 'custom/extensions/ocs_mega_menu/upload/catalog/view/theme/default/template/extension/module/ocs_mega_menu.twig'), 'utf8');
+  const bar = /<div class="navbar-header">([\s\S]*?)<\/div>/.exec(mega)[1];
+  assert.ok(/<button[^>]*navbar-toggle[^>]*aria-expanded="false"[^>]*><span id="category">[\s\S]*<svg/.test(bar), 'label and icon live inside the toggle button');
+  const menu = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/common/menu.twig'), 'utf8');
+  assert.ok(/<button[^>]*navbar-toggle[^>]*><span id="category">/.test(menu));
+  const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
+  assert.ok(js.includes("e.key === 'Escape'") && js.includes("classList.add('ocs-menu-open')"));
+  assert.ok(css.includes('html.ocs-menu-open { overflow: hidden; }'));
+});
+
+// TEST-BTN-001 - verifies REQ-BTN-001, REQ-BTN-002 (flex-centred buttons, icon gaps of at least 6px, browser check present)
+test('buttons are flex-centred and icon gaps come from tokens of at least 6px', () => {
+  const rem = (name) => Number(new RegExp(`--${name}:\\s*([\\d.]+)rem`).exec(css)[1]);
+  assert.ok(rem('gap-icon') * 16 >= 6 && rem('gap-stack') * 16 >= 6);
+  assert.ok(/\.btn, \.ocs-mega-open[^{]*\{\s*display: inline-flex; align-items: center; justify-content: center; gap: var\(--gap-icon\); line-height: 1\.25;/.test(css));
+  for (const f of ['check-spacing.js', 'check-layers.js']) assert.doesNotThrow(() => new Function(readFileSync(join(REPO_ROOT, 'scripts/browser', f), 'utf8')), f);
+});
+
+// TEST-SPC-001 - verifies REQ-SPC-001 (raw px spacing declarations may not grow; new CSS uses the --sp-* tokens)
+test('raw px spacing declarations in the stylesheet do not grow', () => {
+  const body = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const count = [...body.matchAll(/(?:^|[;{\s])(?:padding|margin|gap|row-gap|column-gap)(?:-[a-z]+)*:\s*[^;{}]*\b[2-9]\d?px/g)].length;
+  const BASELINE = 6;
+  assert.ok(count <= BASELINE, `raw px spacing declarations: ${count} (baseline ${BASELINE}); use var(--sp-*) / var(--gap-icon)`);
+});
+
+// TEST-TPL-001 / TEST-TPL-002 - verifies REQ-TPL-001, REQ-TPL-002, REQ-TPL-004 (the full set exists, is reproducible and keeps every core variable)
+test('generated templates are complete, up to date and keep the core Twig variables', async () => {
+  const { plan } = await import('../gen-theme-templates.mjs');
+  const files = plan();
+  assert.ok(files.length >= 80, `${files.length} generated templates`);
+  const have = (rel) => existsSync(join(REPO_ROOT, 'custom/theme/ocs/template', rel));
+  for (const dir of ['account/login', 'account/register', 'account/account', 'affiliate/login', 'checkout/checkout', 'checkout/cart', 'information/contact', 'information/information', 'error/not_found', 'common/home', 'common/success', 'common/column_left', 'product/manufacturer_list', 'extension/module/category', 'extension/module/banner', 'extension/total/coupon']) assert.ok(have(`${dir}.twig`), dir);
+  const vars = (s) => new Set([...s.matchAll(/\{\{\s*([a-zA-Z_][\w]*)/g)].map((m) => m[1]).concat([...s.matchAll(/\{%\s*(?:if|for|elseif|set)\s+[^%]*?\b([a-zA-Z_]\w*)\b/g)].map((m) => m[1])));
+  for (const f of files) {
+    assert.equal(readFileSync(f.target, 'utf8'), f.text, `${f.rel} is out of date: run node scripts/gen-theme-templates.mjs`);
+    assert.deepEqual(f.report, [], `${f.rel} has unmapped icons`);
+    assert.deepEqual(f.left, [], `${f.rel} still has Font Awesome`);
+    const core = readFileSync(join(REPO_ROOT, 'core/upload/catalog/view/theme/default/template', f.rel), 'utf8');
+    const ours = vars(f.text);
+    const lost = [...vars(core)].filter((v) => !ours.has(v) && !['i', 'j', 'fa'].includes(v));
+    assert.deepEqual(lost, [], `${f.rel} lost Twig variables`);
+  }
 });

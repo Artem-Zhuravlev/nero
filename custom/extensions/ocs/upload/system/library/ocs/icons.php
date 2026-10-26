@@ -26,6 +26,7 @@ class Icons {
 		'caret-down' => 'i-chevron-down', 'angle-down' => 'i-chevron-down', 'angle-right' => 'i-chevron-right', 'angle-left' => 'i-chevron-left', 'times' => 'i-x', 'book' => 'i-book', 'floppy-o' => 'i-save', 'check-square-o' => 'i-check',
 		'caret-down' => 'i-chevron-down', 'angle-down' => 'i-chevron-down', 'angle-right' => 'i-chevron-right', 'angle-left' => 'i-chevron-left', 'times' => 'i-x', 'book' => 'i-book', 'floppy-o' => 'i-save', 'check-square-o' => 'i-check',
 		'caret-down' => 'i-chevron-down', 'angle-down' => 'i-chevron-down', 'angle-right' => 'i-chevron-right', 'angle-left' => 'i-chevron-left', 'times' => 'i-x', 'book' => 'i-book', 'floppy-o' => 'i-save', 'check-square-o' => 'i-check',
+		'cloud-download' => 'i-download', 'download' => 'i-download', 'times-circle' => 'i-x-circle', 'pencil' => 'i-pencil', 'edit' => 'i-pencil', 'plus' => 'i-plus', 'minus' => 'i-minus',
 		'trash' => 'i-trash', 'trash-o' => 'i-trash', 'share' => 'i-share',
 	);
 

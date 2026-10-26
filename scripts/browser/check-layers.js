@@ -91,6 +91,28 @@
 		}
 	});
 
+	// 4. a third-party fixed element with a huge z-index (like a coupon popup) must not cover the open menu or a modal (REQ-Z-010)
+	var probe = document.createElement('div');
+
+	probe.style.cssText = 'position:fixed;inset:0;z-index:5000000;background:transparent;';
+	document.body.appendChild(probe);
+
+	['.ocs-mega .navbar-collapse.in', '.ocs-modal'].forEach(function (sel) {
+		var el = document.querySelector(sel);
+
+		if (el && visible(el)) {
+			checked.push('third-party probe vs ' + sel);
+
+			var top = document.elementFromPoint(innerWidth / 2, innerHeight / 2);
+
+			if (top === probe) {
+				problems.push('a z-index 5000000 element covers ' + sel);
+			}
+		}
+	});
+
+	document.body.removeChild(probe);
+
 	checked.push('cards');
 
 	return {ok: problems.length === 0, problems: problems.slice(0, 40), checked: checked.length};

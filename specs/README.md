@@ -109,6 +109,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-040 | [Installable Theme Package (.ocmod.zip)](demo-bundle/spec.md) | `implemented` |
 | SPEC-041 | [Demo Catalogue in the Theme Package](demo-catalogue/spec.md) | `implemented` |
 | SPEC-042 | [SVG-Only Icons, Rating Stars, Layer Scale, Bottom Bar](icons-layers-tabbar/spec.md) | `implemented` |
+| SPEC-043 | [Mobile Menu, Button Metrics, Full Template Set](menu-buttons-templates/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

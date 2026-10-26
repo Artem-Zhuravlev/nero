@@ -1,8 +1,8 @@
 {# Extension: ocs_mega_menu. Mega menu markup (SPEC-027). Keeps core hooks: #menu, #category, .navbar-toggle with data-toggle="collapse". #}
 <nav id="menu" class="navbar ocs-mega" data-behaviour="{{ behaviour }}" aria-label="{{ text_catalog }}">
   <div class="container">
-    <div class="navbar-header"><span id="category" class="visible-xs">{{ text_catalog }}</span>
-      <button type="button" class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-label="{{ text_catalog }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    <div class="navbar-header">
+      <button type="button" class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-controls="ocs-mega-panel" aria-expanded="false"><span id="category">{{ text_catalog }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg></button>
     </div>
     <div class="collapse navbar-collapse navbar-ex1-collapse">
       <button type="button" class="ocs-mega-close visible-xs" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-label="{{ text_catalog }}">&times;</button>
