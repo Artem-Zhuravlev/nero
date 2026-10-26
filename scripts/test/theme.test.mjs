@@ -1000,7 +1000,7 @@ test('visual identity: motion, skeleton and empty states respect reduced motion'
 test('visual identity: demo seed is local-only; theme budgets hold', () => {
   const seed = readFileSync(join(REPO_ROOT, 'scripts/seed-demo.php'), 'utf8');
   assert.match(seed, /APP_ENV=local/);
-  assert.match(seed, /ON DUPLICATE KEY UPDATE/);
+  assert.match(readFileSync(join(REPO_ROOT, 'scripts/lib/php/Setup/DemoSeed.php'), 'utf8'), /ON DUPLICATE KEY UPDATE/);
   assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'css within 200 KB');
   assert.ok(Buffer.byteLength(readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8')) <= 60 * 1024, 'theme.js within 60 KB');
 });

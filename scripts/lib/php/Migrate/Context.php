@@ -25,6 +25,8 @@ final class Context
     public $prefix;
     /** @var string absolute repo root (used to validate event actions) */
     public $repoRoot;
+    /** @var callable|null fn(string $app, string $relControllerFile): bool - replaces the repo lookup inside an installed store (SPEC-040) */
+    public $routeResolver;
     /** @var bool true while running an *_uninstall migration (REQ-DB-012, REQ-DB-030) */
     public $uninstall;
     /** @var bool set by helpers that change OCMOD/events/extensions: refresh.php must run (REQ-DB-040) */

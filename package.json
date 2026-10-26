@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "description": "ocStore 3.0.3.7 store developed spec-first (see CLAUDE.md)",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "core:manifest": "node scripts/core-manifest.mjs generate",
     "core:check": "node scripts/core-manifest.mjs check",
@@ -16,6 +18,7 @@
     "db:migrate": "php -d extension=mysqli scripts/migrate.php up",
     "db:status": "php -d extension=mysqli scripts/migrate.php status",
     "db:install": "php -d extension=mysqli scripts/install.php",
-    "verify": "node scripts/verify.mjs"
+    "verify": "node scripts/verify.mjs",
+    "pack:theme": "node scripts/pack-theme.mjs"
   }
 }

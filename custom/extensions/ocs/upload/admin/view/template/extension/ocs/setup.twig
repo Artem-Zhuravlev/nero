@@ -1,0 +1,90 @@
+{# Extension: ocs (theme package setup). Owner: SPEC-040. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <a href="{{ theme }}" data-toggle="tooltip" title="{{ button_theme }}" class="btn btn-default"><i class="fa fa-cog"></i></a>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div id="ocs-alerts">
+      {% if library_missing %}
+      <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_library }}</div>
+      {% endif %}
+      {% for problem in problems %}
+      <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ problem }}</div>
+      {% endfor %}
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-magic"></i> {{ text_status }}</h3></div>
+      <div class="panel-body">
+        <table class="table table-condensed">
+          <tr><td>{{ text_package_version }}</td><td><b>{{ package_version }}</b></td></tr>
+          <tr><td>{{ text_installed_version }}</td><td>{% if installed_version %}<b>{{ installed_version }}</b>{% else %}<span class="text-danger">{{ text_not_installed }}</span>{% endif %}</td></tr>
+          <tr><td>{{ text_active }}</td><td>{% if active %}<span class="label label-success">{{ text_yes }}</span>{% else %}<span class="label label-default">{{ text_no }}</span>{% endif %}</td></tr>
+        </table>
+        {% if can_modify and not library_missing and not problems %}
+        <p class="text-muted">{{ text_help }}</p>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary" data-ocs-action="install"><i class="fa fa-download"></i> {{ button_install }}</button>
+          <button type="button" class="btn btn-success" data-ocs-action="activate"><i class="fa fa-power-off"></i> {{ button_activate }}</button>
+          <button type="button" class="btn btn-info" data-ocs-action="demo"><i class="fa fa-picture-o"></i> {{ button_demo }}</button>
+          <button type="button" class="btn btn-danger" data-ocs-action="uninstall" data-confirm="{{ text_confirm_uninstall }}"><i class="fa fa-trash-o"></i> {{ button_uninstall }}</button>
+        </div>
+        <p class="help-block">{{ text_activate_help }}</p>
+        {% endif %}
+        <pre id="ocs-log" style="display:none;max-height:360px;overflow:auto;margin-top:15px"></pre>
+      </div>
+    </div>
+    {% if migrations %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-list"></i> {{ text_migrations }}</h3></div>
+      <div class="panel-body">
+        <table class="table table-condensed table-hover">
+          <tbody>
+          {% for row in migrations %}
+          <tr><td>{{ row.id }}</td><td class="text-right">{{ row.state }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<script type="text/javascript"><!--
+$('button[data-ocs-action]').on('click', function() {
+  var node = this, action = $(node).data('ocs-action');
+  if ($(node).data('confirm') && !confirm($(node).data('confirm'))) { return; }
+  var $log = $('#ocs-log').show().text('{{ text_working }}');
+  $('button[data-ocs-action]').prop('disabled', true);
+  $.ajax({
+    url: '{{ run }}', type: 'post', dataType: 'json', data: {action: action},
+    success: function(json) {
+      var lines = [];
+      if (json.error) { lines.push('ERROR: ' + json.error); }
+      $.each(json.problems || [], function(i, p) { lines.push('ERROR: ' + p); });
+      $.each(json.log || [], function(i, l) { lines.push(l); });
+      if (json.ok) { lines.push('', '{{ text_done }}'); }
+      $log.text(lines.join('\n'));
+      if (json.refresh) {
+        $.get('{{ refresh }}').always(function() { $log.append('\n{{ text_refreshed }}'); });
+      }
+      $('button[data-ocs-action]').prop('disabled', false);
+    },
+    error: function(xhr) {
+      $log.text('HTTP ' + xhr.status + ' ' + (xhr.responseText || '').substring(0, 600));
+      $('button[data-ocs-action]').prop('disabled', false);
+    }
+  });
+});
+//--></script>
+{{ footer }}

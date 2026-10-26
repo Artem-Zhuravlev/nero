@@ -24,6 +24,8 @@ final class Runner
     private $out;
     /** @var bool */
     public $refreshRequired = false;
+    /** @var callable|null see Context::$routeResolver */
+    public $routeResolver;
 
     public function __construct(Db $db, string $prefix, string $repoRoot, ?callable $out = null)
     {
@@ -199,9 +201,11 @@ final class Runner
 
     private function newContext(bool $uninstall): Context
     {
-        return new Context($this->db, $this->prefix, $this->root, $uninstall, function (string $m): void {
+        $ctx = new Context($this->db, $this->prefix, $this->root, $uninstall, function (string $m): void {
             $this->say('    ' . $m);
         });
+        $ctx->routeResolver = $this->routeResolver;
+        return $ctx;
     }
 
     private function apply(Migration $m, bool $record = true): bool

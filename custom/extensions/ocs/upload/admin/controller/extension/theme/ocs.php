@@ -77,11 +77,27 @@ class ControllerExtensionThemeOcs extends Controller {
 		$data['roles'] = $this->roles;
 		$data['version'] = '1.0.0';
 
+		$data['setup'] = $this->url->link('extension/ocs/setup', $token, true);
+		$data['setup_pending'] = !$this->config->get('ocs_package_version') && is_file(DIR_SYSTEM . 'library/ocs/setup/autoload.php');
+
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
 		$this->response->setOutput($this->load->view('extension/theme/ocs', $data));
+	}
+
+	// Called by extension/extension/theme/install (SPEC-040): core checks only the first two route parts (extension/ocs) for permission.
+	public function install() {
+		$this->load->model('user/user_group');
+
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'extension/ocs');
+		$this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'extension/ocs');
+	}
+
+	// Called by extension/extension/theme/uninstall: core drops theme_ocs_* settings, so the storefront must not keep pointing at the theme.
+	public function uninstall() {
+		$this->db->query("UPDATE `" . DB_PREFIX . "setting` SET `value` = 'default' WHERE `key` = 'config_theme' AND `value` = 'ocs'");
 	}
 
 	protected function validate() {

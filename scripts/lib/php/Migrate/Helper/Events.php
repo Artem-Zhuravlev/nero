@@ -38,6 +38,13 @@ final class Events
         $parts = explode('/', preg_replace('/[^a-zA-Z0-9_\/]/', '', $route));
         while ($parts) {
             $rel = $app . '/controller/' . implode('/', $parts) . '.php';
+            if ($this->ctx->routeResolver !== null) {
+                if (($this->ctx->routeResolver)($app, $rel)) {
+                    return true;
+                }
+                array_pop($parts);
+                continue;
+            }
             if (is_file($this->ctx->repoRoot . '/core/upload/' . $rel)) {
                 return true;
             }
