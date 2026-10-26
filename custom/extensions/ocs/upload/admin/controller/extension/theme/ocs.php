@@ -54,7 +54,7 @@ class ControllerExtensionThemeOcs extends Controller {
 			$setting_info = $this->model_setting_setting->getSetting('theme_ocs', $store_id);
 		}
 
-		$defaults = array('status' => 0, 'directory' => 'ocs', 'product_limit' => 15, 'product_description_length' => 100);
+		$defaults = array('status' => 0, 'directory' => 'ocs', 'product_limit' => 15, 'product_description_length' => 100, 'show_stock' => 1, 'show_sku' => 1);
 
 		foreach ($this->roles as $role) {
 			$data['error_image_' . $role] = isset($this->error['image_' . $role]) ? $this->error['image_' . $role] : '';

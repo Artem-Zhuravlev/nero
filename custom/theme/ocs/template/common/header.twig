@@ -58,7 +58,7 @@
 {{ analytic }}
 {% endfor %}
 </head>
-<body{% if ocs_cart %} data-ocs-cart="{{ ocs_cart.url }}"{% endif %}{% if ocs_qv %} data-ocs-qv="{{ ocs_qv.url }}" data-ocs-qv-label="{{ ocs_qv.label }}"{% endif %}>
+<body{% if ocs_cart %} data-ocs-cart="{{ ocs_cart.url }}"{% endif %}{% if ocs_bk %} data-ocs-bk="{{ ocs_bk.sync }}" data-ocs-bk-cart="{{ ocs_bk.cart }}" data-ocs-bk-ids="{{ ocs_bk.cart_ids }}" data-ocs-bk-days="{{ ocs_bk.days }}" data-ocs-bk-t="{{ ocs_bk.strings }}"{% endif %}>
 {% include 'ocs/template/ocs/sprite.twig' %}
 {% if ocs_shell and ocs_shell.announcement %}
 <div class="ocs-announce" id="ocs-announce" data-id="{{ ocs_shell.announcement.id }}" role="region" aria-label="{{ ocs_shell.t.ocs_announce }}">

@@ -17,6 +17,8 @@ $_['entry_directory']                  = 'Theme Directory';
 $_['entry_status']                     = 'Status';
 $_['entry_product_limit']              = 'Default Items Per Page';
 $_['entry_product_description_length'] = 'List Description Limit';
+$_['entry_show_stock']                  = 'Show stock availability';
+$_['entry_show_sku']                    = 'Show article number (SKU)';
 $_['entry_image_thumb']                = 'Product Image Thumb Size (W x H)';
 $_['entry_image_popup']                = 'Product Image Popup Size (W x H)';
 $_['entry_image_category']             = 'Category Image Size (W x H)';
@@ -35,6 +37,8 @@ $_['entry_height']                     = 'Height';
 $_['help_directory']                   = 'Theme directory used for the image size settings; keep "ocs".';
 $_['help_product_limit']               = 'How many catalog items are shown per page.';
 $_['help_product_description_length']  = 'Short description character limit in list views.';
+$_['help_show_stock']                   = 'Shows the "in stock" label on every page, block, list and search suggestion; off removes it everywhere.';
+$_['help_show_sku']                     = 'Shows the article number (model) on every page, block, list, table and search suggestion; off removes it everywhere.';
 
 // Error
 $_['error_permission']                 = 'Warning: You do not have permission to modify the OCS theme!';

@@ -80,8 +80,15 @@ class ControllerExtensionModuleOcsAjaxCart extends Controller {
 
 		$count = $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0);
 
+		$ids = array();
+
+		foreach ($this->cart->getProducts() as $line) {
+			$ids[(int)$line['product_id']] = (int)$line['product_id'];
+		}
+
 		$out = array(
 			'count'      => $count,
+			'ids'        => array_values($ids),
 			'total_text' => sprintf($this->language->get('text_items'), $count, $this->currency->format($total, $this->session->data['currency']))
 		);
 

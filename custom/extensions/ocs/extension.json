@@ -2,6 +2,6 @@
   "title": { "en-gb": "OCS Store Theme", "uk-ua": "Тема OCS" },
   "requires": { "core": "3.0.3.7", "extensions": [] },
   "spec": "SPEC-006", "tables": [],
-  "settings": ["theme_ocs_status", "theme_ocs_directory", "theme_ocs_product_limit", "theme_ocs_product_description_length"],
-  "events": ["ocs_theme_header_before"],
+  "settings": ["theme_ocs_status", "theme_ocs_directory", "theme_ocs_product_limit", "theme_ocs_product_description_length", "theme_ocs_show_stock", "theme_ocs_show_sku"],
+  "events": ["ocs_theme_header_before", "ocs_theme_display"],
   "routes": ["extension/theme/ocs", "extension/ocs/events"] }

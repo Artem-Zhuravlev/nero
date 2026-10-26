@@ -114,7 +114,7 @@
 		}
 
 		// touch target and padding proportions for real buttons
-		var isRealButton = el.matches('button, .btn, input[type="submit"], input[type="button"], .ocs-tabbar > a') && !el.matches('.btn-xs, .btn-sm, .btn-link, .close, [data-ocs-compact]') && !el.closest('#top, .pagination, .ocs-qv-dots, .swiper-pagination');
+		var isRealButton = el.matches('button, .btn, input[type="submit"], input[type="button"], .ocs-tabbar > a') && !el.matches('.btn-xs, .btn-sm, .btn-link, .close, [data-ocs-compact]') && !el.closest('#top, .pagination, .swiper-pagination');
 
 		if (isRealButton && texts.length) {
 			if (box.height < minTarget - 0.5) {

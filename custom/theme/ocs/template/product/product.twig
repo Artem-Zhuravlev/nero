@@ -84,11 +84,11 @@
             {% if manufacturer %}
             <li>{{ text_manufacturer }} <a href="{{ manufacturers }}">{{ manufacturer }}</a></li>
             {% endif %}
-            <li>{{ text_model }} {{ model }}</li>
+            {% if ocs_show_sku %}<li>{{ text_model }} {{ model }}</li>{% endif %}
             {% if reward %}
             <li>{{ text_reward }} {{ reward }}</li>
             {% endif %}
-            <li>{{ text_stock }} {% if ocs_stock %}<span class="ocs-stock ocs-stock-{{ ocs_stock.state }}">{{ ocs_stock.label }}</span>{% else %}{{ stock }}{% endif %}</li>
+            {% if ocs_show_stock %}<li>{{ text_stock }} {% if ocs_stock %}<span class="ocs-stock ocs-stock-{{ ocs_stock.state }}">{{ ocs_stock.label }}</span>{% else %}{{ stock }}{% endif %}</li>{% endif %}
           </ul>
           {% if price %}
           <ul class="list-unstyled">
@@ -405,8 +405,6 @@ $('#button-cart').on('click', function() {
 				$('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
 
 				$('#cart > button').html('<span id="cart-total"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg> ' + json['total'] + '</span>');
-
-				$('html, body').animate({ scrollTop: 0 }, 'slow');
 
 				$('#cart > ul').load('index.php?route=common/cart/info ul li');
 			}

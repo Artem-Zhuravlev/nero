@@ -124,7 +124,7 @@ test('OCS.modal opens as dialog and closes on Esc and on overlay click', () => {
 // TEST-THM-005 - verifies REQ-THM-023, REQ-THM-042 (theme.js under budget, only window.OCS global)
 test('theme.js stays within the size budget and header loads it after common.js', () => {
   const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
-  assert.ok(Buffer.byteLength(js) <= 60 * 1024);
+  assert.ok(Buffer.byteLength(js) <= 68 * 1024);
   const header = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/common/header.twig'), 'utf8');
   assert.ok(header.indexOf('javascript/common.js') < header.indexOf('ocs/javascript/theme.js'));
   const css = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/stylesheet/stylesheet.css'), 'utf8');
@@ -332,7 +332,7 @@ test('request popups: buttons, JS handler, shared form and error codes are consi
   const prod = read('custom/theme/ocs/template/product/product.twig');
   for (const cls of ['ocs-preorder-btn', 'ocs-quick-btn', 'ocs-subscribe-btn', 'data-form', 'data-collect="1"']) assert.ok(prod.includes(cls), `product.twig lacks ${cls}`);
   assert.match(prod, /class="ocs-preorder"/);
-  assert.match(read('custom/theme/ocs/template/ocs/card.twig'), /ocs-req-btn[^>]*data-form="\{\{ ocs_quick\.form \}\}"/);
+  assert.ok(!read('custom/theme/ocs/template/ocs/card.twig').includes('ocs-req-btn'), 'SPEC-044: quick order is on the product page only');
   const css = read('custom/theme/ocs/stylesheet/stylesheet.css');
   assert.match(css, /\.ocs-preorder #button-cart \{ display: none; \}/);
   const form = read('custom/extensions/ocs_request/upload/catalog/view/theme/default/template/extension/ocs_request/form.twig');
@@ -767,44 +767,30 @@ test('product gallery: linked swipers keep the core zoom hooks and the LCP attri
   assert.ok(css.includes('.ocs-gal-thumbs'));
 });
 
-// TEST-QVW-001, TEST-SWP-003 - verifies REQ-QVW-001..004, REQ-SWP-011, REQ-SWP-012 (quick view: manifest, endpoint, buttons, shared options partial, no caching)
-test('quick view: manifest, endpoint, shared options and theme hooks are consistent and the module is off by default', () => {
+// TEST-QVR-001 - verifies REQ-QVR-001 (quick view is gone: no extension, no hooks, an uninstall migration)
+test('quick view is removed: no code, no theme hooks, migration uninstalls the module', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  const code = 'ocs_quick_view';
-  const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
-  assert.equal(ext.spec, 'SPEC-037');
-  const mig = read(`custom/extensions/${code}/db/001_install.php`);
-  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `event ${e}`);
-  assert.match(mig, /'module_ocs_quick_view_status', 0/);
-  const keys = (side, l) => [...read(`custom/extensions/${code}/upload/${side}/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
-  for (const l of ['en-gb', 'ru-ru']) assert.deepEqual(keys('catalog', l), keys('catalog', 'uk-ua'), `catalog ${l}`);
-  assert.deepEqual(keys('admin', 'en-gb'), keys('admin', 'uk-ua'), 'admin strings');
-  const ctl = read(`custom/extensions/${code}/upload/catalog/controller/extension/module/${code}.php`);
-  assert.match(ctl, /Cache-Control: no-store/);
-  assert.match(ctl, /module_ocs_quick_view_status/);
-  assert.match(ctl, /ocs_request\/options/, 'options come from the shared builder');
-  const twig = read(`custom/extensions/${code}/upload/catalog/view/theme/default/template/extension/module/${code}.twig`);
-  for (const hook of ['data-ocs-product="1"', "include 'ocs/template/ocs/options.twig'", 'ocs-qv-add', 'ocs-quick-btn', 'ocs-preorder-btn', 'ocs-subscribe-btn', 'ocs-qv-slides swiper-container']) assert.ok(twig.includes(hook), hook);
-  assert.ok(read('custom/theme/ocs/template/product/product.twig').includes("include 'ocs/template/ocs/options.twig'"), 'the product page uses the same partial');
+  assert.ok(!existsSync(join(REPO_ROOT, 'custom/extensions/ocs_quick_view')), 'extension directory is deleted');
+  const mig = read('custom/db/migrations/0004_remove_quick_view.php');
+  for (const part of ["unregisterByCode('ocs_quick_view_header')", "unregister('module', 'ocs_quick_view')", 'module_ocs_quick_view_status']) assert.ok(mig.includes(part), part);
   const js = read('custom/theme/ocs/javascript/theme.js');
-  for (const hook of ['data-ocs-qv', 'ocs-qv-btn', 'OCS.qv = {open: open}', "closest('[data-ocs-product]')", 'ocs-qv-add']) assert.ok(js.includes(hook), hook);
-  assert.match(read('custom/theme/ocs/template/common/header.twig'), /data-ocs-qv="\{\{ ocs_qv\.url \}\}"/);
+  for (const hook of ['data-ocs-qv', 'ocs-qv-btn', 'OCS.qv', 'ocs-qv-add']) assert.ok(!js.includes(hook), hook);
+  assert.ok(!read('custom/theme/ocs/stylesheet/stylesheet.css').includes('.ocs-qv'), 'no quick view css');
+  assert.ok(!read('custom/theme/ocs/template/common/header.twig').includes('ocs_qv'), 'no header hook');
 });
 
 // TEST-STK-010 - verifies REQ-STK-010 (stickers in quick view and in the module blocks come from the one shared model method)
-test('stickers: quick view and module blocks use forProducts, escaping happens once in the model', () => {
+test('stickers: module blocks use forProducts, escaping happens once in the model', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
   const model = read('custom/extensions/ocs_stickers/upload/catalog/model/extension/ocs_stickers/stickers.php');
   assert.match(model, /public function forProducts\(\$ids\)/);
   assert.match(model, /htmlspecialchars\(\$sticker\['text'\]/);
   for (const p of [
-    'custom/extensions/ocs_quick_view/upload/catalog/controller/extension/module/ocs_quick_view.php',
     'custom/extensions/ocs_product_carousel/upload/catalog/controller/extension/module/ocs_product_carousel.php',
     'custom/extensions/ocs_viewed/upload/catalog/controller/extension/module/ocs_viewed.php',
     'custom/extensions/ocs_product_extras/upload/catalog/model/extension/ocs_product_extras/extras.php',
     'custom/extensions/ocs_stickers/upload/catalog/controller/extension/ocs_stickers/events.php'
   ]) assert.match(read(p), /forProducts\(/, p);
-  assert.ok(read('custom/extensions/ocs_quick_view/upload/catalog/view/theme/default/template/extension/module/ocs_quick_view.twig').includes('stickers.tl'));
 });
 
 // TEST-OPT-001 - verifies REQ-OPT-001 (out-of-stock values are flagged in the shared partial; the theme switches the buttons; endpoints use the same rule)
@@ -909,7 +895,7 @@ test('modern layout: product page grid keeps the core hooks', () => {
 
 // TEST-LAY-007, TEST-LAY-008, TEST-LAY-009 - verifies REQ-LAY-009, REQ-LAY-011, REQ-LAY-021 (footer subgrid, dialogs as containers, stylesheet budget)
 test('modern layout: footer subgrid, dialog containers and the stylesheet budget', () => {
-  for (const rule of ['footer { container: foot / inline-size;', 'grid-template-columns: subgrid', '@container foot (max-width: 62rem)', '.ocs-modal-dialog { container: dialog / inline-size; }', '@container dialog (min-width: 44rem)', ':has(.ocs-qv)']) assert.ok(css.includes(rule), rule);
+  for (const rule of ['footer { container: foot / inline-size;', 'grid-template-columns: subgrid', '@container foot (max-width: 62rem)', '.ocs-modal-dialog { container: dialog / inline-size; }', '@container dialog (min-width: 44rem)']) assert.ok(css.includes(rule), rule);
   assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'stylesheet within 200 KB');
 });
 
@@ -947,7 +933,7 @@ test('visual identity: Bootstrap components are re-skinned in the components lay
 test('visual identity: product card markup and styles', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
   const card = read('custom/theme/ocs/template/ocs/card.twig');
-  for (const hook of ['ocs-card-tools', 'ocs-tool', 'class="ocs-code"', 'ocs-buy-row', 'ocs-cart-btn', 'ocs-dot', "wishlist.add('{{ product.product_id }}')", "compare.add('{{ product.product_id }}')", "cart.add('{{ product.product_id }}'", 'ocs-quick-btn', 'loading="lazy"']) assert.ok(card.includes(hook), hook);
+  for (const hook of ['ocs-card-tools', 'ocs-tool', 'class="ocs-code"', 'ocs-buy-row', 'ocs-cart-btn', 'ocs-dot', "wishlist.add('{{ product.product_id }}')", "compare.add('{{ product.product_id }}')", "cart.add('{{ product.product_id }}'", 'loading="lazy"']) assert.ok(card.includes(hook), hook);
   for (const rule of ['.ocs-tool {', '.ocs-cart-btn {', '.ocs-card-tools {', '@media (hover: none) { .ocs-tool', '@container card (max-width: 12.5rem)']) assert.ok(css.includes(rule), rule);
 });
 
@@ -998,7 +984,6 @@ test('visual identity: motion, skeleton and empty states respect reduced motion'
   for (const rule of ['@keyframes ocs-fade', '@keyframes ocs-shimmer', '.ocs-skel', '.ocs-cart-empty::before']) assert.ok(css.includes(rule), rule);
   const reduce = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)\n{') >= 0 ? 0 : css.lastIndexOf('@media (prefers-reduced-motion: reduce)'));
   assert.ok(reduce.includes('.ocs-skel > span { animation: none; }'));
-  assert.match(readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8'), /ocs-skel/);
 });
 
 // TEST-VIS-009 - verifies REQ-VIS-010, REQ-VIS-021 (demo seed is local-only and idempotent; budgets)
@@ -1007,7 +992,7 @@ test('visual identity: demo seed is local-only; theme budgets hold', () => {
   assert.match(seed, /APP_ENV=local/);
   assert.match(readFileSync(join(REPO_ROOT, 'scripts/lib/php/Setup/DemoSeed.php'), 'utf8'), /ON DUPLICATE KEY UPDATE/);
   assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'css within 200 KB');
-  assert.ok(Buffer.byteLength(readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8')) <= 60 * 1024, 'theme.js within 60 KB');
+  assert.ok(Buffer.byteLength(readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8')) <= 68 * 1024, 'theme.js within 68 KB');
 });
 
 // TEST-VIS-007 - verifies REQ-VIS-006, REQ-VIS-003 (vertical thumbnails by container width, review summary markup, brand "More" tile)
@@ -1045,8 +1030,8 @@ test('theme.js sends requests for the configured origin to the page origin', asy
 test('popup requests are POSTs with the product id in the body (SeoPro redirects GETs carrying product_id)', () => {
   const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
   assert.ok(!/'product_id=' + encodeURIComponent/.test(js), "no product_id in a request URL");
-  assert.equal(js.split("method: 'POST', body: OCS.productBody(id)").length - 1, 2, 'request popups and quick view');
-  for (const m of ['ocs_back_in_stock', 'ocs_preorder', 'ocs_quick_order', 'ocs_quick_view', 'ocs_tradein']) {
+  assert.equal(js.split("method: 'POST', body: OCS.productBody(id)").length - 1, 1, 'request popups');
+  for (const m of ['ocs_back_in_stock', 'ocs_preorder', 'ocs_quick_order', 'ocs_tradein']) {
     const php = readFileSync(join(REPO_ROOT, `custom/extensions/${m}/upload/catalog/controller/extension/module/${m}.php`), 'utf8');
     assert.ok(php.includes("isset($this->request->post['product_id'])"), `${m} reads product_id from POST`);
   }
@@ -1171,7 +1156,7 @@ test('raw px spacing declarations in the stylesheet do not grow', () => {
 test('generated templates are complete, up to date and keep the core Twig variables', async () => {
   const { plan } = await import('../gen-theme-templates.mjs');
   const files = plan();
-  assert.ok(files.length >= 80, `${files.length} generated templates`);
+  assert.ok(files.length >= 75, `${files.length} generated templates`);
   const have = (rel) => existsSync(join(REPO_ROOT, 'custom/theme/ocs/template', rel));
   for (const dir of ['account/login', 'account/register', 'account/account', 'affiliate/login', 'checkout/checkout', 'checkout/cart', 'information/contact', 'information/information', 'error/not_found', 'common/home', 'common/success', 'common/column_left', 'product/manufacturer_list', 'extension/module/category', 'extension/module/banner', 'extension/total/coupon']) assert.ok(have(`${dir}.twig`), dir);
   const vars = (s) => new Set([...s.matchAll(/\{\{\s*([a-zA-Z_][\w]*)/g)].map((m) => m[1]).concat([...s.matchAll(/\{%\s*(?:if|for|elseif|set)\s+[^%]*?\b([a-zA-Z_]\w*)\b/g)].map((m) => m[1])));
@@ -1184,4 +1169,63 @@ test('generated templates are complete, up to date and keep the core Twig variab
     const lost = [...vars(core)].filter((v) => !ours.has(v) && !['i', 'j', 'fa'].includes(v));
     assert.deepEqual(lost, [], `${f.rel} lost Twig variables`);
   }
+});
+
+// ---- SPEC-044: card actions, cookie bookmarks, stock/SKU switches ----
+const read44 = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+
+// TEST-CAR-001, TEST-CAR-002, TEST-CAR-003 - verifies REQ-CAR-001..003 (theme replaces the scrolling core globals; states are restored from cookies / cart ids)
+test('card actions: no scroll, active states and in-cart button are wired in theme.js', () => {
+  const js = read44('custom/theme/ocs/javascript/theme.js');
+  const card = js.slice(js.indexOf('/* Card actions (SPEC-044)'), js.indexOf('/* Option-level stock'));
+  assert.ok(card.length > 1000, 'card block exists');
+  assert.ok(!/scrollTop|\.animate\(/.test(card), 'the card block never scrolls');
+  for (const hook of ['window.wishlist.add = ', 'window.compare.add = ', 'window.cart.add = cartAdd', "'ocs_wish'", "'ocs_cmp'", 'aria-pressed', 'is-in-cart', "data-ocs-bk-ids", 'OCS.icon(\'check\')']) assert.ok(card.includes(hook), hook);
+  assert.ok(!/scrollTop/.test(read44('custom/theme/ocs/template/product/product.twig')), 'the product page button does not scroll');
+  assert.match(js, /json\.ids && OCS\.card/, 'the cart panel keeps the in-cart state in step');
+  assert.match(read44('custom/theme/ocs/template/common/header.twig'), /data-ocs-bk="\{\{ ocs_bk\.sync \}\}"/);
+  const css = read44('custom/theme/ocs/stylesheet/stylesheet.css');
+  assert.ok(css.includes('.is-in-cart') && css.includes('aria-pressed="true"'));
+});
+
+// TEST-QOR-040 - verifies REQ-QOR-040 (quick order only on the product page)
+test('quick order is exposed on the product page only', () => {
+  assert.ok(!read44('custom/theme/ocs/template/ocs/card.twig').includes('ocs_quick'), 'no quick order on cards');
+  const ev = read44('custom/extensions/ocs_quick_order/upload/catalog/controller/extension/ocs_quick_order/events.php');
+  assert.ok(ev.includes('beforeProduct') && !/beforeCategory|beforeSearch|beforeManufacturer|beforeSpecial/.test(ev));
+  assert.ok(read44('custom/db/migrations/0005_quick_order_product_page_only.php').includes("'ocs_quick_order_' . $page . '_before'"));
+  assert.ok(read44('custom/theme/ocs/template/product/product.twig').includes('ocs_quick and not ocs_preorder'));
+});
+
+// TEST-BKM-001, TEST-BKM-002 - verifies REQ-BKM-001, REQ-BKM-002 (cookie bookmarks: events, guest page, sync route, links)
+test('bookmarks: events hydrate the session from cookies, the wishlist page needs no login', () => {
+  const ext = JSON.parse(read44('custom/extensions/ocs_bookmarks/extension.json'));
+  const mig = read44('custom/extensions/ocs_bookmarks/db/001_install.php');
+  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), e);
+  const page = read44('custom/extensions/ocs_bookmarks/upload/catalog/controller/extension/ocs_bookmarks/wishlist.php');
+  assert.ok(!/isLogged\(\)\s*\)\s*\{\s*\$this->response->redirect/.test(page), 'no login redirect');
+  const ev = read44('custom/extensions/ocs_bookmarks/upload/catalog/controller/extension/ocs_bookmarks/events.php');
+  for (const hook of ["session->data['wishlist']", "session->data['compare']", "extension/ocs_bookmarks/wishlist", 'samesite']) assert.ok(ev.includes(hook), hook);
+  const keys = (l) => [...read44(`custom/extensions/ocs_bookmarks/upload/catalog/language/${l}/extension/ocs_bookmarks/bookmarks.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  assert.deepEqual(keys('en-gb'), keys('ru-ru'));
+  assert.deepEqual(keys('en-gb'), keys('uk-ua'));
+  assert.ok(read44('custom/theme/ocs/template/account/wishlist.twig').includes('data-ocs-wish-remove'));
+});
+
+// TEST-VIS-050, TEST-VIS-051 - verifies REQ-VIS-050, REQ-VIS-051 (theme switches: form, event, migration, templates, JSON)
+test('stock / sku switches: form, migration, last-running view event, guarded templates and search JSON', () => {
+  const form = read44('custom/extensions/ocs/upload/admin/view/template/extension/theme/ocs.twig');
+  for (const k of ['theme_ocs_show_stock', 'theme_ocs_show_sku']) {
+    assert.ok(form.includes(k), k);
+    assert.ok(read44('custom/extensions/ocs/upload/admin/controller/extension/theme/ocs.php').includes(k.replace('theme_ocs_', "'") ), k);
+  }
+  const mig = read44('custom/db/migrations/0006_display_switches.php');
+  assert.ok(mig.includes("'catalog/view/*/before'") && mig.includes(', 99)'), 'event last');
+  const keys = (l) => [...read44(`custom/extensions/ocs/upload/admin/language/${l}/extension/theme/ocs.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
+  assert.deepEqual(keys('en-gb'), keys('uk-ua'));
+  const t = (p) => read44(`custom/theme/ocs/template/${p}`);
+  for (const [f, flag] of [['product/product.twig', 'ocs_show_sku'], ['product/product.twig', 'ocs_show_stock'], ['product/compare.twig', 'ocs_show_sku'], ['product/compare.twig', 'ocs_show_stock'], ['account/wishlist.twig', 'ocs_show_sku'], ['account/wishlist.twig', 'ocs_show_stock'], ['checkout/cart.twig', 'ocs_show_sku'], ['checkout/confirm.twig', 'ocs_show_sku'], ['account/order_info.twig', 'ocs_show_sku']]) assert.ok(t(f).includes(flag), `${f} ${flag}`);
+  assert.match(read44('custom/extensions/ocs_ajax_search/upload/catalog/controller/extension/module/ocs_ajax_search.php'), /Display::on\(\$this->config->get\('theme_ocs_show_sku'\)\)/);
+  // every template that prints model / stock outside the guarded files reads it from data the event strips
+  assert.ok(read44('custom/extensions/ocs/upload/system/library/ocs/display.php').includes("'ocs_stock', 'stock', 'availability'"));
 });

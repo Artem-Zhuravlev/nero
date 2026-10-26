@@ -13,6 +13,22 @@ class ControllerExtensionOcsEvents extends Controller {
 		$data['asset_version'] = $this->assetVersion();
 	}
 
+	/**
+	 * Every storefront view, last in order: applies the stock / article number switches of the theme settings to every storefront view (SPEC-044 REQ-VIS-051).
+	 */
+	public function applyDisplay(&$route, &$data) {
+		// the return forms ask the customer for the model themselves: not a display of the catalogue field
+		if (!is_array($data) || $this->config->get('config_theme') != 'ocs' || strpos($route, 'account/return') === 0) {
+			return;
+		}
+
+		try {
+			$data = \Ocs\Display::apply($data, \Ocs\Display::on($this->config->get('theme_ocs_show_stock')), \Ocs\Display::on($this->config->get('theme_ocs_show_sku')));
+		} catch (\Exception $e) {
+			$this->log->write('[ocs] ' . $e->getMessage());
+		}
+	}
+
 	private function assetVersion() {
 		$info = dirname(dirname(rtrim(DIR_APPLICATION, '/\\'))) . '/BUILD_INFO.json';
 

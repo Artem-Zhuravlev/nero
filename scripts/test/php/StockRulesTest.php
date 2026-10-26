@@ -88,15 +88,12 @@ final class StockRulesTest extends TestCase
         $m = new Context($db, 'oc_', dirname(__DIR__, 3));
         $root = dirname(__DIR__, 3) . '/custom/extensions';
 
-        foreach (['ocs_quick_view/db/001_install.php', 'ocs_preorder/db/001_install.php', 'ocs_preorder/db/002_option_stock_event.php', 'ocs_back_in_stock/db/001_install.php', 'ocs_back_in_stock/db/002_option_stock_event.php', 'ocs_back_in_stock/db/003_cron_key.php'] as $file) {
+        foreach (['ocs_preorder/db/001_install.php', 'ocs_preorder/db/002_option_stock_event.php', 'ocs_back_in_stock/db/001_install.php', 'ocs_back_in_stock/db/002_option_stock_event.php', 'ocs_back_in_stock/db/003_cron_key.php'] as $file) {
             $fn = require $root . '/' . $file;
             $fn($m);
             $fn($m);
         }
 
-        $this->assertTrue($m->extension->isRegistered('module', 'ocs_quick_view'));
-        $this->assertSame('0', (string) $m->setting->get('module_ocs_quick_view', 'module_ocs_quick_view_status'));
-        $this->assertCount(1, $db->pdo->query("SELECT code FROM oc_event WHERE code = 'ocs_quick_view_header'")->fetchAll());
         $this->assertCount(1, $db->pdo->query("SELECT code FROM oc_event WHERE code = 'ocs_preorder_options'")->fetchAll());
         $this->assertCount(1, $db->pdo->query("SELECT code FROM oc_event WHERE code = 'ocs_back_in_stock_options'")->fetchAll());
 

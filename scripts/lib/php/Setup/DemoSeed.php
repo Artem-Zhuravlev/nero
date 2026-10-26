@@ -47,7 +47,6 @@ final class DemoSeed
             'module_ocs_home_slider' => ['module_ocs_home_slider_status' => 1, 'module_ocs_home_slider_tiles' => 1, 'module_ocs_home_slider_menu' => 1],
             'module_ocs_benefits' => ['module_ocs_benefits_status' => 1],
             'module_ocs_brand_strip' => ['module_ocs_brand_strip_status' => 1],
-            'module_ocs_quick_view' => ['module_ocs_quick_view_status' => 1],
             'module_ocs_stickers' => ['module_ocs_stickers_status' => 1],
             'module_ocs_newsletter' => ['module_ocs_newsletter_status' => 1],
         ] as $code => $settings) {

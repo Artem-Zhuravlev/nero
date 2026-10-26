@@ -514,7 +514,6 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 .ocs-req-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .ocs-req-done { padding: var(--sp-4); border-radius: var(--r-md); background: var(--success-bg); color: var(--success); }
 .ocs-req .required .control-label:after { content: " *"; color: var(--danger); }
-.ocs-quick-card { padding: 0 var(--sp-5) var(--sp-2); }
 .ocs-preorder #button-cart { display: none; }
 
 /* ==== 17. Cart panel and availability labels (SPEC-026) ============================= */
@@ -711,28 +710,10 @@ li .ocs-stock { font-size: inherit; }
 .ocs-gal-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .ocs-gal-main { position: relative; }
 
-/* ==== 25. Quick view (SPEC-037) ==== */
 .product-thumb .image { position: relative; }
-.ocs-qv-btn {
-	position: absolute; right: var(--sp-3); bottom: var(--sp-3); z-index: var(--z-raised); width: 40px; height: 40px; border: 0; border-radius: 50%;
-	background: var(--bg); color: var(--text); box-shadow: var(--shadow); cursor: pointer; opacity: 0; transition: opacity .15s;
-}
-.product-thumb:hover .ocs-qv-btn, .ocs-qv-btn:focus-visible { opacity: 1; }
-@media (hover: none) { .ocs-qv-btn { opacity: 1; } }
-.ocs-qv { display: grid; grid-template-columns: 1fr; gap: var(--sp-5); }
-@media (min-width: 768px) { .ocs-qv { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); width: min(860px, 90vw); } }
-.ocs-qv-gallery { position: relative; min-width: 0; }
-.ocs-qv-slides img { display: block; width: 100%; height: auto; border-radius: var(--r-lg); }
-.ocs-qv-dots.swiper-pagination { position: absolute; bottom: var(--sp-2); left: 0; right: 0; text-align: center; z-index: var(--z-raised); }
-.ocs-qv-dots .swiper-pagination-bullet { background: var(--border); opacity: 1; }
-.ocs-qv-dots .swiper-pagination-bullet-active { background: var(--accent); }
-.ocs-qv-info { min-width: 0; max-height: 70vh; overflow-y: auto; }
-.ocs-qv-info h3 { margin-top: 0; }
-.ocs-qv-price { font-size: var(--fs-lg); }
-.ocs-qv-more { margin-top: var(--sp-3); text-align: center; }
 
 /* ==== 26. Option-level stock switch (SPEC-037) ==== */
-.ocs-out-only[hidden], #button-cart[hidden], .ocs-qv-add[hidden], .ocs-quick-btn[hidden] { display: none !important; }
+.ocs-out-only[hidden], #button-cart[hidden], .ocs-quick-btn[hidden] { display: none !important; }
 }
 
 /* ==== 27. SPEC-038 base: fluid scale, shell grid, container (REQ-LAY-001, 002, 010) ======= */
@@ -881,7 +862,6 @@ li .ocs-stock { font-size: inherit; }
 	.product-thumb .price-old { font-size: var(--fs-sm); }
 	.product-thumb .price-tax { flex-basis: 100%; font-size: var(--fs-xs); font-weight: 400; }
 	.product-thumb .rating { margin: 0; }
-	.product-thumb .ocs-quick-card { padding: 0 var(--sp-4) var(--sp-2); }
 	.product-thumb .button-group { margin-block-start: auto; display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3) var(--sp-4) var(--sp-4); background: transparent; border: 0; }
 	.product-thumb .button-group button {
 		flex: 0 0 2.5rem; block-size: 2.5rem; display: grid; place-items: center; padding: 0; border: 1px solid var(--border); border-radius: var(--r-pill);
@@ -905,7 +885,6 @@ li .ocs-stock { font-size: inherit; }
 		.product-thumb > div:last-child { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; grid-template-areas: "caption buy" "caption quick"; align-content: start; align-items: start; }
 		.product-thumb .caption { grid-area: caption; padding: var(--sp-4); }
 		.product-thumb .ocs-desc { -webkit-line-clamp: 3; line-clamp: 3; }
-		.product-thumb .ocs-quick-card { grid-area: quick; padding: 0 var(--sp-4); }
 		.product-thumb .button-group { grid-area: buy; margin: 0; padding: var(--sp-4) var(--sp-4) var(--sp-2); }
 	}
 }
@@ -937,7 +916,6 @@ li .ocs-stock { font-size: inherit; }
 		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .rating { grid-row: 4; }
 		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .ocs-stock { grid-row: 5; }
 		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .ocs-buy-row { grid-row: 6; }
-		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .ocs-quick-card { grid-row: 7; }
 	}
 }
 
@@ -1116,9 +1094,6 @@ li .ocs-stock { font-size: inherit; }
 
 	/* dialogs size their contents by their own width */
 	.ocs-modal-dialog { container: dialog / inline-size; }
-	.ocs-modal-center .ocs-modal-dialog:has(.ocs-qv) { max-inline-size: min(62rem, 100%); }
-	.ocs-qv { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-5); inline-size: auto; }
-	@container dialog (min-width: 44rem) { .ocs-qv { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 
 	.ocs-cart-line { display: grid; grid-template-columns: 4rem minmax(0, 1fr); align-items: start; gap: var(--sp-3); }
 	.ocs-cart-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
@@ -1163,9 +1138,7 @@ li .ocs-stock { font-size: inherit; }
 	#ocs-grid > .product-layout, .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout, #ocs-grid > .product-layout > .product-thumb, .ocs-viewed-grid > .product-layout > .product-thumb, .ocs-cards > .product-layout > .product-thumb { grid-template-columns: minmax(0, 1fr); }
 }
 @layer components {
-	.product-thumb .ocs-quick-card .btn { white-space: normal; inline-size: 100%; }
 	@container card (max-width: 12.5rem) {
-		.product-thumb .ocs-quick-card .btn { font-size: var(--fs-xs); padding-inline: var(--sp-2); }
 		.product-thumb .button-group { gap: var(--sp-1); padding-inline: var(--sp-3); }
 	}
 }
@@ -1411,12 +1384,8 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-cart-btn:hover { background: var(--accent-hover); scale: 1.06; }
 	.ocs-cart-btn:active { scale: .96; }
 
-	.product-thumb .ocs-quick-card { padding: 0 var(--sp-4) var(--sp-4); }
 	.ocs-link-btn { display: inline; padding: 0; border: 0; background: none; color: var(--link); font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
 	.ocs-link-btn:hover { color: var(--accent-hover); text-decoration: underline; }
-
-	/* quick-view eye moves to the bottom-left of the photo so it never meets the tools */
-	.ocs-qv-btn { inset-inline-end: auto; inset-inline-start: var(--sp-3); }
 
 	@container card (max-width: 12.5rem) {
 		.ocs-buy-row .price { font-size: var(--fs-lg); }
@@ -1567,7 +1536,7 @@ li .ocs-stock { font-size: inherit; }
 @keyframes ocs-rise { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
 
 @layer components {
-	.ocs-card-img img, .ocs-gal-main img, .ocs-qv-slides img, .ocs-hero-slide img, .ocs-hero-tile img { animation: ocs-fade .45s ease both; }
+	.ocs-card-img img, .ocs-gal-main img, .ocs-hero-slide img, .ocs-hero-tile img { animation: ocs-fade .45s ease both; }
 	.ocs-modal-dialog { animation: ocs-rise .22s ease both; }
 	.dropdown-menu, .ocs-home-fly { animation: ocs-fade .15s ease both; }
 
@@ -1593,7 +1562,7 @@ li .ocs-stock { font-size: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
 	@layer components {
-		.ocs-card-img img, .ocs-gal-main img, .ocs-qv-slides img, .ocs-hero-slide img, .ocs-hero-tile img, .ocs-modal-dialog, .dropdown-menu, .ocs-home-fly, .ocs-skel > span { animation: none; }
+		.ocs-card-img img, .ocs-gal-main img, .ocs-hero-slide img, .ocs-hero-tile img, .ocs-modal-dialog, .dropdown-menu, .ocs-home-fly, .ocs-skel > span { animation: none; }
 		.product-thumb, .ocs-tool, .ocs-cart-btn { transition: none; translate: 0 0; }
 	}
 }
@@ -1684,4 +1653,14 @@ li .ocs-stock { font-size: inherit; }
 		/* REQ-TAB-003: the bottom bar is out of the way while a modal is open */
 		.ocs-modal-open .ocs-tabbar { visibility: hidden; }
 	}
+}
+
+/* ==== SPEC-044: card actions - active wishlist / compare, "in cart" button ==== */
+@layer overrides {
+	[aria-pressed="true"].ocs-tool, .btn[aria-pressed="true"], .button-group button[aria-pressed="true"] { color: var(--accent); opacity: 1; }
+	[onclick*="wishlist.add("][aria-pressed="true"] { color: var(--danger); }
+	[aria-pressed="true"] .ocs-i { fill: currentColor; }
+	.is-in-cart { background: var(--success); color: var(--on-accent); }
+	.ocs-cart-btn.is-in-cart:hover, .btn.is-in-cart:hover { background: var(--success); filter: brightness(0.95); }
+	.is-in-cart .ocs-i { fill: none; }
 }

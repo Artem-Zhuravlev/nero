@@ -618,7 +618,7 @@
 		return form.querySelector('[data-error-for="' + name + '"]');
 	}
 
-	// the product fields (quantity, options) are read when the popup opens: the quick view that holds them closes at that moment
+	// the product fields (quantity, options) are read when the popup opens
 	function collect(data, box) {
 		box = box || document.getElementById('product');
 
@@ -796,6 +796,10 @@
 
 	function render(json) {
 		updateHeader(json);
+
+		if (json.ids && OCS.card) {
+			OCS.card.setCart(json.ids);
+		}
 
 		if (!dialog || !json.html) {
 			return;
@@ -1583,187 +1587,326 @@
 	}
 }(window, document));
 
-/* Quick view (SPEC-037 REQ-QVW-001..004): a button on every card opens the server-rendered body in OCS.modal; "Add to cart" posts to
-   the core checkout/cart/add endpoint (the cart panel of SPEC-026 opens from its ajaxSuccess hook), the request buttons are handled by OCS.req. */
+/* Card actions (SPEC-044): buy / wishlist / compare without scrolling the page, active states that survive a reload, an "in cart" button.
+   Wishlist and compare live in cookies (ocs_wish, ocs_cmp: comma-separated product ids); the server copies them into the session
+   (ocs_bookmarks events). The core cart/wishlist/compare globals are replaced here: they scroll the page to the top and know nothing
+   about states. Server data comes from <body data-ocs-bk*>; without it core behaviour stays. */
 (function (window, document) {
 	'use strict';
 
 	var OCS = window.OCS = window.OCS || {};
-	var url = '';
-	var label = '';
+	var KEY = {wish: 'ocs_wish', cmp: 'ocs_cmp'};
+	var MAX = {wish: 100, cmp: 4};
+	var cfg = null;
+	var cart = [];
+	var queued = false;
 
-	function decorate(root) {
-		var cards = (root || document).querySelectorAll('.product-layout[data-product-id] .image');
+	function readCookie(name) {
+		var parts = ('; ' + document.cookie).split('; ' + name + '=');
 
-		for (var i = 0; i < cards.length; i++) {
-			if (cards[i].querySelector('.ocs-qv-btn')) {
-				continue;
+		return parts.length === 2 ? parts.pop().split(';').shift() : '';
+	}
+
+	function writeCookie(name, value) {
+		document.cookie = name + '=' + value + '; path=/; max-age=' + (cfg.days * 86400) + '; SameSite=Lax' + (window.location.protocol === 'https:' ? '; Secure' : '');
+	}
+
+	function list(type) {
+		var out = [];
+
+		readCookie(KEY[type]).split(',').forEach(function (x) {
+			var n = parseInt(x, 10);
+
+			if (n > 0 && out.indexOf(n) === -1) {
+				out.push(n);
+			}
+		});
+
+		return out.slice(-MAX[type]);
+	}
+
+	function save(type, ids) {
+		writeCookie(KEY[type], ids.join(','));
+	}
+
+	function idOf(button, fn) {
+		var m = new RegExp(fn + "\\('?(\\d+)").exec(button.getAttribute('onclick') || '');
+
+		return m ? parseInt(m[1], 10) : 0;
+	}
+
+	function setTitle(b, text) {
+		if (!text) {
+			return;
+		}
+
+		if (b.hasAttribute('data-original-title')) {
+			b.setAttribute('data-original-title', text);
+		}
+
+		b.setAttribute('title', text);
+		b.setAttribute('aria-label', text);
+	}
+
+	function markToggle(b, on, onText, offText) {
+		b.classList.toggle('is-active', on);
+		b.setAttribute('aria-pressed', on ? 'true' : 'false');
+		setTitle(b, on ? onText : offText);
+	}
+
+	function markCart(b, id, on) {
+		var iconOnly = b.classList.contains('ocs-cart-btn');
+
+		if (on && !b.classList.contains('is-in-cart')) {
+			b._ocsHtml = b.innerHTML;
+			b._ocsTitle = b.getAttribute('title');
+			b.classList.add('is-in-cart');
+			b.innerHTML = OCS.icon('check') + (iconOnly ? '' : ' ' + cfg.t.in_cart);
+			setTitle(b, cfg.t.in_cart);
+
+			if (window.jQuery && b.id === 'button-cart') {
+				window.jQuery(b).data('resetText', b.innerHTML);
+			}
+		} else if (!on && b.classList.contains('is-in-cart')) {
+			b.classList.remove('is-in-cart');
+			b.innerHTML = b._ocsHtml || b.innerHTML;
+
+			if (b._ocsTitle) {
+				b.setAttribute('title', b._ocsTitle);
+				b.setAttribute('aria-label', b._ocsTitle);
 			}
 
-			var b = document.createElement('button');
-
-			b.type = 'button';
-			b.className = 'ocs-qv-btn';
-			b.setAttribute('aria-label', label);
-			b.title = label;
-			b.setAttribute('data-product-id', cards[i].closest('.product-layout').getAttribute('data-product-id'));
-			b.innerHTML = OCS.icon('eye');
-			cards[i].appendChild(b);
+			if (window.jQuery && b.id === 'button-cart') {
+				window.jQuery(b).data('resetText', b.innerHTML);
+			}
 		}
 	}
 
-	function errors(form, json) {
-		[].forEach.call(form.querySelectorAll('.text-danger'), function (e) {
-			e.parentNode.removeChild(e);
-		});
-		[].forEach.call(form.querySelectorAll('.has-error'), function (e) {
-			e.classList.remove('has-error');
-		});
+	function refresh() {
+		queued = false;
 
-		if (!json.error) {
-			return;
-		}
+		var wish = list('wish');
+		var cmp = list('cmp');
+		var all = document.querySelectorAll('[onclick*="wishlist.add("], [onclick*="compare.add("], [onclick*="cart.add("], #button-cart');
+		var i;
 
-		var opts = json.error.option || {};
+		for (i = 0; i < all.length; i++) {
+			var b = all[i];
+			var id;
 
-		Object.keys(opts).forEach(function (id) {
-			var field = form.querySelector('[name="option[' + id.replace('option', '') + ']"], [name="option[' + id.replace('option', '') + '][]"]');
-			var holder = field ? (field.closest('.form-group') || field.parentNode) : form;
-			var msg = document.createElement('div');
+			if (b.id === 'button-cart') {
+				var hidden = document.querySelector('#product input[name="product_id"]');
 
-			msg.className = 'text-danger';
-			msg.textContent = opts[id];
-			holder.appendChild(msg);
-			holder.classList.add('has-error');
-		});
-
-		if (json.error.warning) {
-			var w = document.createElement('div');
-
-			w.className = 'text-danger';
-			w.textContent = json.error.warning;
-			form.insertBefore(w, form.firstChild);
+				id = hidden ? parseInt(hidden.value, 10) : 0;
+				markCart(b, id, cart.indexOf(id) !== -1);
+			} else if ((id = idOf(b, 'wishlist\\.add'))) {
+				markToggle(b, wish.indexOf(id) !== -1, cfg.t.wish_on, cfg.t.wish_off);
+			} else if ((id = idOf(b, 'compare\\.add'))) {
+				markToggle(b, cmp.indexOf(id) !== -1, cfg.t.cmp_on, cfg.t.cmp_off);
+			} else if ((id = idOf(b, 'cart\\.add'))) {
+				markCart(b, id, cart.indexOf(id) !== -1);
+			}
 		}
 	}
 
-	function add(form, btn) {
-		if (!window.jQuery) {
-			return;
+	function later() {
+		if (!queued) {
+			queued = true;
+			window.setTimeout(refresh, 30);
+		}
+	}
+
+	function counter(type) {
+		var el = type === 'wish' ? document.querySelector('#wishlist-total .ocs-sr') : document.getElementById('compare-total');
+		var n = list(type).length;
+
+		if (el) {
+			el.textContent = el.textContent.replace(/\d+/, String(n));
+
+			if (el.parentNode) {
+				el.parentNode.setAttribute('title', el.textContent);
+			}
+		}
+	}
+
+	function toggle(type, id) {
+		id = parseInt(id, 10);
+
+		var ids = list(type);
+		var at = ids.indexOf(id);
+		var action = at === -1 ? 'add' : 'remove';
+
+		if (at === -1) {
+			ids.push(id);
+			ids = ids.slice(-MAX[type]);
+		} else {
+			ids.splice(at, 1);
 		}
 
+		save(type, ids);
+		refresh();
+		counter(type);
+
+		// the account list of a logged-in customer follows (the answer is not needed)
+		if (type === 'wish' && cfg.sync && window.fetch) {
+			var body = new window.FormData();
+
+			body.append('type', type);
+			body.append('action', action);
+			body.append('product_id', id);
+			window.fetch(cfg.sync, {method: 'POST', body: body, credentials: 'same-origin', keepalive: true}).catch(function () {});
+		}
+	}
+
+	function cartAdd(id, quantity) {
 		var $ = window.jQuery;
 
-		btn.disabled = true;
-
 		$.ajax({
-			url: form.getAttribute('action'),
+			url: 'index.php?route=checkout/cart/add',
 			type: 'post',
-			data: $(form).serialize(),
+			data: 'product_id=' + id + '&quantity=' + (typeof quantity !== 'undefined' ? quantity : 1),
 			dataType: 'json',
+			beforeSend: function () {
+				$('#cart > button').button('loading');
+			},
 			complete: function () {
-				btn.disabled = false;
+				$('#cart > button').button('reset');
 			},
 			success: function (json) {
-				errors(form, json);
+				$('.alert-dismissible, .text-danger').remove();
+
+				if (json.redirect) {
+					window.location = json.redirect;
+				}
 
 				if (json.success) {
-					// the cart panel (ajaxSuccess hook of theme.js) replaces this popup; without the panel module just close it
-					if (!document.body.getAttribute('data-ocs-cart')) {
-						OCS.modal.close();
+					window.setTimeout(function () {
 						$('#cart > button').html('<span id="cart-total">' + OCS.icon('cart') + ' ' + json.total + '</span>');
-					}
+					}, 100);
+
+					$('#cart > ul').load('index.php?route=common/cart/info ul li');
 				}
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				window.alert(thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText);
 			}
 		});
 	}
 
-	function open(id) {
-		if (!url || !window.fetch || !OCS.modal) {
+	OCS.card = {
+		refresh: refresh,
+		toggle: toggle,
+		setCart: function (ids) {
+			cart = (ids || []).map(function (x) {
+				return parseInt(x, 10);
+			});
+			refresh();
+		}
+	};
+
+	function boot() {
+		var body = document.body;
+
+		if (!body.getAttribute('data-ocs-bk') || !window.jQuery) {
 			return;
 		}
 
-		// a skeleton opens at once; the real body replaces it when it arrives (REQ-VIS-009)
-		var shell = document.createElement('div');
+		try {
+			cfg = {sync: body.getAttribute('data-ocs-bk'), cart: body.getAttribute('data-ocs-bk-cart'), days: parseInt(body.getAttribute('data-ocs-bk-days'), 10) || 90, t: JSON.parse(body.getAttribute('data-ocs-bk-t') || '{}')};
+		} catch (e) {
+			return;
+		}
 
-		shell.innerHTML = '<div class="ocs-skel" aria-busy="true"><span class="ocs-skel-img"></span><span class="ocs-skel-line"></span><span class="ocs-skel-line w-60"></span><span class="ocs-skel-line w-60"></span><span class="ocs-skel-btn"></span></div>';
+		cart = (body.getAttribute('data-ocs-bk-ids') || '').split(',').map(function (x) {
+			return parseInt(x, 10);
+		}).filter(function (x) {
+			return x > 0;
+		});
 
-		OCS.modal.open({content: shell, closeLabel: ''});
+		if (window.wishlist) {
+			window.wishlist.add = function (id) { toggle('wish', id); };
+		}
 
-		window.fetch(url, {method: 'POST', body: OCS.productBody(id), credentials: 'same-origin'}).then(function (r) {
-			return r.text();
-		}).then(function (html) {
-			if (!html) {
-				OCS.modal.close();
+		if (window.compare) {
+			window.compare.add = function (id) { toggle('cmp', id); };
+		}
+
+		if (window.cart) {
+			window.cart.add = cartAdd;
+		}
+
+		// every successful add (card, module, product page, wishlist table) marks the button
+		window.jQuery(document).ajaxSuccess(function (e, xhr, settings) {
+			if (!settings || !settings.url || settings.url.indexOf('checkout/cart/add') === -1) {
+				return;
+			}
+
+			var json;
+
+			try {
+				json = JSON.parse(xhr.responseText);
+			} catch (err) {
+				return;
+			}
+
+			var m = /product_id=(\d+)/.exec(typeof settings.data === 'string' ? settings.data : '');
+
+			if (json && json.success && m && cart.indexOf(parseInt(m[1], 10)) === -1) {
+				cart.push(parseInt(m[1], 10));
+				// Bootstrap's button('reset') runs after the response and would put the old label back
+				window.setTimeout(refresh, 150);
+			}
+		});
+
+		document.addEventListener('click', function (e) {
+			var t = e.target.closest ? e.target.closest('.is-in-cart') : null;
+
+			// a product that is in the cart opens the cart instead of adding again
+			if (t) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				if (document.body.getAttribute('data-ocs-cart') && OCS.cart && OCS.cart.open) {
+					OCS.cart.open('');
+				} else {
+					window.location = cfg.cart;
+				}
 
 				return;
 			}
 
-			var holder = document.createElement('div');
+			// wishlist table / compare page: the link removes on the server, the cookie follows now
+			var link = e.target.closest ? e.target.closest('a[data-ocs-wish-remove], #product-compare a[href*="remove="]') : null;
 
-			holder.innerHTML = html;
+			if (link) {
+				var wish = link.hasAttribute('data-ocs-wish-remove');
+				var id = parseInt(wish ? link.getAttribute('data-ocs-wish-remove') : (/remove=(\d+)/.exec(link.getAttribute('href')) || [0, 0])[1], 10);
 
-			var root = holder.querySelector('.ocs-qv');
+				if (id) {
+					var type = wish ? 'wish' : 'cmp';
+					var ids = list(type);
 
-			OCS.modal.close();
-
-			var dialog = OCS.modal.open({content: holder, closeLabel: root ? root.getAttribute('data-close') : '', labelledBy: 'ocs-qv-title'});
-			var slides = dialog.querySelector('.ocs-qv-slides');
-
-			if (slides && typeof window.Swiper === 'function') {
-				new window.Swiper(slides, {pagination: dialog.querySelector('.ocs-qv-dots'), paginationClickable: true});
+					if (ids.indexOf(id) !== -1) {
+						ids.splice(ids.indexOf(id), 1);
+						save(type, ids);
+					}
+				}
 			}
+		}, true);
 
-			var form = dialog.querySelector('.ocs-qv-form');
-			var addBtn = dialog.querySelector('.ocs-qv-add');
+		refresh();
 
-			if (form && OCS.out) {
-				OCS.out.sync(form);
-			}
-
-			if (form && addBtn) {
-				addBtn.addEventListener('click', function () {
-					add(form, addBtn);
-				});
-				form.addEventListener('submit', function (e) {
-					e.preventDefault();
-				});
-			}
-		});
-	}
-
-	OCS.qv = {open: open};
-
-	function boot() {
-		url = document.body.getAttribute('data-ocs-qv') || '';
-		label = document.body.getAttribute('data-ocs-qv-label') || '';
-
-		if (!url) {
-			return;
-		}
-
-		decorate(document);
-
-		// cards that arrive later (load more, AJAX blocks)
 		if (window.MutationObserver) {
-			new window.MutationObserver(function (list) {
-				for (var i = 0; i < list.length; i++) {
-					if (list[i].addedNodes.length) {
-						decorate(document);
+			new window.MutationObserver(function (records) {
+				for (var i = 0; i < records.length; i++) {
+					if (records[i].addedNodes.length) {
+						later();
 
 						return;
 					}
 				}
 			}).observe(document.body, {childList: true, subtree: true});
 		}
-
-		document.addEventListener('click', function (e) {
-			var b = e.target.closest ? e.target.closest('.ocs-qv-btn') : null;
-
-			if (b) {
-				e.preventDefault();
-				open(b.getAttribute('data-product-id'));
-			}
-		});
 	}
 
 	if (document.readyState === 'loading') {
@@ -1782,7 +1925,7 @@
 	function sync(box) {
 		var out = !!box.querySelector('option[data-out]:checked, input[data-out]:checked');
 		var only = box.querySelectorAll('.ocs-out-only');
-		var buy = box.querySelectorAll('#button-cart, .ocs-qv-add, .ocs-quick-btn');
+		var buy = box.querySelectorAll('#button-cart, .ocs-quick-btn');
 		var i;
 
 		for (i = 0; i < only.length; i++) {
@@ -1797,7 +1940,7 @@
 	OCS.out = {sync: sync};
 
 	document.addEventListener('change', function (e) {
-		var box = e.target.closest ? e.target.closest('#product, .ocs-qv-form') : null;
+		var box = e.target.closest ? e.target.closest('#product') : null;
 
 		if (box) {
 			sync(box);

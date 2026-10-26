@@ -31,7 +31,6 @@
           <button type="button" class="ocs-cart-btn" title="{{ button_cart }}" aria-label="{{ button_cart }}" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg></button>
         </div>
       </div>
-      {% if ocs_quick %}<div class="ocs-quick-card"><button type="button" class="ocs-req-btn ocs-quick-btn ocs-link-btn" data-form="{{ ocs_quick.form }}" data-product-id="{{ product.product_id }}">{{ ocs_quick.text }}</button></div>{% endif %}
     </div>
   </div>
 </div>

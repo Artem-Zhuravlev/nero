@@ -100,6 +100,7 @@ class ControllerExtensionModuleOcsAjaxSearch extends Controller {
 		}
 
 		$out = array();
+		$show_sku = \Ocs\Display::on($this->config->get('theme_ocs_show_sku'));
 		$show_price = $this->customer->isLogged() || !$this->config->get('config_customer_price');
 
 		foreach ($found as $product) {
@@ -114,7 +115,7 @@ class ControllerExtensionModuleOcsAjaxSearch extends Controller {
 
 			$out[] = array(
 				'name'     => html_entity_decode($product['name'], ENT_QUOTES, 'UTF-8'),
-				'model'    => html_entity_decode((string)$product['model'], ENT_QUOTES, 'UTF-8'),
+				'model'    => $show_sku ? html_entity_decode((string)$product['model'], ENT_QUOTES, 'UTF-8') : '',
 				'href'     => $this->plainLink('product/product', 'product_id=' . (int)$product['product_id']),
 				'thumb'    => $this->model_tool_image->resize($product['image'] ? $product['image'] : 'placeholder.png', 60, 60),
 				'price'    => $price,

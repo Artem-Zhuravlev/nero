@@ -70,7 +70,7 @@ export function plan() {
 /** Overrides written earlier by this logic without the marker (SPEC-042): regenerated so every converted file is reproducible. */
 const HANDMADE_REGENERATE = new Set([
   'common/language.twig', 'common/currency.twig', 'common/cart.twig', 'blog/menu.twig', 'blog/latest.twig', 'blog/category.twig', 'blog/article.twig',
-  'blog/review.twig', 'product/review.twig', 'product/compare.twig', 'extension/module/featured.twig', 'extension/module/latest.twig',
+  'blog/review.twig', 'product/review.twig', 'extension/module/featured.twig', 'extension/module/latest.twig',
   'extension/module/bestseller.twig', 'extension/module/special.twig', 'extension/module/blog_latest.twig', 'extension/module/blog_featured.twig',
   'extension/module/featured_product.twig', 'extension/module/featured_article.twig',
 ]);

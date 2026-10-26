@@ -7,22 +7,6 @@ class ControllerExtensionOcsQuickOrderEvents extends Controller {
 		$this->expose($data);
 	}
 
-	public function beforeCategory(&$route, &$data) {
-		$this->expose($data);
-	}
-
-	public function beforeSearch(&$route, &$data) {
-		$this->expose($data);
-	}
-
-	public function beforeManufacturer(&$route, &$data) {
-		$this->expose($data);
-	}
-
-	public function beforeSpecial(&$route, &$data) {
-		$this->expose($data);
-	}
-
 	private function expose(&$data) {
 		if (!is_array($data) || !$this->config->get('module_ocs_quick_order_status') || $this->config->get('config_theme') != 'ocs') {
 			return;
