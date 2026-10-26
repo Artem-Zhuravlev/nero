@@ -64,12 +64,12 @@ test('contact rows in the header dropdown and the footer', () => {
   const h = read('custom/theme/ocs/template/common/header.twig');
   const f = read('custom/theme/ocs/template/common/footer.twig');
   for (const [name, tpl] of [['header', h], ['footer', f]]) {
-    assert.ok(tpl.includes('class="ocs-crow"') && tpl.includes('ocs-chip ocs-chip-{{ link.key }}') && tpl.includes('ocs-crow-text') && tpl.includes('rel="noopener noreferrer"'), name);
+    assert.ok(tpl.includes('class="ocs-crow"') && tpl.includes('ocs-bchip ocs-bchip-{{ link.key }}') && tpl.includes('ocs-crow-text') && tpl.includes('rel="noopener noreferrer"'), name);
   }
-  assert.ok(h.includes('ocs-chip-phone') && h.includes('phone.label'), 'phones keep number and label');
+  assert.ok(h.includes('ocs-bchip-phone') && h.includes('phone.label'), 'phones keep number and label');
   const c = css();
   for (const k of ['telegram', 'viber', 'messenger', 'whatsapp', 'phone', 'instagram', 'facebook', 'youtube']) {
-    assert.ok(c.includes(`--brand-${k}:`) && c.includes(`.ocs-chip-${k} {`), k);
+    assert.ok(c.includes(`--brand-${k}:`) && c.includes(`.ocs-bchip-${k} {`), k);
   }
 });
 

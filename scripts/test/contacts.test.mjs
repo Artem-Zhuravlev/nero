@@ -31,7 +31,7 @@ test('footer markup: contacts, icons, details groups, no app links', () => {
   const js = read('custom/theme/ocs/javascript/theme.js');
   assert.ok(js.includes("(min-width: 768px)") && js.includes('syncGroups'), 'groups follow the 768 px breakpoint');
   const css = read('custom/theme/ocs/stylesheet/stylesheet.css');
-  for (const rule of ['@container foot (min-width: 62rem)', '.ocs-crow {', '.ocs-chip {', '.ocs-fgroup > summary', 'max-width: 767.98px']) assert.ok(css.includes(rule), rule);
+  for (const rule of ['@container foot (min-width: 62rem)', '.ocs-crow {', '.ocs-bchip {', '.ocs-fgroup > summary', 'max-width: 767.98px']) assert.ok(css.includes(rule), rule);
   for (const k of ['module_ocs_shell_apps']) {
     for (const p of ['custom/extensions/ocs_shell/extension.json', 'custom/extensions/ocs_shell/upload/admin/view/template/extension/module/ocs_shell.twig', 'custom/extensions/ocs_shell/upload/admin/controller/extension/module/ocs_shell.php']) assert.ok(!read(p).includes(k), `${k} in ${p}`);
   }
