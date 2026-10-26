@@ -894,8 +894,8 @@ test('modern layout: product page grid keeps the core hooks', () => {
 });
 
 // TEST-LAY-007, TEST-LAY-008, TEST-LAY-009 - verifies REQ-LAY-009, REQ-LAY-011, REQ-LAY-021 (footer subgrid, dialogs as containers, stylesheet budget)
-test('modern layout: footer subgrid, dialog containers and the stylesheet budget', () => {
-  for (const rule of ['footer { container: foot / inline-size;', 'grid-template-columns: subgrid', '@container foot (max-width: 62rem)', '.ocs-modal-dialog { container: dialog / inline-size; }', '@container dialog (min-width: 44rem)']) assert.ok(css.includes(rule), rule);
+test('modern layout: footer container grid, dialog containers and the stylesheet budget', () => {
+  for (const rule of ['footer { container: foot / inline-size;', '@container foot (min-width: 62rem)', '.ocs-modal-dialog { container: dialog / inline-size; }', '@container dialog (min-width: 44rem)']) assert.ok(css.includes(rule), rule);
   assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'stylesheet within 200 KB');
 });
 

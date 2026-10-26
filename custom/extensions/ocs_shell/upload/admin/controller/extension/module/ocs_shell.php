@@ -4,7 +4,7 @@
 class ControllerExtensionModuleOcsShell extends Controller {
 	private $error = array();
 
-	private $globals = array('status' => 0, 'mobile_bar' => 1, 'announcement_from' => '', 'announcement_to' => '', 'phones' => '', 'telegram' => '', 'viber' => '', 'messenger' => '', 'social' => '', 'apps' => '');
+	private $globals = array('status' => 0, 'mobile_bar' => 1, 'announcement_from' => '', 'announcement_to' => '', 'phones' => '', 'telegram' => '', 'viber' => '', 'messenger' => '', 'social' => '');
 
 	private $per_language = array('announcement_text', 'announcement_url', 'hours', 'links', 'address', 'footer_groups');
 

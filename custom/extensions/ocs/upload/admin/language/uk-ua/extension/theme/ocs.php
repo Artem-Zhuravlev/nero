@@ -44,3 +44,21 @@ $_['help_show_sku']                     = 'Показує артикул (мод
 $_['error_permission']                 = 'Увага: у вас немає прав для зміни теми OCS!';
 $_['error_limit']                      = 'Значення обов\'язкове!';
 $_['error_image']                      = 'Вкажіть розміри зображення!';
+
+// Contacts (SPEC-047)
+$_['text_contacts'] = 'Контакти (футер і шапка)';
+$_['entry_address'] = 'Адреса';
+$_['entry_hours'] = 'Графік роботи';
+$_['entry_phones'] = 'Телефони';
+$_['help_phones'] = 'По одному в рядку: номер або «номер | підпис». Номери стають посиланнями tel:.';
+$_['text_contact_links'] = 'Месенджери та соцмережі';
+$_['help_contact_links'] = 'Показуються у футері (месенджери — і в шапці). Оберіть іконку, тип і введіть URL (https://, tg://, viber://, mailto:, tel:).';
+$_['column_icon'] = 'Іконка';
+$_['column_kind'] = 'Тип';
+$_['column_title'] = 'Назва (за мовами)';
+$_['column_url'] = 'URL';
+$_['column_sort'] = 'Порядок';
+$_['text_kind_messenger'] = 'Месенджер';
+$_['text_kind_social'] = 'Соцмережа';
+$_['button_add'] = 'Додати';
+$_['button_remove'] = 'Видалити';

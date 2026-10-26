@@ -27,7 +27,6 @@ $_['entry_links']          = 'Header links (Label|URL per line)';
 $_['entry_address']        = 'Address';
 $_['entry_footer_groups']  = 'Footer groups';
 $_['entry_social']         = 'Social links (Name|URL per line)';
-$_['entry_apps']           = 'App links (Name|URL per line)';
 
 $_['help_footer_groups']   = 'Group title on the first line, then Label|URL lines; separate groups by an empty line. Leave empty to use the standard columns.';
 

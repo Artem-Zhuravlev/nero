@@ -240,12 +240,26 @@
 			}
 		}
 
-		if (window.innerWidth < 768) {
+		// footer groups: collapsed on phones, always open from 768 px (SPEC-047 REQ-FTR-003)
+		var wide = window.matchMedia ? window.matchMedia('(min-width: 768px)') : null;
+
+		function syncGroups() {
 			var groups = document.querySelectorAll('details.ocs-fgroup');
+			var open = wide ? wide.matches : window.innerWidth >= 768;
 
 			for (var i = 0; i < groups.length; i++) {
-				groups[i].removeAttribute('open');
+				if (open) {
+					groups[i].setAttribute('open', '');
+				} else {
+					groups[i].removeAttribute('open');
+				}
 			}
+		}
+
+		syncGroups();
+
+		if (wide && wide.addEventListener) {
+			wide.addEventListener('change', syncGroups);
 		}
 
 		var tab = document.getElementById('ocs-tab-catalog');
@@ -1687,14 +1701,14 @@
 
 		var wish = list('wish');
 		var cmp = list('cmp');
-		var all = document.querySelectorAll('[onclick*="wishlist.add("], [onclick*="compare.add("], [onclick*="cart.add("], #button-cart');
+		var all = document.querySelectorAll('[onclick*="wishlist.add("], [onclick*="compare.add("], [onclick*="cart.add("], #button-cart, [data-ocs-buy]');
 		var i;
 
 		for (i = 0; i < all.length; i++) {
 			var b = all[i];
 			var id;
 
-			if (b.id === 'button-cart') {
+			if (b.id === 'button-cart' || b.hasAttribute('data-ocs-buy')) {
 				var hidden = document.querySelector('#product input[name="product_id"]');
 
 				id = hidden ? parseInt(hidden.value, 10) : 0;
@@ -2116,36 +2130,42 @@
 	function boot() {
 		var bar = document.getElementById('ocs-sticky-buy');
 		var anchor = document.getElementById('product');
+		var buys = document.querySelectorAll('[data-ocs-buy]');
 
-		if (!bar || !anchor || !window.IntersectionObserver) {
+		if (!anchor) {
 			return;
 		}
 
-		bar.hidden = false;
+		// the top bar appears once the page's own button has scrolled away (it is hidden by CSS while the pinned side card shows, SPEC-047)
+		if (bar && window.IntersectionObserver) {
+			bar.hidden = false;
 
-		new window.IntersectionObserver(function (entries) {
-			var e = entries[0];
-			var on = !e.isIntersecting && e.boundingClientRect.bottom < 0;
+			new window.IntersectionObserver(function (entries) {
+				var e = entries[0];
+				var on = !e.isIntersecting && e.boundingClientRect.bottom < 0;
 
-			bar.classList.toggle('is-on', on);
-			bar.setAttribute('aria-hidden', on ? 'false' : 'true');
-		}).observe(anchor);
+				bar.classList.toggle('is-on', on);
+				bar.setAttribute('aria-hidden', on ? 'false' : 'true');
+			}).observe(anchor);
+		}
 
-		bar.querySelector('[data-ocs-buy]').addEventListener('click', function () {
-			var buttons = anchor.querySelectorAll('#button-cart, .ocs-out-only, .ocs-req-btn');
-			var target = null;
+		[].forEach.call(buys, function (buy) {
+			buy.addEventListener('click', function () {
+				var buttons = anchor.querySelectorAll('#button-cart, .ocs-out-only, .ocs-req-btn');
+				var target = null;
 
-			[].forEach.call(buttons, function (b) {
-				if (!target && !b.hidden && b.offsetParent !== null) {
-					target = b;
+				[].forEach.call(buttons, function (b) {
+					if (!target && !b.hidden && b.offsetParent !== null) {
+						target = b;
+					}
+				});
+
+				if (target) {
+					target.click();
+				} else {
+					anchor.scrollIntoView({behavior: 'smooth', block: 'center'});
 				}
 			});
-
-			if (target) {
-				target.click();
-			} else {
-				anchor.scrollIntoView({behavior: 'smooth', block: 'center'});
-			}
 		});
 	}
 

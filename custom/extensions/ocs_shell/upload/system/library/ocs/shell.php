@@ -149,7 +149,7 @@ class Shell {
 			$href = isset($settings[$key]) ? self::safeUrl($settings[$key]) : '';
 
 			if ($href !== '') {
-				$out[] = array('key' => $key, 'name' => $name, 'href' => $href);
+				$out[] = array('key' => $key, 'name' => $name, 'title' => $name, 'icon' => 'i-' . $key, 'href' => $href);
 			}
 		}
 

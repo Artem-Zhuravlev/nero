@@ -325,9 +325,6 @@ footer hr { border-color: var(--border); }
 
 header { position: sticky; top: 0; z-index: var(--z-header); }
 
-.ocs-footer-groups summary { list-style: none; cursor: default; }
-.ocs-footer-groups summary::-webkit-details-marker { display: none; }
-.ocs-footer-extra { margin-top: var(--sp-4); }
 footer details.ocs-fgroup:not([open]) > ul { display: none; }
 
 .ocs-tabbar { display: none; }
@@ -1043,23 +1040,14 @@ li .ocs-stock { font-size: inherit; }
 	footer > .container > hr, footer > .container > p { grid-column: 1 / -1; margin: 0; }
 	footer > .container > hr { border-color: color-mix(in srgb, var(--border) 70%, transparent); }
 
-	/* the link groups and the extra rows share the 12 tracks of the footer through subgrid, so their columns line up */
-	@supports (grid-template-columns: subgrid) {
-		footer > .container > .row { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; margin-inline: 0; row-gap: var(--sp-5); }
-	}
-	footer > .container > .row::before, footer > .container > .row::after { display: none; }
-	footer > .container > .row > [class*="col-"] { grid-column: span 3; inline-size: auto; float: none; padding: 0; min-inline-size: 0; }
-	footer > .container > .row.ocs-footer-extra > [class*="col-"] { grid-column: span 6; }
-
-	@supports not (grid-template-columns: subgrid) {
-		footer > .container > .row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--sp-5); margin-inline: 0; }
-	}
-
-	@container foot (max-width: 62rem) {
-		footer > .container > .row > [class*="col-"] { grid-column: span 6; }
-	}
-	@container foot (max-width: 36rem) {
-		footer > .container > .row > [class*="col-"], footer > .container > .row.ocs-footer-extra > [class*="col-"] { grid-column: 1 / -1; }
+	/* contacts column + link groups (SPEC-047): one column, two from 36rem of footer width, contacts beside the groups from 62rem */
+	/* Bootstrap's clearfix pseudo-elements would become grid items */
+	footer > .container::before, footer > .container::after { display: none; }
+	footer .ocs-foot-contacts, footer .ocs-foot-groups { grid-column: 1 / -1; min-inline-size: 0; }
+	footer .ocs-foot-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); column-gap: var(--sp-5); row-gap: var(--sp-4); align-content: start; }
+	@container foot (min-width: 62rem) {
+		footer .ocs-foot-contacts { grid-column: span 4; }
+		footer .ocs-foot-groups { grid-column: span 8; }
 	}
 }
 
@@ -1720,4 +1708,65 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-section-body img { max-inline-size: 100%; block-size: auto; }
 	.ocs-section-body table { display: block; max-inline-size: 100%; overflow-x: auto; }
 	#review:empty { display: none; }
+}
+
+/* ==== SPEC-047: footer contacts, icon buttons, collapsible groups, pinned product card ==== */
+@layer overrides {
+	.ocs-foot-contacts { display: grid; gap: var(--sp-3); align-content: start; }
+	.ocs-foot-contacts > * { margin: 0; }
+	.ocs-foot-contacts > .ocs-fh { display: flex; align-items: center; min-block-size: 2.75rem; }
+	.ocs-foot-row { display: flex; align-items: flex-start; gap: var(--gap-icon, 0.5rem); font-style: normal; line-height: 1.5; color: var(--text); }
+	.ocs-foot-row .ocs-i { flex: none; margin-block-start: 0.15em; color: var(--text-muted); }
+	footer .ocs-foot-phones { display: grid; gap: var(--sp-1); }
+	.ocs-foot-phones li { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-2); }
+	.ocs-foot-phones a { display: inline-flex; align-items: center; gap: var(--gap-icon, 0.5rem); min-block-size: 2.5rem; color: var(--text); font-size: var(--fs-md); font-weight: 600; }
+	.ocs-foot-phones a:hover { color: var(--accent); }
+	footer .ocs-soc-list { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+	.ocs-soc { display: inline-grid; place-items: center; inline-size: 2.75rem; block-size: 2.75rem; border: 1px solid var(--border); border-radius: 50%; background: var(--bg); color: var(--text); transition: color var(--t), border-color var(--t), background-color var(--t); }
+	.ocs-soc:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+	.ocs-soc .ocs-i { inline-size: 1.25rem; block-size: 1.25rem; }
+	.ocs-fgroup > summary { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); list-style: none; min-block-size: 2.75rem; cursor: default; }
+	.ocs-fgroup > summary::-webkit-details-marker { display: none; }
+	.ocs-fgroup > summary h2 { margin: 0; }
+	.ocs-fgroup > summary .ocs-i { display: none; flex: none; transition: rotate var(--t); }
+	.ocs-fgroup[open] > summary .ocs-i { rotate: 180deg; }
+	.ocs-foot-bottom { grid-column: 1 / -1; padding-block-start: var(--sp-4); border-block-start: 1px solid color-mix(in srgb, var(--border) 70%, transparent); }
+	.ocs-foot-bottom p { margin: 0; }
+	@media (min-width: 768px) {
+		.ocs-fgroup > summary { pointer-events: none; }
+	}
+	@media (max-width: 767.98px) {
+		.ocs-fgroup > summary { cursor: pointer; border-block-end: 1px solid color-mix(in srgb, var(--border) 70%, transparent); }
+		.ocs-fgroup > summary .ocs-i { display: inline-block; }
+		.ocs-fgroup > ul { padding-block: var(--sp-3); }
+		footer .ocs-foot-groups { row-gap: 0; }
+	}
+}
+
+/* ==== SPEC-047: pinned product card beside the sections ==== */
+@layer overrides {
+	.ocs-pdp-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); align-items: start; margin-block-start: var(--sp-7); }
+	.ocs-pdp-body > .ocs-pdp-sections { margin-block-start: 0; }
+	.ocs-side-card { display: none; }
+	@media (min-width: 64rem) {
+		.ocs-pdp-body { grid-template-columns: minmax(0, 1fr) 18.5rem; }
+		.ocs-side-card {
+			display: grid; gap: var(--sp-2); align-self: start; position: sticky; inset-block-start: calc(var(--head-h, 0rem) + 3.25rem + var(--sp-4));
+			padding: var(--sp-4); background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 60%, transparent); border-radius: var(--r-lg); box-shadow: var(--shadow);
+		}
+		.ocs-side-card > * { margin: 0; min-inline-size: 0; }
+		.ocs-side-img { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: var(--r-md); background: var(--bg-alt); overflow: hidden; }
+		.ocs-side-img img { inline-size: 100%; block-size: 100%; object-fit: contain; }
+		.ocs-side-brand { font-size: var(--fs-xs); font-weight: 600; color: var(--link); }
+		.ocs-side-title { font-size: var(--fs-sm); font-weight: 600; line-height: 1.35; color: var(--text); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+		.ocs-side-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-2); }
+		.ocs-side-price strong { font-size: var(--fs-xl); font-weight: 800; letter-spacing: var(--track); line-height: 1.1; }
+		.ocs-side-price s { color: var(--text-muted); font-size: var(--fs-sm); }
+		.ocs-side-stock { font-size: var(--fs-xs); }
+		.ocs-side-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--sp-2); margin-block-start: var(--sp-2); }
+		.ocs-side-actions .btn-primary { border-radius: var(--r-pill); min-block-size: 3rem; font-weight: 600; }
+		.ocs-side-actions .btn-default { inline-size: 3rem; block-size: 3rem; padding: 0; border-radius: 50%; }
+		/* one pinned summary at a time */
+		.ocs-sticky-buy { display: none; }
+	}
 }

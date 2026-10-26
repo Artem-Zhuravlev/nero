@@ -4,6 +4,6 @@
   "spec": "SPEC-031", "tables": [],
   "settings": ["module_ocs_shell_status", "module_ocs_shell_mobile_bar", "module_ocs_shell_announcement_from", "module_ocs_shell_announcement_to",
     "module_ocs_shell_phones", "module_ocs_shell_telegram", "module_ocs_shell_viber", "module_ocs_shell_messenger",
-    "module_ocs_shell_social", "module_ocs_shell_apps", "module_ocs_shell_l"],
+    "module_ocs_shell_social", "module_ocs_shell_l"],
   "events": ["ocs_shell_header_before", "ocs_shell_footer_before"],
   "routes": ["extension/module/ocs_shell", "extension/ocs_shell/events"] }

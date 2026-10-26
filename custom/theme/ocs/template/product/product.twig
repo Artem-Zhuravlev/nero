@@ -148,6 +148,7 @@
                       </div>
           {% endif %} </div>
       </div>
+      <div class="ocs-pdp-body">
       <div class="ocs-pdp-sections">
         <section class="ocs-section" id="tab-description">
           <h2>{{ tab_description }}</h2>
@@ -256,6 +257,23 @@
           </form>
         </section>
         {% endif %}
+      </div>
+      <aside class="ocs-side-card" aria-label="{{ heading_title }}">
+        <div class="ocs-side-img">
+          {% if thumb %}<img src="{{ thumb }}" alt="" loading="lazy" />{% endif %}
+          <div class="ocs-slot ocs-slot-tl">{% for s in ocs_stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
+          <div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
+        </div>
+        {% if manufacturer %}<a class="ocs-side-brand" href="{{ manufacturers }}">{{ manufacturer }}</a>{% endif %}
+        <p class="ocs-side-title">{{ heading_title }}</p>
+        {% if price %}<p class="ocs-side-price">{% if special %}<s>{{ price }}</s> <strong>{{ special }}</strong>{% else %}<strong>{{ price }}</strong>{% endif %}</p>{% endif %}
+        {% if ocs_show_stock and ocs_stock %}<p class="ocs-side-stock"><span class="ocs-stock ocs-stock-{{ ocs_stock.state }}"><i class="ocs-dot" aria-hidden="true"></i>{{ ocs_stock.label }}</span></p>{% endif %}
+        <div class="ocs-side-actions">
+          <button type="button" class="btn btn-primary" data-ocs-buy>{% if ocs_preorder %}{{ ocs_preorder.text }}{% elseif ocs_subscribe %}{{ ocs_subscribe.text }}{% else %}{{ button_cart }}{% endif %}</button>
+          <button type="button" class="btn btn-default" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>
+          <button type="button" class="btn btn-default" title="{{ button_compare }}" aria-label="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
+        </div>
+      </aside>
       </div>
       {% for block in [{'id': 'ocs-accessories', 'title': ocs_px.text_accessories, 'items': ocs_px.accessories}, {'id': 'ocs-similar', 'title': ocs_px.text_similar, 'items': ocs_px.similar}] %}
       {% if block.items %}

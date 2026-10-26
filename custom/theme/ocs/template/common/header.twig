@@ -78,7 +78,7 @@
       <button type="button" class="ocs-util-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">{{ ocs_shell.t.ocs_contacts }} <svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
       <ul class="dropdown-menu">
         {% for phone in ocs_shell.phones %}<li><a href="{{ phone.href }}" class="ocs-phone"><svg class="ocs-i" aria-hidden="true"><use href="#i-phone"/></svg> {{ phone.text }}</a></li>{% endfor %}
-        {% for messenger in ocs_shell.messengers %}<li><a href="{{ messenger.href }}" class="ocs-msg ocs-msg-{{ messenger.key }}" target="_blank" rel="noopener">{{ messenger.name }}</a></li>{% endfor %}
+        {% for messenger in ocs_shell.messengers %}<li><a href="{{ messenger.href }}" class="ocs-msg ocs-msg-{{ messenger.key }}" target="_blank" rel="noopener noreferrer"><svg class="ocs-i" aria-hidden="true"><use href="#{{ messenger.icon }}"/></svg><span>{{ messenger.name }}</span></a></li>{% endfor %}
         {% if ocs_shell.hours %}<li class="ocs-hours-row">{{ ocs_shell.hours }}</li>{% endif %}
       </ul>
     </div>

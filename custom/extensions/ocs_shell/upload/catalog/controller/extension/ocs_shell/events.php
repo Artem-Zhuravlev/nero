@@ -61,11 +61,32 @@ class ControllerExtensionOcsShellEvents extends Controller {
 		$shell['compare'] = $this->url->link('product/compare');
 		$shell['compare_text'] = \Ocs\Shell::e(sprintf(isset($strings['ocs_compare']) ? $strings['ocs_compare'] : '%s', $compare));
 
+		// contacts of the theme settings (SPEC-047); the old module fields stay as a fallback until the theme ones are filled in
+		$contacts = \Ocs\Contacts::view($this->config->get('theme_ocs_contact'), $this->config->get('theme_ocs_contact_links'), $code, $this->config->get('config_language'));
+
+		if ($contacts['phones'] || $contacts['address'] || $contacts['hours'] || $contacts['links']) {
+			$shell['phones'] = $contacts['phones'];
+			$shell['hours'] = $contacts['hours'];
+			$shell['messengers'] = array_map(function ($m) {
+				return array('key' => $m['key'], 'name' => $m['title'], 'title' => $m['title'], 'icon' => $m['icon'], 'href' => $m['href']);
+			}, $contacts['messengers']);
+			$shell['contact_address'] = $contacts['address'];
+			$shell['contact_social'] = $contacts['social'];
+		} else {
+			$shell['contact_address'] = isset($l['address']) ? \Ocs\Shell::e($l['address']) : '';
+			$shell['contact_social'] = array();
+
+			foreach (\Ocs\Shell::parseLinks($this->config->get('module_ocs_shell_social')) as $link) {
+				if ($link['href'] !== '') {
+					$shell['contact_social'][] = array('icon' => 'i-globe', 'key' => 'site', 'kind' => 'social', 'title' => $link['text'], 'href' => $link['href']);
+				}
+			}
+		}
+
 		if ($footer) {
 			$shell['groups'] = \Ocs\Shell::parseGroups(isset($l['footer_groups']) ? $l['footer_groups'] : '');
-			$shell['address'] = isset($l['address']) ? \Ocs\Shell::e($l['address']) : '';
-			$shell['social'] = \Ocs\Shell::parseLinks($this->config->get('module_ocs_shell_social'));
-			$shell['apps'] = \Ocs\Shell::parseLinks($this->config->get('module_ocs_shell_apps'));
+			$shell['address'] = $shell['contact_address'];
+			$shell['social'] = $shell['contact_social'];
 			$shell['home'] = $this->url->link('common/home');
 			$shell['cart'] = $this->url->link('checkout/cart');
 		}

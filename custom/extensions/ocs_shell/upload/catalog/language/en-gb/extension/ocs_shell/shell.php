@@ -6,7 +6,6 @@ $_['ocs_close']      = 'Close';
 $_['ocs_hours']      = 'Call centre hours';
 $_['ocs_address']    = 'Address';
 $_['ocs_social']     = 'Social networks';
-$_['ocs_apps']       = 'Get the app';
 $_['ocs_contacts']   = 'Contacts';
 $_['ocs_tab_home']   = 'Home';
 $_['ocs_tab_catalog'] = 'Catalogue';

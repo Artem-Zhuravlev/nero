@@ -12,6 +12,7 @@ class ControllerExtensionThemeOcs extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('setting/setting');
+		$this->load->model('localisation/language');
 
 		$store_id = isset($this->request->get['store_id']) ? (int)$this->request->get['store_id'] : 0;
 		$token = 'user_token=' . $this->session->data['user_token'];
@@ -74,6 +75,22 @@ class ControllerExtensionThemeOcs extends Controller {
 			}
 		}
 
+		// contacts of the footer / header (SPEC-047): per language texts and one list of links
+		$data['languages'] = $this->model_localisation_language->getLanguages();
+		$data['contact_icons'] = array_keys(\Ocs\Contacts::$icons);
+
+		$contact = isset($this->request->post['theme_ocs_contact']) ? $this->request->post['theme_ocs_contact'] : (isset($setting_info['theme_ocs_contact']) ? $setting_info['theme_ocs_contact'] : array());
+		$links = isset($this->request->post['theme_ocs_contact_links']) ? $this->request->post['theme_ocs_contact_links'] : (isset($setting_info['theme_ocs_contact_links']) ? $setting_info['theme_ocs_contact_links'] : array());
+
+		$data['contact'] = array();
+
+		foreach ($data['languages'] as $language) {
+			foreach (array('address', 'hours', 'phones') as $field) {
+				$data['contact'][$language['code']][$field] = isset($contact[$language['code']][$field]) ? $contact[$language['code']][$field] : '';
+			}
+		}
+
+		$data['contact_links'] = is_array($links) ? array_values($links) : array();
 		$data['roles'] = $this->roles;
 		$data['version'] = '1.0.0';
 
@@ -120,6 +137,28 @@ class ControllerExtensionThemeOcs extends Controller {
 			if (empty($this->request->post[$w]) || empty($this->request->post[$h])) {
 				$this->error['image_' . $role] = $this->language->get('error_image');
 			}
+		}
+
+		if (!$this->error) {
+			$codes = array();
+
+			foreach ($this->model_localisation_language->getLanguages() as $language) {
+				$codes[] = $language['code'];
+			}
+
+			// only whitelisted icons and valid URLs reach the settings; texts are trimmed and cut (SPEC-047 REQ-SET-002)
+			$this->request->post['theme_ocs_contact_links'] = \Ocs\Contacts::sanitize(isset($this->request->post['theme_ocs_contact_links']) ? $this->request->post['theme_ocs_contact_links'] : array(), $codes);
+
+			$contact = array();
+
+			foreach ($codes as $code) {
+				foreach (array('address' => 255, 'hours' => 500, 'phones' => 500) as $field => $max) {
+					$value = isset($this->request->post['theme_ocs_contact'][$code][$field]) ? trim((string)$this->request->post['theme_ocs_contact'][$code][$field]) : '';
+					$contact[$code][$field] = function_exists('mb_substr') ? mb_substr($value, 0, $max, 'UTF-8') : substr($value, 0, $max);
+				}
+			}
+
+			$this->request->post['theme_ocs_contact'] = $contact;
 		}
 
 		return !$this->error;

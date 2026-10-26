@@ -44,3 +44,21 @@ $_['help_show_sku']                     = 'Shows the article number (model) on e
 $_['error_permission']                 = 'Warning: You do not have permission to modify the OCS theme!';
 $_['error_limit']                      = 'Value required!';
 $_['error_image']                      = 'Image dimensions required!';
+
+// Contacts (SPEC-047)
+$_['text_contacts'] = 'Contacts (footer and header)';
+$_['entry_address'] = 'Address';
+$_['entry_hours'] = 'Working hours';
+$_['entry_phones'] = 'Phones';
+$_['help_phones'] = 'One per line: number or "number | label". Numbers become tel: links.';
+$_['text_contact_links'] = 'Messengers and social networks';
+$_['help_contact_links'] = 'Shown in the footer (and messengers in the header). Choose an icon, a type and enter a URL (https://, tg://, viber://, mailto:, tel:).';
+$_['column_icon'] = 'Icon';
+$_['column_kind'] = 'Type';
+$_['column_title'] = 'Title (per language)';
+$_['column_url'] = 'URL';
+$_['column_sort'] = 'Sort';
+$_['text_kind_messenger'] = 'Messenger';
+$_['text_kind_social'] = 'Social network';
+$_['button_add'] = 'Add';
+$_['button_remove'] = 'Remove';
