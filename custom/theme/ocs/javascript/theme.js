@@ -119,7 +119,7 @@
 			overlay.className = 'ocs-modal ocs-modal-' + (opts.variant === 'side' ? 'side' : 'center');
 
 			var dialog = document.createElement('div');
-			dialog.className = 'ocs-modal-dialog';
+			dialog.className = 'ocs-modal-dialog' + (opts.className ? ' ' + opts.className : '');
 			dialog.setAttribute('role', 'dialog');
 			dialog.setAttribute('aria-modal', 'true');
 			dialog.setAttribute('tabindex', '-1');
@@ -1536,6 +1536,64 @@
 	}
 }(window, document));
 
+/* YouTube slides (SPEC-048 REQ-VID-002, 004): a poster button; the player (youtube-nocookie iframe) is created on the click only and removed when the slide is left. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+
+	function id(button) {
+		var v = button.getAttribute('data-ocs-video') || '';
+
+		return /^[A-Za-z0-9_-]{11}$/.test(v) ? v : '';
+	}
+
+	OCS.video = {
+		play: function (button) {
+			var v = id(button);
+
+			if (!v || button.classList.contains('is-playing')) {
+				return;
+			}
+
+			var frame = document.createElement('iframe');
+
+			frame.className = 'ocs-vid-frame';
+			frame.src = 'https://www.youtube-nocookie.com/embed/' + v + '?autoplay=1&rel=0';
+			frame.title = button.getAttribute('aria-label') || 'YouTube';
+			frame.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
+			frame.setAttribute('allowfullscreen', '');
+			frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
+			frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+			button.classList.add('is-playing');
+			button.appendChild(frame);
+		},
+
+		stop: function (root) {
+			var frames = (root || document).querySelectorAll('.ocs-vid.is-playing');
+
+			for (var i = 0; i < frames.length; i++) {
+				var f = frames[i].querySelector('iframe');
+
+				if (f) {
+					frames[i].removeChild(f);
+				}
+
+				frames[i].classList.remove('is-playing');
+			}
+		}
+	};
+
+	document.addEventListener('click', function (e) {
+		var b = e.target.closest ? e.target.closest('.ocs-vid[data-ocs-video]') : null;
+
+		if (b && !b.classList.contains('is-playing')) {
+			e.preventDefault();
+			OCS.video.play(b);
+		}
+	});
+}(window, document));
+
 /* Product gallery on two linked Swipers (SPEC-037 REQ-SWP-004): the main image swipes, the thumbnail strip follows and selects.
    The links keep the core hooks (.thumbnails > a.thumbnail), so the Magnific zoom popup of the product page still works. */
 (function (window, document) {
@@ -1557,6 +1615,10 @@
 			paginationClickable: true,
 			onSlideChangeStart: function (s) {
 				mark(s.activeIndex);
+
+				if (window.OCS && window.OCS.video) {
+					window.OCS.video.stop(mainEl);
+				}
 			}
 		});
 
@@ -1921,6 +1983,257 @@
 				}
 			}).observe(document.body, {childList: true, subtree: true});
 		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
+
+/* Product lightbox (SPEC-048 REQ-LBX-001..004): the gallery images open in a white dialog on OCS.modal: large image, arrows, counter, thumbnails,
+   the product price and a buy button that forwards to the page's own button. The last item is the video (poster, player on click).
+   Keyboard: arrows and Esc; touch: swipe. Without JS the image links open the big picture. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+	var t = {};
+
+	function node(tag, cls, html) {
+		var n = document.createElement(tag);
+
+		if (cls) {
+			n.className = cls;
+		}
+
+		if (html) {
+			n.innerHTML = html;
+		}
+
+		return n;
+	}
+
+	function label(text) {
+		return String(text || '').replace(/[&<>"]/g, function (c) {
+			return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+		});
+	}
+
+	function open(items, start) {
+		if (!items.length || !OCS.modal) {
+			return;
+		}
+
+		var index = Math.max(0, Math.min(start || 0, items.length - 1));
+		var root = node('div', 'ocs-lb');
+		var stage = node('div', 'ocs-lb-stage');
+		var slide = node('div', 'ocs-lb-slide');
+		var prev = node('button', 'ocs-lb-nav ocs-lb-prev', OCS.icon('chevron-left'));
+		var next = node('button', 'ocs-lb-nav ocs-lb-next', OCS.icon('chevron-right'));
+		var count = node('span', 'ocs-lb-count');
+		var strip = node('div', 'ocs-lb-thumbs');
+		var foot = node('div', 'ocs-lb-foot');
+		var thumbs = [];
+		var x0 = null;
+
+		prev.type = next.type = 'button';
+		prev.setAttribute('aria-label', t.prev || '');
+		next.setAttribute('aria-label', t.next || '');
+		count.setAttribute('aria-live', 'polite');
+		stage.appendChild(prev);
+		stage.appendChild(slide);
+		stage.appendChild(next);
+		stage.appendChild(count);
+		root.appendChild(stage);
+
+		items.forEach(function (item, i) {
+			var b = node('button', 'ocs-lb-thumb' + (item.type === 'video' ? ' is-video' : ''));
+
+			b.type = 'button';
+			b.setAttribute('aria-label', (item.type === 'video' ? t.video : item.alt) || String(i + 1));
+			b.innerHTML = '<img src="' + label(item.thumb) + '" alt="" loading="lazy" />' + (item.type === 'video' ? '<span class="ocs-vid-play">' + OCS.icon('play') + '</span>' : '');
+			b.addEventListener('click', function () {
+				show(i);
+			});
+			strip.appendChild(b);
+			thumbs.push(b);
+		});
+
+		foot.appendChild(strip);
+
+		// summary: the price and the page's buy button (the label and the "in cart" state are copied)
+		var source = document.querySelector('.ocs-side-card [data-ocs-buy]') || document.querySelector('[data-ocs-buy]');
+		var price = document.querySelector('.ocs-side-price');
+
+		if (source) {
+			var buy = node('div', 'ocs-lb-buy');
+
+			if (price) {
+				buy.appendChild(node('p', 'ocs-lb-price', price.innerHTML));
+			}
+
+			var btn = node('button', 'btn btn-primary' + (source.classList.contains('is-in-cart') ? ' is-in-cart' : ''), source.innerHTML);
+
+			btn.type = 'button';
+			btn.setAttribute('data-ocs-buy-lb', '');
+			btn.addEventListener('click', function () {
+				if (btn.classList.contains('is-in-cart')) {
+					return; // the in-cart handler of OCS.card opens the cart
+				}
+
+				OCS.modal.close();
+				source.click();
+			});
+			buy.appendChild(btn);
+			foot.appendChild(buy);
+		}
+
+		root.appendChild(foot);
+
+		function preload(i) {
+			if (items[i] && items[i].type === 'img') {
+				new window.Image().src = items[i].src;
+			}
+		}
+
+		function show(i) {
+			index = (i + items.length) % items.length;
+
+			var item = items[index];
+
+			OCS.video.stop(slide);
+			slide.innerHTML = '';
+
+			if (item.type === 'video') {
+				var v = node('button', 'ocs-vid', '<img src="' + label(item.poster) + '" alt="" /><span class="ocs-vid-play">' + OCS.icon('play') + '</span>');
+
+				v.type = 'button';
+				v.setAttribute('data-ocs-video', item.id);
+				v.setAttribute('aria-label', t.play || t.video || '');
+				slide.appendChild(v);
+			} else {
+				var img = node('img', 'ocs-lb-img');
+
+				img.src = item.src;
+				img.alt = item.alt || '';
+				slide.appendChild(img);
+			}
+
+			thumbs.forEach(function (b, n) {
+				b.classList.toggle('is-current', n === index);
+
+				if (n === index) {
+					b.setAttribute('aria-current', 'true');
+
+					if (b.scrollIntoView) {
+						b.scrollIntoView({block: 'nearest', inline: 'nearest'});
+					}
+				} else {
+					b.removeAttribute('aria-current');
+				}
+			});
+
+			count.textContent = (t.counter || '%s / %s').replace('%s', String(index + 1)).replace('%s', String(items.length));
+			preload(index + 1);
+			preload(index - 1);
+		}
+
+		prev.addEventListener('click', function () {
+			show(index - 1);
+		});
+		next.addEventListener('click', function () {
+			show(index + 1);
+		});
+		prev.hidden = next.hidden = count.hidden = items.length < 2;
+
+		function onKey(e) {
+			if (e.key === 'ArrowLeft') {
+				show(index - 1);
+			} else if (e.key === 'ArrowRight') {
+				show(index + 1);
+			}
+		}
+
+		stage.addEventListener('pointerdown', function (e) {
+			x0 = e.clientX;
+		});
+		stage.addEventListener('pointerup', function (e) {
+			if (x0 !== null && Math.abs(e.clientX - x0) > 50 && items.length > 1) {
+				show(index + (e.clientX < x0 ? 1 : -1));
+			}
+
+			x0 = null;
+		});
+
+		document.addEventListener('keydown', onKey);
+
+		OCS.modal.open({content: root, className: 'ocs-lb-dialog', closeLabel: t.close || '', onClose: function () {
+			document.removeEventListener('keydown', onKey);
+			OCS.video.stop(slide);
+		}});
+		root.parentNode.setAttribute('aria-label', t.gallery || '');
+		show(index);
+	}
+
+	OCS.lightbox = {open: open};
+
+	function boot() {
+		var box = document.querySelector('[data-ocs-gallery]');
+
+		if (!box) {
+			return;
+		}
+
+		try {
+			t = JSON.parse(box.getAttribute('data-ocs-lb') || '{}');
+		} catch (e) {
+			t = {};
+		}
+
+		function collect() {
+			var items = [];
+
+			[].forEach.call(box.querySelectorAll('.ocs-gal-main .swiper-slide'), function (s, n) {
+				var a = s.querySelector('a.thumbnail');
+				var v = s.querySelector('.ocs-vid[data-ocs-video]');
+				var th = box.querySelectorAll('.ocs-gal-thumbs .swiper-slide img')[n];
+
+				if (a) {
+					items.push({type: 'img', src: a.getAttribute('href'), thumb: th ? th.getAttribute('src') : a.querySelector('img').getAttribute('src'), alt: a.getAttribute('title') || ''});
+				} else if (v) {
+					var img = v.querySelector('img');
+
+					items.push({type: 'video', id: v.getAttribute('data-ocs-video'), poster: img ? img.getAttribute('src') : '', thumb: img ? img.getAttribute('src') : ''});
+				}
+			});
+
+			return items;
+		}
+
+		// capture phase: runs before the Magnific handler the core page may have bound to the same links
+		box.addEventListener('click', function (e) {
+			var a = e.target.closest ? e.target.closest('.ocs-gal-main a.thumbnail') : null;
+
+			if (!a) {
+				return;
+			}
+
+			e.preventDefault();
+			e.stopPropagation();
+
+			var items = collect();
+			var n = 0;
+
+			[].forEach.call(box.querySelectorAll('.ocs-gal-main .swiper-slide'), function (s, i) {
+				if (s.contains(a)) {
+					n = i;
+				}
+			});
+
+			open(items, n);
+		}, true);
 	}
 
 	if (document.readyState === 'loading') {

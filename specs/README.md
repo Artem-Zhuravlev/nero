@@ -114,6 +114,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-045 | [SEO Heading Markup and Product Page Info Block](seo-markup-pdp/spec.md) | `implemented` |
 | SPEC-046 | [Modern Forms and Product Page Sections Instead of Tabs](forms-product-sections/spec.md) | `implemented` |
 | SPEC-047 | [Sticky Product Card, Modern Footer, Contacts and Social Settings](footer-sticky-card/spec.md) | `implemented` |
+| SPEC-048 | [Product Gallery Lightbox, YouTube Video, Store-wide Info Blocks](gallery-video-infoblocks/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

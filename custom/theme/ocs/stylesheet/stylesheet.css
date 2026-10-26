@@ -63,6 +63,8 @@
 	--r-lg: 18px;
 	--r-pill: 980px;
 	--shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+	--scrim: #000000;
+	--on-scrim: #ffffff;
 	--t: 200ms ease;
 	--gap-icon: 0.5rem;   /* icon to label, side by side: never below 6px (SPEC-043 REQ-BTN-002) */
 	--gap-stack: 0.5rem;  /* icon over label */
@@ -1769,4 +1771,71 @@ li .ocs-stock { font-size: inherit; }
 		/* one pinned summary at a time */
 		.ocs-sticky-buy { display: none; }
 	}
+}
+
+/* ==== SPEC-048: lightbox, video slide and badges, info blocks ==== */
+@layer overrides {
+	/* video poster + play button (page gallery, thumbnails, lightbox) */
+	.ocs-vid { position: relative; display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; padding: 0; border: 0; border-radius: var(--r-lg); background: var(--scrim); overflow: hidden; cursor: pointer; }
+	.ocs-vid img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; opacity: 0.9; }
+	.ocs-vid-frame { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; border: 0; }
+	.ocs-vid.is-playing { cursor: default; }
+	.ocs-vid.is-playing > .ocs-vid-play { display: none; }
+	.ocs-vid-play { position: relative; display: grid; place-items: center; inline-size: 3.5rem; block-size: 3.5rem; border-radius: 50%; background: color-mix(in srgb, var(--scrim) 62%, transparent); color: var(--on-scrim); pointer-events: none; }
+	.ocs-vid-play .ocs-i { inline-size: 1.5rem; block-size: 1.5rem; fill: currentColor; stroke: currentColor; stroke-linejoin: round; }
+	.ocs-gal-vthumb { position: relative; display: grid; place-items: center; }
+	.ocs-gal-vthumb img { position: absolute; inset: 0; }
+	.ocs-gal-vthumb .ocs-vid-play { inline-size: 1.75rem; block-size: 1.75rem; }
+	.ocs-gal-vthumb .ocs-vid-play .ocs-i { inline-size: 0.9rem; block-size: 0.9rem; }
+	.ocs-gal-main .ocs-gal-video { display: grid; align-items: center; }
+	.ocs-gal-main a.thumbnail { cursor: zoom-in; }
+
+	/* video icon on the product cards */
+	.ocs-vid-badge { position: absolute; inset-block-end: var(--sp-3); inset-inline-start: var(--sp-3); z-index: var(--z-raised); display: grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 50%; background: color-mix(in srgb, var(--scrim) 62%, transparent); color: var(--on-scrim); }
+	.ocs-vid-badge .ocs-i { inline-size: 0.85rem; block-size: 0.85rem; fill: currentColor; stroke: currentColor; stroke-linejoin: round; }
+
+	/* lightbox */
+	.ocs-modal-center .ocs-modal-dialog.ocs-lb-dialog { max-inline-size: min(72rem, 96vw); padding: var(--sp-3); background: var(--bg); border-radius: var(--r-lg); }
+	.ocs-lb-dialog .ocs-modal-body { padding: 0; }
+	.ocs-lb { display: grid; gap: var(--sp-3); }
+	.ocs-lb-stage { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--sp-2); min-block-size: min(60vh, 32rem); }
+	.ocs-lb-slide { position: relative; min-inline-size: 0; block-size: min(60vh, 32rem); }
+	.ocs-lb-img { display: block; inline-size: 100%; block-size: 100%; object-fit: contain; user-select: none; }
+	.ocs-lb-slide .ocs-vid { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; aspect-ratio: auto; border-radius: var(--r-md); }
+	.ocs-lb-nav { display: grid; place-items: center; inline-size: 3rem; block-size: 3rem; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--accent); cursor: pointer; transition: background-color var(--t); }
+	.ocs-lb-nav:hover { background: var(--bg-alt); }
+	.ocs-lb-nav .ocs-i { inline-size: 2rem; block-size: 2rem; }
+	.ocs-lb-nav[hidden], .ocs-lb-count[hidden] { display: none; }
+	.ocs-lb-count { position: absolute; inset-block-end: 0; inset-inline-start: var(--sp-2); font-size: var(--fs-xs); color: var(--text-muted); }
+	.ocs-lb-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3) var(--sp-5); }
+	.ocs-lb-thumbs { display: flex; gap: var(--sp-2); flex: 1 1 18rem; min-inline-size: 0; overflow-x: auto; padding-block: var(--sp-1); scrollbar-width: thin; }
+	.ocs-lb-thumb { position: relative; flex: none; display: grid; place-items: center; inline-size: 3.75rem; block-size: 3.75rem; padding: 0; border: 2px solid transparent; border-radius: var(--r-sm); background: var(--bg-alt); overflow: hidden; cursor: pointer; }
+	.ocs-lb-thumb img { inline-size: 100%; block-size: 100%; object-fit: contain; }
+	.ocs-lb-thumb.is-video img { object-fit: cover; }
+	.ocs-lb-thumb .ocs-vid-play { position: absolute; inline-size: 1.5rem; block-size: 1.5rem; }
+	.ocs-lb-thumb .ocs-vid-play .ocs-i { inline-size: 0.75rem; block-size: 0.75rem; }
+	.ocs-lb-thumb.is-current { border-color: var(--accent); }
+	.ocs-lb-buy { display: flex; align-items: center; gap: var(--sp-4); flex: none; }
+	.ocs-lb-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-2); margin: 0; }
+	.ocs-lb-price strong { font-size: var(--fs-xl); font-weight: 800; letter-spacing: var(--track); }
+	.ocs-lb-price s { color: var(--text-muted); font-size: var(--fs-sm); }
+	.ocs-lb-buy .btn { min-block-size: 3rem; min-inline-size: 9rem; border-radius: var(--r-pill); font-weight: 600; }
+	@media (max-width: 767.98px) {
+		.ocs-lb-stage { grid-template-columns: minmax(0, 1fr); min-block-size: 0; }
+		.ocs-lb-slide { block-size: 52vh; }
+		.ocs-lb-nav { position: absolute; inset-block-start: 50%; translate: 0 -50%; z-index: var(--z-raised); background: color-mix(in srgb, var(--bg) 80%, transparent); }
+		.ocs-lb-prev { inset-inline-start: 0; }
+		.ocs-lb-next { inset-inline-end: 0; }
+		.ocs-lb-buy { inline-size: 100%; justify-content: space-between; }
+	}
+
+	/* store-wide info blocks under the buy form */
+	.ocs-info-blocks { display: grid; gap: var(--sp-2); }
+	.ocs-info-card { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); border: 1px solid color-mix(in srgb, var(--border) 60%, transparent); border-radius: var(--r-md); background: var(--bg-alt); }
+	.ocs-info-card .ocs-i { inline-size: 1.5rem; block-size: 1.5rem; color: var(--accent); margin-block-start: 0.1rem; }
+	.ocs-info-card p { margin: 0; }
+	.ocs-info-title { font-size: var(--fs-sm); font-weight: 700; color: var(--text); }
+	.ocs-info-title a { color: inherit; }
+	.ocs-info-title a:hover { color: var(--accent); }
+	.ocs-info-text { margin-block-start: var(--sp-1); font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.45; }
 }

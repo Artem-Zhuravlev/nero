@@ -6,6 +6,7 @@
       <div class="ocs-slot ocs-slot-tl" data-product-id="{{ product.product_id }}">{% for s in product.stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-tr" data-product-id="{{ product.product_id }}">{% for s in product.stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl" data-product-id="{{ product.product_id }}">{% for s in product.stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
 
       {% if product.discount_pct and not product.stickers %}<span class="ocs-badge ocs-badge-discount">-{{ product.discount_pct }}%</span>{% endif %}
+      {% if product.has_video %}<span class="ocs-vid-badge" role="img" aria-label="{{ text_video }}" title="{{ text_video }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-play"/></svg></span>{% endif %}
       {% if product.model %}<span class="ocs-code">{{ product.model }}</span>{% endif %}
       <div class="ocs-card-tools">
         <button type="button" class="ocs-tool" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>

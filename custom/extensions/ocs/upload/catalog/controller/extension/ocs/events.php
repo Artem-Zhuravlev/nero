@@ -27,6 +27,16 @@ class ControllerExtensionOcsEvents extends Controller {
 			$data['ocs_h1'] = $this->config->get('config_meta_title');
 		}
 
+		// store-wide info blocks of the product page (SPEC-048 REQ-INF-002)
+		if ($route === 'product/product') {
+			$this->load->model('setting/setting');
+
+		// config_language is the visitor's language at run time; the store default is read from the settings table (fallback for untranslated contacts)
+		$default = (string)$this->model_setting_setting->getSettingValue('config_language', (int)$this->config->get('config_store_id'));
+
+			$data['ocs_info_blocks'] = \Ocs\InfoBlocks::view($this->config->get('theme_ocs_info_blocks'), $this->config->get('config_language'), $default);
+		}
+
 		try {
 			$data = \Ocs\Display::apply($data, \Ocs\Display::on($this->config->get('theme_ocs_show_stock')), \Ocs\Display::on($this->config->get('theme_ocs_show_sku')));
 		} catch (\Exception $e) {

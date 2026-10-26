@@ -61,8 +61,13 @@ class ControllerExtensionOcsShellEvents extends Controller {
 		$shell['compare'] = $this->url->link('product/compare');
 		$shell['compare_text'] = \Ocs\Shell::e(sprintf(isset($strings['ocs_compare']) ? $strings['ocs_compare'] : '%s', $compare));
 
+		$this->load->model('setting/setting');
+
+		// config_language is the visitor's language at run time; the store default is read from the settings table (fallback for untranslated contacts)
+		$default = (string)$this->model_setting_setting->getSettingValue('config_language', (int)$this->config->get('config_store_id'));
+
 		// contacts of the theme settings (SPEC-047); the old module fields stay as a fallback until the theme ones are filled in
-		$contacts = \Ocs\Contacts::view($this->config->get('theme_ocs_contact'), $this->config->get('theme_ocs_contact_links'), $code, $this->config->get('config_language'));
+		$contacts = \Ocs\Contacts::view($this->config->get('theme_ocs_contact'), $this->config->get('theme_ocs_contact_links'), $code, $default);
 
 		if ($contacts['phones'] || $contacts['address'] || $contacts['hours'] || $contacts['links']) {
 			$shell['phones'] = $contacts['phones'];

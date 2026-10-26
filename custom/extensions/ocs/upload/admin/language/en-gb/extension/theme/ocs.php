@@ -62,3 +62,8 @@ $_['text_kind_messenger'] = 'Messenger';
 $_['text_kind_social'] = 'Social network';
 $_['button_add'] = 'Add';
 $_['button_remove'] = 'Remove';
+
+// Info blocks (SPEC-048)
+$_['text_info_blocks'] = 'Info blocks of the product page';
+$_['help_info_blocks'] = 'Shown once for every product under the buy form (delivery, returns, payment ...). A row needs a title or a text; the link is optional. Up to 10 blocks.';
+$_['column_text'] = 'Text (per language)';

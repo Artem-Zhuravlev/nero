@@ -132,4 +132,33 @@ class ModelExtensionOcsProductExtrasExtras extends Model {
 
 		return $out;
 	}
+
+	/**
+	 * @return string YouTube id of the product or ''
+	 */
+	public function getVideoId($product_id) {
+		$row = $this->db->query("SELECT video_id FROM `" . DB_PREFIX . "ocs_product_video` WHERE product_id = '" . (int)$product_id . "'")->row;
+
+		return $row && \Ocs\Video::valid($row['video_id']) ? $row['video_id'] : '';
+	}
+
+	/**
+	 * @param array $ids product ids
+	 * @return array ids of the products that have a video (one query)
+	 */
+	public function getVideoProductIds($ids) {
+		$ids = array_values(array_filter(array_map('intval', $ids)));
+
+		if (!$ids) {
+			return array();
+		}
+
+		$out = array();
+
+		foreach ($this->db->query("SELECT product_id FROM `" . DB_PREFIX . "ocs_product_video` WHERE product_id IN (" . implode(',', $ids) . ")")->rows as $row) {
+			$out[] = (int)$row['product_id'];
+		}
+
+		return $out;
+	}
 }

@@ -91,6 +91,12 @@ class ControllerExtensionThemeOcs extends Controller {
 		}
 
 		$data['contact_links'] = is_array($links) ? array_values($links) : array();
+
+		// store-wide info blocks of the product page (SPEC-048)
+		$blocks = isset($this->request->post['theme_ocs_info_blocks']) ? $this->request->post['theme_ocs_info_blocks'] : (isset($setting_info['theme_ocs_info_blocks']) ? $setting_info['theme_ocs_info_blocks'] : array());
+
+		$data['info_blocks'] = is_array($blocks) ? array_values($blocks) : array();
+		$data['info_icons'] = array_keys(\Ocs\InfoBlocks::$icons);
 		$data['roles'] = $this->roles;
 		$data['version'] = '1.0.0';
 
@@ -159,6 +165,8 @@ class ControllerExtensionThemeOcs extends Controller {
 			}
 
 			$this->request->post['theme_ocs_contact'] = $contact;
+
+			$this->request->post['theme_ocs_info_blocks'] = \Ocs\InfoBlocks::sanitize(isset($this->request->post['theme_ocs_info_blocks']) ? $this->request->post['theme_ocs_info_blocks'] : array(), $codes);
 		}
 
 		return !$this->error;

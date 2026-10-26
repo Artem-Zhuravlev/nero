@@ -56,7 +56,25 @@ class ModelExtensionOcsProductExtrasExtras extends Model {
 		}
 	}
 
+	public function getVideoId($product_id) {
+		$row = $this->db->query("SELECT video_id FROM `" . DB_PREFIX . "ocs_product_video` WHERE product_id = '" . (int)$product_id . "'")->row;
+
+		return $row ? $row['video_id'] : '';
+	}
+
+	/**
+	 * Stores the YouTube id of a product ('' removes it). The caller passes an id validated by Ocs\Video::parse().
+	 */
+	public function setVideo($product_id, $video_id) {
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "ocs_product_video` WHERE product_id = '" . (int)$product_id . "'");
+
+		if (\Ocs\Video::valid($video_id)) {
+			$this->db->query("INSERT INTO `" . DB_PREFIX . "ocs_product_video` SET product_id = '" . (int)$product_id . "', video_id = '" . $this->db->escape($video_id) . "'");
+		}
+	}
+
 	public function deleteProduct($product_id) {
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "ocs_product_video` WHERE product_id = '" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "ocs_product_accessory` WHERE product_id = '" . (int)$product_id . "' OR accessory_id = '" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "ocs_question` WHERE product_id = '" . (int)$product_id . "'");
 	}

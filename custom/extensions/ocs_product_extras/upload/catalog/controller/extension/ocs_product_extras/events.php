@@ -3,6 +3,36 @@
 // The handler never throws to the customer (REQ-EXT-062).
 
 class ControllerExtensionOcsProductExtrasEvents extends Controller {
+	/**
+	 * Every storefront view: product rows (listings, modules, carousels) get has_video with one query per view (SPEC-048 REQ-VID-003).
+	 */
+	public function markVideo(&$route, &$data) {
+		if (!is_array($data) || $this->config->get('config_theme') != 'ocs' || !$this->config->get('module_ocs_product_extras_status')) {
+			return;
+		}
+
+		try {
+			$ids = \Ocs\Video::rowIds($data);
+
+			if (!$ids) {
+				return;
+			}
+
+			$this->load->model('extension/ocs_product_extras/extras');
+
+			$with = $this->model_extension_ocs_product_extras_extras->getVideoProductIds($ids);
+
+			if ($with) {
+				$this->load->language('extension/module/ocs_product_extras');
+
+				$data['text_video'] = $this->language->get('text_video');
+				$data = \Ocs\Video::mark($data, $with);
+			}
+		} catch (\Exception $e) {
+			$this->log->write('[ocs_product_extras] ' . $e->getMessage());
+		}
+	}
+
 	public function beforeProduct(&$route, &$data) {
 		if (!is_array($data) || empty($data['product_id']) || !$this->config->get('module_ocs_product_extras_status') || $this->config->get('config_theme') != 'ocs') {
 			return;
@@ -163,6 +193,26 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 					'thumb' => $this->model_tool_image->resize($path, $aw, $ah)
 				);
 			}
+
+			// REQ-VID-002: the video is the last item of the gallery; the player loads only after a click
+			$video = $model->getVideoId($product_id);
+
+			$x['video'] = $video === '' ? false : array(
+				'id'     => $video,
+				'poster' => \Ocs\Video::poster($video),
+				'embed'  => \Ocs\Video::embed($video),
+				'label'  => $this->language->get('text_video')
+			);
+
+			$x['lb'] = htmlspecialchars(json_encode(array(
+				'prev'    => $this->language->get('text_prev'),
+				'next'    => $this->language->get('text_next'),
+				'close'   => $this->language->get('text_lb_close'),
+				'counter' => $this->language->get('text_lb_counter'),
+				'gallery' => $this->language->get('text_lb_gallery'),
+				'play'    => $this->language->get('text_lb_play'),
+				'video'   => $this->language->get('text_video')
+			)), ENT_QUOTES, 'UTF-8');
 
 			$x['main_w'] = $mw;
 			$x['main_h'] = $mh;

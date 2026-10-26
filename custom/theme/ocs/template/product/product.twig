@@ -31,19 +31,21 @@
           <div class="ocs-gallery"><div class="ocs-slot ocs-slot-tl">{% for s in ocs_stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl">{% for s in ocs_stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
 
           {% if ocs_px.gallery %}
-          <div class="ocs-gal" data-ocs-gallery="1">
+          <div class="ocs-gal" data-ocs-gallery="1" data-ocs-lb="{{ ocs_px.lb }}">
             <div class="ocs-gal-main swiper-container">
               <ul class="thumbnails swiper-wrapper">
                 {% for g in ocs_px.gallery %}
                 <li class="swiper-slide"><a class="thumbnail" href="{{ g.popup }}" title="{{ heading_title }}"><img src="{{ g.main }}" title="{{ heading_title }}" alt="{{ heading_title }}" width="{{ ocs_px.main_w }}" height="{{ ocs_px.main_h }}"{% if loop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %} /></a></li>
                 {% endfor %}
+                {% if ocs_px.video %}<li class="swiper-slide ocs-gal-video"><button type="button" class="ocs-vid" data-ocs-video="{{ ocs_px.video.id }}" data-embed="{{ ocs_px.video.embed }}" aria-label="{{ ocs_px.video.label }}"><img src="{{ ocs_px.video.poster }}" alt="" loading="lazy" /><span class="ocs-vid-play"><svg class="ocs-i" aria-hidden="true"><use href="#i-play"/></svg></span></button></li>{% endif %}
               </ul>
-              {% if ocs_px.gallery|length > 1 %}<div class="ocs-gal-dots swiper-pagination"></div>{% endif %}
+              {% if ocs_px.gallery|length + (ocs_px.video ? 1 : 0) > 1 %}<div class="ocs-gal-dots swiper-pagination"></div>{% endif %}
             </div>
-            {% if ocs_px.gallery|length > 1 %}
+            {% if ocs_px.gallery|length + (ocs_px.video ? 1 : 0) > 1 %}
             <div class="ocs-gal-thumbs swiper-container">
               <div class="swiper-wrapper">
                 {% for g in ocs_px.gallery %}<div class="swiper-slide"><img src="{{ g.thumb }}" alt="" loading="lazy" /></div>{% endfor %}
+                {% if ocs_px.video %}<div class="swiper-slide ocs-gal-vthumb"><img src="{{ ocs_px.video.poster }}" alt="{{ ocs_px.video.label }}" loading="lazy" /><span class="ocs-vid-play"><svg class="ocs-i" aria-hidden="true"><use href="#i-play"/></svg></span></div>{% endif %}
               </div>
             </div>
             {% endif %}
@@ -141,6 +143,19 @@
           <div id="ocs-delivery-wrap">{{ ocs_city_block }}</div>
           {{ ocs_credit_block }}
           {{ ocs_tradein_banner }}
+          {% if ocs_info_blocks %}
+          <div class="ocs-info-blocks">
+            {% for b in ocs_info_blocks %}
+            <div class="ocs-info-card">
+              <svg class="ocs-i" aria-hidden="true"><use href="#{{ b.icon }}"/></svg>
+              <div>
+                {% if b.title %}<p class="ocs-info-title">{% if b.href %}<a href="{{ b.href }}">{{ b.title }}</a>{% else %}{{ b.title }}{% endif %}</p>{% endif %}
+                {% if b.text %}<p class="ocs-info-text">{{ b.text }}</p>{% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
           {% if review_status %}
           <div class="rating">
             <p>{% include 'ocs/template/ocs/rating.twig' with {'value': rating} only %} <a href="#tab-review">{{ reviews }}</a> / <a href="#form-review">{{ text_write }}</a></p>
@@ -304,7 +319,7 @@
         {% endif %}
         <div class="{{ class }}">
           <div class="product-thumb transition">
-            <div class="image"><a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
+            <div class="image">{% if product.has_video %}<span class="ocs-vid-badge" role="img" aria-label="{{ text_video }}" title="{{ text_video }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-play"/></svg></span>{% endif %}<a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
             <div class="caption">
               <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
               <p>{{ product.description }}</p>
@@ -529,13 +544,16 @@ $('#button-review').on('click', function() {
 });
 
 $(document).ready(function() {
-	$('.thumbnails').magnificPopup({
-		type:'image',
-		delegate: 'a',
-		gallery: {
-			enabled: true
-		}
-	});
+	// the gallery opens the theme lightbox (theme.js, SPEC-048); only the markup without the swipeable gallery keeps the core popup
+	if (!$('[data-ocs-gallery]').length) {
+		$('.thumbnails').magnificPopup({
+			type:'image',
+			delegate: 'a',
+			gallery: {
+				enabled: true
+			}
+		});
+	}
 });
 //--></script> 
 {{ footer }} 

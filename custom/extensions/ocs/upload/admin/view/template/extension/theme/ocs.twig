@@ -203,6 +203,64 @@
 //--></script>
           </fieldset>
           <fieldset>
+            <legend>{{ text_info_blocks }}</legend>
+            <p class="help-block">{{ help_info_blocks }}</p>
+            <div class="table-responsive">
+              <table class="table table-bordered" id="info-blocks">
+                <thead><tr><td>{{ column_icon }}</td><td>{{ column_title }}</td><td>{{ column_text }}</td><td>{{ column_url }}</td><td>{{ column_sort }}</td><td></td></tr></thead>
+                <tbody>
+                {% for block in info_blocks %}
+                <tr>
+                  <td><select name="theme_ocs_info_blocks[{{ loop.index0 }}][icon]" class="form-control">{% for icon in info_icons %}<option value="{{ icon }}"{% if block.icon == icon %} selected="selected"{% endif %}>{{ icon|capitalize }}</option>{% endfor %}</select></td>
+                  <td>{% for language in languages %}<input type="text" name="theme_ocs_info_blocks[{{ loop.index0 }}][title][{{ language.code }}]" value="{{ block.title[language.code] }}" maxlength="80" placeholder="{{ language.name }}" class="form-control" />{% endfor %}</td>
+                  <td>{% for language in languages %}<textarea name="theme_ocs_info_blocks[{{ loop.index0 }}][text][{{ language.code }}]" rows="2" maxlength="500" placeholder="{{ language.name }}" class="form-control">{{ block.text[language.code] }}</textarea>{% endfor %}</td>
+                  <td><input type="text" name="theme_ocs_info_blocks[{{ loop.index0 }}][url]" value="{{ block.url }}" maxlength="500" placeholder="https://" class="form-control" /></td>
+                  <td><input type="text" name="theme_ocs_info_blocks[{{ loop.index0 }}][sort]" value="{{ block.sort }}" class="form-control" style="min-width: 70px" /></td>
+                  <td class="text-right"><button type="button" class="btn btn-danger" data-ocs-remove title="{{ button_remove }}"><i class="fa fa-minus-circle"></i></button></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot><tr><td colspan="6" class="text-right"><button type="button" id="info-block-add" class="btn btn-primary" title="{{ button_add }}"><i class="fa fa-plus-circle"></i></button></td></tr></tfoot>
+              </table>
+            </div>
+            <script type="text/template" id="info-block-template">
+              <tr>
+                  <td><select name="theme_ocs_info_blocks[__N__][icon]" class="form-control">{% for icon in info_icons %}<option value="{{ icon }}"{% if x.icon == icon %} selected="selected"{% endif %}>{{ icon|capitalize }}</option>{% endfor %}</select></td>
+                  <td>{% for language in languages %}<input type="text" name="theme_ocs_info_blocks[__N__][title][{{ language.code }}]" value="{{ x.title[language.code] }}" maxlength="80" placeholder="{{ language.name }}" class="form-control" />{% endfor %}</td>
+                  <td>{% for language in languages %}<textarea name="theme_ocs_info_blocks[__N__][text][{{ language.code }}]" rows="2" maxlength="500" placeholder="{{ language.name }}" class="form-control">{{ x.text[language.code] }}</textarea>{% endfor %}</td>
+                  <td><input type="text" name="theme_ocs_info_blocks[__N__][url]" value="{{ x.url }}" maxlength="500" placeholder="https://" class="form-control" /></td>
+                  <td><input type="text" name="theme_ocs_info_blocks[__N__][sort]" value="{{ x.sort }}" class="form-control" style="min-width: 70px" /></td>
+                  <td class="text-right"><button type="button" class="btn btn-danger" data-ocs-remove title="{{ button_remove }}"><i class="fa fa-minus-circle"></i></button></td>
+                </tr>
+            </script>
+            <script type="text/javascript"><!--
+(function () {
+  var body = document.querySelector('#info-blocks tbody');
+  var tpl = document.getElementById('info-block-template');
+  var next = body.children.length;
+
+  document.getElementById('info-block-add').addEventListener('click', function () {
+    var holder = document.createElement('tbody');
+
+    if (body.children.length >= 10) {
+      return;
+    }
+
+    holder.innerHTML = tpl.innerHTML.replace(/__N__/g, String(next++));
+    body.appendChild(holder.firstElementChild);
+  });
+
+  body.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-ocs-remove]');
+
+    if (btn) {
+      body.removeChild(btn.closest('tr'));
+    }
+  });
+}());
+//--></script>
+          </fieldset>
+          <fieldset>
             <legend>{{ text_image }}</legend>
             {% for role in roles %}
             <div class="form-group required">

@@ -22,6 +22,19 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 				$ids = \Ocs\ProductExtras::ids($this->request->post['ocs_accessory_ids']);
 			}
 
+			$video = $product_id ? $model->getVideoId($product_id) : '';
+
+			if (isset($this->request->post['ocs_video'])) {
+				$video = (string)$this->request->post['ocs_video'];
+			}
+
+			$video_error = '';
+
+			if (isset($this->session->data['ocs_video_error'])) {
+				$video_error = isset($strings['ocs_error_video']) ? $strings['ocs_error_video'] : '';
+				unset($this->session->data['ocs_video_error']);
+			}
+
 			$title = isset($strings['ocs_tab_title']) ? $strings['ocs_tab_title'] : 'Accessories';
 
 			$accessories = array();
@@ -35,7 +48,11 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 				'ids'            => implode(', ', $ids),
 				'accessories'    => $accessories,
 				'ocs_text_help'  => isset($strings['ocs_text_help']) ? $strings['ocs_text_help'] : '',
-				'ocs_entry_ids'  => isset($strings['ocs_entry_ids']) ? $strings['ocs_entry_ids'] : ''
+				'ocs_entry_ids'  => isset($strings['ocs_entry_ids']) ? $strings['ocs_entry_ids'] : '',
+				'video'          => $video,
+				'video_error'    => $video_error,
+				'ocs_entry_video' => isset($strings['ocs_entry_video']) ? $strings['ocs_entry_video'] : '',
+				'ocs_help_video' => isset($strings['ocs_help_video']) ? $strings['ocs_help_video'] : ''
 			));
 		} catch (\Exception $e) {
 			$this->log->write('[ocs_product_extras] ' . $e->getMessage());
@@ -77,6 +94,16 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 			$this->load->model('extension/ocs_product_extras/extras');
 
 			$this->model_extension_ocs_product_extras_extras->setAccessories($product_id, \Ocs\ProductExtras::ids(isset($this->request->post['ocs_accessory_ids']) ? $this->request->post['ocs_accessory_ids'] : ''));
+
+			// SPEC-048 REQ-VID-001: a YouTube URL or id; anything else is not stored and the form reports it on the next load
+			$raw = isset($this->request->post['ocs_video']) ? trim((string)$this->request->post['ocs_video']) : '';
+			$video = \Ocs\Video::parse($raw);
+
+			if ($raw === '' || $video !== '') {
+				$this->model_extension_ocs_product_extras_extras->setVideo($product_id, $video);
+			} else {
+				$this->session->data['ocs_video_error'] = 1;
+			}
 		} catch (\Exception $e) {
 			$this->log->write('[ocs_product_extras] ' . $e->getMessage());
 		}
