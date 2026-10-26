@@ -112,6 +112,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-043 | [Mobile Menu, Button Metrics, Full Template Set](menu-buttons-templates/spec.md) | `implemented` |
 | SPEC-044 | [Card Actions, Cookie Bookmarks, Quick-View Removal, Stock/SKU Switch](card-actions-bookmarks/spec.md) | `implemented` |
 | SPEC-045 | [SEO Heading Markup and Product Page Info Block](seo-markup-pdp/spec.md) | `implemented` |
+| SPEC-046 | [Modern Forms and Product Page Sections Instead of Tabs](forms-product-sections/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

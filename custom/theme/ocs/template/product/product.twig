@@ -143,49 +143,41 @@
           {{ ocs_tradein_banner }}
           {% if review_status %}
           <div class="rating">
-            <p>{% include 'ocs/template/ocs/rating.twig' with {'value': rating} only %} <a href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">{{ reviews }}</a> / <a href="" onclick="$('a[href=\'#tab-review\']').trigger('click'); return false;">{{ text_write }}</a></p>
+            <p>{% include 'ocs/template/ocs/rating.twig' with {'value': rating} only %} <a href="#tab-review">{{ reviews }}</a> / <a href="#form-review">{{ text_write }}</a></p>
             <hr>
                       </div>
           {% endif %} </div>
       </div>
       <div class="ocs-pdp-sections">
-        <ul class="nav nav-tabs">
-          <li class="active"><a href="#tab-description" data-toggle="tab">{{ tab_description }}</a></li>
-          {% if attribute_groups %}
-          <li><a href="#tab-specification" data-toggle="tab">{{ tab_attribute }}</a></li>
-          {% endif %}
-          {% if review_status %}
-          <li><a href="#tab-review" data-toggle="tab">{{ tab_review }}</a></li>
-          {% endif %}
-          {% if ocs_px.qa %}
-          <li><a href="#tab-questions" data-toggle="tab">{{ ocs_px.qa.label }}</a></li>
-          {% endif %}
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane active" id="tab-description">{{ description }}</div>
-          {% if attribute_groups %}
-          <div class="tab-pane" id="tab-specification">
-            <table class="table table-bordered">
-              {% for attribute_group in attribute_groups %}
-              <thead>
+        <section class="ocs-section" id="tab-description">
+          <h2>{{ tab_description }}</h2>
+          <div class="ocs-section-body">{{ description }}</div>
+        </section>
+        {% if attribute_groups %}
+        <section class="ocs-section" id="tab-specification">
+          <h2>{{ tab_attribute }}</h2>
+              <table class="table table-bordered">
+                {% for attribute_group in attribute_groups %}
+                <thead>
+                  <tr>
+                    <td colspan="2"><strong>{{ attribute_group.name }}</strong></td>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for attribute in attribute_group.attribute %}
                 <tr>
-                  <td colspan="2"><strong>{{ attribute_group.name }}</strong></td>
+                  <td>{{ attribute.name }}</td>
+                  <td>{{ attribute.text }}</td>
                 </tr>
-              </thead>
-              <tbody>
-              {% for attribute in attribute_group.attribute %}
-              <tr>
-                <td>{{ attribute.name }}</td>
-                <td>{{ attribute.text }}</td>
-              </tr>
-              {% endfor %}
-                </tbody>
-              {% endfor %}
-            </table>
-          </div>
-          {% endif %}
-          {% if review_status %}
-          <div class="tab-pane" id="tab-review">
+                {% endfor %}
+                  </tbody>
+                {% endfor %}
+              </table>
+        </section>
+        {% endif %}
+        {% if review_status %}
+        <section class="ocs-section" id="tab-review">
+          <h2>{{ tab_review }}</h2>
             {% if ocs_px.stars.total %}
             <div class="ocs-stars-sum">
               <div class="ocs-stars-avg"><strong>{{ ocs_px.stars.avg }}</strong><span>{{ ocs_px.stars.title }}: {{ ocs_px.stars.total }}</span></div>
@@ -194,52 +186,41 @@
               </ul>
             </div>
             {% endif %}
-            <form class="form-horizontal" id="form-review">
-              <div id="review"></div>
-              <h2>{{ text_write }}</h2>
-              {% if review_guest %}
-              <div class="form-group required">
-                <div class="col-sm-12">
-                  <label class="control-label" for="input-name">{{ entry_name }}</label>
-                  <input type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" />
+          <div id="review"></div>
+          <form class="ocs-form" id="form-review">
+            <h3 class="ocs-form-title">{{ text_write }}</h3>
+            {% if review_guest %}
+            <div class="ocs-form-grid">
+              <div class="ocs-field required">
+                <label for="input-name">{{ entry_name }}</label>
+                <input type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" autocomplete="name" />
+              </div>
+              <fieldset class="ocs-field required ocs-rating-field">
+                <legend>{{ entry_rating }}</legend>
+                <div class="ocs-rate">
+                  {% for i in 5..1 %}<input type="radio" name="rating" value="{{ i }}" id="input-rating-{{ i }}" /><label for="input-rating-{{ i }}" title="{{ i }}"><span class="ocs-sr">{{ i }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-star"/></svg></label>{% endfor %}
                 </div>
-              </div>
-              <div class="form-group required">
-                <div class="col-sm-12">
-                  <label class="control-label" for="input-review">{{ entry_review }}</label>
-                  <textarea name="text" rows="5" id="input-review" class="form-control"></textarea>
-                  <div class="help-block">{{ text_note }}</div>
-                </div>
-              </div>
-              <div class="form-group required">
-                <div class="col-sm-12">
-                  <label class="control-label">{{ entry_rating }}</label>
-                  &nbsp;&nbsp;&nbsp; {{ entry_bad }}&nbsp;
-                  <input type="radio" name="rating" value="1" />
-                  &nbsp;
-                  <input type="radio" name="rating" value="2" />
-                  &nbsp;
-                  <input type="radio" name="rating" value="3" />
-                  &nbsp;
-                  <input type="radio" name="rating" value="4" />
-                  &nbsp;
-                  <input type="radio" name="rating" value="5" />
-                  &nbsp;{{ entry_good }}</div>
-              </div>
-              {{ captcha }}
-              <div class="buttons clearfix">
-                <div class="pull-right">
-                  <button type="button" id="button-review" data-loading-text="{{ text_loading }}" class="btn btn-primary">{{ button_continue }}</button>
-                </div>
-              </div>
-              {% else %}
-              {{ text_login }}
-              {% endif %}
-            </form>
-          </div>
-          {% endif %}
-          {% if ocs_px.qa %}
-          <div class="tab-pane" id="tab-questions">
+                <p class="ocs-help"><span>{{ entry_bad }}</span> <span>{{ entry_good }}</span></p>
+              </fieldset>
+            </div>
+            <div class="ocs-field required">
+              <label for="input-review">{{ entry_review }}</label>
+              <textarea name="text" rows="5" id="input-review" class="form-control"></textarea>
+              <p class="ocs-help">{{ text_note }}</p>
+            </div>
+            {{ captcha }}
+            <div class="ocs-form-actions">
+              <button type="button" id="button-review" data-loading-text="{{ text_loading }}" class="btn btn-primary">{{ button_continue }}</button>
+            </div>
+            {% else %}
+            <p>{{ text_login }}</p>
+            {% endif %}
+          </form>
+        </section>
+        {% endif %}
+        {% if ocs_px.qa %}
+        <section class="ocs-section" id="tab-questions">
+          <h2>{{ ocs_px.qa.label }}</h2>
             {% for q in ocs_px.qa.list %}
             <div class="ocs-q">
               <p><strong>{{ q.name }}</strong> <span class="text-muted">{{ q.date }}</span></p>
@@ -249,19 +230,32 @@
             {% else %}
             <p class="text-muted">{{ ocs_px.qa.ask.text_no_questions }}</p>
             {% endfor %}
-            <h3>{{ ocs_px.qa.ask.text_ask_title }}</h3>
-            <form class="ocs-news-form ocs-q-form" action="{{ ocs_px.qa.action }}" method="post" data-failed="{{ ocs_px.qa.ask.error_generic }}" novalidate>
-              <input type="hidden" name="token" value="{{ ocs_px.qa.token }}" />
-              <input type="hidden" name="product_id" value="{{ product_id }}" />
-              <div class="ocs-news-hp" aria-hidden="true"><label>Website <input type="text" name="website" value="" tabindex="-1" autocomplete="off" /></label></div>
-              <input type="text" name="name" value="{{ ocs_px.qa.name }}" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_name }}" aria-label="{{ ocs_px.qa.ask.entry_name }}" autocomplete="name" />
-              <input type="email" name="email" value="{{ ocs_px.qa.email }}" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_email }}" aria-label="{{ ocs_px.qa.ask.entry_email }}" autocomplete="email" />
-              <textarea name="text" rows="4" class="form-control" placeholder="{{ ocs_px.qa.ask.entry_question }}" aria-label="{{ ocs_px.qa.ask.entry_question }}"></textarea>
+          <form class="ocs-form ocs-news-form ocs-q-form" action="{{ ocs_px.qa.action }}" method="post" data-failed="{{ ocs_px.qa.ask.error_generic }}" novalidate>
+            <h3 class="ocs-form-title">{{ ocs_px.qa.ask.text_ask_title }}</h3>
+            <input type="hidden" name="token" value="{{ ocs_px.qa.token }}" />
+            <input type="hidden" name="product_id" value="{{ product_id }}" />
+            <div class="ocs-news-hp" aria-hidden="true"><label>Website <input type="text" name="website" value="" tabindex="-1" autocomplete="off" /></label></div>
+            <div class="ocs-form-grid">
+              <div class="ocs-field">
+                <label for="input-q-name">{{ ocs_px.qa.ask.entry_name }}</label>
+                <input type="text" name="name" value="{{ ocs_px.qa.name }}" id="input-q-name" class="form-control" autocomplete="name" />
+              </div>
+              <div class="ocs-field">
+                <label for="input-q-email">{{ ocs_px.qa.ask.entry_email }}</label>
+                <input type="email" name="email" value="{{ ocs_px.qa.email }}" id="input-q-email" class="form-control" autocomplete="email" />
+              </div>
+            </div>
+            <div class="ocs-field">
+              <label for="input-q-text">{{ ocs_px.qa.ask.entry_question }}</label>
+              <textarea name="text" rows="4" id="input-q-text" class="form-control"></textarea>
+            </div>
+            <div class="ocs-form-actions">
               <button type="submit" class="btn btn-primary">{{ ocs_px.qa.ask.button_ask }}</button>
               <div class="ocs-news-msg" role="status" aria-live="polite"></div>
-            </form>
-          </div>
-          {% endif %}</div>
+            </div>
+          </form>
+        </section>
+        {% endif %}
       </div>
       {% for block in [{'id': 'ocs-accessories', 'title': ocs_px.text_accessories, 'items': ocs_px.accessories}, {'id': 'ocs-similar', 'title': ocs_px.text_similar, 'items': ocs_px.similar}] %}
       {% if block.items %}

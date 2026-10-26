@@ -889,7 +889,7 @@ test('modern layout: product page grid keeps the core hooks', () => {
   const twig = read('custom/theme/ocs/template/product/product.twig');
   assert.ok(twig.includes('class="row ocs-pdp"') && twig.includes('class="ocs-pdp-sections"'));
   assert.ok(twig.indexOf('class="ocs-pdp-sections"') > twig.indexOf('id="button-cart"'), 'the sections follow the grid');
-  for (const hook of ['id="tab-description"', 'id="tab-review"', 'id="button-review"', 'id="product"', 'id="input-quantity"', 'class="nav nav-tabs"', 'data-toggle="tab"']) assert.ok(twig.includes(hook), hook);
+  for (const hook of ['id="tab-description"', 'id="tab-review"', 'id="button-review"', 'id="product"', 'id="input-quantity"']) assert.ok(twig.includes(hook), hook);
   for (const rule of ['#product-product #content { container: pdpc / inline-size;', '@container pdpc (min-width: 52rem)', '.ocs-pdp-sections { container: sections / inline-size; }']) assert.ok(css.includes(rule), rule);
 });
 
@@ -924,9 +924,9 @@ test('visual identity: Bootstrap components are re-skinned in the components lay
   const end = css.indexOf('/* ==== 37.');
   assert.ok(start > 0 && end > start);
   const block = css.slice(start, end);
-  for (const sel of ['.btn {', '.btn-primary {', '.btn-default', '.form-control', '.dropdown-menu {', '.nav-tabs', '.breadcrumb {', '.pagination', '.panel {', '.table', '.alert {', '.tooltip-inner']) assert.ok(block.includes(sel), sel);
+  for (const sel of ['.btn {', '.btn-primary {', '.btn-default', '.dropdown-menu {', '.nav-tabs', '.breadcrumb {', '.pagination', '.panel {', '.table', '.alert {', '.tooltip-inner']) assert.ok(block.includes(sel), sel);
   assert.ok(block.includes('outline: 2px solid var(--focus)'), 'focus ring');
-  assert.match(block, /box-shadow: 0 0 0 3px color-mix\(in srgb, var\(--accent\) 20%, transparent\)/);
+  assert.ok(css.includes('.form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent)'), 'focus ring moved to the SPEC-046 form system');
 });
 
 // TEST-VIS-003 - verifies REQ-VIS-004 (card: tools overlay, code, round cart button, stock dot; hooks of the core JS kept)

@@ -2210,7 +2210,8 @@
 	}
 }(window, document));
 
-/* Product section bar (SPEC-035 REQ-PRD-001): tab anchors open the Bootstrap tab, the others scroll; the current section is highlighted. */
+/* Product section bar (SPEC-035 REQ-PRD-001, SPEC-046 REQ-SEC-003): an anchor menu over the stacked sections; a click scrolls under the sticky header,
+   the section in view is highlighted. Without JS the items are plain anchors. */
 (function (window, document) {
 	'use strict';
 
@@ -2223,11 +2224,13 @@
 
 		var links = [].slice.call(bar.querySelectorAll('a'));
 		var header = document.querySelector('header.ocs-head') || document.querySelector('header');
+		var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		var locked = false;
+		var unlock = null;
 
 		function headH() {
 			return header && window.getComputedStyle(header).position === 'sticky' ? header.offsetHeight : 0;
 		}
-		var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		function mark(href) {
 			links.forEach(function (a) {
@@ -2235,50 +2238,43 @@
 			});
 		}
 
-		function offset() {
-			return headH() + bar.offsetHeight + 8;
-		}
-
 		bar.style.setProperty('--ocs-hdr', headH() + 'px');
 
 		links.forEach(function (a) {
 			a.addEventListener('click', function (e) {
 				var href = a.getAttribute('href');
-				var target = document.querySelector(href);
+				var target = href && href.charAt(0) === '#' ? document.querySelector(href) : null;
 
 				if (!target) {
 					return;
 				}
 
 				e.preventDefault();
-
-				if (a.getAttribute('data-ocs-tab') && window.jQuery) {
-					window.jQuery('.nav-tabs a[href="' + href + '"]').tab('show');
-					target = document.querySelector('.nav-tabs');
-				}
-
-				window.scrollTo({top: target.getBoundingClientRect().top + window.pageYOffset - offset(), behavior: reduce ? 'auto' : 'smooth'});
+				locked = true;
+				window.clearTimeout(unlock);
+				unlock = window.setTimeout(function () {
+					locked = false;
+				}, 900);
+				window.scrollTo({top: target.getBoundingClientRect().top + window.pageYOffset - headH() - bar.offsetHeight - 8, behavior: reduce ? 'auto' : 'smooth'});
 				mark(href);
+
+				if (window.history && window.history.replaceState) {
+					window.history.replaceState(null, '', href);
+				}
 			});
 		});
-
-		if (window.jQuery) {
-			window.jQuery(document).on('shown.bs.tab', '.nav-tabs a[data-toggle="tab"]', function () {
-				mark(this.getAttribute('href'));
-			});
-		}
 
 		if ('IntersectionObserver' in window) {
 			var io = new window.IntersectionObserver(function (entries) {
 				entries.forEach(function (en) {
-					if (en.isIntersecting) {
+					if (en.isIntersecting && !locked) {
 						mark('#' + en.target.id);
 					}
 				});
 			}, {rootMargin: '-20% 0px -60% 0px'});
 
-			['ocs-accessories', 'ocs-similar'].forEach(function (id) {
-				var el = document.getElementById(id);
+			links.forEach(function (a) {
+				var el = document.querySelector(a.getAttribute('href'));
 
 				if (el) {
 					io.observe(el);
