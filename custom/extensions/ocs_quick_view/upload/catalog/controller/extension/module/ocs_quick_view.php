@@ -12,7 +12,7 @@ class ControllerExtensionModuleOcsQuickView extends Controller {
 	public function view() {
 		$this->response->addHeader('Cache-Control: no-store');
 
-		$product_id = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+		$product_id = isset($this->request->post['product_id']) ? (int)$this->request->post['product_id'] : (isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0);
 
 		if (!$this->config->get('module_ocs_quick_view_status') || $product_id < 1) {
 			$this->response->setOutput('');

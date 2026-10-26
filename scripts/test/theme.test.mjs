@@ -1025,3 +1025,29 @@ test('visual identity: vertical gallery thumbnails, review summary and the brand
   assert.ok(css.includes('.ocs-sticky-buy:not(.is-on) { visibility: hidden;'), 'the hidden summary bar cannot show through the translucent header');
 });
 
+// TEST-QOR-006 - verifies REQ-QOR-032 (endpoints resolve to the page's own origin when the host differs from config_url)
+test('theme.js sends requests for the configured origin to the page origin', async () => {
+  const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
+  assert.ok(js.includes('OCS.sameOrigin = fix') && js.includes('window.fetch = function') && js.includes('ajaxPrefilter'));
+  const start = js.indexOf('function fix(url)');
+  const body = js.slice(start, js.indexOf('OCS.sameOrigin = fix'));
+  const fix = new Function('window', 'document', `${body}; return fix;`)(
+    { URL, location: { origin: 'http://127.0.0.1:8080' } }, { baseURI: 'http://localhost:8080/shop/' });
+  assert.equal(fix('http://localhost:8080/shop/index.php?route=a/b&x=1'), 'http://127.0.0.1:8080/shop/index.php?route=a/b&x=1');
+  assert.equal(fix('index.php?route=a'), 'http://127.0.0.1:8080/shop/index.php?route=a');
+  assert.equal(fix('https://example.org/x'), 'https://example.org/x');
+  const same = new Function('window', 'document', `${body}; return fix;`)(
+    { URL, location: { origin: 'http://localhost:8080' } }, { baseURI: 'http://localhost:8080/' });
+  assert.equal(same('http://localhost:8080/a?b=1'), 'http://localhost:8080/a?b=1');
+});
+
+// TEST-QOR-007 - verifies REQ-QOR-032 (popup bodies are POSTed, product_id stays out of the URL; controllers read POST first)
+test('popup requests are POSTs with the product id in the body (SeoPro redirects GETs carrying product_id)', () => {
+  const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
+  assert.ok(!/'product_id=' + encodeURIComponent/.test(js), "no product_id in a request URL");
+  assert.equal(js.split("method: 'POST', body: OCS.productBody(id)").length - 1, 2, 'request popups and quick view');
+  for (const m of ['ocs_back_in_stock', 'ocs_preorder', 'ocs_quick_order', 'ocs_quick_view', 'ocs_tradein']) {
+    const php = readFileSync(join(REPO_ROOT, `custom/extensions/${m}/upload/catalog/controller/extension/module/${m}.php`), 'utf8');
+    assert.ok(php.includes("isset($this->request->post['product_id'])"), `${m} reads product_id from POST`);
+  }
+});

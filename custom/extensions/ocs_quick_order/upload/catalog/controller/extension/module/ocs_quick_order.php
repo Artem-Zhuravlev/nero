@@ -24,7 +24,7 @@ class ControllerExtensionModuleOcsQuickOrder extends Controller {
 		$data['failed'] = $this->language->get('error_generic');
 		$data['action'] = $this->url->link('extension/module/ocs_quick_order/submit', '', true);
 		$data['token'] = $this->model_extension_ocs_request_guard->token();
-		$data['product_id'] = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+		$data['product_id'] = isset($this->request->post['product_id']) ? (int)$this->request->post['product_id'] : (isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0);
 		$data['fields'] = $this->model_extension_ocs_request_guard->fields($this->modes(), $this->labels());
 
 		$this->response->setOutput($this->load->view('extension/ocs_request/form', $data));

@@ -59,6 +59,8 @@ Payment, shipping choice (quick order uses default methods), SMS gateways (SPEC-
 - **REQ-QOR-030** — Popups use `OCS.modal`; uk/ru/en strings; PHP 7.4; each feature switchable (REQ-MOY-001).
 - **REQ-QOR-031** — No customer data in logs; forms protected by token against CSRF; rate limit 5 requests/min/IP.
 
+- **REQ-QOR-032** — Request popups, the cart panel, search and quick view work (a) when the shop is opened under a host other than the configured `config_url` (127.0.0.1 vs localhost, another domain, a tunnel): requests that resolve to the configured origin are sent to the page's own origin (`OCS.sameOrigin`, theme.js); and (b) with ocStore SeoPro on: popup bodies (quick order, pre-order, back-in-stock, trade-in, quick view) are requested with POST and carry `product_id` in the body, because SeoPro 301-redirects every non-POST request with `product_id` to the product's SEO URL (its AJAX detection runs before the request object exists) and the popup would show the whole product page. The controllers read `product_id` from POST first, GET second. They never fail silently because of a cross-origin block or a redirect.
+
 ## Data requirements
 
 Tables `oc_ocs_preorder`, `oc_ocs_back_in_stock`; settings `module_ocs_quick_order_*`, `module_ocs_preorder_*`,

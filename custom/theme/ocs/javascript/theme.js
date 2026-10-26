@@ -1,5 +1,58 @@
 /* Theme ocs - namespaced helpers (SPEC-006 REQ-THM-023, SPEC-023 REQ-DSG-013). ES5, no globals except window.OCS.
    OCS.modal is the ONLY popup implementation; modules must use it. Closes on overlay click and Esc. */
+
+/* Same-origin endpoints. Module URLs and <base href> come from config_url; when the shop is opened under another host (127.0.0.1 instead
+   of localhost, a second domain, a tunnel) a request to that absolute URL is cross-origin and fails silently (quick order, cart panel,
+   search, quick view all do nothing). Requests that resolve to the configured origin are therefore sent to the page's own origin. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+	var nativeFetch = window.fetch;
+
+	function fix(url) {
+		try {
+			var target = new window.URL(url, document.baseURI);
+			var base = new window.URL(document.baseURI);
+
+			if (target.origin === base.origin && target.origin !== window.location.origin) {
+				return window.location.origin + target.pathname + target.search + target.hash;
+			}
+		} catch (e) { /* not a URL: leave it to the browser */ }
+
+		return url;
+	}
+
+	OCS.sameOrigin = fix;
+
+	/* SeoPro (ocStore) answers every GET that carries product_id with a 301 to the SEO URL unless the request is a POST (its AJAX
+	   detection runs before the request object exists, so X-Requested-With does not help). Popup bodies are therefore requested with POST
+	   and the product id travels in the body, never in the URL. */
+	OCS.productBody = function (id) {
+		var body = new window.FormData();
+
+		body.append('product_id', id);
+
+		return body;
+	};
+
+	if (nativeFetch && window.URL) {
+		window.fetch = function (input, init) {
+			return nativeFetch.call(this, typeof input === 'string' ? fix(input) : input, init);
+		};
+	}
+
+	document.addEventListener('DOMContentLoaded', function () {
+		if (window.jQuery && window.jQuery.ajaxPrefilter) {
+			window.jQuery.ajaxPrefilter(function (options) {
+				if (options.url) {
+					options.url = fix(options.url);
+				}
+			});
+		}
+	});
+}(window, document));
+
 (function (window, document) {
 	'use strict';
 
@@ -625,7 +678,7 @@
 
 			button.disabled = true;
 
-			window.fetch(url + (url.indexOf('?') === -1 ? '?' : '&') + 'product_id=' + encodeURIComponent(id), {credentials: 'same-origin'}).then(function (r) {
+			window.fetch(url, {method: 'POST', body: OCS.productBody(id), credentials: 'same-origin'}).then(function (r) {
 				return r.text();
 			}).then(function (html) {
 				button.disabled = false;
@@ -1595,7 +1648,7 @@
 
 		OCS.modal.open({content: shell, closeLabel: ''});
 
-		window.fetch(url + (url.indexOf('?') === -1 ? '?' : '&') + 'product_id=' + encodeURIComponent(id), {credentials: 'same-origin'}).then(function (r) {
+		window.fetch(url, {method: 'POST', body: OCS.productBody(id), credentials: 'same-origin'}).then(function (r) {
 			return r.text();
 		}).then(function (html) {
 			if (!html) {

@@ -21,7 +21,7 @@ class ControllerExtensionModuleOcsTradein extends Controller {
 
 		$data['action'] = $this->url->link('extension/module/ocs_tradein/submit', '', true);
 		$data['token'] = $this->model_extension_ocs_request_guard->token();
-		$data['product_id'] = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+		$data['product_id'] = isset($this->request->post['product_id']) ? (int)$this->request->post['product_id'] : (isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0);
 
 		$this->response->setOutput($this->load->view('extension/module/ocs_tradein_form', $data));
 	}
