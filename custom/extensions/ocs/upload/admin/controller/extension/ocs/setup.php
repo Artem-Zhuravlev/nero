@@ -45,7 +45,7 @@ class ControllerExtensionOcsSetup extends Controller {
 		$this->response->setOutput($this->load->view('extension/ocs/setup', $data));
 	}
 
-	// POST action=install|activate|demo|uninstall -> {ok, log[], problems[], refresh}
+	// POST action=install|activate|demo|catalogue|catalogue_remove|uninstall -> {ok, log[], problems[], refresh}
 	public function run() {
 		$this->load->language('extension/ocs/setup');
 
@@ -72,8 +72,15 @@ class ControllerExtensionOcsSetup extends Controller {
 						$json['refresh'] = false;
 						break;
 					case 'demo':
-						$json = $service->demo(DIR_IMAGE);
+						$json = $service->demo(DIR_IMAGE, $this->models());
 						$json['refresh'] = false;
+						break;
+					case 'catalogue':
+						set_time_limit(300);
+						$json = $service->createCatalogue($this->models(), DIR_IMAGE);
+						break;
+					case 'catalogue_remove':
+						$json = $service->removeCatalogue($this->models(), DIR_IMAGE);
 						break;
 					case 'uninstall':
 						$json = $service->uninstall();
@@ -93,6 +100,17 @@ class ControllerExtensionOcsSetup extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	// Hands the core admin models to the catalogue builder (SPEC-041 REQ-DCAT-002).
+	private function models() {
+		$that = $this;
+
+		return function ($route) use ($that) {
+			$that->load->model($route);
+
+			return $that->{'model_' . str_replace('/', '_', $route)};
+		};
 	}
 
 	private function service() {

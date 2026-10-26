@@ -48,6 +48,9 @@ final class Service
 
     private function say(string $line): void
     {
+        if (strpos($line, DemoCatalogue::SETTING_KEY) !== false) {
+            return; // registry bookkeeping, one line per created record
+        }
         // The runner hints at the CLI refresh script; inside the store the setup page refreshes modifications itself.
         $this->log[] = str_replace(' (refresh required: run scripts/refresh.php)', ' (modifications will be refreshed)', $line);
     }
@@ -203,12 +206,52 @@ final class Service
      * @param string|null $imageDir docroot image dir with trailing slash
      * @return array{ok:bool, log:string[]}
      */
-    public function demo(?string $imageDir = null): array
+    public function demo(?string $imageDir = null, ?callable $models = null): array
     {
         $this->log = [];
-        (new DemoSeed($this->context(), function (string $line): void {
+        $m = $this->context();
+        $hints = [];
+        if ($models !== null && is_file($this->catalogueFile())) {
+            $cat = $this->catalogue($m, $models, (string) $imageDir);
+            $hints = $cat->exists() ? $cat->homeHints() : [];
+        }
+        (new DemoSeed($m, function (string $line): void {
             $this->say($line);
-        }, $imageDir))->run();
+        }, $imageDir, $hints))->run();
         return ['ok' => true, 'log' => $this->log];
+    }
+
+    private function catalogueFile(): string
+    {
+        return $this->payload . '/custom/catalog/demo/catalogue.json';
+    }
+
+    private function catalogue(Context $m, callable $models, string $imageDir): DemoCatalogue
+    {
+        return new DemoCatalogue($m, DemoCatalogue::load($this->catalogueFile()), $models, $imageDir, function (string $line): void {
+            $this->say($line);
+        });
+    }
+
+    /**
+     * SPEC-041: creates the demo catalogue through the core admin models.
+     *
+     * @param callable $models fn(string $route): object
+     * @return array{ok:bool, log:string[], refresh:bool}
+     */
+    public function createCatalogue(callable $models, string $imageDir): array
+    {
+        $this->log = [];
+        $r = $this->catalogue($this->context(), $models, $imageDir)->create();
+        $this->say("demo catalogue ready: {$r['products']} new product(s), {$r['categories']} categories");
+        return ['ok' => true, 'log' => $this->log, 'refresh' => false];
+    }
+
+    /** @return array{ok:bool, log:string[], refresh:bool} */
+    public function removeCatalogue(callable $models, string $imageDir): array
+    {
+        $this->log = [];
+        $this->catalogue($this->context(), $models, $imageDir)->remove();
+        return ['ok' => true, 'log' => $this->log, 'refresh' => false];
     }
 }

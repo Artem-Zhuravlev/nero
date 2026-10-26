@@ -27,6 +27,10 @@ $_['button_uninstall']       = 'Uninstall';
 $_['button_theme']           = 'Theme settings';
 $_['button_cancel']          = 'Cancel';
 
+$_['button_catalogue']        = 'Demo catalogue';
+$_['button_catalogue_remove'] = 'Remove demo catalogue';
+$_['text_confirm_catalogue_remove'] = 'Delete all demo categories, products, reviews, pages, cities and stores created by the package? Your own data is not touched.';
+
 $_['error_permission']       = 'Warning: You do not have permission to run the OCS setup!';
 $_['error_method']           = 'POST request required';
 $_['error_action']           = 'Unknown action';

@@ -3,6 +3,7 @@ import { readFileSync, existsSync, readdirSync, statSync, mkdirSync, writeFileSy
 import { join, dirname } from 'node:path';
 import { deflateRawSync } from 'node:zlib';
 import { walk } from './fs-walk.mjs';
+import { demoImages, referencedImages } from './demo-images.mjs';
 
 /** Directories the core installer (admin/controller/marketplace/install.php, move()) accepts below upload/. */
 export const ALLOWED_PREFIXES = [
@@ -53,6 +54,16 @@ export function collectPackage({ root }) {
   for (const rel of walk(join(custom, 'ocmod'))) {
     if (!isExcluded(rel)) add(`${payloadRoot}custom/ocmod/${rel}`, readFileSync(join(custom, 'ocmod', rel)), 'ocmod');
   }
+  // SPEC-041: demo catalogue data (payload) and generated placeholder pictures (docroot image/).
+  const catalogueFile = join(custom, 'catalog', 'demo', 'catalogue.json');
+  if (!existsSync(catalogueFile)) throw new PackError('custom/catalog/demo/catalogue.json is missing (run scripts/gen-demo-catalogue.mjs)');
+  const catalogueJson = readFileSync(catalogueFile);
+  add(`${payloadRoot}custom/catalog/demo/catalogue.json`, catalogueJson, 'demo-catalogue');
+  const pictures = demoImages(JSON.parse(catalogueJson.toString('utf8')));
+  for (const [rel, buf] of pictures) add(`upload/image/${rel}`, buf, 'demo-images');
+  const missing = referencedImages(JSON.parse(catalogueJson.toString('utf8'))).filter((rel) => !pictures.has(rel));
+  if (missing.length) throw new PackError(`demo catalogue references missing images: ${missing.slice(0, 10).join(', ')}`);
+
   add(`${payloadRoot}VERSION`, `${version(root)}\n`, 'version');
 
   const lib = join(root, 'scripts', 'lib', 'php');

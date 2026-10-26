@@ -68,3 +68,35 @@ test('zip writer entries survive a round trip through php', () => {
   assert.equal(buf.readUInt16LE(buf.length - 22 + 10), 2);
 });
 
+// TEST-DCAT-002 - verifies REQ-DCAT-006, REQ-DCAT-009, REQ-DCAT-022 (placeholder pictures: complete, small, in the package)
+test('demo catalogue pictures are generated, referenced ones all exist, and stay small', async () => {
+  const { demoImages, referencedImages } = await import('../lib/demo-images.mjs');
+  const data = JSON.parse(readFileSync(join(REPO_ROOT, 'custom/catalog/demo/catalogue.json'), 'utf8'));
+  const pictures = demoImages(data);
+  for (const rel of referencedImages(data)) assert.ok(pictures.has(rel), `missing ${rel}`);
+  let bytes = 0;
+  for (const buf of pictures.values()) {
+    assert.equal(buf.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+    bytes += buf.length;
+  }
+  assert.ok(bytes < 2 * 1024 * 1024, 'REQ-DCAT-006: pictures under 2 MB');
+  const files = collectPackage({ root: REPO_ROOT });
+  assert.ok(files.has('upload/image/catalog/ocs-demo/products/001-1.png'));
+  assert.ok(files.has('upload/system/library/ocs/setup/payload/custom/catalog/demo/catalogue.json'));
+  assert.deepEqual(disallowedPaths(files), []);
+});
+
+// TEST-DCAT-001 - verifies REQ-DCAT-005, REQ-DCAT-007 (texts in three languages, data shape)
+test('demo catalogue data has uk/ru/en texts and the shape the theme needs', () => {
+  const data = JSON.parse(readFileSync(join(REPO_ROOT, 'custom/catalog/demo/catalogue.json'), 'utf8'));
+  for (const c of data.categories) assert.ok(c.name.uk && c.name.ru && c.name.en, c.code);
+  for (const p of data.products) {
+    assert.ok(p.description.uk && p.description.ru && p.description.en, p.code);
+    assert.ok(p.price > 0);
+  }
+  assert.ok(data.products.length >= 36);
+  const codes = new Set(data.products.map((p) => p.code));
+  assert.equal(codes.size, data.products.length, 'unique product codes');
+  const depth = (code) => { const c = data.categories.find((x) => x.code === code); return c.parent ? 1 + depth(c.parent) : 1; };
+  assert.ok(Math.max(...data.categories.map((c) => depth(c.code))) >= 3, 'a category 3 levels deep');
+});
