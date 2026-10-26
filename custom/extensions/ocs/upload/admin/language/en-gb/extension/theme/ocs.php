@@ -67,3 +67,15 @@ $_['button_remove'] = 'Remove';
 $_['text_info_blocks'] = 'Info blocks of the product page';
 $_['help_info_blocks'] = 'Shown once for every product under the buy form (delivery, returns, payment ...). A row needs a title or a text; the link is optional. Up to 10 blocks.';
 $_['column_text'] = 'Text (per language)';
+
+// Top menu (SPEC-050)
+$_['text_top_menu'] = 'Top menu (header)';
+$_['help_top_menu'] = 'Shown in the top bar: Sale, Blog and a dropdown with the chosen information pages and Contacts.';
+$_['entry_top_enabled'] = 'Top menu';
+$_['entry_top_title'] = 'Dropdown title (per language)';
+$_['entry_top_items'] = 'Items';
+$_['text_top_sale'] = 'Sale (highlighted)';
+$_['text_top_blog'] = 'Blog';
+$_['text_top_contacts'] = 'Contacts (in the dropdown)';
+$_['entry_top_pages'] = 'Information pages';
+$_['column_show'] = 'Show';

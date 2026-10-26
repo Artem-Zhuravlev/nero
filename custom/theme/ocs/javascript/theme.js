@@ -2504,8 +2504,14 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		function render() {
 			var n = digits((btn.querySelector('#cart-total') || btn).textContent);
 
+			var badge = parseInt(n, 10) > 99 ? '99+' : n;
+
 			cartWrap.setAttribute('data-count', n);
-			cartWrap.setAttribute('data-badge', parseInt(n, 10) > 99 ? '99+' : n);
+			cartWrap.setAttribute('data-badge', badge);
+
+			// attr() in the badge's content reads the element the ::after belongs to: the button, not the wrapper
+			btn.setAttribute('data-count', n);
+			btn.setAttribute('data-badge', badge);
 
 			if (!btn.querySelector('.ocs-act-label')) {
 				var label = document.createElement('small');

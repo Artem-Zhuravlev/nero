@@ -26,32 +26,18 @@
         {% endif %}</div>
       <hr>
       {% endif %}
-      {% if categories and ocs_listing %}
-      <div class="ocs-chips">{% for category in categories %}<a class="ocs-chip" href="{{ category.href }}">{{ category.name }}</a>{% endfor %}</div>
-      {% elseif categories %}
-      <h2 class="ocs-sec-title">{{ text_refine }}</h2>
-      {% if categories|length <= 5 %}
-      <div class="row">
-        <div class="col-sm-3">
-          <ul>
+      {% if categories %}
+      <nav class="ocs-subcats" aria-label="{{ text_refine }}">
+        <div class="ocs-carousel ocs-subcat-carousel" role="region" aria-label="{{ text_refine }}">
+          <div class="ocs-carousel-track">
             {% for category in categories %}
-            <li><a href="{{ category.href }}">{{ category.name }}</a></li>
+            <div class="ocs-carousel-item"><a class="ocs-subcat" href="{{ category.href }}"><span class="ocs-subcat-img">{% if category.thumb %}<img src="{{ category.thumb }}" alt="" width="64" height="64" loading="lazy" />{% else %}<svg class="ocs-i" aria-hidden="true"><use href="#i-grid"/></svg>{% endif %}</span><span class="ocs-subcat-name">{{ category.name }}</span></a></div>
             {% endfor %}
-          </ul>
+          </div>
+          <button type="button" class="ocs-carousel-prev" aria-label="{{ ocs_listing.t.ocs_prev }}">&lsaquo;</button>
+          <button type="button" class="ocs-carousel-next" aria-label="{{ ocs_listing.t.ocs_next }}">&rsaquo;</button>
         </div>
-      </div>
-      {% else %}
-      <div class="row">{% for category in categories|batch((categories|length / 4)|round(1, 'ceil')) %}
-        <div class="col-sm-3">
-          <ul>
-            {% for child in category %}
-            <li><a href="{{ child.href }}">{{ child.name }}</a></li>
-            {% endfor %}
-          </ul>
-        </div>
-        {% endfor %}</div>
-      <br />
-      {% endif %}
+      </nav>
       {% endif %}
       {% if products %}
       <div class="row">
@@ -132,7 +118,6 @@
       {% if ocs_listing and ocs_listing.reset %}
       <div class="ocs-active-filters"><a class="btn btn-default btn-sm" href="{{ ocs_listing.reset }}">{{ ocs_listing.t.ocs_reset }}</a></div>
       {% endif %}
-      <div class="ocs-sortchips ocs-chips" role="group" aria-label="{{ text_sort }}">{% for s in sorts %}<a class="ocs-chip{% if s.value == '%s-%s'|format(sort, order) %} is-active{% endif %}" href="{{ s.href }}">{{ s.text }}</a>{% endfor %}</div>
       <div class="row" id="ocs-grid"> {% for product in products %}
         {% include 'ocs/template/ocs/card.twig' %}
         {% endfor %} </div>

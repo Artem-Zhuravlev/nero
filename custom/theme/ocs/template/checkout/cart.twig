@@ -35,11 +35,11 @@
         &nbsp;({{ weight }})
         {% endif %} </h1>
       <form action="{{ action }}" method="post" enctype="multipart/form-data">
-        <div class="table-responsive">
-          <table class="table table-bordered">
+        <div class="ocs-cart-wrap">
+          <table class="table ocs-cart-table">
             <thead>
               <tr>
-                <td class="text-center">{{ column_image }}</td>
+                <td class="text-center ocs-c-img">{{ column_image }}</td>
                 <td class="text-left">{{ column_name }}</td>
                 {% if ocs_show_sku %}<td class="text-left">{{ column_model }}</td>{% endif %}
                 <td class="text-left">{{ column_quantity }}</td>
@@ -51,8 +51,8 @@
             
             {% for product in products %}
             <tr>
-              <td class="text-center">{% if product.thumb %} <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-thumbnail" /></a> {% endif %}</td>
-              <td class="text-left"><a href="{{ product.href }}">{{ product.name }}</a> {% if not product.stock %} <span class="text-danger">***</span> {% endif %}
+              <td class="text-center ocs-c-img">{% if product.thumb %} <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-thumbnail" /></a> {% endif %}</td>
+              <td class="text-left ocs-c-name"><a href="{{ product.href }}">{{ product.name }}</a> {% if not product.stock %} <span class="text-danger">***</span> {% endif %}
                 {% if product.option %}
                 {% for option in product.option %} <br />
                 <small>{{ option.name }}: {{ option.value }}</small> {% endfor %}
@@ -61,29 +61,29 @@
                 <small>{{ product.reward }}</small> {% endif %}
                 {% if product.recurring %} <br />
                 <span class="label label-info">{{ text_recurring_item }}</span> <small>{{ product.recurring }}</small> {% endif %}</td>
-              {% if ocs_show_sku %}<td class="text-left">{{ product.model }}</td>{% endif %}
-              <td class="text-left"><div class="input-group btn-block" style="max-width: 200px;">
+              {% if ocs_show_sku %}<td class="text-left ocs-c-model" data-label="{{ column_model }}">{{ product.model }}</td>{% endif %}
+              <td class="text-left ocs-c-qty" data-label="{{ column_quantity }}"><div class="ocs-qty input-group">
                   <input type="text" name="quantity[{{ product.cart_id }}]" value="{{ product.quantity }}" size="1" class="form-control" />
                   <span class="input-group-btn">
-                  <button type="submit" data-toggle="tooltip" title="{{ button_update }}" class="btn btn-primary"><svg class="ocs-i" aria-hidden="true"><use href="#i-return"/></svg></button>
-                  <button type="button" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger" onclick="cart.remove('{{ product.cart_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-x-circle"/></svg></button>
+                  <button type="submit" data-toggle="tooltip" title="{{ button_update }}" class="btn btn-default ocs-qty-btn" aria-label="{{ button_update }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-return"/></svg></button>
+                  <button type="button" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-default ocs-qty-btn ocs-qty-del" onclick="cart.remove('{{ product.cart_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-trash"/></svg></button>
                   </span></div></td>
-              <td class="text-right">{{ product.price }}</td>
-              <td class="text-right">{{ product.total }}</td>
+              <td class="text-right ocs-c-price" data-label="{{ column_price }}">{% if product.old_price %}<s class="ocs-old">{{ product.old_price }}</s> {% endif %}<span class="ocs-now">{{ product.price }}</span></td>
+              <td class="text-right ocs-c-total" data-label="{{ column_total }}">{% if product.old_total %}<s class="ocs-old">{{ product.old_total }}</s> {% endif %}<span class="ocs-now">{{ product.total }}</span></td>
             </tr>
             {% endfor %}
             {% for voucher in vouchers %}
             <tr>
-              <td></td>
-              <td class="text-left">{{ voucher.description }}</td>
-              <td class="text-left"></td>
-              <td class="text-left"><div class="input-group btn-block" style="max-width: 200px;">
+              <td class="ocs-c-img"></td>
+              <td class="text-left ocs-c-name">{{ voucher.description }}</td>
+              {% if ocs_show_sku %}<td class="text-left ocs-c-model"></td>{% endif %}
+              <td class="text-left ocs-c-qty" data-label="{{ column_quantity }}"><div class="ocs-qty input-group">
                   <input type="text" name="" value="1" size="1" disabled="disabled" class="form-control" />
                   <span class="input-group-btn">
-                  <button type="button" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger" onclick="voucher.remove('{{ voucher.key }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-x-circle"/></svg></button>
+                  <button type="button" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-default ocs-qty-btn ocs-qty-del" onclick="voucher.remove('{{ voucher.key }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-trash"/></svg></button>
                   </span></div></td>
-              <td class="text-right">{{ voucher.amount }}</td>
-              <td class="text-right">{{ voucher.amount }}</td>
+              <td class="text-right ocs-c-price" data-label="{{ column_price }}"><span class="ocs-now">{{ voucher.amount }}</span></td>
+              <td class="text-right ocs-c-total" data-label="{{ column_total }}"><span class="ocs-now">{{ voucher.amount }}</span></td>
             </tr>
             {% endfor %}
               </tbody>
@@ -94,25 +94,20 @@
       {% if modules %}
       <h2>{{ text_next }}</h2>
       <p>{{ text_next_choice }}</p>
-      <div class="panel-group" id="accordion"> {% for module in modules %}
+      <div class="panel-group ocs-cart-extras" id="accordion"> {% for module in modules %}
         {{ module }}
         {% endfor %} </div>
       {% endif %} <br />
-      <div class="row">
-        <div class="col-sm-4 col-sm-offset-8">
-          <table class="table table-bordered">
-            {% for total in totals %}
-            <tr>
-              <td class="text-right"><strong>{{ total.title }}:</strong></td>
-              <td class="text-right">{{ total.text }}</td>
-            </tr>
-            {% endfor %}
-          </table>
+      <div class="ocs-cart-sum">
+        <dl class="ocs-sum">
+          {% for total in totals %}
+          <div class="ocs-sum-row"><dt>{{ total.title }}</dt><dd>{{ total.text }}</dd></div>
+          {% endfor %}
+        </dl>
+        <div class="ocs-sum-actions">
+          <a href="{{ checkout }}" class="btn btn-primary btn-lg">{{ button_checkout }}</a>
+          <a href="{{ continue }}" class="btn btn-default">{{ button_shopping }}</a>
         </div>
-      </div>
-      <div class="buttons clearfix">
-        <div class="pull-left"><a href="{{ continue }}" class="btn btn-default">{{ button_shopping }}</a></div>
-        <div class="pull-right"><a href="{{ checkout }}" class="btn btn-primary">{{ button_checkout }}</a></div>
       </div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>

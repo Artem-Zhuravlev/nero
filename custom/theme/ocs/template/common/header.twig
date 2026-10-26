@@ -94,7 +94,22 @@
       {% endif %}
     </ul>
     {% endif %}
-    <div class="ocs-util-end">{{ blog_menu }}{{ language }}{{ currency }}</div>
+    <div class="ocs-util-end">
+      {% if ocs_top %}
+      <div class="ocs-top">
+        {% if ocs_top.blog %}<a class="ocs-top-link{% if ocs_top.blog.active %} is-active{% endif %}" href="{{ ocs_top.blog.href }}"{% if ocs_top.blog.active %} aria-current="page"{% endif %}>{{ ocs_top.blog.title }}</a>{% endif %}
+        {% if ocs_top.sale %}<a class="ocs-top-link ocs-top-sale{% if ocs_top.sale.active %} is-active{% endif %}" href="{{ ocs_top.sale.href }}"{% if ocs_top.sale.active %} aria-current="page"{% endif %}><svg class="ocs-i" aria-hidden="true"><use href="#i-percent"/></svg>{{ ocs_top.sale.title }}</a>{% endif %}
+        {% if ocs_top.pages %}
+        <div class="dropdown ocs-top-drop">
+          <button type="button" class="ocs-util-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">{{ ocs_top.title }} <svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            {% for page in ocs_top.pages %}<li><a href="{{ page.href }}"{% if page.active %} aria-current="page" class="is-active"{% endif %}>{{ page.title }}</a></li>{% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% if not (ocs_top and ocs_top.blog) %}{{ blog_menu }}{% endif %}{{ language }}{{ currency }}</div>
   </div>
 {% if ocs_city %}
 <div class="ocs-city-prompt" id="ocs-city-prompt" hidden role="region" aria-label="{{ ocs_city.prompt }}">

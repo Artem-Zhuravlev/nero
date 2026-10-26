@@ -97,6 +97,36 @@ class ControllerExtensionThemeOcs extends Controller {
 
 		$data['info_blocks'] = is_array($blocks) ? array_values($blocks) : array();
 		$data['info_icons'] = array_keys(\Ocs\InfoBlocks::$icons);
+
+		// top menu of the header (SPEC-050)
+		$this->load->model('catalog/information');
+
+		$data['top_pages'] = array();
+
+		foreach ($this->model_catalog_information->getInformations() as $row) {
+			$data['top_pages'][] = array('id' => (int)$row['information_id'], 'title' => $row['title']);
+		}
+
+		$top = isset($this->request->post['theme_ocs_top_menu']) ? $this->request->post['theme_ocs_top_menu'] : (isset($setting_info['theme_ocs_top_menu']) ? $setting_info['theme_ocs_top_menu'] : array());
+		$top = is_array($top) ? $top : array();
+
+		$data['top'] = array(
+			'enabled'  => !empty($top['enabled']),
+			'contacts' => !empty($top['contacts']),
+			'blog'     => !empty($top['blog']),
+			'sale'     => !empty($top['sale']),
+			'title'    => isset($top['title']) && is_array($top['title']) ? $top['title'] : array(),
+			'pages'    => array()
+		);
+
+		foreach (isset($top['pages']) && is_array($top['pages']) ? $top['pages'] : array() as $key => $value) {
+			// saved form: a list of ids in order; posted form: id => [on, sort]
+			if (is_array($value)) {
+				$data['top']['pages'][(int)$key] = array('on' => !empty($value['on']), 'sort' => isset($value['sort']) ? (int)$value['sort'] : 0);
+			} else {
+				$data['top']['pages'][(int)$value] = array('on' => true, 'sort' => ((int)$key + 1) * 10);
+			}
+		}
 		$data['roles'] = $this->roles;
 		$data['version'] = '1.0.0';
 
@@ -165,6 +195,16 @@ class ControllerExtensionThemeOcs extends Controller {
 			}
 
 			$this->request->post['theme_ocs_contact'] = $contact;
+
+			$this->load->model('catalog/information');
+
+			$valid = array();
+
+			foreach ($this->model_catalog_information->getInformations() as $row) {
+				$valid[] = (int)$row['information_id'];
+			}
+
+			$this->request->post['theme_ocs_top_menu'] = \Ocs\TopMenu::sanitize(isset($this->request->post['theme_ocs_top_menu']) ? $this->request->post['theme_ocs_top_menu'] : array(), $codes, $valid);
 
 			$this->request->post['theme_ocs_info_blocks'] = \Ocs\InfoBlocks::sanitize(isset($this->request->post['theme_ocs_info_blocks']) ? $this->request->post['theme_ocs_info_blocks'] : array(), $codes);
 		}

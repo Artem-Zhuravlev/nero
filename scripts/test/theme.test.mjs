@@ -223,7 +223,7 @@ test('listing overrides use the card partial, expose load-more/reset hooks and d
   const cat = read('custom/theme/ocs/template/product/category.twig');
   assert.match(cat, /\{% if description and not ocs_listing %\}/, 'description stays on top when the module is off');
   assert.match(cat, /class="ocs-seo"/);
-  assert.match(cat, /class="ocs-chips"/);
+  assert.match(cat, /class="ocs-subcats"/);
   const keys = (code) => [...read(`custom/extensions/ocs_listing/upload/catalog/language/${code}/extension/ocs_listing/listing.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
   assert.deepEqual(keys('en-gb'), keys('uk-ua'));
   assert.deepEqual(keys('ru-ru'), keys('uk-ua'));
@@ -967,8 +967,14 @@ test('visual identity: home composition pieces', () => {
 // TEST-VIS-006 - verifies REQ-VIS-005 (category: tree sidebar, sort chips in every listing template)
 test('visual identity: category tree and sort chips', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  for (const t of ['category', 'search', 'special', 'manufacturer_info']) assert.ok(read('custom/theme/ocs/template/product/' + t + '.twig').includes('ocs-sortchips'), t);
-  for (const rule of ['.list-group-item, a.list-group-item', '.ocs-sortchips', 'a.list-group-item.active']) assert.ok(css.includes(rule), rule);
+  // SPEC-050 REQ-SRT-001: sorting is the toolbar dropdown only, the sort chips are gone
+  for (const t of ['category', 'search', 'special', 'manufacturer_info']) {
+    const tpl = read('custom/theme/ocs/template/product/' + t + '.twig');
+    assert.ok(!tpl.includes('ocs-sortchips'), t + ' has no sort chips');
+    assert.ok(tpl.includes('id="input-sort"'), t + ' keeps the sort dropdown');
+  }
+  for (const rule of ['.list-group-item, a.list-group-item', 'a.list-group-item.active']) assert.ok(css.includes(rule), rule);
+  assert.ok(!css.includes('.ocs-sortchips'));
 });
 
 // TEST-VIS-007 - verifies REQ-VIS-006 (product: sticky summary bar and zebra specification table)

@@ -51,6 +51,10 @@ class ControllerExtensionOcsListingEvents extends Controller {
 			}
 		}
 
+		if ($route === 'product/category' && !empty($data['categories']) && is_array($data['categories'])) {
+			$this->subcategoryImages($data);
+		}
+
 		$page = array();
 		$filters = array();
 
@@ -94,6 +98,33 @@ class ControllerExtensionOcsListingEvents extends Controller {
 			'reset'     => $reset,
 			'load_more' => sprintf(isset($strings['ocs_load_more']) ? $strings['ocs_load_more'] : '%s', $limit)
 		);
+	}
+
+	/**
+	 * SPEC-050 REQ-SUB-001, 002: the core category page lists children without pictures. The same getCategories() call is repeated and matched by position
+	 * and name; any problem leaves the cards without images and keeps the block.
+	 */
+	private function subcategoryImages(&$data) {
+		try {
+			if (empty($this->request->get['path'])) {
+				return;
+			}
+
+			$parts = explode('_', (string)$this->request->get['path']);
+
+			$this->load->model('catalog/category');
+			$this->load->model('tool/image');
+
+			$rows = array_values($this->model_catalog_category->getCategories((int)end($parts)));
+
+			foreach (array_values($data['categories']) as $i => $category) {
+				if (isset($rows[$i]) && !empty($rows[$i]['image']) && strpos((string)$category['name'], (string)$rows[$i]['name']) === 0) {
+					$data['categories'][$i]['thumb'] = $this->model_tool_image->resize($rows[$i]['image'], 128, 128);
+				}
+			}
+		} catch (\Exception $e) {
+			$this->log->write('[ocs_listing] ' . $e->getMessage());
+		}
 	}
 
 	private function sorts($route, $page, $strings) {

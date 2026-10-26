@@ -116,6 +116,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-047 | [Sticky Product Card, Modern Footer, Contacts and Social Settings](footer-sticky-card/spec.md) | `implemented` |
 | SPEC-048 | [Product Gallery Lightbox, YouTube Video, Store-wide Info Blocks](gallery-video-infoblocks/spec.md) | `implemented` |
 | SPEC-049 | [Product Code, Review/Question Popups, Contact Icons, Inline Language Switch](pdp-popups-contacts-lang/spec.md) | `implemented` |
+| SPEC-050 | [Top Menu, Cart Badge, Cart Page, Subcategory Carousel, Sort Dropdown](topmenu-cart-category/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).
