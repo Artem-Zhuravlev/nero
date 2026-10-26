@@ -79,6 +79,9 @@
               <button type="button" data-toggle="tooltip" class="btn btn-default" title="{{ button_compare }}" aria-label="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
             </div>
           </div>
+          {% if ocs_show_sku and model %}
+          <div class="ocs-code-pill"><span class="ocs-code-label">{{ ocs_px.text_product_code ? ocs_px.text_product_code : text_model }}</span> <span class="ocs-code-val">{{ model }}</span><button type="button" class="ocs-copy" data-ocs-copy="{{ model }}" data-done="{{ ocs_px.text_copied }}" title="{{ ocs_px.text_copy }}" aria-label="{{ ocs_px.text_copy }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-copy"/></svg></button><span class="ocs-sr" role="status" aria-live="polite"></span></div>
+          {% endif %}
           {% if ocs_px.key_attrs %}
           <div class="ocs-key-attrs" role="group" aria-label="{{ ocs_px.text_key_attrs }}">
             {% for a in ocs_px.key_attrs %}<span class="ocs-attr-chip"><span class="text-muted">{{ a.name }}:</span> {{ a.text }}</span>{% endfor %}
@@ -193,7 +196,7 @@
         {% endif %}
         {% if review_status %}
         <section class="ocs-section" id="tab-review">
-          <h2>{{ tab_review }}</h2>
+          <div class="ocs-sec-head"><h2>{{ tab_review }}</h2><button type="button" class="btn btn-primary ocs-js-only" data-ocs-popup="ocs-review-box" aria-haspopup="dialog">{{ text_write }}</button></div>
             {% if ocs_px.stars.total %}
             <div class="ocs-stars-sum">
               <div class="ocs-stars-avg"><strong>{{ ocs_px.stars.avg }}</strong><span>{{ ocs_px.stars.title }}: {{ ocs_px.stars.total }}</span></div>
@@ -203,21 +206,28 @@
             </div>
             {% endif %}
           <div id="review"></div>
+          <div class="ocs-popup-box" id="ocs-review-box" data-close="{{ ocs_px.text_lb_close }}">
           <form class="ocs-form" id="form-review">
-            <h3 class="ocs-form-title">{{ text_write }}</h3>
+            <h2 class="ocs-form-title" id="ocs-review-title">{{ text_write }}</h2>
             {% if review_guest %}
-            <div class="ocs-form-grid">
-              <div class="ocs-field required">
-                <label for="input-name">{{ entry_name }}</label>
-                <input type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" autocomplete="name" />
+            <fieldset class="ocs-field required ocs-rating-field">
+              <legend>{{ entry_rating }}</legend>
+              <div class="ocs-rate">
+                {% for i in 5..1 %}<input type="radio" name="rating" value="{{ i }}" id="input-rating-{{ i }}" /><label for="input-rating-{{ i }}" title="{{ i }}"><span class="ocs-sr">{{ i }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-star"/></svg></label>{% endfor %}
               </div>
-              <fieldset class="ocs-field required ocs-rating-field">
-                <legend>{{ entry_rating }}</legend>
-                <div class="ocs-rate">
-                  {% for i in 5..1 %}<input type="radio" name="rating" value="{{ i }}" id="input-rating-{{ i }}" /><label for="input-rating-{{ i }}" title="{{ i }}"><span class="ocs-sr">{{ i }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-star"/></svg></label>{% endfor %}
-                </div>
-                <p class="ocs-help"><span>{{ entry_bad }}</span> <span>{{ entry_good }}</span></p>
-              </fieldset>
+              <p class="ocs-help"><span>{{ entry_bad }}</span> <span>{{ entry_good }}</span></p>
+            </fieldset>
+            <div class="ocs-field required">
+              <label for="input-name">{{ entry_name }}</label>
+              <input type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" autocomplete="name" />
+            </div>
+            <div class="ocs-field">
+              <label for="input-pros"><span class="ocs-pm ocs-pm-plus" aria-hidden="true">+</span> {{ ocs_px.entry_pros }}</label>
+              <input type="text" name="pros" id="input-pros" maxlength="255" class="form-control" />
+            </div>
+            <div class="ocs-field">
+              <label for="input-cons"><span class="ocs-pm ocs-pm-minus" aria-hidden="true">&minus;</span> {{ ocs_px.entry_cons }}</label>
+              <input type="text" name="cons" id="input-cons" maxlength="255" class="form-control" />
             </div>
             <div class="ocs-field required">
               <label for="input-review">{{ entry_review }}</label>
@@ -225,18 +235,21 @@
               <p class="ocs-help">{{ text_note }}</p>
             </div>
             {{ captcha }}
+            <div id="review-msg" role="status" aria-live="polite"></div>
             <div class="ocs-form-actions">
+              <button type="button" class="btn btn-default ocs-js-only" data-ocs-popup-close>{{ ocs_px.button_cancel }}</button>
               <button type="button" id="button-review" data-loading-text="{{ text_loading }}" class="btn btn-primary">{{ button_continue }}</button>
             </div>
             {% else %}
             <p>{{ text_login }}</p>
             {% endif %}
           </form>
+          </div>
         </section>
         {% endif %}
         {% if ocs_px.qa %}
         <section class="ocs-section" id="tab-questions">
-          <h2>{{ ocs_px.qa.label }}</h2>
+          <div class="ocs-sec-head"><h2>{{ ocs_px.qa.label }}</h2><button type="button" class="btn btn-primary ocs-js-only" data-ocs-popup="ocs-question-box" aria-haspopup="dialog">{{ ocs_px.qa.ask.text_ask_title }}</button></div>
             {% for q in ocs_px.qa.list %}
             <div class="ocs-q">
               <p><strong>{{ q.name }}</strong> <span class="text-muted">{{ q.date }}</span></p>
@@ -246,8 +259,9 @@
             {% else %}
             <p class="text-muted">{{ ocs_px.qa.ask.text_no_questions }}</p>
             {% endfor %}
+          <div class="ocs-popup-box" id="ocs-question-box" data-close="{{ ocs_px.text_lb_close }}">
           <form class="ocs-form ocs-news-form ocs-q-form" action="{{ ocs_px.qa.action }}" method="post" data-failed="{{ ocs_px.qa.ask.error_generic }}" novalidate>
-            <h3 class="ocs-form-title">{{ ocs_px.qa.ask.text_ask_title }}</h3>
+            <h2 class="ocs-form-title" id="ocs-question-title">{{ ocs_px.qa.ask.text_ask_title }}</h2>
             <input type="hidden" name="token" value="{{ ocs_px.qa.token }}" />
             <input type="hidden" name="product_id" value="{{ product_id }}" />
             <div class="ocs-news-hp" aria-hidden="true"><label>Website <input type="text" name="website" value="" tabindex="-1" autocomplete="off" /></label></div>
@@ -270,6 +284,7 @@
               <div class="ocs-news-msg" role="status" aria-live="polite"></div>
             </div>
           </form>
+          </div>
         </section>
         {% endif %}
       </div>
@@ -281,6 +296,9 @@
         </div>
         {% if manufacturer %}<a class="ocs-side-brand" href="{{ manufacturers }}">{{ manufacturer }}</a>{% endif %}
         <p class="ocs-side-title">{{ heading_title }}</p>
+        {% if ocs_show_sku and model %}
+        <div class="ocs-code-pill ocs-code-pill-sm"><span class="ocs-code-label">{{ ocs_px.text_product_code ? ocs_px.text_product_code : text_model }}</span> <span class="ocs-code-val">{{ model }}</span><button type="button" class="ocs-copy" data-ocs-copy="{{ model }}" data-done="{{ ocs_px.text_copied }}" title="{{ ocs_px.text_copy }}" aria-label="{{ ocs_px.text_copy }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-copy"/></svg></button><span class="ocs-sr" role="status" aria-live="polite"></span></div>
+        {% endif %}
         {% if price %}<p class="ocs-side-price">{% if special %}<s>{{ price }}</s> <strong>{{ special }}</strong>{% else %}<strong>{{ price }}</strong>{% endif %}</p>{% endif %}
         {% if ocs_show_stock and ocs_stock %}<p class="ocs-side-stock"><span class="ocs-stock ocs-stock-{{ ocs_stock.state }}"><i class="ocs-dot" aria-hidden="true"></i>{{ ocs_stock.label }}</span></p>{% endif %}
         <div class="ocs-side-actions">
@@ -526,18 +544,24 @@ $('#button-review').on('click', function() {
 			$('#button-review').button('reset');
 		},
 		success: function(json) {
-			$('.alert-dismissible').remove();
+			$('#review-msg').empty();
 
 			if (json['error']) {
-				$('#review').after('<div class="alert alert-danger alert-dismissible"><svg class="ocs-i" aria-hidden="true"><use href="#i-alert"/></svg> ' + json['error'] + '</div>');
+				$('#review-msg').html('<div class="alert alert-danger"><svg class="ocs-i" aria-hidden="true"><use href="#i-alert"/></svg> ' + json['error'] + '</div>');
 			}
 
 			if (json['success']) {
-				$('#review').after('<div class="alert alert-success alert-dismissible"><svg class="ocs-i" aria-hidden="true"><use href="#i-check-circle"/></svg> ' + json['success'] + '</div>');
+				$('#review-msg').html('<div class="alert alert-success"><svg class="ocs-i" aria-hidden="true"><use href="#i-check-circle"/></svg> ' + json['success'] + '</div>');
 
 				$('input[name=\'name\']').val('');
 				$('textarea[name=\'text\']').val('');
 				$('input[name=\'rating\']:checked').prop('checked', false);
+				$('#form-review input[name=\'pros\'], #form-review input[name=\'cons\']').val('');
+
+				// the popup (theme.js) closes after the message has been read
+				if (window.OCS && OCS.popup) {
+					setTimeout(OCS.popup.close, 2200);
+				}
 			}
 		}
 	});

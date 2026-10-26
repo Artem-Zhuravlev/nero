@@ -69,7 +69,7 @@ export function plan() {
 
 /** Overrides written earlier by this logic without the marker (SPEC-042): regenerated so every converted file is reproducible. */
 const HANDMADE_REGENERATE = new Set([
-  'common/language.twig', 'common/currency.twig', 'common/cart.twig', 'blog/menu.twig', 'blog/latest.twig', 'blog/category.twig', 'blog/review.twig', 'product/review.twig',
+  'common/currency.twig', 'common/cart.twig', 'blog/menu.twig', 'blog/latest.twig', 'blog/category.twig', 'blog/review.twig',
 ]);
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

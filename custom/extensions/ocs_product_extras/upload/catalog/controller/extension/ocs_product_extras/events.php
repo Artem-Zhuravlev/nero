@@ -4,6 +4,79 @@
 
 class ControllerExtensionOcsProductExtrasEvents extends Controller {
 	/**
+	 * catalog/model/catalog/review/addReview/after: stores the pros and cons posted with the review form (SPEC-049 REQ-REV-003).
+	 * The core model returns nothing and may have run SELECTs after its INSERT (the mail alert), so the last insert id is not reliable:
+	 * the new row is found again by the values the model has just inserted.
+	 */
+	public function afterAddReview(&$route, &$args, &$output) {
+		if ($this->config->get('config_theme') != 'ocs' || !$this->config->get('module_ocs_product_extras_status') || !isset($this->request->post['pros']) && !isset($this->request->post['cons'])) {
+			return;
+		}
+
+		try {
+			$review_id = 0;
+
+			if (is_array($args) && isset($args[0]) && isset($args[1]['name']) && isset($args[1]['text'])) {
+				$row = $this->db->query("SELECT review_id FROM `" . DB_PREFIX . "review` WHERE product_id = '" . (int)$args[0] . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND author = '" . $this->db->escape($args[1]['name']) . "' AND text = '" . $this->db->escape($args[1]['text']) . "' ORDER BY review_id DESC LIMIT 1")->row;
+
+				$review_id = $row ? (int)$row['review_id'] : 0;
+			}
+
+			$pros = \Ocs\ReviewExtra::clean(isset($this->request->post['pros']) ? $this->request->post['pros'] : '');
+			$cons = \Ocs\ReviewExtra::clean(isset($this->request->post['cons']) ? $this->request->post['cons'] : '');
+
+			if ($review_id > 0 && ($pros !== '' || $cons !== '')) {
+				$this->db->query("REPLACE INTO `" . DB_PREFIX . "ocs_review_extra` SET review_id = '" . $review_id . "', pros = '" . $this->db->escape($pros) . "', cons = '" . $this->db->escape($cons) . "'");
+			}
+		} catch (\Exception $e) {
+			$this->log->write('[ocs_product_extras] ' . $e->getMessage());
+		}
+	}
+
+	/**
+	 * catalog/view/product/review/before: the core review list has no review ids; the same page is read again to attach pros and cons.
+	 * Any problem (for example the table is not migrated yet) leaves the list as it is.
+	 */
+	public function beforeReviewList(&$route, &$data) {
+		if (!is_array($data) || empty($data['reviews']) || empty($this->request->get['product_id']) || $this->config->get('config_theme') != 'ocs' || !$this->config->get('module_ocs_product_extras_status')) {
+			return;
+		}
+
+		try {
+			$page = isset($this->request->get['page']) ? max(1, (int)$this->request->get['page']) : 1;
+
+			$this->load->model('catalog/review');
+
+			$rows = array_values($this->model_catalog_review->getReviewsByProductId((int)$this->request->get['product_id'], ($page - 1) * 5, 5));
+			$ids = array_map('intval', array_column($rows, 'review_id'));
+
+			if (!$ids) {
+				return;
+			}
+
+			$extra = array();
+
+			foreach ($this->db->query("SELECT review_id, pros, cons FROM `" . DB_PREFIX . "ocs_review_extra` WHERE review_id IN (" . implode(',', $ids) . ")")->rows as $row) {
+				$extra[(int)$row['review_id']] = $row;
+			}
+
+			$this->load->language('extension/module/ocs_product_extras');
+
+			foreach ($data['reviews'] as $i => $review) {
+				if (isset($rows[$i]) && isset($extra[(int)$rows[$i]['review_id']])) {
+					$data['reviews'][$i]['pros'] = htmlspecialchars($extra[(int)$rows[$i]['review_id']]['pros'], ENT_QUOTES, 'UTF-8');
+					$data['reviews'][$i]['cons'] = htmlspecialchars($extra[(int)$rows[$i]['review_id']]['cons'], ENT_QUOTES, 'UTF-8');
+				}
+			}
+
+			$data['text_pros'] = $this->language->get('entry_pros');
+			$data['text_cons'] = $this->language->get('entry_cons');
+		} catch (\Exception $e) {
+			$this->log->write('[ocs_product_extras] ' . $e->getMessage());
+		}
+	}
+
+	/**
 	 * Every storefront view: product rows (listings, modules, carousels) get has_video with one query per view (SPEC-048 REQ-VID-003).
 	 */
 	public function markVideo(&$route, &$data) {
@@ -122,7 +195,7 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 				$x['sections'][] = array('href' => '#ocs-similar', 'tab' => false, 'text' => $this->language->get('section_similar'));
 			}
 
-			foreach (array('text_accessories', 'text_similar', 'text_prev', 'text_next', 'text_key_attrs', 'text_code') as $key) {
+			foreach (array('text_accessories', 'text_similar', 'text_prev', 'text_next', 'text_key_attrs', 'text_code', 'text_product_code', 'text_copy', 'text_copied', 'entry_pros', 'entry_cons', 'button_cancel', 'text_lb_close') as $key) {
 				$x[$key] = $this->language->get($key);
 			}
 

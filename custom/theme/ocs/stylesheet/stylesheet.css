@@ -65,6 +65,18 @@
 	--shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 	--scrim: #000000;
 	--on-scrim: #ffffff;
+	--brand-telegram: #1d8fcb;
+	--brand-viber: #6f5bd9;
+	--brand-messenger: #0a74e6;
+	--brand-whatsapp: #148a45;
+	--brand-phone: #148a45;
+	--brand-instagram: #c13584;
+	--brand-facebook: #1877f2;
+	--brand-youtube: #d4231f;
+	--brand-tiktok: #111111;
+	--brand-x: #111111;
+	--brand-linkedin: #0a66c2;
+	--brand-neutral: #5b6773;
 	--t: 200ms ease;
 	--gap-icon: 0.5rem;   /* icon to label, side by side: never below 6px (SPEC-043 REQ-BTN-002) */
 	--gap-stack: 0.5rem;  /* icon over label */
@@ -1838,4 +1850,78 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-info-title a { color: inherit; }
 	.ocs-info-title a:hover { color: var(--accent); }
 	.ocs-info-text { margin-block-start: var(--sp-1); font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.45; }
+}
+
+/* ==== SPEC-049: code pill, review / question popups, contact rows, inline language switch ==== */
+@layer overrides {
+	/* product code */
+	.ocs-code-pill { display: inline-flex; align-items: center; flex-wrap: wrap; gap: var(--sp-2); align-self: start; justify-self: start; padding: var(--sp-1) var(--sp-2) var(--sp-1) var(--sp-4); border: 1px solid var(--border); border-radius: var(--r-pill); background: var(--bg); font-size: var(--fs-sm); }
+	.ocs-code-label { color: var(--text-muted); }
+	.ocs-code-val { font-weight: 700; color: var(--text); user-select: all; }
+	.ocs-copy { display: inline-grid; place-items: center; inline-size: 2rem; block-size: 2rem; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--accent); cursor: pointer; transition: background-color var(--t); }
+	.ocs-copy:hover { background: var(--bg-alt); }
+	.ocs-copy.is-done { color: var(--success); }
+	.ocs-copy .ocs-i { inline-size: 1.125rem; block-size: 1.125rem; }
+	.ocs-code-pill-sm { font-size: var(--fs-xs); padding-inline-start: var(--sp-3); }
+
+	/* popups: the form boxes show inline without JS and only in the dialog with it */
+	.ocs-js-only { display: none; }
+	.ocs-js .ocs-js-only { display: inline-flex; }
+	.ocs-js .ocs-popup-box { display: none; }
+	.ocs-sec-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-block-end: var(--sp-5); }
+	.ocs-sec-head > h2 { margin: 0; }
+	.ocs-modal-center .ocs-modal-dialog.ocs-pop-dialog { max-inline-size: 40rem; padding: var(--sp-5); border-radius: var(--r-lg); }
+	.ocs-pop .ocs-form { margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
+	.ocs-pop .ocs-form-title { font-size: var(--fs-xl); padding-inline-end: var(--sp-6); }
+	/* a fieldset is not a reliable flex container: the label floats to the start, the stars to the end */
+	.ocs-pop .ocs-rating-field { display: block; padding-block: var(--sp-3); border-block: 1px solid var(--border); }
+	.ocs-pop .ocs-rating-field > legend { float: inline-start; inline-size: auto; margin: 0; padding-block-start: var(--sp-3); }
+	.ocs-pop .ocs-rating-field .ocs-rate { float: inline-end; }
+	.ocs-pop .ocs-rating-field .ocs-help { clear: both; }
+	.ocs-pop .ocs-form-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+	.ocs-pop .ocs-form-actions .btn { inline-size: 100%; min-inline-size: 0; border-radius: var(--r-pill); }
+	.ocs-pm { display: inline-grid; place-items: center; inline-size: 1.25rem; font-weight: 800; }
+	.ocs-pm-plus { color: var(--success); }
+	.ocs-pm-minus { color: var(--danger); }
+	#review-msg:empty { display: none; }
+	.ocs-rv-line { display: flex; align-items: flex-start; gap: var(--gap-icon, 0.5rem); margin: var(--sp-1) 0 0; font-size: var(--fs-sm); }
+	.ocs-rv-line .ocs-i { flex: none; margin-block-start: 0.2em; }
+	.ocs-rv-pros .ocs-i { color: var(--success); }
+	.ocs-rv-cons .ocs-i { color: var(--danger); }
+
+	/* contact rows (header dropdown and footer): coloured icon chip + text */
+	.ocs-crow { display: flex; align-items: center; gap: var(--sp-3); min-block-size: 2.75rem; padding-block: var(--sp-1); color: var(--text); font-weight: 600; text-decoration: none; }
+	.ocs-crow:hover { color: var(--accent); text-decoration: none; }
+	.ocs-crow-text { display: grid; min-inline-size: 0; overflow-wrap: anywhere; }
+	.ocs-crow-text small { font-weight: 400; color: var(--text-muted); font-size: var(--fs-xs); }
+	.ocs-chip { flex: none; display: inline-grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; border-radius: 50%; background: var(--brand-neutral); color: var(--on-scrim); }
+	.ocs-chip .ocs-i { inline-size: 1.15rem; block-size: 1.15rem; }
+	.ocs-chip-telegram { background: var(--brand-telegram); }
+	.ocs-chip-viber { background: var(--brand-viber); }
+	.ocs-chip-messenger { background: var(--brand-messenger); }
+	.ocs-chip-whatsapp { background: var(--brand-whatsapp); }
+	.ocs-chip-phone { background: var(--brand-phone); }
+	.ocs-chip-instagram { background: var(--brand-instagram); }
+	.ocs-chip-facebook { background: var(--brand-facebook); }
+	.ocs-chip-youtube { background: var(--brand-youtube); }
+	.ocs-chip-tiktok { background: var(--brand-tiktok); }
+	.ocs-chip-x { background: var(--brand-x); }
+	.ocs-chip-linkedin { background: var(--brand-linkedin); }
+	.ocs-contact-menu { min-inline-size: 16rem; padding: var(--sp-2) var(--sp-3); }
+	/* the utility bar comes before the sticky header in the DOM: its dropdowns (contacts, currency) must paint over the header */
+	nav.ocs-util { position: relative; z-index: calc(var(--z-header) + 1); }
+	.ocs-contact-menu > li > a.ocs-crow { padding-inline: 0; }
+	footer .ocs-soc-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-1) var(--sp-4); }
+	@media (min-width: 768px) {
+		footer .ocs-soc-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+
+	/* language: inline text links instead of a dropdown */
+	.ocs-lang { display: flex; align-items: center; }
+	.ocs-lang-list { display: inline-flex; align-items: center; gap: var(--sp-2); }
+	.ocs-lang-sep { color: var(--border); }
+	.ocs-lang-cur { font-weight: 800; color: var(--text); }
+	.ocs-lang-btn { padding: var(--sp-1) 0; border: 0; background: none; color: var(--text-muted); font: inherit; cursor: pointer; }
+	.ocs-lang-btn:hover { color: var(--accent); }
+	.ocs-lang-btn, .ocs-lang-cur { min-block-size: 2.5rem; display: inline-flex; align-items: center; }
 }

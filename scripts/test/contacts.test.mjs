@@ -25,13 +25,13 @@ test('side card: markup, sticky CSS and forwarding buttons', () => {
 // TEST-FTR-001, TEST-FTR-003 - verifies REQ-FTR-001..004 (footer: contacts column, tel links, icon buttons, details groups, no apps)
 test('footer markup: contacts, icons, details groups, no app links', () => {
   const f = read('custom/theme/ocs/template/common/footer.twig');
-  for (const hook of ['class="ocs-foot-contacts"', '<address class="ocs-foot-row">', 'href="{{ phone.href }}"', 'ocs_shell.hours', 'ocs-soc-list', 'rel="noopener noreferrer"', 'aria-label="{{ link.title }}"', '<details class="ocs-fgroup" open>', '{{ powered }}', 'class="ocs-tabbar"']) assert.ok(f.includes(hook), hook);
+  for (const hook of ['class="ocs-foot-contacts"', '<address class="ocs-foot-row">', 'href="{{ phone.href }}"', 'ocs_shell.hours', 'ocs-soc-list', 'rel="noopener noreferrer"', 'ocs-crow-text', '<details class="ocs-fgroup" open>', '{{ powered }}', 'class="ocs-tabbar"']) assert.ok(f.includes(hook), hook);
   assert.ok(!/ocs_shell\.apps|ocs_apps/.test(f), 'no apps block');
   assert.ok(!/<ul|<li/.test(f.slice(f.indexOf('class="ocs-foot-contacts"'), f.indexOf('class="ocs-foot-groups"')).replace(/<ul class="(ocs-foot-phones|ocs-soc-list)[^>]*>[\s\S]*?<\/ul>/g, '')), 'lists only for phones and icons');
   const js = read('custom/theme/ocs/javascript/theme.js');
   assert.ok(js.includes("(min-width: 768px)") && js.includes('syncGroups'), 'groups follow the 768 px breakpoint');
   const css = read('custom/theme/ocs/stylesheet/stylesheet.css');
-  for (const rule of ['@container foot (min-width: 62rem)', '.ocs-soc {', '.ocs-fgroup > summary', 'max-width: 767.98px']) assert.ok(css.includes(rule), rule);
+  for (const rule of ['@container foot (min-width: 62rem)', '.ocs-crow {', '.ocs-chip {', '.ocs-fgroup > summary', 'max-width: 767.98px']) assert.ok(css.includes(rule), rule);
   for (const k of ['module_ocs_shell_apps']) {
     for (const p of ['custom/extensions/ocs_shell/extension.json', 'custom/extensions/ocs_shell/upload/admin/view/template/extension/module/ocs_shell.twig', 'custom/extensions/ocs_shell/upload/admin/controller/extension/module/ocs_shell.php']) assert.ok(!read(p).includes(k), `${k} in ${p}`);
   }

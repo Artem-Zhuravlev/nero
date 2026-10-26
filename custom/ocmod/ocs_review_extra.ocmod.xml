@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Purpose: shows the pros and cons of a review (read-only) in the admin review form.
+  Owner: SPEC-049 (REQ-REV-005). Event insufficient because: view events can add variables but not new markup to the core template.
+  The block is rendered by the ocs_product_extras admin event and handed over as {{ ocs_review_extra }}.
+  @core-file admin/view/template/catalog/review_form.twig
+  @core-version 3.0.3.7
+-->
+<modification>
+  <name>OCS review extras: pros and cons in the admin review form</name>
+  <code>ocs_review_extra</code>
+  <version>1.0.0</version>
+  <author>OCS</author>
+  <link></link>
+  <file path="admin/view/template/catalog/review_form.twig">
+    <operation>
+      <search><![CDATA[id="input-text" class="form-control">{{ text }}</textarea>]]></search>
+      <add position="after"><![CDATA[{{ ocs_review_extra }}]]></add>
+    </operation>
+  </file>
+</modification>

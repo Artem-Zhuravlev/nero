@@ -1,3 +1,5 @@
+document.documentElement.className += ' ocs-js'; // markers for CSS: forms and buttons that need JS are shown only when it runs (SPEC-049)
+
 /* Theme ocs - namespaced helpers (SPEC-006 REQ-THM-023, SPEC-023 REQ-DSG-013). ES5, no globals except window.OCS.
    OCS.modal is the ONLY popup implementation; modules must use it. Closes on overlay click and Esc. */
 
@@ -1990,6 +1992,145 @@
 	} else {
 		boot();
 	}
+}(window, document));
+
+/* Popups for the review and question forms (SPEC-049 REQ-REV-001): the form box of the page is moved into OCS.modal and back on close, so ids and the
+   core review script keep working. Without JS the boxes stay in the section and are visible. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+	var active = null;
+
+	function restore() {
+		if (!active) {
+			return;
+		}
+
+		while (active.holder.firstChild) {
+			active.box.appendChild(active.holder.firstChild);
+		}
+
+		active = null;
+	}
+
+	OCS.popup = {
+		open: function (id) {
+			var box = document.getElementById(id);
+
+			if (!box || !OCS.modal || active) {
+				return;
+			}
+
+			var holder = document.createElement('div');
+			var title = box.querySelector('.ocs-form-title');
+
+			holder.className = 'ocs-pop';
+			active = {box: box, holder: holder};
+
+			while (box.firstChild) {
+				holder.appendChild(box.firstChild);
+			}
+
+			OCS.modal.open({content: holder, className: 'ocs-pop-dialog', closeLabel: box.getAttribute('data-close') || '', labelledBy: title ? title.id : '', onClose: restore});
+		},
+
+		close: function () {
+			if (active && OCS.modal) {
+				OCS.modal.close();
+			}
+		}
+	};
+
+	document.addEventListener('click', function (e) {
+		var t = e.target.closest ? e.target.closest('[data-ocs-popup], [data-ocs-popup-close], a[href="#form-review"]') : null;
+
+		if (!t) {
+			return;
+		}
+
+		e.preventDefault();
+
+		if (t.hasAttribute('data-ocs-popup-close')) {
+			OCS.popup.close();
+		} else {
+			OCS.popup.open(t.getAttribute('data-ocs-popup') || 'ocs-review-box');
+		}
+	});
+}(window, document));
+
+/* Copy buttons (SPEC-049 REQ-COD-001): the product code goes to the clipboard; the icon turns into a check and a live region announces it. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+
+	function copy(text) {
+		// the Clipboard API needs a secure context and a focused page; any refusal falls back to the textarea trick
+		if (window.navigator.clipboard && window.navigator.clipboard.writeText) {
+			return window.navigator.clipboard.writeText(text).catch(function () {
+				return legacy(text);
+			});
+		}
+
+		return legacy(text);
+	}
+
+	function legacy(text) {
+		return new window.Promise(function (resolve, reject) {
+			var area = document.createElement('textarea');
+
+			area.value = text;
+			area.setAttribute('readonly', '');
+			area.style.position = 'fixed';
+			area.style.opacity = '0';
+			document.body.appendChild(area);
+			area.select();
+
+			try {
+				if (document.execCommand('copy')) {
+					resolve();
+				} else {
+					reject(new Error('copy'));
+				}
+			} catch (err) {
+				reject(err);
+			}
+
+			document.body.removeChild(area);
+		});
+	}
+
+	document.addEventListener('click', function (e) {
+		var b = e.target.closest ? e.target.closest('[data-ocs-copy]') : null;
+
+		if (!b) {
+			return;
+		}
+
+		e.preventDefault();
+
+		copy(b.getAttribute('data-ocs-copy')).then(function () {
+			var live = b.parentNode.querySelector('[role="status"]');
+			var html = b.innerHTML;
+
+			b.innerHTML = OCS.icon('check');
+			b.classList.add('is-done');
+
+			if (live) {
+				live.textContent = b.getAttribute('data-done') || '';
+			}
+
+			window.setTimeout(function () {
+				b.innerHTML = html;
+				b.classList.remove('is-done');
+
+				if (live) {
+					live.textContent = '';
+				}
+			}, 1500);
+		}).catch(function () { /* the code stays selectable */ });
+	});
 }(window, document));
 
 /* Product lightbox (SPEC-048 REQ-LBX-001..004): the gallery images open in a white dialog on OCS.modal: large image, arrows, counter, thumbnails,

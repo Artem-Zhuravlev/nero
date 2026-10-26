@@ -596,7 +596,7 @@ test('product extras: manifest matches migration and language files have identic
   const code = 'ocs_product_extras';
   const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
   assert.equal(ext.spec, 'SPEC-035');
-  const mig = read(`custom/extensions/${code}/db/001_install.php`) + read(`custom/extensions/${code}/db/002_video.php`);
+  const mig = read(`custom/extensions/${code}/db/001_install.php`) + read(`custom/extensions/${code}/db/002_video.php`) + read(`custom/extensions/${code}/db/003_review_extra.php`);
   for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `event ${e}`);
   for (const t of ext.tables) assert.ok(mig.includes(`{{PREFIX}}${t.replace(/^oc_/, '')}`), `table ${t}`);
   for (const s of ext.settings) assert.ok(mig.includes(`'${s}'`), `setting ${s}`);
