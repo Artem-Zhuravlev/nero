@@ -224,7 +224,7 @@ header { padding: var(--sp-4) 0; background: var(--header-bg); }
 footer { background: var(--bg-alt); border: 0; margin-top: var(--sp-7); color: var(--text-muted); font-size: var(--fs-sm); }
 footer a { color: var(--text-muted); }
 footer a:hover { color: var(--text); }
-footer h5 { color: var(--text); font-size: var(--fs-sm); }
+footer :is(h5, h2) { color: var(--text); font-size: var(--fs-sm); }
 footer hr { border-color: var(--border); }
 
 /* ==== 7. Product card and badges (REQ-DSG-012, 014) ================================= */
@@ -627,13 +627,13 @@ li .ocs-stock { font-size: inherit; }
 
 .ocs-pcarousel { margin: var(--sp-6) 0; }
 .ocs-pcarousel-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp-3); }
-.ocs-pcarousel-head h3 { margin: 0; }
+.ocs-pcarousel-head :is(h2, h3) { margin: 0; }
 .ocs-pcarousel .ocs-carousel-item { width: 240px; }
 .ocs-pcarousel .ocs-carousel-item > .product-layout { width: auto; float: none; padding: 0; margin: 0; }
 .ocs-pcarousel .product-thumb { height: 100%; margin-bottom: 0; }
 
 .ocs-news { margin: var(--sp-6) 0; padding: var(--sp-6); background: var(--bg-alt); border-radius: var(--r-lg); }
-.ocs-news h3 { margin-top: 0; }
+.ocs-news :is(h2, h3) { margin-top: 0; }
 .ocs-news-form { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center; }
 .ocs-news-form .form-control { flex: 1 1 260px; }
 .ocs-news-consent { flex-basis: 100%; font-size: var(--fs-sm); color: var(--text-muted); }
@@ -674,7 +674,7 @@ li .ocs-stock { font-size: inherit; }
 .ocs-city-choice:hover, .ocs-city-choice:focus-visible { background: var(--bg-alt); }
 .ocs-city-choice.is-current { font-weight: 600; }
 .ocs-delivery { margin: var(--sp-4) 0; padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
-.ocs-delivery h4 { margin-top: 0; }
+.ocs-delivery h4, .ocs-delivery .ocs-block-title { margin-top: 0; }
 .ocs-delivery-lines li { margin-bottom: var(--sp-2); }
 .ocs-city-tabs a.is-current { font-weight: 600; text-decoration: underline; }
 .ocs-stores { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--sp-4); margin: var(--sp-4) 0; }
@@ -687,7 +687,7 @@ li .ocs-stock { font-size: inherit; }
 /* ==== 23. Instalments and trade-in (SPEC-036) ==== */
 .ocs-credit { margin: var(--sp-4) 0; padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
 .ocs-credit[hidden], .ocs-credit-plans li[hidden] { display: none; }
-.ocs-credit h4 { margin-top: 0; }
+.ocs-credit h4, .ocs-credit .ocs-block-title { margin-top: 0; }
 .ocs-credit-plans li { margin-bottom: var(--sp-2); }
 .ocs-credit-plans label { font-weight: 400; cursor: pointer; }
 .ocs-credit-disclaimer { font-size: var(--fs-sm); margin: var(--sp-2) 0; }
@@ -993,7 +993,7 @@ li .ocs-stock { font-size: inherit; }
 
 	.ocs-pcarousel .ocs-carousel-item { inline-size: clamp(12.5rem, 22cqi, 16.5rem); block-size: auto; }
 	.ocs-pcarousel .ocs-carousel-item > .product-layout { block-size: 100%; }
-	.ocs-pcarousel-head h3 { font-size: var(--fs-xl); }
+	.ocs-pcarousel-head :is(h2, h3) { font-size: var(--fs-xl); }
 
 	.ocs-benefits { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--sp-3); }
 	.ocs-benefits li { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
@@ -1003,7 +1003,7 @@ li .ocs-stock { font-size: inherit; }
 
 	.ocs-news { display: grid; gap: var(--sp-4); background: linear-gradient(135deg, var(--bg-alt), color-mix(in srgb, var(--accent) 10%, var(--bg-alt))); }
 	@container home (min-width: 48rem) { .ocs-news { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); align-items: center; gap: var(--sp-6); } }
-	.ocs-news h3 { margin: 0 0 var(--sp-1); font-size: var(--fs-xl); }
+	.ocs-news :is(h2, h3) { margin: 0 0 var(--sp-1); font-size: var(--fs-xl); }
 	.ocs-news p { margin: 0; color: var(--text-muted); }
 	.ocs-news-form { inline-size: 100%; }
 
@@ -1089,7 +1089,7 @@ li .ocs-stock { font-size: inherit; }
 }
 
 @layer components {
-	footer h5 { margin-block: 0 var(--sp-3); font-size: var(--fs-md); color: var(--text); }
+	footer :is(h5, h2) { margin-block: 0 var(--sp-3); font-size: var(--fs-md); color: var(--text); }
 	footer .list-unstyled { margin: 0; display: grid; gap: var(--sp-2); }
 
 	/* dialogs size their contents by their own width */
@@ -1446,7 +1446,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-hero-wrap.has-menu .ocs-hero-multi .ocs-hero-slide img { aspect-ratio: auto; }
 
 	/* --- section titles with an accent word, chips, "more" links --- */
-	.ocs-sec-title, .ocs-pcarousel-head h3 { margin: 0; font-size: var(--fs-2xl); font-weight: 800; letter-spacing: var(--track); line-height: 1.1; }
+	.ocs-sec-title, .ocs-pcarousel-head :is(h2, h3) { margin: 0; font-size: var(--fs-2xl); font-weight: 800; letter-spacing: var(--track); line-height: 1.1; }
 	.ocs-accent { color: var(--accent); }
 	.ocs-pcarousel-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-4); margin-block-end: var(--sp-4); }
 	.ocs-more { display: inline-flex; align-items: center; gap: var(--sp-1); color: var(--link); font-weight: 600; font-size: var(--fs-sm); }
@@ -1467,7 +1467,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-pcarousel { margin: 0; }
 	.ocs-pcarousel .ocs-carousel { margin: 0; }
 	.ocs-brands { margin: 0; }
-	.ocs-news h3 { font-size: var(--fs-2xl); }
+	.ocs-news :is(h2, h3) { font-size: var(--fs-2xl); }
 }
 
 @layer components {
@@ -1488,7 +1488,7 @@ li .ocs-stock { font-size: inherit; }
 	a.list-group-item.active, a.list-group-item.active:hover { background: color-mix(in srgb, var(--accent) 10%, var(--bg)); color: var(--link); font-weight: 700; border: 0; }
 	.list-group-item .badge { background: none; color: var(--text-muted); font-weight: 500; }
 
-	#column-left h3, #column-left .ocs-cmenu-title, #column-right h3 { margin: var(--sp-5) 0 var(--sp-3); font-size: var(--fs-md); font-weight: 800; }
+	#column-left :is(h2, h3), #column-left .ocs-cmenu-title, #column-right :is(h2, h3) { margin: var(--sp-5) 0 var(--sp-3); font-size: var(--fs-md); font-weight: 800; }
 	.ocs-cmenu { padding: var(--sp-2); background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); }
 	.ocs-cmenu-title { padding: var(--sp-2) var(--sp-3) 0; }
 
@@ -1663,4 +1663,24 @@ li .ocs-stock { font-size: inherit; }
 	.is-in-cart { background: var(--success); color: var(--on-accent); }
 	.ocs-cart-btn.is-in-cart:hover, .btn.is-in-cart:hover { background: var(--success); filter: brightness(0.95); }
 	.is-in-cart .ocs-i { fill: none; }
+}
+
+/* ==== SPEC-045: product info column without lists, prices outside headings ==== */
+@layer overrides {
+	.ocs-block-title { margin: 0; font-size: var(--fs-md); font-weight: 700; }
+	.ocs-pdp-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); }
+	.ocs-pdp-head h1 { flex: 1; min-inline-size: 0; margin: 0; }
+	.ocs-pdp-tools { display: flex; flex: none; gap: var(--sp-2); }
+	.ocs-pdp-tools .btn { inline-size: 2.75rem; block-size: 2.75rem; padding: 0; border-radius: 50%; }
+	.ocs-key-attrs { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: 0; }
+	.ocs-attr-chip { padding: var(--sp-1) var(--sp-3); border-radius: var(--r-pill); background: var(--bg-alt); font-size: var(--fs-sm); }
+	.ocs-facts { display: grid; gap: 0; margin: 0; }
+	.ocs-facts > div { display: flex; justify-content: space-between; gap: var(--sp-3); padding-block: var(--sp-2); border-block-end: 1px solid color-mix(in srgb, var(--border) 60%, transparent); font-size: var(--fs-sm); }
+	.ocs-facts dt { font-weight: 400; color: var(--text-muted); }
+	.ocs-facts dd { margin: 0; font-weight: 600; text-align: end; }
+	.ocs-price-box { display: grid; gap: var(--sp-1); }
+	.ocs-price-box p { margin: 0; }
+	.ocs-price { font-size: var(--fs-3xl); font-weight: 800; line-height: 1; letter-spacing: var(--track); }
+	.ocs-price-old { font-size: var(--fs-md); color: var(--text-muted); }
+	.ocs-price-note { font-size: var(--fs-sm); color: var(--text-muted); }
 }

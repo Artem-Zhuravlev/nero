@@ -1,6 +1,6 @@
 {# Extension: ocs_category_menu. Side category tree up to 3 levels (SPEC-027). Branches on the active path are open; others are toggled by theme.js and remembered in sessionStorage. #}
 <div class="ocs-cmenu" role="navigation" aria-label="{{ heading_title }}">
-  <h3 class="ocs-cmenu-title">{{ heading_title }}</h3>
+  <h2 class="ocs-cmenu-title">{{ heading_title }}</h2>
   <ul class="ocs-cmenu-l1 list-unstyled">
     {% for c1 in categories %}
     <li class="ocs-cmenu-item{% if c1.active %} active open{% endif %}{% if c1.current %} current{% endif %}" data-id="{{ c1.category_id }}">

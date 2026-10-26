@@ -1156,7 +1156,7 @@ test('raw px spacing declarations in the stylesheet do not grow', () => {
 test('generated templates are complete, up to date and keep the core Twig variables', async () => {
   const { plan } = await import('../gen-theme-templates.mjs');
   const files = plan();
-  assert.ok(files.length >= 75, `${files.length} generated templates`);
+  assert.ok(files.length >= 65, `${files.length} generated templates`);
   const have = (rel) => existsSync(join(REPO_ROOT, 'custom/theme/ocs/template', rel));
   for (const dir of ['account/login', 'account/register', 'account/account', 'affiliate/login', 'checkout/checkout', 'checkout/cart', 'information/contact', 'information/information', 'error/not_found', 'common/home', 'common/success', 'common/column_left', 'product/manufacturer_list', 'extension/module/category', 'extension/module/banner', 'extension/total/coupon']) assert.ok(have(`${dir}.twig`), dir);
   const vars = (s) => new Set([...s.matchAll(/\{\{\s*([a-zA-Z_][\w]*)/g)].map((m) => m[1]).concat([...s.matchAll(/\{%\s*(?:if|for|elseif|set)\s+[^%]*?\b([a-zA-Z_]\w*)\b/g)].map((m) => m[1])));

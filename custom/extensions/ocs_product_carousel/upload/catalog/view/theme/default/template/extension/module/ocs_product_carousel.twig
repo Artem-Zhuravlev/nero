@@ -1,7 +1,7 @@
 {# Extension: ocs_product_carousel. Product cards in a swiper carousel (SPEC-033 REQ-HOM-020), optional category tabs (SPEC-039 REQ-VIS-003). #}
 <section class="ocs-pcarousel{% if panels %} has-tabs{% endif %}" id="{{ uid }}" aria-label="{{ heading_title|striptags }}">
   <div class="ocs-pcarousel-head">
-    <h3 class="ocs-sec-title">{{ heading_title }}</h3>
+    <h2 class="ocs-sec-title">{{ heading_title }}</h2>
     {% if show_all and not panels %}<a href="{{ show_all }}" class="ocs-more">{{ text_show_all }} <svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>{% endif %}
   </div>
   {% if panels %}

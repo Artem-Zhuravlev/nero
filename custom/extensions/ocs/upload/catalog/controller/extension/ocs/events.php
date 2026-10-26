@@ -22,6 +22,11 @@ class ControllerExtensionOcsEvents extends Controller {
 			return;
 		}
 
+		// the home page has no visible title: one visually hidden h1 with the store title (SPEC-045 REQ-SEO-001)
+		if ($route === 'common/home') {
+			$data['ocs_h1'] = $this->config->get('config_meta_title');
+		}
+
 		try {
 			$data = \Ocs\Display::apply($data, \Ocs\Display::on($this->config->get('theme_ocs_show_stock')), \Ocs\Display::on($this->config->get('theme_ocs_show_sku')));
 		} catch (\Exception $e) {

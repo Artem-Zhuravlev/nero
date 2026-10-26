@@ -70,58 +70,47 @@
         {% set class = 'col-sm-4' %}
         {% endif %}
         <div class="{{ class }}">
-          <div class="btn-group">
-            <button type="button" data-toggle="tooltip" class="btn btn-default" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>
-            <button type="button" data-toggle="tooltip" class="btn btn-default" title="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
+          <div class="ocs-pdp-head">
+            <h1>{{ heading_title }}</h1>
+            <div class="ocs-pdp-tools">
+              <button type="button" data-toggle="tooltip" class="btn btn-default" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>
+              <button type="button" data-toggle="tooltip" class="btn btn-default" title="{{ button_compare }}" aria-label="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
+            </div>
           </div>
-          <h1>{{ heading_title }}</h1>
           {% if ocs_px.key_attrs %}
-          <ul class="ocs-key-attrs list-unstyled" aria-label="{{ ocs_px.text_key_attrs }}">
-            {% for a in ocs_px.key_attrs %}<li><span class="text-muted">{{ a.name }}:</span> {{ a.text }}</li>{% endfor %}
-          </ul>
+          <div class="ocs-key-attrs" role="group" aria-label="{{ ocs_px.text_key_attrs }}">
+            {% for a in ocs_px.key_attrs %}<span class="ocs-attr-chip"><span class="text-muted">{{ a.name }}:</span> {{ a.text }}</span>{% endfor %}
+          </div>
           {% endif %}
-          <ul class="list-unstyled">
-            {% if manufacturer %}
-            <li>{{ text_manufacturer }} <a href="{{ manufacturers }}">{{ manufacturer }}</a></li>
-            {% endif %}
-            {% if ocs_show_sku %}<li>{{ text_model }} {{ model }}</li>{% endif %}
-            {% if reward %}
-            <li>{{ text_reward }} {{ reward }}</li>
-            {% endif %}
-            {% if ocs_show_stock %}<li>{{ text_stock }} {% if ocs_stock %}<span class="ocs-stock ocs-stock-{{ ocs_stock.state }}">{{ ocs_stock.label }}</span>{% else %}{{ stock }}{% endif %}</li>{% endif %}
-          </ul>
+          {% if manufacturer or ocs_show_sku or ocs_show_stock or reward %}
+          <dl class="ocs-facts">
+            {% if manufacturer %}<div><dt>{{ text_manufacturer }}</dt><dd><a href="{{ manufacturers }}">{{ manufacturer }}</a></dd></div>{% endif %}
+            {% if ocs_show_sku %}<div><dt>{{ text_model }}</dt><dd>{{ model }}</dd></div>{% endif %}
+            {% if reward %}<div><dt>{{ text_reward }}</dt><dd>{{ reward }}</dd></div>{% endif %}
+            {% if ocs_show_stock %}<div><dt>{{ text_stock }}</dt><dd>{% if ocs_stock %}<span class="ocs-stock ocs-stock-{{ ocs_stock.state }}">{{ ocs_stock.label }}</span>{% else %}{{ stock }}{% endif %}</dd></div>{% endif %}
+          </dl>
+          {% endif %}
           {% if price %}
-          <ul class="list-unstyled">
-            {% if not special %}
-            <li>
-              <h2>{{ price }}</h2>
-            </li>
+          <div class="ocs-price-box">
+            {% if special %}
+            <p class="ocs-price-old"><s>{{ price }}</s></p>
+            <p class="ocs-price ocs-price-special">{{ special }}</p>
             {% else %}
-            <li><span style="text-decoration: line-through;">{{ price }}</span></li>
-            <li>
-              <h2>{{ special }}</h2>
-            </li>
+            <p class="ocs-price">{{ price }}</p>
             {% endif %}
-            {% if tax %}
-            <li>{{ text_tax }} {{ tax }}</li>
-            {% endif %}
-            {% if points %}
-            <li>{{ text_points }} {{ points }}</li>
-            {% endif %}
+            {% if tax %}<p class="ocs-price-note">{{ text_tax }} {{ tax }}</p>{% endif %}
+            {% if points %}<p class="ocs-price-note">{{ text_points }} {{ points }}</p>{% endif %}
             {% if discounts %}
-            <li>
-              <hr>
-            </li>
-            {% for discount in discounts %}
-            <li>{{ discount.quantity }}{{ text_discount }}{{ discount.price }}</li>
-            {% endfor %}
+            <div class="ocs-discounts">
+              {% for discount in discounts %}<p class="ocs-price-note">{{ discount.quantity }}{{ text_discount }}{{ discount.price }}</p>{% endfor %}
+            </div>
             {% endif %}
-          </ul>
+          </div>
           {% endif %}
           <div id="product"{% if ocs_preorder %} class="ocs-preorder"{% endif %}> {% include 'ocs/template/ocs/options.twig' %}
             {% if recurrings %}
             <hr>
-            <h3>{{ text_payment_recurring }}</h3>
+            <h2 class="ocs-block-title">{{ text_payment_recurring }}</h2>
             <div class="form-group required">
               <select name="recurring_id" class="form-control">
                 <option value="">{{ text_select }}</option>
@@ -277,7 +266,7 @@
       {% for block in [{'id': 'ocs-accessories', 'title': ocs_px.text_accessories, 'items': ocs_px.accessories}, {'id': 'ocs-similar', 'title': ocs_px.text_similar, 'items': ocs_px.similar}] %}
       {% if block.items %}
       <section class="ocs-pcarousel" id="{{ block.id }}" aria-label="{{ block.title }}">
-        <div class="ocs-pcarousel-head"><h3>{{ block.title }}</h3></div>
+        <div class="ocs-pcarousel-head"><h2>{{ block.title }}</h2></div>
         <div class="ocs-carousel" role="region" aria-label="{{ block.title }}">
           <div class="ocs-carousel-track">
             {% for product in block.items %}
@@ -291,7 +280,7 @@
       {% endif %}
       {% endfor %}
       {% if products %}
-      <h3>{{ text_related }}</h3>
+      <h2 class="ocs-sec-title">{{ text_related }}</h2>
       <div class="row"> {% set i = 0 %}
         {% for product in products %}
         {% if column_left and column_right %}

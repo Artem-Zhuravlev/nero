@@ -7,7 +7,7 @@
       {% for group in ocs_shell.groups %}
       <div class="col-sm-3">
         <details class="ocs-fgroup" open>
-          <summary><h5>{{ group.title }}</h5></summary>
+          <summary><h2 class="ocs-fh">{{ group.title }}</h2></summary>
           <ul class="list-unstyled">
             {% for link in group.links %}
             <li>{% if link.href %}<a href="{{ link.href }}">{{ link.text }}</a>{% else %}{{ link.text }}{% endif %}</li>
@@ -17,7 +17,7 @@
       </div>
       {% endfor %}
       <div class="col-sm-3 ocs-footer-contacts">
-        <h5>{{ ocs_shell.t.ocs_contacts }}</h5>
+        <h2 class="ocs-fh">{{ ocs_shell.t.ocs_contacts }}</h2>
         <ul class="list-unstyled">
           {% for phone in ocs_shell.phones %}
           <li><a href="{{ phone.href }}">{{ phone.text }}</a></li>
@@ -38,7 +38,7 @@
     <div class="row">
       {% if informations %}
       <div class="col-sm-3">
-        <h5>{{ text_information }}</h5>
+        <h2 class="ocs-fh">{{ text_information }}</h2>
         <ul class="list-unstyled">
          {% for information in informations %}
           <li><a href="{{ information.href }}">{{ information.title }}</a></li>
@@ -47,7 +47,7 @@
       </div>
       {% endif %}
       <div class="col-sm-3">
-        <h5>{{ text_service }}</h5>
+        <h2 class="ocs-fh">{{ text_service }}</h2>
         <ul class="list-unstyled">
           <li><a href="{{ contact }}">{{ text_contact }}</a></li>
           <li><a href="{{ return }}">{{ text_return }}</a></li>
@@ -55,7 +55,7 @@
         </ul>
       </div>
       <div class="col-sm-3">
-        <h5>{{ text_extra }}</h5>
+        <h2 class="ocs-fh">{{ text_extra }}</h2>
         <ul class="list-unstyled">
           <li><a href="{{ manufacturer }}">{{ text_manufacturer }}</a></li>
           <li><a href="{{ voucher }}">{{ text_voucher }}</a></li>
@@ -64,7 +64,7 @@
         </ul>
       </div>
       <div class="col-sm-3">
-        <h5>{{ text_account }}</h5>
+        <h2 class="ocs-fh">{{ text_account }}</h2>
         <ul class="list-unstyled">
           <li><a href="{{ account }}">{{ text_account }}</a></li>
           <li><a href="{{ order }}">{{ text_order }}</a></li>
@@ -78,7 +78,7 @@
     <div class="row ocs-footer-extra">
       {% if ocs_shell.social %}
       <div class="col-sm-6">
-        <h5>{{ ocs_shell.t.ocs_social }}</h5>
+        <h2 class="ocs-fh">{{ ocs_shell.t.ocs_social }}</h2>
         <ul class="list-inline">
           {% for link in ocs_shell.social %}
           <li>{% if link.href %}<a href="{{ link.href }}" target="_blank" rel="noopener">{{ link.text }}</a>{% else %}{{ link.text }}{% endif %}</li>
@@ -88,7 +88,7 @@
       {% endif %}
       {% if ocs_shell.apps %}
       <div class="col-sm-6">
-        <h5>{{ ocs_shell.t.ocs_apps }}</h5>
+        <h2 class="ocs-fh">{{ ocs_shell.t.ocs_apps }}</h2>
         <ul class="list-inline">
           {% for link in ocs_shell.apps %}
           <li>{% if link.href %}<a href="{{ link.href }}" target="_blank" rel="noopener">{{ link.text }}</a>{% else %}{{ link.text }}{% endif %}</li>

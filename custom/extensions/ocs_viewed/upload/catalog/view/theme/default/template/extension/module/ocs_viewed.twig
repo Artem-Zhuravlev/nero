@@ -1,6 +1,6 @@
 {# Extension: ocs_viewed. Recently viewed block; the cards are the shared listing partial of the ocs theme (SPEC-030 REQ-VWD-002). #}
 <section class="ocs-viewed">
-  <h3>{{ heading_title }}</h3>
+  <h2 class="ocs-sec-title">{{ heading_title }}</h2>
   <div class="ocs-viewed-grid">
     {% for product in products %}
     {% include 'ocs/template/ocs/card.twig' %}

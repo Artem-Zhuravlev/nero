@@ -1,6 +1,6 @@
 {# Extension: ocs_city. Delivery and payment block of the product page (SPEC-032 REQ-CTY-011); replaced in place when the city changes. #}
 <div class="ocs-delivery" data-url="{{ block_url }}" data-select="{{ select_url }}">
-  <h4>{{ text_title }}</h4>
+  <h2 class="ocs-block-title">{{ text_title }}</h2>
   <p class="ocs-delivery-city">{{ text_city }} <button type="button" class="ocs-city-btn" data-ocs-city-open="1">{{ city }}</button></p>
   <ul class="list-unstyled ocs-delivery-lines">
     {% for l in lines %}
