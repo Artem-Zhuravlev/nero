@@ -9,10 +9,9 @@ const css = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/stylesheet/stylesheet
 
 const blocks = () => {
   const root = /:root\s*\{([^}]*)\}/.exec(css)[1];
-  const dark = /@media \(prefers-color-scheme: dark\)\s*\{\s*:root\s*\{([^}]*)\}/.exec(css)[1];
   const parse = (s) => Object.fromEntries([...s.matchAll(/--([\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()]));
   const light = parse(root);
-  return { light, dark: { ...light, ...parse(dark) } };
+  return { light };
 };
 
 const lum = (hex) => {
@@ -24,9 +23,9 @@ const ratio = (a, b) => {
   return (x + 0.05) / (y + 0.05);
 };
 
-// TEST-DSG-002 - verifies REQ-DSG-002, REQ-DSG-003, REQ-DSG-004 (text contrast >= 4.5:1 in light and dark)
+// TEST-DSG-002 - verifies REQ-DSG-002, REQ-DSG-003, REQ-DSG-004 (text contrast >= 4.5:1; the theme is light only)
 test('token text/background pairs keep contrast >= 4.5', () => {
-  const { light, dark } = blocks();
+  const { light } = blocks();
   const pairs = [
     ['text', 'bg'], ['text', 'bg-alt'], ['text-muted', 'bg'], ['text-muted', 'bg-alt'],
     ['on-accent', 'accent'], ['on-accent', 'accent-hover'], ['on-accent', 'accent-active'],
@@ -36,12 +35,18 @@ test('token text/background pairs keep contrast >= 4.5', () => {
     ['danger', 'bg'], ['danger', 'bg-alt'], ['danger', 'danger-bg'],
     ['badge-fg', 'badge-bg'], ['bg', 'danger'], ['bg', 'success'],
   ];
-  for (const [name, set] of [['light', light], ['dark', dark]]) {
+  for (const [name, set] of [['light', light]]) {
     for (const [fg, bg] of pairs) {
       const r = ratio(set[fg], set[bg]);
       assert.ok(r >= 4.5, `${name}: --${fg} on --${bg} = ${r.toFixed(2)}`);
     }
   }
+});
+
+// TEST-DSG-004 - verifies REQ-DSG-004 (no dark palette: no prefers-color-scheme rules, UA told to stay light)
+test('the theme is light only', () => {
+  assert.ok(!/prefers-color-scheme/.test(css), 'no prefers-color-scheme rules');
+  assert.ok(/color-scheme:\s*light/.test(css), 'color-scheme: light on :root');
 });
 
 // TEST-DSG-001 - verifies REQ-DSG-001, REQ-DSG-002, REQ-DSG-006 (colour only in token block, required tokens exist)
@@ -1019,3 +1024,4 @@ test('visual identity: vertical gallery thumbnails, review summary and the brand
   assert.ok(brands.includes('ocs-brand-more') && brands.includes('{{ more }}'));
   assert.ok(css.includes('.ocs-sticky-buy:not(.is-on) { visibility: hidden;'), 'the hidden summary bar cannot show through the translucent header');
 });
+

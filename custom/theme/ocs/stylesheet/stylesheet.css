@@ -11,6 +11,7 @@
 @layer tokens {
 /* ==== 1. Design tokens ============================================================== */
 :root {
+	color-scheme: light; /* light theme only (REQ-DSG-004): the browser must not auto-darken the page */
 	/* colour: surfaces and text (REQ-DSG-002) */
 	--bg: #ffffff;
 	--bg-alt: #f5f5f7;
@@ -65,33 +66,6 @@
 	--t: 200ms ease;
 }
 
-/* dark mode: same tokens, redefined (REQ-DSG-004) */
-@media (prefers-color-scheme: dark) {
-	:root {
-		--bg: #000000;
-		--bg-alt: #1d1d1f;
-		--text: #f5f5f7;
-		--text-muted: #a1a1a6;
-		--border: #424245;
-		--accent: #2997ff;
-		--accent-hover: #4aa8ff;
-		--accent-active: #0a84ff;
-		--on-accent: #000000;
-		--link: #2997ff;
-		--focus: #2997ff;
-		--overlay: rgba(0, 0, 0, 0.6);
-		--header-bg: rgba(0, 0, 0, 0.72);
-		--success: #30d158;
-		--warning: #ff9f0a;
-		--danger: #ff453a;
-		--success-bg: #0d2a16;
-		--warning-bg: #2e1f05;
-		--danger-bg: #330d0b;
-		--badge-bg: #f5f5f7;
-		--badge-fg: #000000;
-		--shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-	}
-}
 }
 
 @layer legacy {

@@ -23,7 +23,7 @@ type, soft rounded cards.
 Design tokens as CSS custom properties in `custom/theme/ocs/stylesheet/`; base components (buttons, inputs,
 cards, badges, alerts, breadcrumbs, pagination, tables); unified popup/modal component; styling of header, footer,
 menu, category, product and the product card (CSS for all listings; markup override only in `product/category` and `product/product` in this iteration); footer and home are CSS-only; styling hooks (class names/CSS variables) that modules use; styling
-of the built-in ocStore blog; dark mode.
+of the built-in ocStore blog.
 
 ## Out of scope
 
@@ -42,9 +42,8 @@ is forbidden — only the colour/spacing language is borrowed. Screenshots in th
   `--accent-active:#0058b0`, `--link:#0066cc`, `--focus:#0071e3` (2px ring, 2px offset).
 - **REQ-DSG-003** — Status colours: `--success:#1d7a34`, `--warning:#b25000`, `--danger:#d70015`,
   with tinted backgrounds for alerts. Text on every surface keeps contrast >= 4.5:1 (REQ-THM-041).
-- **REQ-DSG-004** — Dark mode via `prefers-color-scheme: dark` redefining the same tokens (`--bg:#000`,
-  `--bg-alt:#1d1d1f`, `--text:#f5f5f7`, `--text-muted:#a1a1a6`, `--border:#424245`, `--accent:#2997ff`,
-  `--link:#2997ff`). No separate stylesheet.
+- **REQ-DSG-004** — Light theme only (changed 2026-10-26 on the owner's request, formerly a dark palette): the stylesheet has no
+  `prefers-color-scheme` rules and declares `color-scheme: light`, so the storefront stays light whatever the OS or browser setting.
 - **REQ-DSG-005** — Typography: system stack `-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto,
   sans-serif`; Inter self-hosted (Latin + Cyrillic subsets, `font-display: swap`) as fallback on non-Apple
   systems (REQ-THM-021). Scale: 12/14/16/19/24/32/48 px, headings weight 600, tight letter-spacing on h1/h2.
@@ -113,12 +112,11 @@ CSS tokens, `window.OCS.modal`, slots (`.ocs-slot-*`), `DESIGN.md`, `vendor-over
 - Browser without CSS variables -> unsupported, no fallback.
 - Very long product name / missing image -> clamped, neutral placeholder.
 - RTL -> not supported in v1.
-- Dark mode and product images with white background -> image container keeps a white matte.
 
 ## Acceptance criteria
 
 - [ ] `DESIGN.md` lists all tokens; no colour literal outside the token block (grep check).
-- [ ] Contrast checks pass for all text/background token pairs in light and dark.
+- [ ] Contrast checks pass for all text/background token pairs.
 - [ ] Home, category, product, blog pages render at 360/768/1280 px without horizontal scroll.
 - [ ] One modal component closes on overlay click and Esc.
 - [ ] Lighthouse accessibility >= 90, performance >= 80 on home (manual).

@@ -4,7 +4,7 @@ Prerequisite: SPEC-006 approved and TASK-THM-001..006 done.
 
 | Task | Description | Fulfills | Check | Status |
 | ---- | ----------- | -------- | ----- | ------ |
-| TASK-DSG-001 | Token block (colour, type, spacing, radius, shadow, motion), light + dark | REQ-DSG-001..006 | TEST-DSG-001 | done |
+| TASK-DSG-001 | Token block (colour, type, spacing, radius, shadow, motion), light only | REQ-DSG-001..006 | TEST-DSG-001 | done |
 | TASK-DSG-002 | Contrast test over all token pairs (Node script in verify) | REQ-DSG-002, 003, 004 | TEST-DSG-002 | done |
 | TASK-DSG-003 | Self-hosted Inter (latin + cyrillic) | REQ-DSG-005 | TEST-DSG-003 | pending |
 | TASK-DSG-004 | Buttons, forms, alerts, breadcrumbs, pagination, tabs, tables | REQ-DSG-010, 011, 015 | TEST-DSG-004 | in-progress |

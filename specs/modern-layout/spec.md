@@ -25,7 +25,7 @@ extension templates that carry layout classes. Core hooks (ids and classes used 
 
 ## Out of scope
 
-New features, a font download (Inter stays optional), dark-theme redesign (tokens keep working in both themes), admin pages,
+New features, a font download (Inter stays optional), admin pages,
 OCFilter/Simple markup.
 
 ## Functional requirements

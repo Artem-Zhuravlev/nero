@@ -12,7 +12,7 @@ Apple.com is used only as a colour/spacing reference.
 | Decision | Choice | Why / alternatives rejected |
 | -------- | ------ | --------------------------- |
 | Styling | Plain CSS custom properties, Bootstrap 3 kept (core JS needs it) | Tailwind/Bootstrap 5 would break core DOM hooks |
-| Dark mode | `prefers-color-scheme` + same tokens | No toggle in v1; less JS |
+| Dark mode | none (light only, `color-scheme: light`) | Removed on the owner's request 2026-10-26 |
 | Fonts | System stack + self-hosted Inter | SF Pro is not licensable for web; CDN forbidden (REQ-THM-021) |
 | Third-party modules | Skin via `vendor-overrides.css` | Never edit OCFilter/Simple |
 | Modules | One spec per module after this spec | Brief lists ~10 modules; too large for one spec |
@@ -28,7 +28,7 @@ Apple.com is used only as a colour/spacing reference.
 
 - Bootstrap 3 + custom tokens drift -> all colours via variables, grep check.
 - Third-party module markup unknown until installed -> vendor-overrides finalised after install.
-- Dark mode contrast regressions -> automated contrast test over token pairs.
+- Contrast regressions -> automated contrast test over token pairs.
 
 ## Proposed follow-up specs (from the client brief, not part of this one)
 

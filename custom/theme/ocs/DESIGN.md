@@ -3,7 +3,7 @@
 ## Re-brand
 
 Edit only section 1 ("Design tokens") of `stylesheet/stylesheet.css`. Nothing else may contain a colour literal
-(`npm test` enforces it). Dark mode redefines the same tokens in the `prefers-color-scheme: dark` block; every
+(`npm test` enforces it). The theme is light only (no dark palette, `color-scheme: light`); every
 text/background pair must keep contrast >= 4.5:1 (also tested).
 
 ## Tokens
