@@ -126,7 +126,8 @@ final class MenuTest extends TestCase
     // verifies REQ-MNU-001 (icon values: Font Awesome class vs image path)
     public function test_icon_kinds(): void
     {
-        $this->assertSame('fa', \Ocs\CategoryTree::icon('fa-mobile')['type']);
+        $this->assertSame('svg', \Ocs\CategoryTree::icon('fa-mobile')['type']);
+        $this->assertSame('i-mobile', \Ocs\CategoryTree::icon('fa-mobile')['value']);
         $this->assertSame('image', \Ocs\CategoryTree::icon('catalog/icons/a.png')['type']);
         $this->assertSame('', \Ocs\CategoryTree::icon('  ')['type']);
         $this->assertSame('image', \Ocs\CategoryTree::icon('fa-"><script>')['type']);

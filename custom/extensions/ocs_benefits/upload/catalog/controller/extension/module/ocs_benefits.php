@@ -22,7 +22,7 @@ class ControllerExtensionModuleOcsBenefits extends Controller {
 			}
 
 			$data['items'][] = array(
-				'icon'  => preg_match('/^[a-z0-9-]{1,32}$/', isset($item['icon']) ? $item['icon'] : '') ? $item['icon'] : 'check',
+				'icon'  => \Ocs\Icons::symbol(preg_match('/^[a-z0-9-]{1,32}$/', isset($item['icon']) ? $item['icon'] : '') ? $item['icon'] : 'check'),
 				'title' => htmlspecialchars($title, ENT_QUOTES, 'UTF-8'),
 				'text'  => htmlspecialchars(isset($l['text']) ? trim(html_entity_decode((string)$l['text'], ENT_QUOTES, 'UTF-8')) : '', ENT_QUOTES, 'UTF-8')
 			);
@@ -30,7 +30,7 @@ class ControllerExtensionModuleOcsBenefits extends Controller {
 
 		if (!$data['items']) {
 			foreach (array('delivery' => 'truck', 'warranty' => 'shield', 'returns' => 'undo', 'support' => 'headphones') as $key => $icon) {
-				$data['items'][] = array('icon' => $icon, 'title' => $this->language->get('default_' . $key . '_title'), 'text' => $this->language->get('default_' . $key . '_text'));
+				$data['items'][] = array('icon' => \Ocs\Icons::symbol($icon), 'title' => $this->language->get('default_' . $key . '_title'), 'text' => $this->language->get('default_' . $key . '_text'));
 			}
 		}
 

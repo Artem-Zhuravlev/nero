@@ -18,9 +18,7 @@
         <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
         <p class="ocs-desc">{{ product.description }}</p>
         {% if product.rating %}
-        <div class="rating"> {% for i in 1..5 %}
-          {% if product.rating < i %} <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> {% else %} <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>{% endif %}
-          {% endfor %}{% if product.reviews %} <span class="ocs-reviews">({{ product.reviews }})</span>{% endif %} </div>
+        <div class="rating"> {% include 'ocs/template/ocs/rating.twig' with {'value': product.rating} only %}{% if product.reviews %} <span class="ocs-reviews">({{ product.reviews }})</span>{% endif %} </div>
         {% endif %}
         {% if product.ocs_stock %}<div class="ocs-stock ocs-stock-{{ product.ocs_stock.state }}"><i class="ocs-dot" aria-hidden="true"></i>{{ product.ocs_stock.label }}</div>{% endif %}
         <div class="ocs-buy-row">

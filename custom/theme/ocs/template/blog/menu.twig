@@ -1,0 +1,23 @@
+{# @core-file catalog/view/theme/default/template/blog/menu.twig @core-version 3.0.3.7 #}
+	<div class="pull-left">
+	<div class="btn-group">
+    <button class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+	<svg class="ocs-i" aria-hidden="true"><use href="#i-book"/></svg> <span class="hidden-xs hidden-sm hidden-md">{{ text_blog }}</span> <svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+	</button>
+	<ul class="dropdown-menu">
+	{% for category in categories %}
+        {% if category.children %}
+        <li><a href="{{ category.href }}">{{ category.name }}</a></li>
+            {% for children in category.children|batch(category.children|length / category.column|round(1, 'ceil')) %}   
+				{% for child in children %}
+                <li><a href="{{ child.href }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-right"/></svg> {{ child.name }}</a></li>
+				{% endfor %}
+			{% endfor %}
+		{% else %}
+        <li><a href="{{ category.href }}">{{ category.name }}</a></li>
+        {% endif %}
+	{% endfor %}
+	<li><a href="{{ blog }}" class="see-all">{{ text_all }} {{ text_blog }}</a></li>
+	</ul>
+	</div>
+	</div>

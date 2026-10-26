@@ -3,7 +3,7 @@
 <div id="product-manufacturer" class="container">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
-    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    <li><a href="{{ breadcrumb.href }}">{% if 'fa-home' in breadcrumb.text %}<svg class="ocs-i" aria-hidden="true"><use href="#i-home"/></svg>{% else %}{{ breadcrumb.text }}{% endif %}</a></li>
     {% endfor %}
   </ul>
   <div class="row">{{ column_left }}
@@ -29,8 +29,8 @@
       <div class="row">
         <div class="col-md-2 col-sm-6 hidden-xs">
           <div class="btn-group btn-group-sm">
-            <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_list }}"><i class="fa fa-th-list"></i></button>
-            <button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_grid }}"><i class="fa fa-th"></i></button>
+            <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_list }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-view-list"/></svg></button>
+            <button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_grid }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-grid"/></svg></button>
           </div>
         </div>
         <div class="col-md-3 col-sm-6">

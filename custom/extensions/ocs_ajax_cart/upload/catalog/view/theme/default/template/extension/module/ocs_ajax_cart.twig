@@ -17,7 +17,7 @@
             <button type="button" class="ocs-cart-plus" aria-label="{{ text_plus }}">+</button>
           </div>
           {% if line.total %}<div class="ocs-cart-price"><strong>{{ line.total }}</strong>{% if line.quantity > 1 %}<small>{{ line.price }}</small>{% endif %}</div>{% endif %}
-          <button type="button" class="ocs-cart-remove" aria-label="{{ text_remove }}"><i class="fa fa-trash-o"></i></button>
+          <button type="button" class="ocs-cart-remove" aria-label="{{ text_remove }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-trash"/></svg></button>
         </div>
       </div>
     </li>

@@ -22,7 +22,7 @@ $_['column_popular']      = 'Popular';
 $_['column_banner_image'] = 'Promo tile image';
 $_['column_banner_url']   = 'Promo tile link';
 
-$_['help_extras']         = 'Icon: a Font Awesome class such as fa-mobile or a path of an uploaded image. Promo tile is shown at the end of the category fly-out.';
+$_['help_extras']         = 'Icon: a name such as mobile, laptop, tablet, desktop, headphones, camera, plug, truck, gift (also written fa-mobile; shown as an SVG icon of the theme, unknown names show a dot) or a path of an uploaded image. Promo tile is shown at the end of the category fly-out.';
 
 $_['error_permission']    = 'Warning: You do not have permission to modify the mega menu!';
 $_['error_values']        = 'Levels must be 1-3, columns 1-5, brands 1-20 and behaviour hover or click!';

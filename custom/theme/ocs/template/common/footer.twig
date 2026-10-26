@@ -104,11 +104,11 @@
 </footer>
 {% if ocs_shell and ocs_shell.mobile_bar %}
 <nav class="ocs-tabbar" aria-label="{{ ocs_shell.t.ocs_tabbar }}">
-  <a href="{{ ocs_shell.home }}"><i class="fa fa-home"></i><span>{{ ocs_shell.t.ocs_tab_home }}</span></a>
-  <button type="button" id="ocs-tab-catalog"><i class="fa fa-bars"></i><span>{{ ocs_shell.t.ocs_tab_catalog }}</span></button>
-  <a href="{{ ocs_shell.cart }}"><i class="fa fa-shopping-cart"></i><span>{{ ocs_shell.t.ocs_tab_cart }}</span></a>
-  <a href="{{ wishlist }}"><i class="fa fa-heart"></i><span>{{ ocs_shell.t.ocs_tab_lists }}</span></a>
-  <a href="{{ account }}"><i class="fa fa-user"></i><span>{{ ocs_shell.t.ocs_tab_profile }}</span></a>
+  <button type="button" id="ocs-tab-catalog"><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg><span>{{ ocs_shell.t.ocs_tab_catalog }}</span></button>
+  <a href="{{ ocs_shell.compare }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg><span>{{ ocs_shell.t.ocs_tab_compare }}</span></a>
+  <a href="{{ ocs_shell.cart }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg><span>{{ ocs_shell.t.ocs_tab_cart }}</span></a>
+  <a href="{{ wishlist }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg><span>{{ ocs_shell.t.ocs_tab_lists }}</span></a>
+  <a href="{{ account }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg><span>{{ ocs_shell.t.ocs_tab_profile }}</span></a>
 </nav>
 {% endif %}
 {% for style in styles %}

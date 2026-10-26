@@ -6,13 +6,13 @@
     <li class="ocs-cmenu-item{% if c1.active %} active open{% endif %}{% if c1.current %} current{% endif %}" data-id="{{ c1.category_id }}">
       <a href="{{ c1.href }}"{% if c1.current %} aria-current="page"{% endif %}>{{ c1.name }}</a>
       {% if c1.children %}
-      <button type="button" class="ocs-cmenu-toggle" aria-expanded="{{ c1.active ? 'true' : 'false' }}" aria-label="{{ c1.name }}"><i class="fa fa-angle-down"></i></button>
+      <button type="button" class="ocs-cmenu-toggle" aria-expanded="{{ c1.active ? 'true' : 'false' }}" aria-label="{{ c1.name }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
       <ul class="ocs-cmenu-l2 list-unstyled">
         {% for c2 in c1.children %}
         <li class="ocs-cmenu-item{% if c2.active %} active open{% endif %}{% if c2.current %} current{% endif %}" data-id="{{ c2.category_id }}">
           <a href="{{ c2.href }}"{% if c2.current %} aria-current="page"{% endif %}>{{ c2.name }}</a>
           {% if c2.children %}
-          <button type="button" class="ocs-cmenu-toggle" aria-expanded="{{ c2.active ? 'true' : 'false' }}" aria-label="{{ c2.name }}"><i class="fa fa-angle-down"></i></button>
+          <button type="button" class="ocs-cmenu-toggle" aria-expanded="{{ c2.active ? 'true' : 'false' }}" aria-label="{{ c2.name }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
           <ul class="ocs-cmenu-l3 list-unstyled">
             {% for c3 in c2.children %}
             <li class="ocs-cmenu-item{% if c3.current %} current active{% endif %}" data-id="{{ c3.category_id }}"><a href="{{ c3.href }}"{% if c3.current %} aria-current="page"{% endif %}>{{ c3.name }}</a></li>

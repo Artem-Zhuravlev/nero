@@ -11,6 +11,7 @@ $_['ocs_contacts']   = 'Contacts';
 $_['ocs_tab_home']   = 'Home';
 $_['ocs_tab_catalog'] = 'Catalogue';
 $_['ocs_tab_cart']   = 'Cart';
+$_['ocs_tab_compare'] = 'Compare';
 $_['ocs_tab_lists']  = 'Lists';
 $_['ocs_tab_profile'] = 'Profile';
 $_['ocs_tabbar']     = 'Main navigation';

@@ -25,6 +25,11 @@
 
 	OCS.sameOrigin = fix;
 
+	/* Inline SVG icon from the sprite in the header (SPEC-042 REQ-ICN-001); names are the sprite ids without the i- prefix. */
+	OCS.icon = function (name) {
+		return '<svg class="ocs-i" aria-hidden="true"><use href="#i-' + name + '"/></svg>';
+	};
+
 	/* SeoPro (ocStore) answers every GET that carries product_id with a 301 to the SEO URL unless the request is a POST (its AJAX
 	   detection runs before the request object exists, so X-Requested-With does not help). Popup bodies are therefore requested with POST
 	   and the product id travels in the body, never in the URL. */
@@ -749,7 +754,7 @@
 		var button = document.querySelector('#cart > button');
 
 		if (button && json.total_text) {
-			button.innerHTML = '<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json.total_text + '</span>';
+			button.innerHTML = '<span id="cart-total">' + OCS.icon('cart') + ' ' + json.total_text + '</span>';
 		}
 	}
 
@@ -1566,7 +1571,7 @@
 			b.setAttribute('aria-label', label);
 			b.title = label;
 			b.setAttribute('data-product-id', cards[i].closest('.product-layout').getAttribute('data-product-id'));
-			b.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
+			b.innerHTML = OCS.icon('eye');
 			cards[i].appendChild(b);
 		}
 	}
@@ -1629,7 +1634,7 @@
 					// the cart panel (ajaxSuccess hook of theme.js) replaces this popup; without the panel module just close it
 					if (!document.body.getAttribute('data-ocs-cart')) {
 						OCS.modal.close();
-						$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json.total + '</span>');
+						$('#cart > button').html('<span id="cart-total">' + OCS.icon('cart') + ' ' + json.total + '</span>');
 					}
 				}
 			}

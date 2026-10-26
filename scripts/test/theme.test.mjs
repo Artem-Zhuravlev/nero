@@ -894,7 +894,7 @@ test('modern layout: home grid, promo tiles and the benefits module', () => {
 
 // TEST-LAY-005 - verifies REQ-LAY-007 (sidebar grid through :has() and a page container; sticky toolbar)
 test('modern layout: category grid with sidebar, :has() and sticky toolbar', () => {
-  for (const rule of ['.ocs-page > .container { container: page / inline-size; }', ':has(> #content)', '@container page (min-width: 56rem)', ':has(> #column-left):has(> #column-right)', 'position: sticky; inset-block-start: var(--head-h); z-index: 30;', ':has(> div > .btn-group > #list-view)']) assert.ok(css.includes(rule), rule);
+  for (const rule of ['.ocs-page > .container { container: page / inline-size; }', ':has(> #content)', '@container page (min-width: 56rem)', ':has(> #column-left):has(> #column-right)', 'position: sticky; inset-block-start: var(--head-h); z-index: var(--z-sticky);', ':has(> div > .btn-group > #list-view)']) assert.ok(css.includes(rule), rule);
 });
 
 // TEST-LAY-006 - verifies REQ-LAY-008 (product grid: sticky gallery | info card, sections full width below, tabs keep the core ids)
@@ -1050,4 +1050,80 @@ test('popup requests are POSTs with the product id in the body (SeoPro redirects
     const php = readFileSync(join(REPO_ROOT, `custom/extensions/${m}/upload/catalog/controller/extension/module/${m}.php`), 'utf8');
     assert.ok(php.includes("isset($this->request->post['product_id'])"), `${m} reads product_id from POST`);
   }
+});
+
+// ---- SPEC-042: SVG-only icons, rating stars, layer scale, bottom bar ----
+const walkFiles = (dir, ok) => {
+  const out = [];
+  for (const name of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, name.name);
+    if (name.isDirectory()) out.push(...walkFiles(p, ok));
+    else if (ok(p)) out.push(p);
+  }
+  return out;
+};
+const storefrontFiles = () => [
+  ...walkFiles(join(REPO_ROOT, 'custom/theme/ocs/template'), (p) => p.endsWith('.twig')),
+  ...walkFiles(join(REPO_ROOT, 'custom/extensions'), (p) => /[\/]upload[\/]catalog[\/]/.test(p) && /\.(twig|php|js)$/.test(p)),
+  join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'),
+];
+
+// TEST-ICN-001 - verifies REQ-ICN-001, REQ-ICN-004 (no Font Awesome classes in project-owned storefront markup)
+test('project-owned storefront files use no Font Awesome classes', () => {
+  const bad = [];
+  for (const f of storefrontFiles()) {
+    const src = readFileSync(f, 'utf8');
+    if (/class="[^"]*\bfa\b|class='[^']*\bfa\b|\bfa fa-[a-z]/.test(src)) bad.push(f.slice(REPO_ROOT.length + 1));
+  }
+  assert.deepEqual(bad, []);
+});
+
+// TEST-ICN-002 - verifies REQ-ICN-002, REQ-ICN-004, REQ-ICN-021 (every referenced symbol exists in the sprite; sprite stays small)
+test('every SVG symbol the UI references exists in the sprite', () => {
+  const sprite = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/ocs/sprite.twig'), 'utf8');
+  const have = new Set([...sprite.matchAll(/<symbol id="(i-[a-z0-9-]+)"/g)].map((m) => m[1]));
+  assert.ok(Buffer.byteLength(sprite) < 20 * 1024, 'sprite under 20 KB');
+  const used = new Set();
+  for (const f of [...storefrontFiles(), join(REPO_ROOT, 'custom/theme/ocs/template/ocs/sprite.twig')]) {
+    const src = readFileSync(f, 'utf8').replace(/\{#[\s\S]*?#\}/g, '');
+    for (const m of src.matchAll(/href="#(i-[a-z0-9-]+)"/g)) used.add(m[1]);
+    for (const m of src.matchAll(/OCS\.icon\('([a-z0-9-]+)'\)/g)) used.add(`i-${m[1]}`);
+  }
+  const icons = readFileSync(join(REPO_ROOT, 'custom/extensions/ocs/upload/system/library/ocs/icons.php'), 'utf8');
+  for (const m of icons.matchAll(/=> '(i-[a-z0-9-]+)'/g)) used.add(m[1]);
+  used.add('i-star');
+  assert.deepEqual([...used].filter((id) => !have.has(id) && !sprite.includes(`id="${id}"`)), []);
+});
+
+// TEST-STR-001 - verifies REQ-STR-001, REQ-STR-002 (stars are an SVG component with an accessible name; no fa-stack)
+test('rating stars are an accessible SVG component', () => {
+  const rating = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/ocs/rating.twig'), 'utf8');
+  assert.ok(rating.includes('role="img"') && rating.includes('aria-label=') && rating.includes('#i-star'));
+  for (const f of storefrontFiles()) assert.ok(!readFileSync(f, 'utf8').includes('fa-stack'), f);
+  assert.ok(css.includes('.ocs-stars .ocs-star.is-on { fill: currentColor; }'));
+});
+
+// TEST-Z-001 - verifies REQ-Z-001, REQ-Z-002 (one ordered scale; no numeric z-index outside the token block)
+test('z-index values come from the token scale', () => {
+  const tokens = Object.fromEntries([...css.matchAll(/--z-([a-z-]+):\s*(\d+);/g)].map((m) => [m[1], Number(m[2])]));
+  const order = ['base', 'raised', 'pop', 'pop-top', 'sticky', 'tabbar', 'header', 'overlay', 'toast'];
+  for (const n of order) assert.ok(n in tokens, `--z-${n}`);
+  for (let i = 1; i < order.length; i++) assert.ok(tokens[order[i - 1]] < tokens[order[i]], `--z-${order[i - 1]} < --z-${order[i]}`);
+  const withoutTokens = css.replace(/--z-[a-z-]+:\s*\d+;/g, '');
+  assert.deepEqual([...withoutTokens.matchAll(/z-index:\s*-?\d+/g)].map((m) => m[0]), []);
+  for (const f of storefrontFiles()) {
+    const src = readFileSync(f, 'utf8');
+    assert.ok(!/z-index:\s*\d|zIndex\s*=\s*['"]?\d/.test(src), `numeric z-index in ${f}`);
+  }
+});
+
+// TEST-TAB-001 - verifies REQ-TAB-001, REQ-TAB-002, REQ-TAB-003 (no Home, the header's icons, hidden under modals)
+test('bottom bar has no Home link and uses the header icons', () => {
+  const footer = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/common/footer.twig'), 'utf8');
+  const header = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/common/header.twig'), 'utf8') + readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/common/cart.twig'), 'utf8');
+  const bar = /<nav class="ocs-tabbar"[\s\S]*?<\/nav>/.exec(footer)[0];
+  assert.ok(!bar.includes('ocs_shell.home') && !bar.includes('#i-home'));
+  for (const id of ['i-compare', 'i-cart', 'i-heart', 'i-user']) assert.ok(bar.includes(`#${id}`) && header.includes(`#${id}`), id);
+  assert.ok(bar.includes('#i-menu'));
+  assert.ok(css.includes('.ocs-modal-open .ocs-tabbar { visibility: hidden; }'));
 });

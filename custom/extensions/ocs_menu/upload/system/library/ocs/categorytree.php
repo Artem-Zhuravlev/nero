@@ -203,9 +203,9 @@ class CategoryTree {
 	}
 
 	/**
-	 * Renders an icon value: Font Awesome class ("fa-mobile") -> class string, otherwise an image path.
+	 * Renders an icon value: a stored icon name ("fa-mobile", "truck", "i-mobile") -> sprite symbol id (SVG), otherwise an image path.
 	 *
-	 * @return array('type' => 'fa'|'image'|'', 'value' => string)
+	 * @return array('type' => 'svg'|'image'|'', 'value' => string)
 	 */
 	public static function icon($value) {
 		$value = trim((string)$value);
@@ -214,8 +214,8 @@ class CategoryTree {
 			return array('type' => '', 'value' => '');
 		}
 
-		if (preg_match('/^fa-[a-z0-9-]+$/', $value)) {
-			return array('type' => 'fa', 'value' => $value);
+		if (preg_match('/^(fa-|i-)[a-z0-9-]+$/', $value)) {
+			return array('type' => 'svg', 'value' => \Ocs\Icons::symbol($value));
 		}
 
 		return array('type' => 'image', 'value' => $value);

@@ -2,17 +2,17 @@
 <nav id="menu" class="navbar ocs-mega" data-behaviour="{{ behaviour }}" aria-label="{{ text_catalog }}">
   <div class="container">
     <div class="navbar-header"><span id="category" class="visible-xs">{{ text_catalog }}</span>
-      <button type="button" class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-label="{{ text_catalog }}"><i class="fa fa-bars"></i></button>
+      <button type="button" class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-label="{{ text_catalog }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg></button>
     </div>
     <div class="collapse navbar-collapse navbar-ex1-collapse">
       <button type="button" class="ocs-mega-close visible-xs" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-label="{{ text_catalog }}">&times;</button>
-      <button type="button" class="ocs-mega-open hidden-xs" aria-expanded="false" aria-controls="ocs-mega-panel"><i class="fa fa-bars"></i> {{ text_catalog }}</button>
+      <button type="button" class="ocs-mega-open hidden-xs" aria-expanded="false" aria-controls="ocs-mega-panel"><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg> {{ text_catalog }}</button>
       <ul class="ocs-mega-l1 list-unstyled" id="ocs-mega-panel">
         {% for c in categories %}
         <li class="ocs-mega-item{% if c.popular %} ocs-popular{% endif %}{% if c.active %} active{% endif %}{% if c.children %} ocs-has-children{% endif %}">
-          <a href="{{ c.href }}" class="ocs-mega-link">{% if c.icon.type == 'fa' %}<i class="fa {{ c.icon.value }}"></i>{% elseif c.icon.type == 'image' %}<img src="{{ c.icon.src }}" alt="" width="24" height="24" loading="lazy" />{% else %}<i class="ocs-icon-gap" aria-hidden="true"></i>{% endif %}<span>{{ c.name }}</span></a>
+          <a href="{{ c.href }}" class="ocs-mega-link">{% if c.icon.type == 'svg' %}<svg class="ocs-i" aria-hidden="true"><use href="#{{ c.icon.value }}"/></svg>{% elseif c.icon.type == 'image' %}<img src="{{ c.icon.src }}" alt="" width="24" height="24" loading="lazy" />{% else %}<i class="ocs-icon-gap" aria-hidden="true"></i>{% endif %}<span>{{ c.name }}</span></a>
           {% if c.children %}
-          <button type="button" class="ocs-mega-expand" aria-expanded="false" aria-label="{{ c.name }}"><i class="fa fa-angle-right"></i></button>
+          <button type="button" class="ocs-mega-expand" aria-expanded="false" aria-label="{{ c.name }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
           <div class="ocs-mega-fly" style="--ocs-cols: {{ columns }}">
             <div class="ocs-mega-cols">
               {% for g in c.children %}

@@ -2,7 +2,7 @@
 <div id="search" class="input-group"{% if ocs_search %} data-ocs-search="{{ ocs_search.url }}" data-min="{{ ocs_search.min }}" data-page="{{ ocs_search.page }}" data-strings="{{ ocs_search.strings }}"{% endif %}>
   <input type="text" name="search" value="{{ search }}" placeholder="{{ text_search }}" class="form-control input-lg"{% if ocs_search %} autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ocs-search-dd"{% endif %} />
   <span class="input-group-btn">
-    <button type="button" class="btn btn-default btn-lg"><i class="fa fa-search"></i></button>
+    <button type="button" class="btn btn-default btn-lg"><svg class="ocs-i" aria-hidden="true"><use href="#i-search"/></svg></button>
   </span>
   {% if ocs_search %}<div class="ocs-search-dd" id="ocs-search-dd" role="listbox" hidden></div>{% endif %}
 </div>

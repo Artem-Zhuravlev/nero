@@ -1,0 +1,25 @@
+{# @core-file catalog/view/theme/default/template/extension/module/blog_featured.twig @core-version 3.0.3.7 #}
+<h3>{{ heading_title }}</h3>
+<div class="row">
+ {% for article in articles %}
+  <div class="product-layout col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="product-thumb transition">
+      <div class="image"><a href="{{ article.href }}"><img src="{{ article.thumb }}" alt="{{ article.name }}" title="{{ article.name }}" class="img-responsive" /></a></div>
+      <div class="caption">
+        <h4><a href="{{ article.href }}">{{ article.name }}</a></h4>
+        <p>{{ article.description }}</p>
+        {% if article.rating %}
+        <div class="rating">
+          <span class="ocs-stars" role="img" aria-label="{{ article.rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if article.rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span>
+        </div>
+        {% endif %}
+      </div>
+	  <div class="button-group">
+        <button type="button" onclick="location.href = ('{{ article.href }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-share"/></svg> <span class="hidden-xs hidden-sm hidden-md">{{ button_more }}</span></button>
+        <button type="button" data-toggle="tooltip" title="{{ article.date_added }}" "><svg class="ocs-i" aria-hidden="true"><use href="#i-clock"/></svg></button>
+        <button type="button" data-toggle="tooltip" title="{{ text_views }} {{ article.viewed }}" "><svg class="ocs-i" aria-hidden="true"><use href="#i-eye"/></svg></button>
+     </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>

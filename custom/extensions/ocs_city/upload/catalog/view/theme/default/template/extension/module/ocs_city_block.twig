@@ -7,6 +7,6 @@
     <li><strong>{{ l.label }}</strong>{% if l.eta %} &middot; {{ l.eta }}{% endif %} &middot; {{ l.price }}{% if l.note %}<br /><small class="text-muted">{{ l.note }}</small>{% endif %}</li>
     {% endfor %}
   </ul>
-  {% if pickup %}<p class="ocs-delivery-pickup"><i class="fa fa-map-marker"></i> {{ pickup }} <a href="{{ stores_url }}">{{ text_stores }}</a></p>{% endif %}
+  {% if pickup %}<p class="ocs-delivery-pickup"><svg class="ocs-i" aria-hidden="true"><use href="#i-pin"/></svg> {{ pickup }} <a href="{{ stores_url }}">{{ text_stores }}</a></p>{% endif %}
   {% for i in infos %}<p class="ocs-delivery-info"><strong>{{ i.label }}</strong> {{ i.text }}</p>{% endfor %}
 </div>

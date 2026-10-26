@@ -12,7 +12,7 @@
   <div class="ocs-qv-info">
     <h3 id="ocs-qv-title">{{ name }}</h3>
     <p class="text-muted">{% if model %}{{ text_model }} {{ model }} &middot; {% endif %}<span class="ocs-stock ocs-stock-{{ in_stock ? 'in' : 'out' }}">{{ stock }}</span></p>
-    {% if rating %}<div class="rating">{% for i in 1..5 %}{% if rating < i %}<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>{% else %}<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>{% endif %}{% endfor %}</div>{% endif %}
+    {% if rating %}<div class="rating"><span class="ocs-stars" role="img" aria-label="{{ rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span></div>{% endif %}
     {% if price %}
     <p class="price ocs-qv-price">{% if not special %}<span class="price-new">{{ price }}</span>{% else %}<span class="price-new">{{ special }}</span> <span class="price-old">{{ price }}</span>{% endif %}</p>
     {% endif %}

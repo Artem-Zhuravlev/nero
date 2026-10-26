@@ -1,0 +1,2 @@
+{# SPEC-042 REQ-STR-001: rating stars as inline SVG (no icon font). Usage: {% include 'ocs/template/ocs/rating.twig' with {'value': product.rating} only %} #}
+<span class="ocs-stars" role="img" aria-label="{{ value }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if value >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span>

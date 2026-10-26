@@ -11,6 +11,7 @@ $_['ocs_contacts']   = 'Контакты';
 $_['ocs_tab_home']   = 'Главная';
 $_['ocs_tab_catalog'] = 'Каталог';
 $_['ocs_tab_cart']   = 'Корзина';
+$_['ocs_tab_compare'] = 'Сравнение';
 $_['ocs_tab_lists']  = 'Списки';
 $_['ocs_tab_profile'] = 'Профиль';
 $_['ocs_tabbar']     = 'Главная навигация';
