@@ -137,7 +137,12 @@ class ModelExtensionOcsProductExtrasExtras extends Model {
 	 * @return string YouTube id of the product or ''
 	 */
 	public function getVideoId($product_id) {
-		$row = $this->db->query("SELECT video_id FROM `" . DB_PREFIX . "ocs_product_video` WHERE product_id = '" . (int)$product_id . "'")->row;
+		// the video is optional: a store that has not run the 002 migration yet must still get the whole product page (gallery, sections ...)
+		try {
+			$row = $this->db->query("SELECT video_id FROM `" . DB_PREFIX . "ocs_product_video` WHERE product_id = '" . (int)$product_id . "'")->row;
+		} catch (\Exception $e) {
+			return '';
+		}
 
 		return $row && \Ocs\Video::valid($row['video_id']) ? $row['video_id'] : '';
 	}
@@ -155,7 +160,13 @@ class ModelExtensionOcsProductExtrasExtras extends Model {
 
 		$out = array();
 
-		foreach ($this->db->query("SELECT product_id FROM `" . DB_PREFIX . "ocs_product_video` WHERE product_id IN (" . implode(',', $ids) . ")")->rows as $row) {
+		try {
+			$rows = $this->db->query("SELECT product_id FROM `" . DB_PREFIX . "ocs_product_video` WHERE product_id IN (" . implode(',', $ids) . ")")->rows;
+		} catch (\Exception $e) {
+			return $out; // table missing before the migration: no badges, nothing else changes
+		}
+
+		foreach ($rows as $row) {
 			$out[] = (int)$row['product_id'];
 		}
 

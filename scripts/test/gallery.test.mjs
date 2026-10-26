@@ -73,3 +73,14 @@ test('info blocks: theme form editor and product page markup', () => {
   const keys = (l) => [...read(`custom/extensions/ocs/upload/admin/language/${l}/extension/theme/ocs.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
   assert.deepEqual(keys('en-gb'), keys('uk-ua'));
 });
+
+// TEST-VID-005 - verifies REQ-VID-001, REQ-SEC-020 (a store without the video table, i.e. before migration 002, still gets the whole product page data)
+test('video lookups never take the product page data down', () => {
+  const m = read('custom/extensions/ocs_product_extras/upload/catalog/model/extension/ocs_product_extras/extras.php');
+  for (const fn of ['getVideoId', 'getVideoProductIds']) {
+    const body = m.slice(m.indexOf(`function ${fn}(`));
+    const end = body.indexOf('\n\t}\n');
+    const code = body.slice(0, end);
+    assert.ok(/try \{[\s\S]*ocs_product_video[\s\S]*\} catch \([\\]Exception \$e\)/.test(code), `${fn} catches a missing table`);
+  }
+});
