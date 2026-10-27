@@ -3252,3 +3252,50 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		boot();
 	}
 }(window, document));
+
+/* Brand search on the brands page (SPEC-074): hides brands, letters and index links that do not match the typed text. */
+(function (window, document) {
+	'use strict';
+
+	function init() {
+		var input = document.getElementById('ocs-brand-search');
+		if (!input) {
+			return;
+		}
+
+		var groups = [].slice.call(document.querySelectorAll('.ocs-brand-group'));
+		var links = [].slice.call(document.querySelectorAll('#ocs-brand-index a'));
+		var none = document.getElementById('ocs-brand-none');
+
+		input.addEventListener('input', function () {
+			var q = input.value.trim().toLowerCase();
+			var found = 0;
+
+			groups.forEach(function (group) {
+				var shown = 0;
+				[].slice.call(group.querySelectorAll('.ocs-brand-item')).forEach(function (item) {
+					var match = q === '' || item.textContent.toLowerCase().indexOf(q) !== -1;
+					item.hidden = !match;
+					shown += match ? 1 : 0;
+				});
+				group.hidden = shown === 0;
+				found += shown;
+			});
+
+			links.forEach(function (a) {
+				var group = document.querySelector('.ocs-brand-group[data-brand-letter="' + a.getAttribute('data-brand-letter') + '"]');
+				a.hidden = !group || group.hidden;
+			});
+
+			if (none) {
+				none.hidden = found > 0;
+			}
+		});
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+}(window, document));

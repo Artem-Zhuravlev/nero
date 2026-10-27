@@ -2222,3 +2222,6 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-cc-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 	}
 }
+
+/* Brand search on the brands page (SPEC-074) */
+.ocs-brand-search { max-width: 360px; margin-bottom: 15px; }

@@ -53,6 +53,13 @@ class ControllerExtensionOcsEvents extends Controller {
 			$data['ocs_top'] = $this->topMenu();
 		}
 
+		// brand search texts of the brands page (SPEC-074)
+		if ($route === 'product/manufacturer_list') {
+			$strings = $this->load->language('extension/ocs/top');
+			$data['ocs_brand_search'] = isset($strings['text_brand_search']) ? $strings['text_brand_search'] : '';
+			$data['ocs_brand_none'] = isset($strings['text_brand_none']) ? $strings['text_brand_none'] : '';
+		}
+
 		// default footer groups without the hidden links, payment logos switch (SPEC-072)
 		if ($route === 'common/footer') {
 			$data['ocs_foot'] = $this->footer($data);

@@ -140,6 +140,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-071 | [Sidebar Category Item Spacing](sidebar-item-spacing/spec.md) | `implemented` |
 | SPEC-072 | [Footer Menu Visibility, Merged Column, Payment Logos](footer-menu-payments/spec.md) | `implemented` |
 | SPEC-073 | [Product Gallery Stickers Top Right](product-gallery-stickers/spec.md) | `implemented` |
+| SPEC-074 | [Brand Search on Manufacturer List](manufacturer-search/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).
