@@ -944,6 +944,10 @@ li .ocs-stock { font-size: inherit; }
 	#content .row:has(> div > .btn-group > #list-view) > [class*="col-"] { inline-size: auto; float: none; padding: 0; }
 	#content .row:has(> div > .btn-group > #list-view) .form-group { margin: 0; }
 	#content .row:has(> div > .btn-group > #list-view) > :nth-child(3) { margin-inline-start: auto; }
+	/* limit dropdown: plain "label  select" pair instead of Bootstrap's grey addon block */
+	#content .row:has(> div > .btn-group > #list-view) .input-group { display: flex; align-items: center; gap: var(--sp-2); inline-size: auto; }
+	#content .row:has(> div > .btn-group > #list-view) .input-group-addon { display: block; inline-size: auto; padding: 0; border: 0; background: transparent; color: var(--text-muted); font-size: var(--fs-sm, 0.875rem); font-weight: 500; white-space: nowrap; }
+	#content .row:has(> div > .btn-group > #list-view) .input-group .form-control { display: block; float: none; inline-size: auto; min-inline-size: 5rem; border-radius: var(--r-pill, 999px); }
 }
 
 @layer components {
