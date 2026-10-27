@@ -26,6 +26,10 @@ class ControllerExtensionOcsAjaxCartEvents extends Controller {
 		$this->labels($data);
 	}
 
+	public function beforeModule(&$route, &$data) {
+		$this->labels($data);
+	}
+
 	public function beforeSpecial(&$route, &$data) {
 		$this->labels($data);
 	}

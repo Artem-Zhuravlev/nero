@@ -15,6 +15,10 @@ class ControllerExtensionOcsStickersEvents extends Controller {
 		$this->listing($data);
 	}
 
+	public function beforeModule(&$route, &$data) {
+		$this->listing($data);
+	}
+
 	public function beforeSpecial(&$route, &$data) {
 		$this->listing($data);
 	}

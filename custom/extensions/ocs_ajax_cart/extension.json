@@ -3,5 +3,5 @@
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_listing"] },
   "spec": "SPEC-026", "tables": [],
   "settings": ["module_ocs_ajax_cart_status", "module_ocs_ajax_cart_low_stock"],
-  "events": ["ocs_ajax_cart_header_before", "ocs_ajax_cart_product_before", "ocs_ajax_cart_category_before", "ocs_ajax_cart_search_before", "ocs_ajax_cart_manufacturer_before", "ocs_ajax_cart_special_before"],
+  "events": ["ocs_ajax_cart_header_before", "ocs_ajax_cart_product_before", "ocs_ajax_cart_category_before", "ocs_ajax_cart_search_before", "ocs_ajax_cart_manufacturer_before", "ocs_ajax_cart_special_before", "ocs_ajax_cart_module_featured", "ocs_ajax_cart_module_special", "ocs_ajax_cart_module_latest", "ocs_ajax_cart_module_bestseller", "ocs_ajax_cart_module_featured_product"],
   "routes": ["extension/module/ocs_ajax_cart", "extension/ocs_ajax_cart/events"] }

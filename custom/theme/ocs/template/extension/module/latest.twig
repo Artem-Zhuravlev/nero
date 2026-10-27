@@ -1,26 +1,12 @@
 {# @core-file catalog/view/theme/default/template/extension/module/latest.twig @core-version 3.0.3.7 #}
-<h2 class="ocs-sec-title">{{ heading_title }}</h2>
-<div class="row"> {% for product in products %}
-  <div class="product-layout col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="product-thumb transition">
-      <div class="image">{% if product.has_video %}<span class="ocs-vid-badge" role="img" aria-label="{{ text_video }}" title="{{ text_video }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-play"/></svg></span>{% endif %}<a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
-      <div class="caption">
-        <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
-        <p>{{ product.description }}</p>
-        {% if product.rating %}
-        <div class="rating"><span class="ocs-stars" role="img" aria-label="{{ product.rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if product.rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span></div>
-        {% endif %}
-        {% if product.price %}
-        <p class="price"> {% if not product.special %}
-          {{ product.price }}
-          {% else %} <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span> {% endif %}
-          {% if product.tax %} <span class="price-tax">{{ text_tax }} {{ product.tax }}</span> {% endif %} </p>
-        {% endif %} </div>
-      <div class="button-group">
-        <button type="button" onclick="cart.add('{{ product.product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg> <span class="hidden-xs hidden-sm hidden-md">{{ button_cart }}</span></button>
-        <button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>
-        <button type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
-      </div>
-    </div>
+{# SPEC-056: product modules use the shared ocs card partial (REQ-MPC-001). #}
+{% if products %}
+<section class="ocs-modcards">
+  <h2 class="ocs-sec-title">{{ heading_title }}</h2>
+  <div class="ocs-cards">
+    {% for product in products %}
+    {% include 'ocs/template/ocs/card.twig' %}
+    {% endfor %}
   </div>
-  {% endfor %} </div>
+</section>
+{% endif %}

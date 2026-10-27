@@ -23,6 +23,17 @@ class ControllerExtensionOcsListingEvents extends Controller {
 		$this->apply($route, $data, false);
 	}
 
+	/**
+	 * SPEC-056 REQ-MPC-002: card data for the product modules (featured, special, latest, bestseller, featured_product).
+	 */
+	public function beforeModule(&$route, &$data) {
+		if (!is_array($data) || !$this->config->get('library_ocs_listing_status') || $this->config->get('config_theme') != 'ocs') {
+			return;
+		}
+
+		$this->extras($data);
+	}
+
 	private function apply($route, &$data, $replace_sorts) {
 		if (!is_array($data) || !$this->config->get('library_ocs_listing_status') || $this->config->get('config_theme') != 'ocs') {
 			return;
@@ -31,25 +42,7 @@ class ControllerExtensionOcsListingEvents extends Controller {
 		$strings = $this->load->language('extension/ocs_listing/listing');
 		$strings = is_array($strings) ? $strings : array();
 
-		if (!empty($data['products']) && is_array($data['products'])) {
-			$ids = array();
-
-			foreach ($data['products'] as $product) {
-				if (isset($product['product_id'])) {
-					$ids[] = $product['product_id'];
-				}
-			}
-
-			$this->load->model('extension/ocs_listing/listing');
-
-			$extras = $this->model_extension_ocs_listing_listing->getExtras($ids);
-
-			foreach ($data['products'] as $i => $product) {
-				if (isset($product['product_id'], $extras[(int)$product['product_id']])) {
-					$data['products'][$i] = array_merge($product, $extras[(int)$product['product_id']]);
-				}
-			}
-		}
+		$this->extras($data);
 
 		if ($route === 'product/category' && !empty($data['categories']) && is_array($data['categories'])) {
 			$this->subcategoryImages($data);
@@ -98,6 +91,28 @@ class ControllerExtensionOcsListingEvents extends Controller {
 			'reset'     => $reset,
 			'load_more' => sprintf(isset($strings['ocs_load_more']) ? $strings['ocs_load_more'] : '%s', $limit)
 		);
+	}
+
+	private function extras(&$data) {
+		if (!empty($data['products']) && is_array($data['products'])) {
+			$ids = array();
+
+			foreach ($data['products'] as $product) {
+				if (isset($product['product_id'])) {
+					$ids[] = $product['product_id'];
+				}
+			}
+
+			$this->load->model('extension/ocs_listing/listing');
+
+			$extras = $this->model_extension_ocs_listing_listing->getExtras($ids);
+
+			foreach ($data['products'] as $i => $product) {
+				if (isset($product['product_id'], $extras[(int)$product['product_id']])) {
+					$data['products'][$i] = array_merge($product, $extras[(int)$product['product_id']]);
+				}
+			}
+		}
 	}
 
 	/**

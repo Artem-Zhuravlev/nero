@@ -1976,3 +1976,9 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-subcat-img .ocs-i { inline-size: 1.75rem; block-size: 1.75rem; }
 	.ocs-subcat-name { font-size: var(--fs-xs); font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
 }
+
+/* ==== SPEC-056 product modules use the shared card (REQ-MPC-001, 003) ==== */
+@layer layout {
+	.ocs-modcards { margin: var(--sp-6) 0; }
+	#column-left .ocs-cards, #column-right .ocs-cards { grid-template-columns: minmax(0, 1fr); }
+}
