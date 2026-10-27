@@ -130,6 +130,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-061 | [Mobile Product Grid: Always Two Columns](mobile-two-column-grid/spec.md) | `implemented` |
 | SPEC-062 | [Mobile Card Tools Always Visible](mobile-card-tools-visible/spec.md) | `implemented` |
 | SPEC-063 | [Customer Account Area in the Site Style](account-area-style/spec.md) | `implemented` |
+| SPEC-064 | [Wishlist Page as Product Cards](wishlist-cards/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

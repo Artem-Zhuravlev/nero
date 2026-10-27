@@ -22,6 +22,11 @@ class ControllerExtensionOcsBookmarksWishlist extends Controller {
 
 		$data['heading_title'] = $this->language->get('heading_title');
 		$data['text_empty'] = $this->language->get('text_empty');
+		$data['button_cart'] = $this->language->get('button_cart');
+		$data['button_compare'] = $this->language->get('button_compare');
+		$data['button_wishlist'] = $this->language->get('button_wishlist');
+		$data['button_remove'] = $this->language->get('button_remove');
+		$data['text_tax'] = $this->language->get('text_tax');
 		$data['success'] = '';
 
 		$data['breadcrumbs'] = array();
@@ -47,7 +52,7 @@ class ControllerExtensionOcsBookmarksWishlist extends Controller {
 				continue;
 			}
 
-			$image = $product_info['image'] ? $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_wishlist_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_wishlist_height')) : false;
+			$image = $product_info['image'] ? $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height')) : $this->model_tool_image->resize('placeholder.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
 
 			if ($product_info['quantity'] <= 0) {
 				$stock = $product_info['stock_status'];
@@ -59,6 +64,13 @@ class ControllerExtensionOcsBookmarksWishlist extends Controller {
 
 			$show_price = $this->customer->isLogged() || !$this->config->get('config_customer_price');
 
+			$discount = 0;
+			$tax_price = (float)$product_info['special'] ? (float)$product_info['special'] : (float)$product_info['price'];
+
+			if ((float)$product_info['special'] && (float)$product_info['price'] > 0 && (float)$product_info['special'] < (float)$product_info['price']) {
+				$discount = (int)round((1 - (float)$product_info['special'] / (float)$product_info['price']) * 100);
+			}
+
 			$data['products'][] = array(
 				'product_id' => $product_info['product_id'],
 				'thumb'      => $image,
@@ -68,6 +80,10 @@ class ControllerExtensionOcsBookmarksWishlist extends Controller {
 				'price'      => $show_price ? $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']) : false,
 				'special'    => $show_price && (float)$product_info['special'] ? $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']) : false,
 				'minimum'    => $product_info['minimum'] > 0 ? $product_info['minimum'] : 1,
+				'description' => utf8_substr(trim(strip_tags(html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8'))), 0, 100) . '..',
+				'tax'        => $show_price && $this->config->get('config_tax') ? $this->currency->format($tax_price, $this->session->data['currency']) : false,
+				'rating'     => $this->config->get('config_review_status') ? (int)$product_info['rating'] : false,
+				'discount_pct' => $discount,
 				'href'       => $this->url->link('product/product', 'product_id=' . $product_info['product_id']),
 				'remove'     => $this->url->link('extension/ocs_bookmarks/wishlist', 'remove=' . $product_info['product_id'], true)
 			);

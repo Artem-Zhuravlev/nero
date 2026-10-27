@@ -9,7 +9,11 @@
       {% if product.has_video %}<span class="ocs-vid-badge" role="img" aria-label="{{ text_video }}" title="{{ text_video }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-play"/></svg></span>{% endif %}
       {% if product.model %}<span class="ocs-code">{{ product.model }}</span>{% endif %}
       <div class="ocs-card-tools">
+        {% if product.remove %}
+        <a href="{{ product.remove }}" data-ocs-wish-remove="{{ product.product_id }}" class="ocs-tool ocs-tool-remove" title="{{ button_remove }}" aria-label="{{ button_remove }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-x"/></svg></a>
+        {% else %}
         <button type="button" class="ocs-tool" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>
+        {% endif %}
         <button type="button" class="ocs-tool" title="{{ button_compare }}" aria-label="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
       </div>
       <a href="{{ product.href }}" class="ocs-card-img"><img src="{{ product.thumb }}" loading="lazy" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a>

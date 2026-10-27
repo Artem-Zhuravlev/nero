@@ -1308,6 +1308,7 @@ li .ocs-stock { font-size: inherit; }
 	@media (hover: none) { .ocs-tool { opacity: 1; translate: 0 0; } }
 	@container page (max-width: 40rem) { .ocs-tool { opacity: 1; translate: 0 0; } }
 	.ocs-tool:hover { background: var(--bg-alt); color: var(--accent); }
+	.ocs-tool-remove { opacity: 1; translate: 0 0; text-decoration: none; }
 
 	.product-thumb .caption { padding: var(--sp-1) var(--sp-4) var(--sp-3); gap: var(--sp-2); }
 	.product-thumb .caption h4 { font-size: var(--fs-md); font-weight: 600; letter-spacing: 0; line-height: 1.3; }
