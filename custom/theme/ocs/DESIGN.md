@@ -55,7 +55,7 @@ no `!important` is needed (only the reduced-motion and `[hidden]` guards keep it
 
 ## Visual identity (SPEC-039)
 
-- **Type:** Inter variable (latin + cyrillic woff2, self-hosted in `fonts/`, OFL, preloaded, `font-display: swap`) with a metric-compatible
+- **Type:** Gilroy (static weights 400-800, `gilroy-<weight>.woff2` in `fonts/`, licensed, supplied by the owner, preloaded, `font-display: swap`) with a metric-compatible
   fallback face; headings weight 800 with `letter-spacing: -0.02em`; prices use tabular numerals.
 - **Vendor CSS in the lowest layer:** Bootstrap 3, Swiper and Font Awesome are `@import`ed with `layer(reset)`; unlayered vendor CSS would
   otherwise beat every theme rule. Core module CSS (magnific popup, date picker) stays unlayered; it only targets its own classes.

@@ -217,19 +217,19 @@
             </fieldset>
             <div class="ocs-field required">
               <label for="input-name">{{ entry_name }}</label>
-              <input type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" autocomplete="name" />
+              <input placeholder="{{ entry_name }}" type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" autocomplete="name" />
             </div>
             <div class="ocs-field">
               <label for="input-pros"><span class="ocs-pm ocs-pm-plus" aria-hidden="true">+</span> {{ ocs_px.entry_pros }}</label>
-              <input type="text" name="pros" id="input-pros" maxlength="255" class="form-control" />
+              <input type="text" placeholder="{{ ocs_px.entry_pros }}" name="pros" id="input-pros" maxlength="255" class="form-control" />
             </div>
             <div class="ocs-field">
               <label for="input-cons"><span class="ocs-pm ocs-pm-minus" aria-hidden="true">&minus;</span> {{ ocs_px.entry_cons }}</label>
-              <input type="text" name="cons" id="input-cons" maxlength="255" class="form-control" />
+              <input type="text" placeholder="{{ ocs_px.entry_cons }}" name="cons" id="input-cons" maxlength="255" class="form-control" />
             </div>
             <div class="ocs-field required">
               <label for="input-review">{{ entry_review }}</label>
-              <textarea name="text" rows="5" id="input-review" class="form-control"></textarea>
+              <textarea placeholder="{{ entry_review }}" name="text" rows="5" id="input-review" class="form-control"></textarea>
               <p class="ocs-help">{{ text_note }}</p>
             </div>
             {{ captcha }}
@@ -266,16 +266,16 @@
             <div class="ocs-form-grid">
               <div class="ocs-field">
                 <label for="input-q-name">{{ ocs_px.qa.ask.entry_name }}</label>
-                <input type="text" name="name" value="{{ ocs_px.qa.name }}" id="input-q-name" class="form-control" autocomplete="name" />
+                <input placeholder="{{ ocs_px.qa.ask.entry_name }}" type="text" name="name" value="{{ ocs_px.qa.name }}" id="input-q-name" class="form-control" autocomplete="name" />
               </div>
               <div class="ocs-field">
                 <label for="input-q-email">{{ ocs_px.qa.ask.entry_email }}</label>
-                <input type="email" name="email" value="{{ ocs_px.qa.email }}" id="input-q-email" class="form-control" autocomplete="email" />
+                <input placeholder="{{ ocs_px.qa.ask.entry_email }}" type="email" name="email" value="{{ ocs_px.qa.email }}" id="input-q-email" class="form-control" autocomplete="email" />
               </div>
             </div>
             <div class="ocs-field">
               <label for="input-q-text">{{ ocs_px.qa.ask.entry_question }}</label>
-              <textarea name="text" rows="4" id="input-q-text" class="form-control"></textarea>
+              <textarea placeholder="{{ ocs_px.qa.ask.entry_question }}" name="text" rows="4" id="input-q-text" class="form-control"></textarea>
             </div>
             <div class="ocs-form-actions">
               <button type="submit" class="btn btn-primary">{{ ocs_px.qa.ask.button_ask }}</button>

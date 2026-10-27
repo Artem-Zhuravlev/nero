@@ -17,13 +17,14 @@
 	--bg-alt: #f5f5f7;
 	--text: #1d1d1f;
 	--text-muted: #6e6e73;
-	--border: #d2d2d7;
-	--accent: #0071e3;
-	--accent-hover: #0066cc;
-	--accent-active: #0058b0;
+	--border: #f3f3f3;
+	--accent: #000000;
+	--accent-hover: #1d1d1f;
+	--accent-active: #333333;
 	--on-accent: #ffffff;
-	--link: #0066cc;
-	--focus: #0071e3;
+	--link: #000000;
+	--btn-h: 46px; /* button height: 46px desktop, 42px phones */
+	--focus: #000000;
 	--overlay: rgba(0, 0, 0, 0.4);
 	--header-bg: rgba(255, 255, 255, 0.8);
 
@@ -40,7 +41,7 @@
 	--badge-fg: #ffffff;
 
 	/* typography (REQ-DSG-005) */
-	--font: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+	--font: "Gilroy", "Gilroy Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 	--fs-xs: 12px;
 	--fs-sm: 14px;
 	--fs-md: 16px;
@@ -854,7 +855,7 @@ li .ocs-stock { font-size: inherit; }
 		.product-thumb .ocs-desc { display: none; }
 		.product-thumb .button-group { display: grid; grid-template-columns: 1fr 1fr; }
 		.product-thumb .button-group button { flex: none; inline-size: 100%; border-radius: var(--r-pill); }
-		.product-thumb .button-group button:first-child { grid-column: 1 / -1; min-block-size: 2.5rem; }
+		.product-thumb .button-group button:first-child { grid-column: 1 / -1; min-block-size: var(--btn-h); }
 		.product-thumb > .image { padding: var(--sp-3); }
 	}
 	@container card (min-width: 36rem) {
@@ -1021,9 +1022,9 @@ li .ocs-stock { font-size: inherit; }
 	#content > .ocs-pdp > :last-child h2 { margin: 0; font-size: var(--fs-3xl); line-height: 1; }
 	#content > .ocs-pdp #product { display: grid; gap: var(--sp-3); }
 	#content > .ocs-pdp #product > * { margin: 0; }
-	#content > .ocs-pdp #button-cart { border-radius: var(--r-pill); min-block-size: 3rem; font-weight: 600; }
+	#content > .ocs-pdp #button-cart { border-radius: var(--r-pill); min-block-size: var(--btn-h); font-weight: 600; }
 	#content > .ocs-pdp .ocs-buy-slot { display: grid; gap: var(--sp-2); }
-	#content > .ocs-pdp .ocs-buy-slot .btn { margin: 0; border-radius: var(--r-pill); min-block-size: 3rem; }
+	#content > .ocs-pdp .ocs-buy-slot .btn { margin: 0; border-radius: var(--r-pill); min-block-size: var(--btn-h); }
 	#content > .ocs-pdp .form-group { margin: 0; }
 	#content > .ocs-pdp .ocs-credit, #content > .ocs-pdp .ocs-tradein { margin: 0; }
 
@@ -1111,23 +1112,18 @@ li .ocs-stock { font-size: inherit; }
 	}
 }
 
-/* ==== 35. SPEC-039 typography: Inter (self-hosted), type scale (REQ-VIS-001) ================== */
-@font-face {
-	font-family: "Inter"; font-style: normal; font-weight: 400 800; font-display: swap;
-	src: url("../fonts/inter-cyrillic.woff2") format("woff2");
-	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-@font-face {
-	font-family: "Inter"; font-style: normal; font-weight: 400 800; font-display: swap;
-	src: url("../fonts/inter-latin.woff2") format("woff2");
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+/* ==== 35. SPEC-039/067 typography: Gilroy (self-hosted), type scale (REQ-VIS-001) ================== */
+@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/gilroy-regular.woff2") format("woff2"); }
+@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/gilroy-medium.woff2") format("woff2"); }
+@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/gilroy-semibold.woff2") format("woff2"); }
+@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/gilroy-bold.woff2") format("woff2"); }
+@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 800; font-display: swap; src: url("../fonts/gilroy-extrabold.woff2") format("woff2"); }
 /* metric-compatible fallback while the font loads: no layout jump when it swaps in */
-@font-face { font-family: "Inter Fallback"; src: local("Arial"), local("Helvetica"); size-adjust: 107%; ascent-override: 90%; descent-override: 22%; line-gap-override: 0%; }
+@font-face { font-family: "Gilroy Fallback"; src: local("Arial"), local("Helvetica"); size-adjust: 100%; ascent-override: 92%; descent-override: 24%; line-gap-override: 0%; }
 
 @layer base {
 	:root {
-		--font: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+		--font: "Gilroy", "Gilroy Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 		--lh: 1.5;
 		--track: -0.02em;
 	}
@@ -1148,13 +1144,13 @@ li .ocs-stock { font-size: inherit; }
 @layer components {
 	/* --- buttons --- */
 	.btn {
-		display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-block-size: 2.5rem; padding: 0 1.15rem;
+		display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-block-size: var(--btn-h); padding: 0 1.15rem;
 		border: 1px solid transparent; border-radius: var(--r-pill); font-family: var(--font); font-size: var(--fs-sm); font-weight: 600; line-height: 1.2;
 		text-shadow: none; box-shadow: none; white-space: normal; cursor: pointer; text-decoration: none;
 	}
 	.btn:focus-visible, a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 	.btn:active { translate: 0 1px; box-shadow: none; }
-	.btn-lg { min-block-size: 3rem; padding-inline: 1.5rem; font-size: var(--fs-md); border-radius: var(--r-pill); }
+	.btn-lg { min-block-size: var(--btn-h); padding-inline: 1.5rem; font-size: var(--fs-md); border-radius: var(--r-pill); }
 	.btn-sm, .btn-xs { min-block-size: 2rem; padding-inline: 0.9rem; font-size: var(--fs-xs); border-radius: var(--r-pill); }
 	.btn-block { display: flex; inline-size: 100%; }
 	.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
@@ -1551,7 +1547,7 @@ li .ocs-stock { font-size: inherit; }
 	}
 	.btn-block { display: flex; inline-size: 100%; }
 	input.btn { display: inline-block; line-height: normal; }
-	.btn:not(.btn-xs):not(.btn-sm):not(.btn-link):not(.close) { min-block-size: 2.5rem; }
+	.btn:not(.btn-xs):not(.btn-sm):not(.btn-link):not(.close) { min-block-size: var(--btn-h); }
 	#top .btn-link, #top .dropdown-toggle { justify-content: flex-start; }
 	.ocs-link-btn { min-block-size: 2.5rem; padding: var(--sp-2) var(--sp-3); }
 	.ocs-chip { min-block-size: 2.5rem; padding-inline: var(--sp-3); }
@@ -1757,7 +1753,7 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-side-price s { color: var(--text-muted); font-size: var(--fs-sm); }
 		.ocs-side-stock { font-size: var(--fs-xs); }
 		.ocs-side-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--sp-2); margin-block-start: var(--sp-2); }
-		.ocs-side-actions .btn-primary { border-radius: var(--r-pill); min-block-size: 3rem; font-weight: 600; }
+		.ocs-side-actions .btn-primary { border-radius: var(--r-pill); min-block-size: var(--btn-h); font-weight: 600; }
 		.ocs-side-actions .btn-default { inline-size: 3rem; block-size: 3rem; padding: 0; border-radius: 50%; }
 		/* one pinned summary at a time */
 		.ocs-sticky-buy { display: none; }
@@ -1810,7 +1806,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-lb-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-2); margin: 0; }
 	.ocs-lb-price strong { font-size: var(--fs-xl); font-weight: 800; letter-spacing: var(--track); }
 	.ocs-lb-price s { color: var(--text-muted); font-size: var(--fs-sm); }
-	.ocs-lb-buy .btn { min-block-size: 3rem; min-inline-size: 9rem; border-radius: var(--r-pill); font-weight: 600; }
+	.ocs-lb-buy .btn { min-block-size: var(--btn-h); min-inline-size: 9rem; border-radius: var(--r-pill); font-weight: 600; }
 	@media (max-width: 767.98px) {
 		.ocs-lb-stage { grid-template-columns: minmax(0, 1fr); min-block-size: 0; }
 		.ocs-lb-slide { block-size: 52vh; }
@@ -1953,7 +1949,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-sum-row:last-child { padding-block-start: var(--sp-3); border-block-start: 1px solid var(--border); font-size: var(--fs-lg); }
 	.ocs-sum-row:last-child dt { color: var(--text); font-weight: 700; }
 	.ocs-sum-actions { display: grid; gap: var(--sp-2); }
-	.ocs-sum-actions .btn { border-radius: var(--r-pill); min-block-size: 3rem; font-weight: 600; }
+	.ocs-sum-actions .btn { border-radius: var(--r-pill); min-block-size: var(--btn-h); font-weight: 600; }
 	@media (max-width: 767.98px) {
 		.ocs-cart-table > thead { display: none; }
 		.ocs-cart-table, .ocs-cart-table > tbody { display: block; }
@@ -2163,4 +2159,36 @@ li .ocs-stock { font-size: inherit; }
 
 	/* narrow readable forms */
 	#account-edit #content > form, #account-password #content > form, #account-address #content > form, #account-newsletter #content > form, #account-affiliate #content > form { max-inline-size: 40rem; }
+}
+
+/* ==== 67. SPEC-067 button height on phones (REQ-REF-002) ================================= */
+@layer overrides {
+	@media (max-width: 47.99rem) { :root { --btn-h: 42px; } }
+}
+
+/* ==== 68. SPEC-067 contacts page (REQ-REF-006, REQ-REF-007) ============================== */
+@layer components {
+	.ocs-cc-grid { display: grid; gap: var(--sp-4); grid-template-columns: minmax(0, 1fr); margin-block: var(--sp-5); }
+	.ocs-cc-card { display: grid; gap: var(--sp-3); align-content: start; padding: var(--sp-5); background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); }
+	.ocs-cc-card > * { margin: 0; }
+	.ocs-cc-ico { display: inline-grid; place-items: center; inline-size: 3rem; block-size: 3rem; border-radius: 50%; background: var(--bg-alt); color: var(--text); }
+	.ocs-cc-ico .ocs-i { inline-size: 1.4rem; block-size: 1.4rem; }
+	.ocs-cc-h { font-size: var(--fs-md); font-weight: 700; letter-spacing: 0; }
+	.ocs-cc-text { font-style: normal; color: var(--text); line-height: 1.5; }
+	.ocs-cc-text strong { display: block; }
+	.ocs-cc-pre { white-space: pre-line; }
+	.ocs-cc-card .btn { justify-self: start; }
+	.ocs-cc-list { display: grid; gap: var(--sp-2); }
+	.ocs-cc-list a, .ocs-cc-list li { color: var(--text); font-size: var(--fs-lg); font-weight: 700; text-decoration: none; }
+	.ocs-cc-list small { display: block; font-size: var(--fs-xs); font-weight: 400; color: var(--text-muted); }
+	.ocs-contact-form { margin-block: var(--sp-5); padding: var(--sp-5); background: var(--bg-alt); border-radius: var(--r-lg); }
+	.ocs-contact-form legend { border: 0; font-size: var(--fs-xl); font-weight: 800; letter-spacing: var(--track); }
+	.ocs-contact-form .form-control { background-color: var(--bg); border-color: var(--border); }
+	@media (min-width: 48rem) {
+		.ocs-cc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		.ocs-contact-form { padding: var(--sp-6); }
+	}
+	@media (min-width: 75rem) {
+		.ocs-cc-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+	}
 }

@@ -72,7 +72,7 @@
 <div class="form-group{% if option.required %} required {% endif %}">
   <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
   <div class="input-group date">
-    <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD" id="input-option{{ option.product_option_id }}" class="form-control" />
+    <input type="text" placeholder="{{ option.name }}" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD" id="input-option{{ option.product_option_id }}" class="form-control" />
     <span class="input-group-btn">
     <button class="btn btn-default" type="button"><svg class="ocs-i" aria-hidden="true"><use href="#i-calendar"/></svg></button>
     </span></div>
@@ -82,7 +82,7 @@
 <div class="form-group{% if option.required %} required {% endif %}">
   <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
   <div class="input-group datetime">
-    <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
+    <input type="text" placeholder="{{ option.name }}" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
     <span class="input-group-btn">
     <button type="button" class="btn btn-default"><svg class="ocs-i" aria-hidden="true"><use href="#i-calendar"/></svg></button>
     </span></div>
@@ -92,7 +92,7 @@
 <div class="form-group{% if option.required %} required {% endif %}">
   <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
   <div class="input-group time">
-    <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
+    <input type="text" placeholder="{{ option.name }}" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
     <span class="input-group-btn">
     <button type="button" class="btn btn-default"><svg class="ocs-i" aria-hidden="true"><use href="#i-calendar"/></svg></button>
     </span></div>

@@ -133,6 +133,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-064 | [Wishlist Page as Product Cards](wishlist-cards/spec.md) | `implemented` |
 | SPEC-065 | [Account Menu Visible on Phones](account-menu-mobile/spec.md) | `implemented` |
 | SPEC-066 | [Account Menu as a Dropdown on Phones](account-menu-dropdown/spec.md) | `implemented` |
+| SPEC-067 | [Style Refresh (Black Accent, Taller Buttons, Gilroy) and Contacts Page](style-refresh-contacts/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

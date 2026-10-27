@@ -29,6 +29,11 @@ class ControllerExtensionOcsShellEvents extends Controller {
 	 * catalog/view/any/before (SPEC-054): the core "home" breadcrumb is an icon; the theme prints a word instead.
 	 */
 	public function beforeView(&$route, &$data) {
+		// SPEC-067: the designed contacts page reads the same contact data as the footer
+		if ($route === 'information/contact' && is_array($data) && $this->enabled()) {
+			$data['ocs_shell'] = $this->build(true);
+		}
+
 		if (!is_array($data) || empty($data['breadcrumbs']) || !is_array($data['breadcrumbs']) || !$this->enabled()) {
 			return;
 		}

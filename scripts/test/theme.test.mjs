@@ -57,7 +57,7 @@ test('colour literals appear only in the token section; required tokens exist', 
   for (const t of ['bg', 'bg-alt', 'text', 'text-muted', 'border', 'accent', 'link', 'focus', 'success', 'warning', 'danger', 'r-sm', 'r-md', 'r-lg', 'shadow']) {
     assert.ok(light[t], `missing token --${t}`);
   }
-  assert.equal(light.accent, '#0071e3');
+  assert.equal(light.accent, '#000000');
   assert.equal(light.text, '#1d1d1f');
 });
 
@@ -873,23 +873,21 @@ test('modern layout: footer container grid, dialog containers and the stylesheet
   assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'stylesheet within 200 KB');
 });
 
-// TEST-VIS-001 - verifies REQ-VIS-001 (Inter is self-hosted: latin + cyrillic woff2 files, licence note, preload, swap, metric fallback)
-test('visual identity: Inter is self-hosted with preload, swap and a metric-compatible fallback', () => {
+// TEST-VIS-001 / TEST-REF-001 - verifies REQ-VIS-001, REQ-REF-004 (Gilroy font faces, swap, fallback, no third-party font request)
+test('visual identity: Gilroy font faces with swap, preload and a metric-compatible fallback', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  for (const file of ['inter-latin.woff2', 'inter-cyrillic.woff2']) {
-    const bytes = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/fonts', file));
-    assert.equal(bytes.subarray(0, 4).toString('latin1'), 'wOF2', file);
-    assert.ok(bytes.length < 80 * 1024, file + ' stays small');
-  }
-  assert.match(read('custom/theme/ocs/fonts/README.txt'), /SIL Open Font License/);
-  assert.match(css, /font-family: "Inter"; font-style: normal; font-weight: 400 800; font-display: swap;/);
-  assert.match(css, /unicode-range: U\+0301, U\+0400-045F/);
-  assert.match(css, /@font-face \{ font-family: "Inter Fallback"; src: local\("Arial"\)/);
-  assert.match(css, /--font: "Inter", "Inter Fallback"/);
+  for (const file of ['regular', 'medium', 'semibold', 'bold', 'extrabold']) assert.ok(css.includes('../fonts/gilroy-' + file + '.woff2'), file);
+  assert.match(css, /font-family: "Gilroy"; font-style: normal; font-weight: 400; font-display: swap;/);
+  assert.ok(css.includes('@font-face { font-family: "Gilroy Fallback"; src: local("Arial")'));
+  assert.match(css, /--font: "Gilroy", "Gilroy Fallback"/);
+  assert.ok(!css.includes('Inter'), 'no Inter left');
   const header = read('custom/theme/ocs/template/common/header.twig');
-  assert.ok(header.includes('inter-latin.woff2') && header.includes('inter-cyrillic.woff2') && header.includes('rel="preload"'));
-  assert.ok(!/fonts\.(googleapis|gstatic)\.com/.test(css + header), 'no third-party font request');
+  assert.ok(header.includes('gilroy-regular.woff2') && header.includes('rel="preload"'));
+  assert.ok(!/fonts.(googleapis|gstatic).com/.test(css + header), 'no third-party font request');
   assert.ok(css.includes('font-variant-numeric: tabular-nums'));
+  assert.ok(!css.includes('#0071e3') && /--accent: #000000;/.test(css) && /--border: #f3f3f3;/.test(css), 'black accent, light border');
+  assert.match(css, /--btn-h: 46px;/);
+  assert.ok(css.includes("max-width: 47.99rem) { :root { --btn-h: 42px; } }"));
 });
 
 // TEST-VIS-002 - verifies REQ-VIS-007 (base components are restyled inside the components layer)
