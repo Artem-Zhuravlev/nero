@@ -1,6 +1,6 @@
 # SPEC-032 — Cities, Delivery and Pickup Info, Stores, Order Tracking
 
-**Status:** implemented
+**Status:** implemented (removed by SPEC-052)
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-022, 050, 054, 061 · **Depends on:** SPEC-012, SPEC-018, SPEC-031

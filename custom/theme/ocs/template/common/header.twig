@@ -70,9 +70,6 @@
 {% endif %}
 <nav id="top" class="ocs-util" aria-label="{{ text_account }}">
   <div class="container">
-    {% if ocs_city %}
-    <button type="button" class="ocs-city-btn ocs-city-top" data-ocs-city-open="1" data-city="{{ ocs_city.id }}" data-select="{{ ocs_city.select_url }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-pin"/></svg> {{ ocs_city.name }}</button>
-    {% endif %}
     {% if ocs_shell and (ocs_shell.phones or ocs_shell.messengers) %}
     <div class="dropdown ocs-contact">
       <button type="button" class="ocs-util-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">{{ ocs_shell.t.ocs_contacts }} <svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
@@ -88,10 +85,6 @@
       {% for link in ocs_shell.links %}
       <li>{% if link.href %}<a href="{{ link.href }}">{{ link.text }}</a>{% else %}<span>{{ link.text }}</span>{% endif %}</li>
       {% endfor %}
-      {% if ocs_city %}
-      <li class="hidden-xs hidden-sm"><a href="{{ ocs_city.stores }}">{{ ocs_city.stores_text }}</a></li>
-      {% if ocs_city.track %}<li class="hidden-xs hidden-sm"><a href="{{ ocs_city.track }}">{{ ocs_city.track_text }}</a></li>{% endif %}
-      {% endif %}
     </ul>
     {% endif %}
     <div class="ocs-util-end">
@@ -111,13 +104,6 @@
       {% endif %}
       {% if not (ocs_top and ocs_top.blog) %}{{ blog_menu }}{% endif %}{{ language }}{{ currency }}</div>
   </div>
-{% if ocs_city %}
-<div class="ocs-city-prompt" id="ocs-city-prompt" hidden role="region" aria-label="{{ ocs_city.prompt }}">
-  <div class="container"><span>{{ ocs_city.prompt }}</span>
-    <button type="button" class="btn btn-primary btn-sm" data-ocs-city-yes="1">{{ ocs_city.yes }}</button>
-    <button type="button" class="btn btn-default btn-sm" data-ocs-city-open="1" data-select="{{ ocs_city.select_url }}">{{ ocs_city.other }}</button></div>
-</div>
-{% endif %}
 </nav>
 <header class="ocs-head">
   <div class="container ocs-head-grid">

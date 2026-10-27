@@ -1,8 +1,0 @@
-{ "code": "ocs_city", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Cities, Delivery, Stores", "uk-ua": "OCS: міста, доставка, магазини" },
-  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
-  "spec": "SPEC-032",
-  "tables": ["oc_ocs_city", "oc_ocs_city_description", "oc_ocs_city_delivery", "oc_ocs_city_delivery_description", "oc_ocs_store", "oc_ocs_store_description", "oc_ocs_store_stock"],
-  "settings": ["module_ocs_city_status", "module_ocs_city_tracking", "module_ocs_city_pickup_minutes", "module_ocs_city_l"],
-  "events": ["ocs_city_header", "ocs_city_product"],
-  "routes": ["extension/module/ocs_city", "extension/module/ocs_city/select", "extension/module/ocs_city/block", "extension/module/ocs_city/stores", "extension/module/ocs_city/track", "extension/ocs_city/events"] }

@@ -61,7 +61,7 @@ no `!important` is needed (only the reduced-motion and `[hidden]` guards keep it
   otherwise beat every theme rule. Core module CSS (magnific popup, date picker) stays unlayered; it only targets its own classes.
 - **Icons:** the SVG sprite `ocs/template/ocs/sprite.twig` (`<svg class="ocs-i"><use href="#i-cart"/></svg>`, stroke icons coloured by
   `currentColor`); Font Awesome stays for core and third-party markup.
-- **Header:** slim utility row (city, "Contacts" dropdown, links, language, currency) + main row (logo, catalogue pill, search, labelled
+- **Header:** slim utility row ("Contacts" dropdown, links, language, currency) + main row (logo, catalogue pill, search, labelled
   actions). Counters are mirrored by `theme.js` from the core text into `data-count` badges; the core cart button keeps its markup (an icon
   mask and a JS label take over), and labels are `<small>` because core rewrites every `<span>` inside `#wishlist-total`.
 - **Card:** overlay tools (wishlist, compare) revealed on hover/focus (always on touch), product code, stock dot, price row with a round cart

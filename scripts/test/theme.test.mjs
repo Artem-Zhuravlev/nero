@@ -420,7 +420,7 @@ test('ajax search: manifest, endpoint, template hooks and theme.js are consisten
 
   const js = read('custom/theme/ocs/javascript/theme.js');
   const from = js.indexOf('AJAX search (SPEC-028)');
-  const ends = ['Product gallery on two linked', 'Quick view (SPEC-037', 'Option-level stock (SPEC-037', 'City selector (SPEC-032'].map((m) => js.indexOf(m)).filter((i) => i > from);
+  const ends = ['Product gallery on two linked', 'Quick view (SPEC-037', 'Option-level stock (SPEC-037'].map((m) => js.indexOf(m)).filter((i) => i > from);
   const block = js.slice(from, ends.length ? Math.min(...ends) : undefined);
   for (const s of ['ocs.search.recent', "'ArrowDown'", "'Escape'", "'Enter'", 'textContent', 'ocs-search-clear', 'encodeURIComponent']) assert.ok(block.includes(s), `search JS lacks ${s}`);
   assert.doesNotMatch(block.replace(/dd\.innerHTML = '';/g, ''), /\.innerHTML\s*=/, 'server data is never written with innerHTML');
@@ -634,46 +634,20 @@ test('questions: guarded endpoint, moderated by default, escaped once on output'
   assert.match(adm, /htmlspecialchars\(\$row\['answer'\]/);
 });
 
-// TEST-CTY-001 - verifies REQ-CTY-041, REQ-EXT-051 (manifest matches the migration; strings identical across languages; off by default)
-test('city extension: manifest matches migration and language files have identical keys', () => {
+// TEST-RCT-002 - verifies REQ-RCT-001, REQ-RCT-002, REQ-RCT-005 (header, product page, theme.js and css carry no city hooks)
+test('cities removed: no city, stores or tracking hooks in the theme', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  const code = 'ocs_city';
-  const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
-  assert.equal(ext.spec, 'SPEC-032');
-  const mig = read(`custom/extensions/${code}/db/001_install.php`);
-  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `event ${e}`);
-  for (const t of ext.tables) assert.ok(mig.includes(`{{PREFIX}}${t.replace(/^oc_/, '')} (`), `table ${t}`);
-  for (const s of ext.settings) assert.ok(mig.includes(`'${s}'`), `setting ${s}`);
-  assert.match(mig, /'module_ocs_city_status' => 0/);
-  const keys = (side, l) => [...read(`custom/extensions/${code}/upload/${side}/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
-  for (const l of ['en-gb', 'ru-ru']) assert.deepEqual(keys('catalog', l), keys('catalog', 'uk-ua'), `catalog ${l}`);
-  assert.deepEqual(keys('admin', 'en-gb'), keys('admin', 'uk-ua'), 'admin strings');
+  const files = ['custom/theme/ocs/template/common/header.twig', 'custom/theme/ocs/template/product/product.twig', 'custom/theme/ocs/javascript/theme.js', 'custom/theme/ocs/stylesheet/stylesheet.css'];
+  for (const f of files) assert.doesNotMatch(read(f), /ocs[-_]city|ocs-delivery|ocs-track|ocs-stores?/, f);
+  assert.ok(!existsSync(join(REPO_ROOT, 'custom/extensions/ocs_city')), 'extension directory is gone');
 });
 
-// TEST-CTY-002 - verifies REQ-CTY-002, REQ-CTY-011 (header prompt, popup hooks, delivery slot and theme.js/css selectors agree)
-test('city selector: header, product slot, theme.js and css hooks are consistent', () => {
-  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  const header = read('custom/theme/ocs/template/common/header.twig');
-  for (const hook of ['id="ocs-city-prompt"', 'data-ocs-city-yes', 'data-ocs-city-open', 'ocs-city-top']) assert.ok(header.includes(hook), hook);
-  assert.ok(read('custom/theme/ocs/template/product/product.twig').includes('id="ocs-delivery-wrap"'));
-  const js = read('custom/theme/ocs/javascript/theme.js');
-  for (const hook of ['ocs-delivery-wrap', 'ocs-city-choice', 'ocs-city-search', 'ocs_city_ok']) assert.ok(js.includes(hook), hook);
-  const select = read('custom/extensions/ocs_city/upload/catalog/view/theme/default/template/extension/module/ocs_city_select.twig');
-  for (const hook of ['ocs-city-choice', 'ocs-city-search', 'ocs-city-title', 'data-close']) assert.ok(select.includes(hook), hook);
-  for (const sel of ['.ocs-city-btn', '.ocs-city-prompt', '.ocs-delivery', '.ocs-store', '.ocs-track-form']) assert.ok(css.includes(sel), sel);
-});
-
-// TEST-CTY-006 - verifies REQ-CTY-030, REQ-CTY-041 (tracking: token, rate limit, one generic answer, no staff comments)
-test('order tracking: guarded, generic mismatch answer, no comments in the history query', () => {
-  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  const ctl = read('custom/extensions/ocs_city/upload/catalog/controller/extension/module/ocs_city.php');
-  assert.match(ctl, /tokenValid/);
-  assert.match(ctl, /allow\('track'\)/);
-  assert.match(ctl, /trackingMatches/);
-  assert.equal((ctl.match(/track_not_found/g) || []).length, 1, 'one message for every mismatch');
-  const model = read('custom/extensions/ocs_city/upload/catalog/model/extension/ocs_city/city.php');
-  assert.ok(!/oh\.comment|\.comment/.test(model), 'comments of the staff are never selected');
-  assert.match(model, /order_status_id > '0'/);
+// TEST-RCT-001 - verifies REQ-RCT-003, REQ-RCT-004 (migration unregisters the module and drops every table of the feature)
+test('cities removed: migration 0008 unregisters and drops', () => {
+  const mig = readFileSync(join(REPO_ROOT, 'custom/db/migrations/0008_remove_cities.php'), 'utf8');
+  for (const e of ['ocs_city_header', 'ocs_city_product', "'module', 'ocs_city'"]) assert.ok(mig.includes(e), e);
+  for (const t of ['ocs_city', 'ocs_city_description', 'ocs_city_delivery', 'ocs_city_delivery_description', 'ocs_store', 'ocs_store_description', 'ocs_store_stock']) assert.ok(mig.includes("'" + t + "'"), t);
+  assert.ok(mig.includes('DROP TABLE IF EXISTS'));
 });
 
 // TEST-CRD-004 - verifies REQ-CRD-021, REQ-EXT-051 (manifests match migrations; strings identical across languages; both blocks off by default)
@@ -941,7 +915,7 @@ test('visual identity: product card markup and styles', () => {
 test('visual identity: header actions, sprite and counter mirror', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
   const header = read('custom/theme/ocs/template/common/header.twig');
-  for (const hook of ["include 'ocs/template/ocs/sprite.twig'", 'class="ocs-head-actions" id="top-links"', 'id="wishlist-total"', 'id="compare-total"', 'ocs-head-cart', 'ocs-city-top', 'ocs-contact', 'data-label="{{ text_shopping_cart }}"']) assert.ok(header.includes(hook), hook);
+  for (const hook of ["include 'ocs/template/ocs/sprite.twig'", 'class="ocs-head-actions" id="top-links"', 'id="wishlist-total"', 'id="compare-total"', 'ocs-head-cart', 'ocs-contact', 'data-label="{{ text_shopping_cart }}"']) assert.ok(header.includes(hook), hook);
   assert.ok(!/<span class="ocs-act-label">/.test(header), 'labels are <small>: core JS rewrites every span inside #wishlist-total');
   const sprite = read('custom/theme/ocs/template/ocs/sprite.twig');
   for (const id of ['search', 'cart', 'heart', 'compare', 'user', 'grid', 'chevron-right', 'chevron-down', 'truck', 'shield', 'return', 'headset', 'eye', 'phone', 'pin', 'mail', 'x', 'check', 'star']) assert.ok(sprite.includes('id="i-' + id + '"'), 'icon ' + id);

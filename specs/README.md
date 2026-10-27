@@ -117,6 +117,8 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-048 | [Product Gallery Lightbox, YouTube Video, Store-wide Info Blocks](gallery-video-infoblocks/spec.md) | `implemented` |
 | SPEC-049 | [Product Code, Review/Question Popups, Contact Icons, Inline Language Switch](pdp-popups-contacts-lang/spec.md) | `implemented` |
 | SPEC-050 | [Top Menu, Cart Badge, Cart Page, Subcategory Carousel, Sort Dropdown](topmenu-cart-category/spec.md) | `implemented` |
+| SPEC-051 | [Rebuild the Theme Package After Every Change](theme-package-rebuild/spec.md) | `draft` |
+| SPEC-052 | [Remove the Cities Feature](remove-cities/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

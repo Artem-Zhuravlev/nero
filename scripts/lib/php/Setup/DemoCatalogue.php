@@ -7,7 +7,7 @@ use Ocs\Migrate\Context;
 
 /**
  * Demo catalogue (SPEC-041): categories, brands, attributes, options, products, reviews, information pages, stickers,
- * accessories, cities and stores, written through the core admin models. Every created id is registered in the setting
+ * accessories, written through the core admin models. Every created id is registered in the setting
  * ocs_package.ocs_demo_catalogue so removal deletes exactly what was created and nothing else.
  */
 final class DemoCatalogue
@@ -338,7 +338,7 @@ final class DemoCatalogue
             ]));
         }
 
-        $this->log('stickers, accessories, cities, stores');
+        $this->log('stickers, accessories');
         $this->ocsTables();
 
         return ['products' => $created, 'categories' => count($d['categories'])];
@@ -425,38 +425,6 @@ final class DemoCatalogue
                 }
             }
         }
-        if (!$db->tableExists($p . 'ocs_city')) {
-            return;
-        }
-        $hasDefault = (bool) $this->m->rows('SELECT 1 AS x FROM {{PREFIX}}ocs_city WHERE is_default = 1');
-        foreach ($d['cities'] as $i => $c) {
-            if ($this->id('city', $c['code']) !== null) {
-                continue;
-            }
-            $this->m->sql('INSERT INTO {{PREFIX}}ocs_city (sort_order, is_default, status) VALUES (?, ?, 1)', [($i + 1) * 10, !$hasDefault && !empty($c['default']) ? 1 : 0]);
-            $cityId = $db->lastId();
-            $this->remember('city', $c['code'], $cityId);
-            foreach ($this->langs as $lid => $key) {
-                $this->m->sql('INSERT INTO {{PREFIX}}ocs_city_description (city_id, language_id, name) VALUES (?, ?, ?)', [$cityId, $lid, $this->text($c['name'], $key)]);
-            }
-            foreach ($c['delivery'] as $dl) {
-                $this->m->sql('INSERT INTO {{PREFIX}}ocs_city_delivery (city_id, method, price, free_from, days_min, days_max, cutoff, status) VALUES (?, ?, ?, ?, ?, ?, ?, 1)', [$cityId, $dl['method'], $dl['price'], $dl['freeFrom'], $dl['daysMin'], $dl['daysMax'], $dl['cutoff']]);
-                foreach ($this->langs as $lid => $key) {
-                    $this->m->sql('INSERT INTO {{PREFIX}}ocs_city_delivery_description (city_id, method, language_id, note) VALUES (?, ?, ?, ?)', [$cityId, $dl['method'], $lid, $this->text($dl['note'], $key)]);
-                }
-            }
-        }
-        foreach ($d['stores'] as $i => $s) {
-            if ($this->id('store', $s['code']) !== null) {
-                continue;
-            }
-            $this->m->sql('INSERT INTO {{PREFIX}}ocs_store (city_id, phone, map_link, latitude, longitude, sort_order, status) VALUES (?, ?, ?, ?, ?, ?, 1)', [$this->id('city', $s['city']), $s['phone'], '', $s['lat'], $s['lng'], $i + 1]);
-            $storeId = $db->lastId();
-            $this->remember('store', $s['code'], $storeId);
-            foreach ($this->langs as $lid => $key) {
-                $this->m->sql('INSERT INTO {{PREFIX}}ocs_store_description (store_id, language_id, name, address, hours) VALUES (?, ?, ?, ?, ?)', [$storeId, $lid, $this->text($s['name'], $key), $this->text($s['address'], $key), $this->text($s['hours'], $key)]);
-            }
-        }
     }
 
     // ---- remove ----
@@ -485,20 +453,6 @@ final class DemoCatalogue
             $db->exec("DELETE FROM {$p}ocs_product_accessory WHERE accessory_id IN ({$in})");
         }
         $db->exec("DELETE FROM {$p}product_related WHERE product_id IN ({$in}) OR related_id IN ({$in})");
-
-        foreach ($this->map as $key => $id) {
-            if (strncmp($key, 'store:', 6) === 0 && $db->tableExists($p . 'ocs_store')) {
-                $db->exec("DELETE FROM {$p}ocs_store WHERE store_id = " . (int) $id);
-                $db->exec("DELETE FROM {$p}ocs_store_description WHERE store_id = " . (int) $id);
-                $db->exec("DELETE FROM {$p}ocs_store_stock WHERE store_id = " . (int) $id);
-                $removed++;
-            } elseif (strncmp($key, 'city:', 5) === 0 && $db->tableExists($p . 'ocs_city')) {
-                foreach (['ocs_city', 'ocs_city_description', 'ocs_city_delivery', 'ocs_city_delivery_description'] as $table) {
-                    $db->exec("DELETE FROM {$p}{$table} WHERE city_id = " . (int) $id);
-                }
-                $removed++;
-            }
-        }
 
         $this->loadLanguages();
         $methods = ['review' => ['catalog/review', 'deleteReview'], 'product' => ['catalog/product', 'deleteProduct'], 'information' => ['catalog/information', 'deleteInformation'],
