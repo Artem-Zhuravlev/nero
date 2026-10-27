@@ -777,6 +777,8 @@ li .ocs-stock { font-size: inherit; }
 		grid-template-columns: auto auto minmax(0, 1fr) auto;
 		grid-template-areas: "logo cat search actions";
 	}
+	/* bootstrap .container clearfix pseudo-elements would become extra grid items */
+	.ocs-head-grid::before, .ocs-head-grid::after { content: none; display: none; }
 	.ocs-head-logo { grid-area: logo; margin: 0; }
 	.ocs-head-logo img { block-size: 2.5rem; inline-size: auto; max-inline-size: 11rem; object-fit: contain; }
 	.ocs-head-logo h1 { margin: 0; font-size: var(--fs-xl); }
