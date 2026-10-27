@@ -79,3 +79,22 @@ $_['text_top_blog'] = 'Blog';
 $_['text_top_contacts'] = 'Contacts (in the dropdown)';
 $_['entry_top_pages'] = 'Information pages';
 $_['column_show'] = 'Show';
+
+// Footer (SPEC-072)
+$_['text_footer'] = 'Footer';
+$_['help_footer'] = 'Ticked links are shown in the footer, unticked ones are hidden. A column without links disappears by itself.';
+$_['text_footer_information'] = 'Information';
+$_['text_footer_service'] = 'Customer service';
+$_['text_footer_extra'] = 'Extras';
+$_['text_footer_contact'] = 'Contact us';
+$_['text_footer_return'] = 'Returns';
+$_['text_footer_sitemap'] = 'Site map';
+$_['text_footer_manufacturer'] = 'Brands';
+$_['text_footer_voucher'] = 'Gift certificates';
+$_['text_footer_affiliate'] = 'Affiliate programme';
+$_['text_footer_special'] = 'Specials';
+$_['text_footer_account'] = 'My account';
+$_['text_footer_order'] = 'Order history';
+$_['text_footer_wishlist'] = 'Wishlist';
+$_['text_footer_newsletter'] = 'Newsletter';
+$_['entry_footer_payments'] = 'Visa and Mastercard logos';

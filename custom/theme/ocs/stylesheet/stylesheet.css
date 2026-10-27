@@ -1742,10 +1742,19 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-fgroup[open] > summary .ocs-i { rotate: 180deg; }
 	.ocs-foot-bottom { grid-column: 1 / -1; padding-block-start: var(--sp-4); border-block-start: 1px solid color-mix(in srgb, var(--border) 70%, transparent); }
 	.ocs-foot-bottom p { margin: 0; }
+	/* SPEC-072: bottom row with payment logos; groups take the full width without the contacts column */
+	.ocs-foot-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3) var(--sp-5); }
+	footer .ocs-pay { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: 0; padding: 0; }
+	.ocs-pay li { display: block; }
+	.ocs-pay svg { display: block; inline-size: 3rem; block-size: 1.875rem; }
+	@container foot (min-width: 62rem) {
+		footer .ocs-foot-groups.ocs-foot-groups--wide { grid-column: 1 / -1; }
+	}
 	@media (min-width: 768px) {
 		.ocs-fgroup > summary { pointer-events: none; }
 	}
 	@media (max-width: 767.98px) {
+		.ocs-foot-bottom { flex-direction: column; align-items: flex-start; }
 		.ocs-fgroup > summary { cursor: pointer; border-block-end: 1px solid color-mix(in srgb, var(--border) 70%, transparent); }
 		.ocs-fgroup > summary .ocs-i { display: inline-block; }
 		.ocs-fgroup > ul { padding-block: var(--sp-3); }

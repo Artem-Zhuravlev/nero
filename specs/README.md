@@ -138,6 +138,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-069 | [Unified Alerts and No Click Outline](alert-unification/spec.md) | `implemented` |
 | SPEC-070 | [Already in Cart Button State](in-cart-button/spec.md) | `implemented` |
 | SPEC-071 | [Sidebar Category Item Spacing](sidebar-item-spacing/spec.md) | `implemented` |
+| SPEC-072 | [Footer Menu Visibility, Merged Column, Payment Logos](footer-menu-payments/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

@@ -79,3 +79,22 @@ $_['text_top_blog'] = 'Блог';
 $_['text_top_contacts'] = 'Контакти (у списку)';
 $_['entry_top_pages'] = 'Інформаційні сторінки';
 $_['column_show'] = 'Показувати';
+
+// Footer (SPEC-072)
+$_['text_footer'] = 'Футер';
+$_['help_footer'] = 'Позначені пункти показуються у футері, зняті галочки приховують пункт. Колонка без пунктів зникає сама.';
+$_['text_footer_information'] = 'Інформація';
+$_['text_footer_service'] = 'Служба підтримки';
+$_['text_footer_extra'] = 'Додатково';
+$_['text_footer_contact'] = 'Зворотній зв’язок';
+$_['text_footer_return'] = 'Повернення товару';
+$_['text_footer_sitemap'] = 'Карта сайту';
+$_['text_footer_manufacturer'] = 'Виробники';
+$_['text_footer_voucher'] = 'Подарункові сертифікати';
+$_['text_footer_affiliate'] = 'Партнерська програма';
+$_['text_footer_special'] = 'Акції';
+$_['text_footer_account'] = 'Особистий кабінет';
+$_['text_footer_order'] = 'Історія замовлень';
+$_['text_footer_wishlist'] = 'Закладки';
+$_['text_footer_newsletter'] = 'Розсилка';
+$_['entry_footer_payments'] = 'Логотипи Visa і Mastercard';

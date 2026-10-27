@@ -127,6 +127,41 @@ class ControllerExtensionThemeOcs extends Controller {
 				$data['top']['pages'][(int)$value] = array('on' => true, 'sort' => ((int)$key + 1) * 10);
 			}
 		}
+		// footer links (SPEC-072): checkbox per link, checked = shown
+		if (isset($this->request->post['theme_ocs_footer'])) {
+			// a posted form that failed validation: keep what was ticked
+			$footer = \Ocs\Footer::sanitize($this->request->post['theme_ocs_footer'], \Ocs\Footer::validKeys(array_column($data['top_pages'], 'id')));
+		} else {
+			$footer = isset($setting_info['theme_ocs_footer']) ? $setting_info['theme_ocs_footer'] : null;
+		}
+
+		$footer = \Ocs\Footer::normalize($footer);
+
+		$shown = function ($key) use ($footer) {
+			return !in_array($key, $footer['hide'], true);
+		};
+
+		$data['footer_payments'] = $footer['payments'];
+		$data['footer_menu'] = array();
+
+		$items = array();
+
+		foreach ($data['top_pages'] as $page) {
+			$items[] = array('key' => 'info:' . $page['id'], 'text' => $page['title'], 'on' => $shown('info:' . $page['id']));
+		}
+
+		$data['footer_menu'][] = array('title' => $this->language->get('text_footer_information'), 'items' => $items);
+
+		foreach (array('service' => 'text_footer_service', 'extra' => 'text_footer_extra') as $column => $title) {
+			$items = array();
+
+			foreach (\Ocs\Footer::$columns[$column] as $key) {
+				$items[] = array('key' => $key, 'text' => $this->language->get('text_footer_' . $key), 'on' => $shown($key));
+			}
+
+			$data['footer_menu'][] = array('title' => $this->language->get($title), 'items' => $items);
+		}
+
 		$data['roles'] = $this->roles;
 		$data['version'] = '1.0.0';
 
@@ -206,7 +241,9 @@ class ControllerExtensionThemeOcs extends Controller {
 
 			$this->request->post['theme_ocs_top_menu'] = \Ocs\TopMenu::sanitize(isset($this->request->post['theme_ocs_top_menu']) ? $this->request->post['theme_ocs_top_menu'] : array(), $codes, $valid);
 
-			$this->request->post['theme_ocs_info_blocks'] = \Ocs\InfoBlocks::sanitize(isset($this->request->post['theme_ocs_info_blocks']) ? $this->request->post['theme_ocs_info_blocks'] : array(), $codes);
+			$this->request->post['theme_ocs_footer'] = \Ocs\Footer::sanitize(isset($this->request->post['theme_ocs_footer']) ? $this->request->post['theme_ocs_footer'] : array(), \Ocs\Footer::validKeys($valid));
+
+			$this->request->post['theme_ocs_info_blocks'] =\Ocs\InfoBlocks::sanitize(isset($this->request->post['theme_ocs_info_blocks']) ? $this->request->post['theme_ocs_info_blocks'] : array(), $codes);
 		}
 
 		return !$this->error;

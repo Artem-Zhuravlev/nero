@@ -53,6 +53,11 @@ class ControllerExtensionOcsEvents extends Controller {
 			$data['ocs_top'] = $this->topMenu();
 		}
 
+		// default footer groups without the hidden links, payment logos switch (SPEC-072)
+		if ($route === 'common/footer') {
+			$data['ocs_foot'] = $this->footer($data);
+		}
+
 		// store-wide info blocks of the product page (SPEC-048 REQ-INF-002)
 		if ($route === 'product/product') {
 			$this->load->model('setting/setting');
@@ -118,6 +123,26 @@ class ControllerExtensionOcsEvents extends Controller {
 		} catch (\Exception $e) {
 			$this->log->write('[ocs] ' . $e->getMessage());
 		}
+	}
+
+	private function footer($data) {
+		try {
+			$this->load->model('catalog/information');
+
+			$pages = array();
+
+			foreach ($this->model_catalog_information->getInformations() as $row) {
+				if ($row['bottom']) {
+					$pages[] = array('id' => (int)$row['information_id'], 'title' => $row['title'], 'href' => $this->url->link('information/information', 'information_id=' . (int)$row['information_id']));
+				}
+			}
+
+			return \Ocs\Footer::view($this->config->get('theme_ocs_footer'), $pages, $data);
+		} catch (\Exception $e) {
+			$this->log->write('[ocs] ' . $e->getMessage());
+		}
+
+		return null;
 	}
 
 	private function topMenu() {

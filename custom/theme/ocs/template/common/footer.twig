@@ -20,7 +20,8 @@
       {% endif %}
     </div>
     {% endif %}
-    <div class="ocs-foot-groups">
+    {% set has_contacts = ocs_shell and (ocs_shell.address or ocs_shell.phones or ocs_shell.hours or ocs_shell.messengers or ocs_shell.social) %}
+    <div class="ocs-foot-groups{% if not has_contacts %} ocs-foot-groups--wide{% endif %}">
       {% if ocs_shell and ocs_shell.groups %}
       {% for group in ocs_shell.groups %}
       <div class="ocs-fcol">
@@ -34,54 +35,30 @@
         </details>
       </div>
       {% endfor %}
-      {% else %}
-      {% if informations %}
+      {% elseif ocs_foot %}
+      {% for group in ocs_foot.groups %}
       <div class="ocs-fcol">
         <details class="ocs-fgroup" open>
-          <summary><h2 class="ocs-fh">{{ text_information }}</h2><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+          <summary><h2 class="ocs-fh">{{ group.title }}</h2><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
           <ul class="list-unstyled">
-            {% for information in informations %}
-            <li><a href="{{ information.href }}">{{ information.title }}</a></li>
+            {% for link in group.links %}
+            <li><a href="{{ link.href }}">{{ link.text }}</a></li>
             {% endfor %}
           </ul>
         </details>
       </div>
-      {% endif %}
-      <div class="ocs-fcol">
-        <details class="ocs-fgroup" open>
-          <summary><h2 class="ocs-fh">{{ text_service }}</h2><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
-          <ul class="list-unstyled">
-            <li><a href="{{ contact }}">{{ text_contact }}</a></li>
-            <li><a href="{{ return }}">{{ text_return }}</a></li>
-            <li><a href="{{ sitemap }}">{{ text_sitemap }}</a></li>
-          </ul>
-        </details>
-      </div>
-      <div class="ocs-fcol">
-        <details class="ocs-fgroup" open>
-          <summary><h2 class="ocs-fh">{{ text_extra }}</h2><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
-          <ul class="list-unstyled">
-            <li><a href="{{ manufacturer }}">{{ text_manufacturer }}</a></li>
-            <li><a href="{{ voucher }}">{{ text_voucher }}</a></li>
-            <li><a href="{{ affiliate }}">{{ text_affiliate }}</a></li>
-            <li><a href="{{ special }}">{{ text_special }}</a></li>
-          </ul>
-        </details>
-      </div>
-      <div class="ocs-fcol">
-        <details class="ocs-fgroup" open>
-          <summary><h2 class="ocs-fh">{{ text_account }}</h2><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
-          <ul class="list-unstyled">
-            <li><a href="{{ account }}">{{ text_account }}</a></li>
-            <li><a href="{{ order }}">{{ text_order }}</a></li>
-            <li><a href="{{ wishlist }}">{{ text_wishlist }}</a></li>
-            <li><a href="{{ newsletter }}">{{ text_newsletter }}</a></li>
-          </ul>
-        </details>
-      </div>
+      {% endfor %}
       {% endif %}
     </div>
-    <div class="ocs-foot-bottom"><p>{{ powered }}</p></div>
+    <div class="ocs-foot-bottom">
+      <p>{{ powered }}</p>
+      {% if ocs_foot and ocs_foot.payments %}
+      <ul class="ocs-pay list-unstyled" aria-label="Visa, Mastercard">
+        <li><svg viewBox="0 0 48 30" role="img" aria-label="Visa"><rect width="48" height="30" rx="4" fill="#fff" stroke="#d9d9de"/><text x="24" y="21" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="800" font-style="italic" letter-spacing="-0.5" fill="#1a1f71">VISA</text></svg></li>
+        <li><svg viewBox="0 0 48 30" role="img" aria-label="Mastercard"><rect width="48" height="30" rx="4" fill="#fff" stroke="#d9d9de"/><circle cx="19" cy="15" r="8" fill="#eb001b"/><circle cx="29" cy="15" r="8" fill="#f79e1b"/><path d="M24 8.8a8 8 0 0 1 0 12.4 8 8 0 0 1 0-12.4Z" fill="#ff5f00"/></svg></li>
+      </ul>
+      {% endif %}
+    </div>
   </div>
 </footer>
 {% if ocs_shell and ocs_shell.mobile_bar %}
