@@ -513,9 +513,8 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 /* ==== 17. Cart panel and availability labels (SPEC-026) ============================= */
 .ocs-cart-title { margin-top: 0; }
 .ocs-cart-lines { margin: 0 0 var(--sp-4); padding: 0; }
-.ocs-cart-line { display: flex; gap: var(--sp-3); padding: var(--sp-3) 0; border-bottom: 1px solid var(--border); border-radius: var(--r-sm); transition: background-color var(--t); }
-.ocs-cart-line-new { background: var(--bg-alt); }
-.ocs-cart-thumb img { width: 64px; height: 64px; object-fit: contain; border-radius: var(--r-sm); background: var(--bg-alt); }
+.ocs-cart-line { display: flex; gap: var(--sp-3); padding: var(--sp-3) 0; border-bottom: 1px solid var(--border); border-radius: var(--r-sm); }
+.ocs-cart-thumb img { width: 64px; height: 64px; object-fit: contain; border-radius: var(--r-sm); }
 .ocs-cart-info { flex: 1; min-width: 0; }
 .ocs-cart-name { display: block; color: var(--text); font-weight: 600; }
 .ocs-cart-option { display: block; color: var(--text-muted); }

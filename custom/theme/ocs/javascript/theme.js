@@ -167,7 +167,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 			document.addEventListener('keydown', onKeydown);
 
 			var items = focusables(body);
-			(items.length ? items[0] : dialog).focus();
+			(items.length ? items[0] : dialog).focus({preventScroll: true});
 
 			return dialog;
 		},
@@ -813,21 +813,20 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		}
 	}
 
-	function render(json) {
+	function render(json, target) {
 		updateHeader(json);
 
 		if (json.ids && OCS.card) {
 			OCS.card.setCart(json.ids);
 		}
 
-		if (!dialog || !json.html) {
+		var host = target || dialog;
+
+		if (!host || !json.html) {
 			return;
 		}
 
-		var body = dialog.querySelector('.ocs-modal-body');
-
-		body.innerHTML = json.html;
-		bind(body);
+		host.querySelector('.ocs-modal-body').innerHTML = json.html;
 	}
 
 	function request(url, data) {
@@ -851,71 +850,74 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		});
 	}
 
-	function mutate(action, key, quantity) {
+	function mutate(host, action, key, quantity) {
 		var data = {key: key};
 
 		if (quantity !== null) {
 			data.quantity = quantity;
 		}
 
-		if (dialog) {
-			dialog.classList.add('ocs-cart-busy');
-		}
+		host.classList.add('ocs-cart-busy');
 
 		request(endpoint(action), data).then(function (json) {
-			if (dialog) {
-				dialog.classList.remove('ocs-cart-busy');
-			}
-
-			render(json);
+			host.classList.remove('ocs-cart-busy');
+			render(json, host);
 		}).catch(function () {
-			if (dialog) {
-				dialog.classList.remove('ocs-cart-busy');
-			}
+			host.classList.remove('ocs-cart-busy');
 		});
 	}
 
-	function bind(root) {
-		var lines = root.querySelectorAll('.ocs-cart-line');
-		var i;
-
-		for (i = 0; i < lines.length; i++) {
-			(function (line) {
-				var key = line.getAttribute('data-key');
-				var input = line.querySelector('.ocs-cart-qty');
-
-				line.querySelector('.ocs-cart-minus').addEventListener('click', function () {
-					mutate('update', key, Math.max(0, (parseInt(input.value, 10) || 1) - 1));
-				});
-
-				line.querySelector('.ocs-cart-plus').addEventListener('click', function () {
-					mutate('update', key, (parseInt(input.value, 10) || 0) + 1);
-				});
-
-				line.querySelector('.ocs-cart-remove').addEventListener('click', function () {
-					mutate('remove', key, null);
-				});
-
-				input.addEventListener('input', function () {
-					window.clearTimeout(timers[key]);
-					timers[key] = window.setTimeout(function () {
-						var q = parseInt(input.value, 10);
-
-						if (!isNaN(q) && q >= 0) {
-							mutate('update', key, q);
-						}
-					}, 600);
-				});
-			}(lines[i]));
+	// one set of listeners per opened panel; lines are re-rendered after every change, so the buttons are found by delegation
+	function bind(host) {
+		function lineOf(el) {
+			return el.closest ? el.closest('.ocs-cart-line') : null;
 		}
 
-		var more = root.querySelectorAll('.ocs-cart-continue');
+		host.addEventListener('click', function (e) {
+			var el = e.target.closest ? e.target.closest('button') : null;
+			var line = el ? lineOf(el) : null;
 
-		for (i = 0; i < more.length; i++) {
-			more[i].addEventListener('click', function () {
+			if (el && el.classList.contains('ocs-cart-continue')) {
 				OCS.modal.close();
-			});
-		}
+
+				return;
+			}
+
+			if (!el || !line) {
+				return;
+			}
+
+			var key = line.getAttribute('data-key');
+			var input = line.querySelector('.ocs-cart-qty');
+
+			if (el.classList.contains('ocs-cart-minus')) {
+				mutate(host, 'update', key, Math.max(0, (parseInt(input.value, 10) || 1) - 1));
+			} else if (el.classList.contains('ocs-cart-plus')) {
+				mutate(host, 'update', key, (parseInt(input.value, 10) || 0) + 1);
+			} else if (el.classList.contains('ocs-cart-remove')) {
+				mutate(host, 'remove', key, null);
+			}
+		});
+
+		host.addEventListener('input', function (e) {
+			var input = e.target;
+			var line = input.classList && input.classList.contains('ocs-cart-qty') ? lineOf(input) : null;
+
+			if (!line) {
+				return;
+			}
+
+			var key = line.getAttribute('data-key');
+
+			window.clearTimeout(timers[key]);
+			timers[key] = window.setTimeout(function () {
+				var q = parseInt(input.value, 10);
+
+				if (!isNaN(q) && q >= 0) {
+					mutate(host, 'update', key, q);
+				}
+			}, 600);
+		});
 	}
 
 	OCS.cart = {
@@ -949,7 +951,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 					}
 				});
 
-				bind(dialog.querySelector('.ocs-modal-body'));
+				bind(dialog);
 			});
 		},
 
@@ -971,10 +973,22 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 
 	// core cart.add / the product page button post to checkout/cart/add: open the panel when it succeeded
 	if (window.jQuery) {
+		var scrollAt = 0;
+
+		window.jQuery(document).ajaxSend(function (e, xhr, settings) {
+			if (settings && settings.url && settings.url.indexOf('checkout/cart/add') !== -1) {
+				scrollAt = window.pageYOffset;
+			}
+		});
+
 		window.jQuery(document).ajaxSuccess(function (e, xhr, settings) {
 			if (!settings || !settings.url || settings.url.indexOf('checkout/cart/add') === -1) {
 				return;
 			}
+
+			// core's add handlers animate the page to the top; the panel is shown instead, so the page stays where it was
+			window.jQuery('html, body').stop(true);
+			window.scrollTo(0, scrollAt);
 
 			var json;
 
