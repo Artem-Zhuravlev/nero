@@ -17,13 +17,10 @@
     <div id="content" class="{{ class }}">{{ content_top }}
       {{ ocs_tradein_banner }}
       <h1>{{ heading_title }}</h1>
-      {% if thumb or (description and not ocs_listing) %}
-      <div class="row"> {% if thumb %}
-        <div class="col-sm-2"><img src="{{ thumb }}" alt="{{ heading_title }}" title="{{ heading_title }}" class="img-thumbnail" /></div>
-        {% endif %}
-        {% if description and not ocs_listing %}
-        <div class="col-sm-10">{{ description }}</div>
-        {% endif %}</div>
+      {% if description and not ocs_listing %}
+      <div class="row">
+        <div class="col-sm-12">{{ description }}</div>
+      </div>
       <hr>
       {% endif %}
       {% if categories %}
