@@ -33,6 +33,7 @@ Deliver the `ocs_*` OCMOD as `system/<code>.ocmod.xml` files, which core's modif
 - **REQ-OCM-003** — Setup uninstall deletes the `system/ocs_*.ocmod.xml` files.
 - **REQ-OCM-004** — If `system/` is not writable, Setup reports it as a precheck problem naming the path.
 - **REQ-OCM-005** — `npm run build` places the files into `build/www/system/`.
+- **REQ-OCM-006** — The theme archive root contains `ocmod-xml/ocs_*.ocmod.xml` (copies for a manual copy into `system/`; the core installer ignores everything outside `upload/`).
 
 ## Non-functional requirements
 

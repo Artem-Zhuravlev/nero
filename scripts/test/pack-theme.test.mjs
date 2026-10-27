@@ -20,6 +20,7 @@ test('package contains theme, modules, setup library and payload', () => {
   assert.ok(has('upload/system/library/ocs/setup/payload/custom/extensions/ocs_stickers/db/001_install.php'));
   assert.ok(has('upload/system/library/ocs/setup/payload/custom/ocmod/ocs_listing_sort.ocmod.xml'));
   assert.ok(has('README-INSTALL.md'));
+  assert.ok(has('ocmod-xml/ocs_product_extras_form.ocmod.xml')); // TEST-OCM-003 - verifies REQ-OCM-006
   assert.ok(!has('upload/catalog/view/theme/ocs/DESIGN.md'));
   assert.equal(readFileSync(join(REPO_ROOT, 'custom/VERSION'), 'utf8').trim(), files.get('upload/system/library/ocs/setup/payload/VERSION').toString().trim());
 });

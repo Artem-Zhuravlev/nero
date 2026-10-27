@@ -72,6 +72,11 @@ export function collectPackage({ root }) {
     for (const rel of walk(join(lib, dir))) add(`upload/${SETUP_DIR}${dir}/${rel}`, readFileSync(join(lib, dir, rel)), 'setup-lib');
   }
 
+  // SPEC-053 REQ-OCM-006: the installer cannot write to system/, so plain copies sit in the archive root for a manual copy into system/.
+  for (const rel of walk(join(custom, 'ocmod'))) {
+    if (rel.endsWith('.ocmod.xml') && !rel.includes('/')) add(`ocmod-xml/${rel}`, readFileSync(join(custom, 'ocmod', rel)), 'ocmod-xml');
+  }
+
   add('README-INSTALL.md', readFileSync(join(root, 'docs', 'theme-install.md')), 'docs');
   return files;
 }
