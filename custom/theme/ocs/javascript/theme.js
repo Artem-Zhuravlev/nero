@@ -3040,3 +3040,41 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		boot();
 	}
 }(window, document));
+
+(function (window, document) {
+	'use strict';
+
+	function boot() {
+		var box = document.querySelector('[data-ocs-seo]');
+
+		if (!box) {
+			return;
+		}
+
+		var body = box.querySelector('[data-ocs-seo-body]');
+		var btn = box.querySelector('[data-ocs-seo-toggle]');
+
+		function sync() {
+			if (!box.classList.contains('is-open')) {
+				btn.hidden = body.scrollHeight - body.clientHeight <= 1;
+			}
+		}
+
+		btn.addEventListener('click', function () {
+			var open = box.classList.toggle('is-open');
+
+			btn.textContent = btn.getAttribute(open ? 'data-less' : 'data-more');
+			btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+		});
+
+		sync();
+		window.addEventListener('load', sync);
+		window.addEventListener('resize', sync);
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));

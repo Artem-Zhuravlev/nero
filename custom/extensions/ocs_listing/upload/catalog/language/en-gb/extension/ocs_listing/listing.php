@@ -11,5 +11,6 @@ $_['ocs_sort_name']        = 'Name A-Z';
 $_['ocs_reset']            = 'Reset all filters';
 $_['ocs_load_more']        = 'Show %s more';
 $_['ocs_read_more']        = 'Read more';
+$_['ocs_read_less']        = 'Hide text';
 $_['ocs_prev'] = 'Previous';
 $_['ocs_next'] = 'Next';

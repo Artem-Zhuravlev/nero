@@ -133,7 +133,7 @@
       </div>
       {% endif %}
       {% if description and ocs_listing %}
-      <details class="ocs-seo"><summary>{{ ocs_listing.t.ocs_read_more }}</summary><div>{{ description }}</div></details>
+      <div class="ocs-seo" data-ocs-seo><div class="ocs-seo-body" data-ocs-seo-body>{{ description }}</div><button type="button" class="ocs-seo-toggle" data-ocs-seo-toggle data-more="{{ ocs_listing.t.ocs_read_more|e('html_attr') }}" data-less="{{ ocs_listing.t.ocs_read_less|e('html_attr') }}" aria-expanded="false" hidden>{{ ocs_listing.t.ocs_read_more }}</button></div>
       {% endif %}
       {{ content_bottom }}</div>
     {{ column_right }}</div>

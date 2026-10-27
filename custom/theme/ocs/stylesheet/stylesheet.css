@@ -376,8 +376,9 @@ footer details.ocs-fgroup:not([open]) > ul { display: none; }
 .ocs-more button[hidden] { display: none; }
 
 .ocs-seo { margin: var(--sp-6) 0; color: var(--text-muted); }
-.ocs-seo summary { cursor: pointer; color: var(--link); }
-.ocs-seo[open] summary { margin-bottom: var(--sp-3); }
+.ocs-seo-body { line-height: 1.5; }
+.ocs-seo:not(.is-open) .ocs-seo-body { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 7; line-clamp: 7; overflow: hidden; }
+.ocs-seo-toggle { margin-top: var(--sp-3); padding: 0; border: 0; background: none; cursor: pointer; color: var(--link); font: inherit; }
 
 /* ==== 12. Blog (ocStore built-in blog templates, REQ-DSG-025) ======================= */
 .blog-info { color: var(--text-muted); font-size: var(--fs-sm); margin-bottom: var(--sp-4); }
