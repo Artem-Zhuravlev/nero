@@ -2044,3 +2044,36 @@ li .ocs-stock { font-size: inherit; }
 	}
 	.ocs-head-search #search .btn:hover, .ocs-head-search #search .btn:focus { background: transparent; color: var(--accent); }
 }
+
+/* ==== SPEC-059: mobile header is logo + search + menu button; the rest lives in the menu panel, the tab bar has the cart badge ==== */
+@layer overrides {
+	.ocs-tabbar > a { position: relative; }
+	@media (max-width: 767px) {
+		.ocs-js #top.ocs-util, .ocs-head-actions { display: none; }
+		.ocs-head-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "logo" "search" "cat"; }
+
+		.ocs-tabbar > .ocs-tab-cart[data-count]::after {
+			content: attr(data-badge); position: absolute; inset-block-start: 0.3rem; inset-inline-start: calc(50% + 0.5rem);
+			min-inline-size: 1.1rem; block-size: 1.1rem; padding-inline: 0.28rem; border-radius: var(--r-pill);
+			background: var(--accent); color: var(--on-accent); font-size: 0.625rem; font-weight: 700; line-height: 1.1rem; text-align: center;
+		}
+		.ocs-tabbar > .ocs-tab-cart[data-count="0"]::after { display: none; }
+
+		/* the moved utility strip: info links, contacts, language, currency */
+		.ocs-mnav-extra { padding: var(--sp-4); border-block-start: 1px solid var(--border); font-size: var(--fs-sm); }
+		.ocs-mnav-extra > .container { display: flex; flex-direction: column; align-items: stretch; gap: var(--sp-4); inline-size: auto; margin: 0; padding: 0; }
+		.ocs-mnav-extra > .container::before, .ocs-mnav-extra > .container::after { content: none; display: none; }
+		.ocs-mnav-extra .ocs-strip, .ocs-mnav-extra .ocs-top, .ocs-mnav-extra .ocs-util-end { display: flex; flex-direction: column; align-items: stretch; gap: var(--sp-2); margin: 0; padding: 0; }
+		.ocs-mnav-extra .ocs-util-end { flex-direction: column; margin-inline-start: 0; }
+		.ocs-mnav-extra .ocs-strip > li { padding: 0; }
+		.ocs-mnav-extra a, .ocs-mnav-extra .ocs-top-link { color: var(--text); text-decoration: none; }
+		.ocs-mnav-extra .pull-left, .ocs-mnav-extra .pull-right, .ocs-mnav-extra .btn-group, .ocs-mnav-extra form { float: none; margin: 0; }
+		.ocs-mnav-extra .ocs-lang-list { display: flex; gap: var(--sp-3); }
+		/* drop-downs become plain lists: the panel scrolls and would clip a floating menu */
+		.ocs-mnav-extra .dropdown-toggle { display: none; }
+		.ocs-mnav-extra .dropdown-menu { display: flex; flex-wrap: wrap; gap: var(--sp-2); position: static; float: none; inline-size: auto; margin: 0; padding: 0; border: 0; box-shadow: none; background: transparent; }
+		.ocs-mnav-extra .ocs-contact .dropdown-menu, .ocs-mnav-extra .ocs-top-drop .dropdown-menu { flex-direction: column; flex-wrap: nowrap; }
+		.ocs-mnav-extra .dropdown-menu > li { list-style: none; }
+		.ocs-mnav-extra .dropdown-menu .btn { min-block-size: 2.75rem; }
+	}
+}

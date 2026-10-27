@@ -125,6 +125,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-056 | [Default Product Modules in the Site Card Style](module-product-cards/spec.md) | `implemented` |
 | SPEC-057 | [Compare Page: Categories, Differences Only, Table UX](compare-page/spec.md) | `implemented` |
 | SPEC-058 | [Header Search Field Style](header-search-style/spec.md) | `implemented` |
+| SPEC-059 | [Mobile Header Reduction and Tab Bar Order](mobile-header-tabbar/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

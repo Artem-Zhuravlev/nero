@@ -403,6 +403,43 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		}
 	}
 
+	// SPEC-059: on phones the utility strip (info links, contacts, language, currency) lives at the end of the catalogue panel
+	function initMobileNav() {
+		var top = document.querySelector('#top.ocs-util');
+		var box = top && top.querySelector(':scope > .container');
+		var collapse = document.querySelector('.ocs-mega .navbar-collapse');
+
+		if (!box || !collapse || !window.matchMedia) {
+			return;
+		}
+
+		var extra = document.createElement('div');
+		var mq = window.matchMedia('(max-width: 767px)');
+
+		extra.className = 'ocs-mnav-extra';
+
+		function place() {
+			if (mq.matches) {
+				extra.appendChild(box);
+				collapse.appendChild(extra);
+			} else {
+				top.appendChild(box);
+
+				if (extra.parentNode) {
+					extra.parentNode.removeChild(extra);
+				}
+			}
+		}
+
+		place();
+
+		if (mq.addEventListener) {
+			mq.addEventListener('change', place);
+		} else if (mq.addListener) {
+			mq.addListener(place);
+		}
+	}
+
 	function initMega() {
 		var nav = document.querySelector('.ocs-mega');
 
@@ -615,6 +652,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 
 	function init() {
 		initMega();
+		initMobileNav();
 		initSideMenu();
 	}
 
@@ -2486,6 +2524,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		var wish = document.getElementById('wishlist-total');
 		var compare = document.getElementById('compare-total');
 		var cartWrap = document.querySelector('.ocs-head-cart');
+		var tabCart = document.querySelector('.ocs-tabbar .ocs-tab-cart');
 
 		function mirrorLink(src, link) {
 			if (!src || !link) {
@@ -2523,6 +2562,11 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 
 			cartWrap.setAttribute('data-count', n);
 			cartWrap.setAttribute('data-badge', badge);
+
+			if (tabCart) {
+				tabCart.setAttribute('data-count', n);
+				tabCart.setAttribute('data-badge', badge);
+			}
 
 			// attr() in the badge's content reads the element the ::after belongs to: the button, not the wrapper
 			btn.setAttribute('data-count', n);

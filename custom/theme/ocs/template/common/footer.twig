@@ -88,9 +88,9 @@
 <nav class="ocs-tabbar" aria-label="{{ ocs_shell.t.ocs_tabbar }}">
   <button type="button" id="ocs-tab-catalog"><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg><span>{{ ocs_shell.t.ocs_tab_catalog }}</span></button>
   <a href="{{ ocs_shell.compare }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg><span>{{ ocs_shell.t.ocs_tab_compare }}</span></a>
-  <a href="{{ ocs_shell.cart }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg><span>{{ ocs_shell.t.ocs_tab_cart }}</span></a>
   <a href="{{ wishlist }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg><span>{{ ocs_shell.t.ocs_tab_lists }}</span></a>
   <a href="{{ account }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg><span>{{ ocs_shell.t.ocs_tab_profile }}</span></a>
+  <a class="ocs-tab-cart" href="{{ ocs_shell.cart }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg><span>{{ ocs_shell.t.ocs_tab_cart }}</span></a>
 </nav>
 {% endif %}
 {% for style in styles %}
