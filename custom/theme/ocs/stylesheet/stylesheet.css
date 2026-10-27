@@ -2118,6 +2118,8 @@ li .ocs-stock { font-size: inherit; }
 	/* on phones the menu becomes a scrollable pill strip above the content */
 	@container page (max-width: 56rem) {
 		.ocs-page > .container > .row > #column-right:has(.ocs-acc-nav), .ocs-page > .container > .row > #column-left:has(.ocs-acc-nav) { order: -1; }
+		/* Bootstrap's .hidden-xs on the aside would hide the whole menu on phones (SPEC-065) */
+		#column-right.hidden-xs:has(.ocs-acc-nav), #column-left.hidden-xs:has(.ocs-acc-nav) { display: block !important; }
 		.ocs-acc-nav { display: flex; gap: var(--sp-2); overflow-x: auto; padding: var(--sp-1); border-radius: 999px; scrollbar-width: none; }
 		.ocs-acc-nav::-webkit-scrollbar { display: none; }
 		.ocs-acc-link { flex: none; white-space: nowrap; border-radius: 999px; min-block-size: 2.5rem; }

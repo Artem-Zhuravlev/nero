@@ -131,6 +131,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-062 | [Mobile Card Tools Always Visible](mobile-card-tools-visible/spec.md) | `implemented` |
 | SPEC-063 | [Customer Account Area in the Site Style](account-area-style/spec.md) | `implemented` |
 | SPEC-064 | [Wishlist Page as Product Cards](wishlist-cards/spec.md) | `implemented` |
+| SPEC-065 | [Account Menu Visible on Phones](account-menu-mobile/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).
