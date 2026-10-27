@@ -1431,7 +1431,7 @@ li .ocs-stock { font-size: inherit; }
 /* ==== 40. SPEC-039 category sidebar tree, sort chips, product page details (REQ-VIS-005, 006) ===== */
 @layer components {
 	/* --- the default list-group of the core category module becomes a quiet tree --- */
-	.list-group { margin: 0 0 var(--sp-5); padding: var(--sp-2); background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); box-shadow: none; }
+	.list-group { display: flex; flex-direction: column; gap: var(--sp-1); margin: 0 0 var(--sp-5); padding: var(--sp-2); background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); box-shadow: none; }
 	.list-group-item, a.list-group-item {
 		display: flex; justify-content: space-between; align-items: center; gap: var(--sp-2); margin: 0; padding: 0.5rem 0.75rem; border: 0; border-radius: var(--r-sm);
 		background: none; color: var(--text); font-size: var(--fs-sm); font-weight: 500;
