@@ -56,7 +56,7 @@
         </table>
       </div>
       {% else %}
-      <p>{{ text_empty }}</p>
+      <div class="ocs-acc-empty"><svg class="ocs-i" aria-hidden="true"><use href="#i-package"/></svg><p>{{ text_empty }}</p></div>
       {% endif %}
       <div class="buttons clearfix">
         <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>

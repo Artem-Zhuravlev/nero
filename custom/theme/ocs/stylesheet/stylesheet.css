@@ -2081,3 +2081,77 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-mnav-extra .dropdown-menu .btn { min-block-size: 2.75rem; }
 	}
 }
+
+/* ==== SPEC-063 customer account area =========================================================== */
+@layer components {
+	/* headings of account pages */
+	[id^="account-"] #content > h1, [id^="account-"] #content > h2 { font-size: var(--fs-xl); font-weight: 700; margin-block: 0 var(--sp-4); letter-spacing: -0.01em; }
+
+	/* dashboard */
+	.ocs-acc-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); margin-block-end: var(--sp-5); }
+	.ocs-acc-card { background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); padding: var(--sp-4); align-self: start; }
+	.ocs-acc-title { display: flex; align-items: center; gap: var(--sp-2); margin: 0 0 var(--sp-3); font-size: var(--fs-lg); font-weight: 700; }
+	.ocs-acc-title .ocs-i { color: var(--accent); inline-size: 1.25em; block-size: 1.25em; }
+	.ocs-acc-tiles { display: grid; gap: var(--sp-2); }
+	.ocs-acc-tile {
+		display: flex; align-items: center; gap: var(--sp-3); min-block-size: 2.75rem; padding: var(--sp-2) var(--sp-3);
+		border-radius: var(--r-md); background: var(--bg-alt); color: var(--text); text-decoration: none; font-weight: 500;
+		transition: background .15s ease, translate .15s ease;
+	}
+	.ocs-acc-tile > .ocs-i:first-child { color: var(--accent); flex: none; }
+	.ocs-acc-tile > span { flex: 1; min-inline-size: 0; }
+	.ocs-acc-go { color: var(--text-muted); flex: none; inline-size: 1em; block-size: 1em; }
+	.ocs-acc-tile:hover, .ocs-acc-tile:focus-visible { background: color-mix(in srgb, var(--accent) 9%, var(--bg)); color: var(--text); text-decoration: none; translate: 0 -1px; }
+	.ocs-acc-tile:focus-visible, .ocs-acc-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+	@container page (min-width: 40rem) { .ocs-acc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+	/* menu card */
+	.ocs-acc-nav { display: grid; gap: 2px; padding: var(--sp-2); background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); }
+	.ocs-acc-link { display: flex; align-items: center; gap: var(--sp-3); min-block-size: 2.75rem; padding: var(--sp-2) var(--sp-3); border-radius: var(--r-sm); color: var(--text); text-decoration: none; font-size: var(--fs-sm); }
+	.ocs-acc-link .ocs-i { color: var(--text-muted); flex: none; }
+	.ocs-acc-link:hover, .ocs-acc-link:focus-visible { background: var(--bg-alt); color: var(--text); text-decoration: none; }
+	.ocs-acc-link[aria-current="page"] { background: color-mix(in srgb, var(--accent) 10%, var(--bg)); color: var(--link); font-weight: 700; }
+	.ocs-acc-link[aria-current="page"] .ocs-i { color: var(--accent); }
+	.ocs-acc-logout { margin-block-start: var(--sp-2); border-block-start: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: 0 0 var(--r-sm) var(--r-sm); }
+
+	/* on phones the menu becomes a scrollable pill strip above the content */
+	@container page (max-width: 56rem) {
+		.ocs-page > .container > .row > #column-right:has(.ocs-acc-nav), .ocs-page > .container > .row > #column-left:has(.ocs-acc-nav) { order: -1; }
+		.ocs-acc-nav { display: flex; gap: var(--sp-2); overflow-x: auto; padding: var(--sp-1); border-radius: 999px; scrollbar-width: none; }
+		.ocs-acc-nav::-webkit-scrollbar { display: none; }
+		.ocs-acc-link { flex: none; white-space: nowrap; border-radius: 999px; min-block-size: 2.5rem; }
+		.ocs-acc-logout { margin: 0; border: 0; border-radius: 999px; }
+	}
+
+	/* order status */
+	.ocs-acc-status { display: inline-block; padding: 2px var(--sp-3); border-radius: 999px; background: var(--bg-alt); font-size: var(--fs-xs); font-weight: 600; white-space: nowrap; }
+
+	/* addresses */
+	.ocs-acc-addresses { display: grid; gap: var(--sp-3); grid-template-columns: minmax(0, 1fr); margin-block-end: var(--sp-4); }
+	.ocs-acc-address { display: grid; grid-template-columns: auto 1fr; gap: var(--sp-3); align-items: start; padding: var(--sp-4); background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); }
+	.ocs-acc-address > .ocs-i { color: var(--accent); margin-block-start: 2px; }
+	.ocs-acc-address address { margin: 0; line-height: 1.5; }
+	.ocs-acc-address-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+	.ocs-acc-danger { color: var(--danger); }
+	@container page (min-width: 40rem) { .ocs-acc-addresses { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+	/* empty state */
+	.ocs-acc-empty { display: grid; justify-items: center; gap: var(--sp-2); padding: var(--sp-6) var(--sp-4); margin-block-end: var(--sp-4); text-align: center; color: var(--text-muted); background: var(--bg-alt); border-radius: var(--r-lg); }
+	.ocs-acc-empty .ocs-i { inline-size: 2.5rem; block-size: 2.5rem; color: var(--accent); }
+	.ocs-acc-empty p { margin: 0; }
+
+	/* account tables: quiet card on wide containers, stacked cards on phones */
+	[id^="account-"] .table-responsive { border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); background: var(--bg); margin-block-end: var(--sp-4); }
+	[id^="account-"] .table-responsive > .table { margin: 0; }
+	@container page (max-width: 40rem) {
+		[id^="account-"] .table-responsive { border: 0; background: none; overflow: visible; }
+		[id^="account-"] .table-responsive > table, [id^="account-"] .table-responsive tbody { display: grid; gap: var(--sp-3); }
+		[id^="account-"] .table-responsive thead { display: none; }
+		[id^="account-"] .table-responsive tbody > tr { display: grid; gap: var(--sp-1); padding: var(--sp-3) var(--sp-4); background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); }
+		[id^="account-"] .table-responsive tbody > tr > td { display: flex; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-1) 0; border: 0; text-align: end; }
+		[id^="account-"] .table-responsive tbody > tr > td[data-label]::before { content: attr(data-label); color: var(--text-muted); font-size: var(--fs-xs); font-weight: 600; text-align: start; }
+	}
+
+	/* narrow readable forms */
+	#account-edit #content > form, #account-password #content > form, #account-address #content > form, #account-newsletter #content > form, #account-affiliate #content > form { max-inline-size: 40rem; }
+}

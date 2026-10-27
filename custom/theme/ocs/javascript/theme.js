@@ -3083,3 +3083,54 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		boot();
 	}
 }(window, document));
+
+/* Account area (SPEC-063): marks the current page in the account menu and gives table cells their column label for the phone card layout. */
+(function (window, document) {
+	'use strict';
+
+	function route(href) {
+		var m = /[?&]route=([^&#]+)/.exec(href || '');
+
+		return m ? decodeURIComponent(m[1]) : '';
+	}
+
+	function boot() {
+		var nav = document.querySelector('.ocs-acc-nav');
+
+		if (nav) {
+			var current = route(window.location.search);
+			var links = nav.querySelectorAll('a.ocs-acc-link');
+
+			for (var i = 0; i < links.length; i++) {
+				var target = route(links[i].getAttribute('href'));
+
+				if (target && current && (current === target || current.indexOf(target + '/') === 0)) {
+					links[i].setAttribute('aria-current', 'page');
+				}
+			}
+		}
+
+		var tables = document.querySelectorAll('[id^="account-"] .table-responsive > table');
+
+		for (var t = 0; t < tables.length; t++) {
+			var heads = tables[t].querySelectorAll('thead tr:first-child > td, thead tr:first-child > th');
+			var rows = tables[t].querySelectorAll('tbody > tr');
+
+			for (var r = 0; r < rows.length; r++) {
+				var cells = rows[r].children;
+
+				for (var c = 0; c < cells.length && c < heads.length; c++) {
+					if (!cells[c].hasAttribute('data-label')) {
+						cells[c].setAttribute('data-label', heads[c].textContent.replace(/\s+/g, ' ').trim());
+					}
+				}
+			}
+		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
