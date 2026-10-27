@@ -334,6 +334,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 				var known = {};
 				var i;
 				var items = grid.querySelectorAll('.product-layout');
+				var added = 0;
 
 				for (i = 0; i < items.length; i++) {
 					known[items[i].getAttribute('data-product-id')] = true;
@@ -353,6 +354,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 					}
 
 					grid.appendChild(node);
+					added++;
 				}
 
 				var oldPager = document.querySelector('.pagination');
@@ -366,7 +368,8 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 					window.history.replaceState(null, '', href);
 				}
 
-				href = nextHref(document);
+				// Nothing new came back: no more products, whatever the pager says.
+				href = added ? nextHref(document) : '';
 				button.hidden = !href;
 				button.disabled = false;
 				busy = false;

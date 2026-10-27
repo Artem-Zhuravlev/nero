@@ -48,6 +48,10 @@ touching anything. The non-negotiable parts:
 - Secrets live only in `.env` (git-ignored). `system/storage` lives outside the docroot.
 - Controllers stay thin; logic goes in `system/library/ocs/*` classes or models.
 
+## Theme package (mandatory, SPEC-051)
+
+After ANY change to files packaged into the theme archive (theme, extensions, migrations, OCMOD, demo catalogue, `custom/VERSION`), run `npm run pack:theme` before reporting the task done, so `dist/ocs-theme-<VERSION>.ocmod.zip` always matches `custom/`. Say in the final message that the archive was rebuilt.
+
 ## Commands
 
 Implemented so far (SPEC-001/003/009, see task statuses): `npm run core:check` (core/ vs manifest), `npm run build` /
