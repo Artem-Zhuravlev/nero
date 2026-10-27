@@ -1,6 +1,6 @@
 {# @core-file catalog/view/theme/default/template/checkout/payment_method.twig @core-version 3.0.3.7 #}
 {% if error_warning %}
-<div class="alert alert-warning alert-dismissible"><svg class="ocs-i" aria-hidden="true"><use href="#i-alert"/></svg> {{ error_warning }}</div>
+<div class="alert alert-warning alert-dismissible">{{ error_warning }}</div>
 {% endif %}
 {% if payment_methods %}
 <p>{{ text_payment_method }}</p>

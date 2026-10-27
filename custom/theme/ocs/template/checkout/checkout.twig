@@ -8,8 +8,8 @@
     {% endfor %}
   </ul>
   {% if error_warning %}
-  <div class="alert alert-danger alert-dismissible"><svg class="ocs-i" aria-hidden="true"><use href="#i-alert"/></svg> {{ error_warning }}
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <div class="alert alert-danger alert-dismissible">{{ error_warning }}
+   
   </div>
   {% endif %}
   <div class="row">{{ column_left }}
@@ -192,7 +192,7 @@ $(document).delegate('#button-login', 'click', function() {
             if (json['redirect']) {
                 location = json['redirect'];
             } else if (json['error']) {
-                $('#collapse-checkout-option .panel-body').prepend('<div class="alert alert-danger alert-dismissible"><svg class="ocs-i" aria-hidden="true"><use href="#i-alert"/></svg> ' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                $('#collapse-checkout-option .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '</div>');
 
 				// Highlight any found errors
 				$('input[name=\'email\']').parent().addClass('has-error');
@@ -225,7 +225,7 @@ $(document).delegate('#button-register', 'click', function() {
                 $('#button-register').button('reset');
 
                 if (json['error']['warning']) {
-                    $('#collapse-payment-address .panel-body').prepend('<div class="alert alert-danger alert-dismissible"><svg class="ocs-i" aria-hidden="true"><use href="#i-alert"/></svg> ' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                    $('#collapse-payment-address .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '</div>');
                 }
 
 				for (i in json['error']) {
@@ -360,7 +360,7 @@ $(document).delegate('#button-payment-address', 'click', function() {
                 location = json['redirect'];
             } else if (json['error']) {
                 if (json['error']['warning']) {
-                    $('#collapse-payment-address .panel-body').prepend('<div class="alert alert-warning alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                    $('#collapse-payment-address .panel-body').prepend('<div class="alert alert-warning alert-dismissible">' + json['error']['warning'] + '</div>');
                 }
 
 				for (i in json['error']) {
@@ -463,7 +463,7 @@ $(document).delegate('#button-shipping-address', 'click', function() {
                 $('#button-shipping-address').button('reset');
 
                 if (json['error']['warning']) {
-                    $('#collapse-shipping-address .panel-body').prepend('<div class="alert alert-warning alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                    $('#collapse-shipping-address .panel-body').prepend('<div class="alert alert-warning alert-dismissible">' + json['error']['warning'] + '</div>');
                 }
 
 				for (i in json['error']) {
@@ -549,7 +549,7 @@ $(document).delegate('#button-guest', 'click', function() {
                 $('#button-guest').button('reset');
 
                 if (json['error']['warning']) {
-                    $('#collapse-payment-address .panel-body').prepend('<div class="alert alert-warning alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                    $('#collapse-payment-address .panel-body').prepend('<div class="alert alert-warning alert-dismissible">' + json['error']['warning'] + '</div>');
                 }
 
 				for (i in json['error']) {
@@ -675,7 +675,7 @@ $(document).delegate('#button-guest-shipping', 'click', function() {
                 $('#button-guest-shipping').button('reset');
 
                 if (json['error']['warning']) {
-                    $('#collapse-shipping-address .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                    $('#collapse-shipping-address .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '</div>');
                 }
 
 				for (i in json['error']) {
@@ -737,7 +737,7 @@ $(document).delegate('#button-shipping-method', 'click', function() {
                 $('#button-shipping-method').button('reset');
 
                 if (json['error']['warning']) {
-                    $('#collapse-shipping-method .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                    $('#collapse-shipping-method .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '</div>');
                 }
             } else {
                 $.ajax({
@@ -785,7 +785,7 @@ $(document).delegate('#button-payment-method', 'click', function() {
                 $('#button-payment-method').button('reset');
                 
                 if (json['error']['warning']) {
-                    $('#collapse-payment-method .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                    $('#collapse-payment-method .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '</div>');
                 }
             } else {
                 $.ajax({

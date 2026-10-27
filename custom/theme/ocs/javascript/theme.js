@@ -3159,3 +3159,93 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		boot();
 	}
 }(window, document));
+
+/* SPEC-069 alerts: every .alert is text + one thin close button, also those core's common.js and modules inject. Flash alerts (.alert-dismissible)
+   are fixed by CSS; success ones fade after 6 s, the rest stay until closed. */
+(function (window, document) {
+	'use strict';
+
+	var OCS = window.OCS = window.OCS || {};
+	var CLOSE = { uk: 'Закрити', ru: 'Закрыть', en: 'Close' };
+	var observer = null;
+
+	function label() {
+		var lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
+
+		return CLOSE[lang] || CLOSE.en;
+	}
+
+	function dismiss(alert) {
+		alert.classList.add('ocs-alert-out');
+		window.setTimeout(function () {
+			if (alert.parentNode) {
+				alert.parentNode.removeChild(alert);
+			}
+		}, 300);
+	}
+
+	function normalize(alert) {
+		if (alert.getAttribute('data-ocs-alert')) {
+			return;
+		}
+
+		alert.setAttribute('data-ocs-alert', '1');
+
+		if (!alert.hasAttribute('role')) {
+			alert.setAttribute('role', 'alert');
+		}
+
+		// status icons (Font Awesome from core, sprite icons from templates) and stock close buttons go; the text stays
+		[].slice.call(alert.querySelectorAll('i.fa, .fa, svg.ocs-i, .close')).forEach(function (el) {
+			if (el.parentNode) {
+				el.parentNode.removeChild(el);
+			}
+		});
+
+		var button = document.createElement('button');
+
+		button.type = 'button';
+		button.className = 'close';
+		button.setAttribute('aria-label', label());
+		button.innerHTML = OCS.icon ? OCS.icon('x') : '';
+		button.addEventListener('click', function () { dismiss(alert); });
+		alert.insertBefore(button, alert.firstChild);
+
+		if (alert.classList.contains('alert-dismissible') && alert.classList.contains('alert-success')) {
+			window.setTimeout(function () { dismiss(alert); }, 6000);
+		}
+	}
+
+	function scan(root) {
+		if (root.nodeType !== 1) {
+			return;
+		}
+
+		if (root.classList.contains('alert')) {
+			normalize(root);
+		}
+
+		[].slice.call(root.querySelectorAll('.alert')).forEach(normalize);
+	}
+
+	OCS.alerts = { scan: scan, dismiss: dismiss };
+
+	function boot() {
+		scan(document.body);
+
+		if (window.MutationObserver) {
+			observer = new window.MutationObserver(function (list) {
+				list.forEach(function (m) {
+					[].slice.call(m.addedNodes).forEach(scan);
+				});
+			});
+			observer.observe(document.body, { childList: true, subtree: true });
+		}
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));

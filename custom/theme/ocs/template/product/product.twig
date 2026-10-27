@@ -140,7 +140,7 @@
               </div>
             </div>
             {% if minimum > 1 %}
-            <div class="alert alert-info"><svg class="ocs-i" aria-hidden="true"><use href="#i-info"/></svg> {{ text_minimum }}</div>
+            <div class="alert alert-info">{{ text_minimum }}</div>
             {% endif %}</div>
           {{ ocs_credit_block }}
           {{ ocs_tradein_banner }}
@@ -434,7 +434,7 @@ $('#button-cart').on('click', function() {
 			}
 
 			if (json['success']) {
-				$('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+				$('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '</div>');
 
 				$('#cart > button').html('<span id="cart-total"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg> ' + json['total'] + '</span>');
 
@@ -545,11 +545,11 @@ $('#button-review').on('click', function() {
 			$('#review-msg').empty();
 
 			if (json['error']) {
-				$('#review-msg').html('<div class="alert alert-danger"><svg class="ocs-i" aria-hidden="true"><use href="#i-alert"/></svg> ' + json['error'] + '</div>');
+				$('#review-msg').html('<div class="alert alert-danger">' + json['error'] + '</div>');
 			}
 
 			if (json['success']) {
-				$('#review-msg').html('<div class="alert alert-success"><svg class="ocs-i" aria-hidden="true"><use href="#i-check-circle"/></svg> ' + json['success'] + '</div>');
+				$('#review-msg').html('<div class="alert alert-success">' + json['success'] + '</div>');
 
 				$('input[name=\'name\']').val('');
 				$('textarea[name=\'text\']').val('');

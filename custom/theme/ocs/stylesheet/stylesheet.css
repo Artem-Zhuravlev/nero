@@ -127,6 +127,7 @@ a { color: var(--link); text-decoration: none; transition: color var(--t); }
 a:hover, a:focus { color: var(--accent-hover); text-decoration: underline; }
 
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+:focus:not(:focus-visible) { outline: 0; } /* SPEC-069: no ring after a mouse click, keyboard ring stays */
 
 hr { border-top-color: var(--border); }
 .text-muted { color: var(--text-muted); }
@@ -171,11 +172,6 @@ hr { border-top-color: var(--border); }
 .btn[disabled], .btn.disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ==== 5. Alerts, breadcrumbs, pagination, panels (REQ-DSG-015) ====================== */
-.alert { border: 0; border-radius: var(--r-md); }
-.alert-success { background: var(--success-bg); color: var(--success); }
-.alert-warning { background: var(--warning-bg); color: var(--warning); }
-.alert-danger { background: var(--danger-bg); color: var(--danger); }
-.alert-info { background: var(--bg-alt); color: var(--text); }
 
 .breadcrumb { background: transparent; padding-left: 0; margin-bottom: var(--sp-5); font-size: var(--fs-sm); }
 .breadcrumb > li + li:before { color: var(--text-muted); content: "\203A"; padding: 0 var(--sp-2); }
@@ -1218,12 +1214,29 @@ li .ocs-stock { font-size: inherit; }
 	.table-bordered, .table-bordered > thead > tr > th, .table-bordered > tbody > tr > td { border: 0; border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
 	.table-striped > tbody > tr:nth-of-type(odd) { background: color-mix(in srgb, var(--bg-alt) 70%, transparent); }
 	.table-hover > tbody > tr:hover { background: var(--bg-alt); }
-	.alert { border: 0; border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); font-size: var(--fs-sm); }
+	/* SPEC-069: one alert design. Text only, thin close icon, flash alerts float under the header and never overflow. */
+	.alert { position: relative; border: 0; border-radius: var(--r-md); padding: var(--sp-3) 3rem var(--sp-3) var(--sp-4); margin-bottom: var(--sp-4); font-size: var(--fs-sm); line-height: 1.45; overflow-wrap: anywhere; word-break: break-word; }
 	.alert-success { background: var(--success-bg); color: var(--success); }
 	.alert-danger { background: var(--danger-bg); color: var(--danger); }
 	.alert-warning { background: var(--warning-bg); color: var(--warning); }
 	.alert-info { background: color-mix(in srgb, var(--accent) 10%, var(--bg)); color: var(--link); }
-	.alert .close { color: inherit; opacity: .7; text-shadow: none; }
+	.alert a { color: inherit; text-decoration: underline; }
+	.alert .close {
+		position: absolute; inset-block-start: 50%; inset-inline-end: var(--sp-2); translate: 0 -50%; display: inline-flex; align-items: center; justify-content: center;
+		inline-size: 1.75rem; block-size: 1.75rem; min-block-size: 0; padding: 0; margin: 0; float: none; border: 0; border-radius: 50%; background: transparent;
+		color: inherit; opacity: .65; text-shadow: none; font-size: 0; line-height: 1; cursor: pointer; transition: opacity var(--t), background-color var(--t);
+	}
+	.alert .close:hover { opacity: 1; background: color-mix(in srgb, currentColor 12%, transparent); }
+	.alert .close .ocs-i { inline-size: 1rem; block-size: 1rem; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+	.alert-dismissible {
+		position: fixed; inset-block-start: calc(var(--head-h, 4.5rem) + var(--sp-3)); inset-inline: 0; margin-inline: auto; z-index: var(--z-toast);
+		inline-size: min(32rem, calc(100vw - 2 * var(--sp-4))); max-block-size: calc(100dvh - var(--head-h, 4.5rem) - var(--sp-6)); overflow-y: auto;
+		box-shadow: var(--shadow); animation: ocs-alert-in .2s ease-out;
+	}
+	.alert-dismissible ~ .alert-dismissible { margin-block-start: 4.25rem; }
+	.alert-dismissible.ocs-alert-out { opacity: 0; transition: opacity .3s; }
+	@keyframes ocs-alert-in { from { opacity: 0; translate: 0 -.5rem; } }
+	@media (prefers-reduced-motion: reduce) { .alert-dismissible { animation: none; } }
 	.tooltip-inner { background: var(--text); color: var(--bg); border-radius: var(--r-sm); padding: var(--sp-1) var(--sp-3); font-size: var(--fs-xs); }
 	.label { border-radius: var(--r-pill); font-weight: 600; padding: 0.25em 0.7em; }
 	hr { border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent); margin-block: var(--sp-4); }

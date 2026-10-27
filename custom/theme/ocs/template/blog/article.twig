@@ -236,7 +236,7 @@ $('#button-cart').on('click', function() {
 			}
 
 			if (json['success']) {
-				$('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+				$('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '</div>');
 
 				$('#cart > button').html('<span id="cart-total"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg> ' + json['total'] + '</span>');
 
@@ -349,11 +349,11 @@ $('#button-review').on('click', function() {
 			$('.alert-dismissible').remove();
 
 			if (json['error']) {
-				$('#review').after('<div class="alert alert-danger alert-dismissible"><svg class="ocs-i" aria-hidden="true"><use href="#i-alert"/></svg> ' + json['error'] + '</div>');
+				$('#review').after('<div class="alert alert-danger alert-dismissible">' + json['error'] + '</div>');
 			}
 
 			if (json['success']) {
-				$('#review').after('<div class="alert alert-success alert-dismissible"><svg class="ocs-i" aria-hidden="true"><use href="#i-check"/></svg> ' + json['success'] + '</div>');
+				$('#review').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '</div>');
 
 				$('input[name=\'name\']').val('');
 				$('textarea[name=\'text\']').val('');
