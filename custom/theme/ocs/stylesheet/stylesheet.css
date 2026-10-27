@@ -2022,3 +2022,25 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-cmp-table { min-inline-size: calc(6.5rem + var(--cols, 2) * 10rem); }
 	}
 }
+
+/* ==== header search: one pill field, search button inside (overrides .form-control radius/border) ==== */
+@layer overrides {
+	.ocs-head-search #search {
+		display: flex; align-items: stretch; inline-size: 100%; block-size: 2.75rem;
+		background: var(--bg-alt); border: 1px solid transparent; border-radius: var(--r-pill);
+		transition: border-color var(--t), box-shadow var(--t), background-color var(--t);
+	}
+	.ocs-head-search #search:hover { border-color: var(--border); }
+	.ocs-head-search #search:focus-within { background: var(--bg); border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+	.ocs-head-search #search .form-control {
+		flex: 1 1 auto; min-inline-size: 0; block-size: auto; min-block-size: 0; padding-block: 0; padding-inline: var(--sp-5) var(--sp-2);
+		border: 0; border-radius: var(--r-pill) 0 0 var(--r-pill); background: transparent; box-shadow: none;
+	}
+	.ocs-head-search #search .form-control:hover, .ocs-head-search #search .form-control:focus { border: 0; box-shadow: none; }
+	.ocs-head-search #search .input-group-btn { display: flex; inline-size: auto; }
+	.ocs-head-search #search .btn {
+		block-size: 100%; min-block-size: 0; aspect-ratio: 1; padding: 0; border: 0; border-radius: var(--r-pill);
+		background: transparent; color: var(--text-muted);
+	}
+	.ocs-head-search #search .btn:hover, .ocs-head-search #search .btn:focus { background: transparent; color: var(--accent); }
+}
