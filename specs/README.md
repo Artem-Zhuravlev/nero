@@ -145,6 +145,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-076 | [Image Resize Guard (OCMOD) and Migration 0008 Fix](image-resize-guard/spec.md) | `implemented` |
 | SPEC-077 | [Out-of-stock Cards: Bell Button, Grey Image, Price Size, Even Spacing](card-out-of-stock-layout/spec.md) | `implemented` |
 | SPEC-078 | [Search Page Without the Search Form](search-page-no-form/spec.md) | `implemented` |
+| SPEC-079 | [Super Search: language, layout, typo, translit, synonyms](super-search/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).
