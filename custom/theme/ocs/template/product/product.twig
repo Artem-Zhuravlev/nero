@@ -28,7 +28,7 @@
         {% set class = 'col-sm-8' %}
         {% endif %}
         <div class="{{ class }}"> {% if thumb or images %}
-          <div class="ocs-gallery"><div class="ocs-slot ocs-slot-tl">{% for s in ocs_stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl">{% for s in ocs_stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
+          <div class="ocs-gallery"><div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl">{% for s in ocs_stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
 
           {% if ocs_px.gallery %}
           <div class="ocs-gal" data-ocs-gallery="1" data-ocs-lb="{{ ocs_px.lb }}">
