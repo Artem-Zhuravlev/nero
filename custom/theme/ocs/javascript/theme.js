@@ -1730,6 +1730,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 	var MAX = {wish: 100, cmp: 12};
 	var cfg = null;
 	var cart = [];
+	var fresh = 0; // product just added by a click: its button animates once
 	var queued = false;
 
 	function readCookie(name) {
@@ -1792,14 +1793,15 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 			b._ocsHtml = b.innerHTML;
 			b._ocsTitle = b.getAttribute('title');
 			b.classList.add('is-in-cart');
-			b.innerHTML = OCS.icon('check') + (iconOnly ? '' : ' ' + cfg.t.in_cart);
+			b.classList.toggle('is-just-added', fresh === id && id > 0);
+			b.innerHTML = OCS.icon('check') + (iconOnly ? '' : ' ' + (cfg.t.in_cart_btn || cfg.t.in_cart));
 			setTitle(b, cfg.t.in_cart);
 
 			if (window.jQuery && b.id === 'button-cart') {
 				window.jQuery(b).data('resetText', b.innerHTML);
 			}
 		} else if (!on && b.classList.contains('is-in-cart')) {
-			b.classList.remove('is-in-cart');
+			b.classList.remove('is-in-cart', 'is-just-added');
 			b.innerHTML = b._ocsHtml || b.innerHTML;
 
 			if (b._ocsTitle) {
@@ -1984,6 +1986,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 
 			if (json && json.success && m && cart.indexOf(parseInt(m[1], 10)) === -1) {
 				cart.push(parseInt(m[1], 10));
+				fresh = parseInt(m[1], 10);
 				// Bootstrap's button('reset') runs after the response and would put the old label back
 				window.setTimeout(refresh, 150);
 			}

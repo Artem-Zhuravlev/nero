@@ -253,6 +253,7 @@ class ControllerExtensionOcsBookmarksEvents extends Controller {
 				'days'    => \Ocs\Bookmarks::DAYS,
 				'strings' => htmlspecialchars(json_encode(array(
 					'in_cart'  => isset($strings['text_in_cart']) ? $strings['text_in_cart'] : '',
+					'in_cart_btn' => isset($strings['text_in_cart_btn']) ? $strings['text_in_cart_btn'] : (isset($strings['text_in_cart']) ? $strings['text_in_cart'] : ''),
 					'wish_on'  => isset($strings['text_wish_on']) ? $strings['text_wish_on'] : '',
 					'wish_off' => isset($strings['text_wish_off']) ? $strings['text_wish_off'] : '',
 					'cmp_on'   => isset($strings['text_cmp_on']) ? $strings['text_cmp_on'] : '',

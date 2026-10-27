@@ -1,6 +1,7 @@
 <?php
 // Extension: ocs_bookmarks. Storefront strings. Owner: SPEC-044.
 $_['text_in_cart']   = 'У кошику';
+$_['text_in_cart_btn'] = 'Вже в кошику';
 $_['text_wish_on']   = 'В обраному: прибрати';
 $_['text_wish_off']  = 'В обране';
 $_['text_cmp_on']    = 'У порівнянні: прибрати';

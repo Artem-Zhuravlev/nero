@@ -1,6 +1,7 @@
 <?php
 // Extension: ocs_bookmarks. Storefront strings. Owner: SPEC-044.
 $_['text_in_cart']   = 'In cart';
+$_['text_in_cart_btn'] = 'Already in cart';
 $_['text_wish_on']   = 'In wishlist: remove';
 $_['text_wish_off']  = 'Add to wishlist';
 $_['text_cmp_on']    = 'In comparison: remove';

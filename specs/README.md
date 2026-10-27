@@ -136,6 +136,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-067 | [Style Refresh (Black Accent, Taller Buttons, Gilroy) and Contacts Page](style-refresh-contacts/spec.md) | `implemented` |
 | SPEC-068 | [Demo Data Covers Every Custom Field](demo-custom-fields/spec.md) | `implemented` |
 | SPEC-069 | [Unified Alerts and No Click Outline](alert-unification/spec.md) | `implemented` |
+| SPEC-070 | [Already in Cart Button State](in-cart-button/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

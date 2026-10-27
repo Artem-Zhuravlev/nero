@@ -1606,6 +1606,14 @@ li .ocs-stock { font-size: inherit; }
 	.is-in-cart { background: var(--success); color: var(--on-accent); }
 	.ocs-cart-btn.is-in-cart:hover, .btn.is-in-cart:hover { background: var(--success); filter: brightness(0.95); }
 	.is-in-cart .ocs-i { fill: none; }
+	/* SPEC-070: a thicker rounded check that draws itself once after a click */
+	.is-in-cart .ocs-i path { stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+	@media (prefers-reduced-motion: no-preference) {
+		.is-just-added { animation: ocs-pop .4s ease-out; }
+		.is-just-added .ocs-i path { stroke-dasharray: 20; stroke-dashoffset: 20; animation: ocs-check .35s .1s ease-out forwards; }
+	}
+	@keyframes ocs-check { to { stroke-dashoffset: 0; } }
+	@keyframes ocs-pop { 0% { scale: 1; } 45% { scale: 1.12; } 100% { scale: 1; } }
 }
 
 /* ==== SPEC-045: product info column without lists, prices outside headings ==== */
