@@ -1282,8 +1282,6 @@ li .ocs-stock { font-size: inherit; }
 	}
 	.ocs-act-btn:hover, .ocs-head-cart #cart > .btn:hover, .ocs-act-btn:focus-visible { background: var(--bg-alt); color: var(--text); text-decoration: none; }
 	.ocs-act-btn .ocs-i { inline-size: 1.5rem; block-size: 1.5rem; }
-	.ocs-act-label { display: block; max-inline-size: 5.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-muted); font-size: 0.6875rem; font-weight: 600; }
-	.ocs-act-btn:hover .ocs-act-label, .ocs-head-cart #cart > .btn:hover .ocs-act-label { color: var(--text); }
 	.ocs-act-btn[data-count]::after, .ocs-head-cart[data-count] #cart > .btn::after {
 		content: attr(data-count); position: absolute; inset-block-start: 0.1rem; inset-inline-start: calc(50% + 0.3rem); min-inline-size: 1.1rem; block-size: 1.1rem; padding-inline: 0.28rem;
 		border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent); font-size: 0.625rem; font-weight: 700; line-height: 1.1rem; text-align: center;
@@ -1303,7 +1301,6 @@ li .ocs-stock { font-size: inherit; }
 
 	@container head (max-width: 62rem) {
 		.ocs-act-btn, .ocs-head-cart #cart > .btn { min-inline-size: 3.25rem; }
-		.ocs-act-label { display: none; }
 	}
 	@container head (max-width: 40rem) {
 		.ocs-head-actions > .ocs-act:not(.ocs-head-cart) { display: none; }

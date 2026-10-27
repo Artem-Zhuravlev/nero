@@ -136,7 +136,7 @@
     <div class="ocs-head-search">{{ search }}</div>
     <div class="ocs-head-actions" id="top-links">
       <div class="dropdown ocs-act">
-        <a href="{{ account }}" class="ocs-act-btn dropdown-toggle" data-toggle="dropdown" title="{{ text_account }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg><small class="ocs-act-label">{{ logged ? text_account : text_login }}</small></a>
+        <a href="{{ account }}" class="ocs-act-btn dropdown-toggle" data-toggle="dropdown" title="{{ text_account }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg></a>
         <ul class="dropdown-menu dropdown-menu-right">
           {% if logged %}
           <li><a href="{{ account }}">{{ text_account }}</a></li>
@@ -151,9 +151,9 @@
         </ul>
       </div>
       {% if ocs_shell %}
-      <a href="{{ ocs_shell.compare }}" class="ocs-act ocs-act-btn" id="ocs-compare-link" title="{{ ocs_shell.compare_text }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg><small class="ocs-act-label">{{ (ocs_shell.compare_text|split(' ('))[0] }}</small><span id="compare-total" class="ocs-sr">{{ ocs_shell.compare_text }}</span></a>
+      <a href="{{ ocs_shell.compare }}" class="ocs-act ocs-act-btn" id="ocs-compare-link" title="{{ ocs_shell.compare_text }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg><span id="compare-total" class="ocs-sr">{{ ocs_shell.compare_text }}</span></a>
       {% endif %}
-      <a href="{{ wishlist }}" class="ocs-act ocs-act-btn" id="wishlist-total" title="{{ text_wishlist }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg><small class="ocs-act-label">{{ (text_wishlist|split(' ('))[0] }}</small><span class="ocs-sr">{{ text_wishlist }}</span></a>
+      <a href="{{ wishlist }}" class="ocs-act ocs-act-btn" id="wishlist-total" title="{{ text_wishlist }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg><span class="ocs-sr">{{ text_wishlist }}</span></a>
       <div class="ocs-act ocs-head-cart" data-label="{{ text_shopping_cart }}">{{ cart }}</div>
     </div>
   </div>
