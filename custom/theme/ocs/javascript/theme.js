@@ -3108,6 +3108,31 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 					links[i].setAttribute('aria-current', 'page');
 				}
 			}
+
+			// phones: the menu is a dropdown; the button shows the current page (SPEC-066)
+			var cur = nav.querySelector('a[aria-current="page"]') || nav.querySelector('a.ocs-acc-link');
+			var toggle = document.createElement('button');
+			var label = document.createElement('span');
+
+			toggle.type = 'button';
+			toggle.className = 'ocs-acc-toggle';
+			toggle.setAttribute('aria-expanded', 'false');
+			label.textContent = cur ? cur.textContent.trim() : '';
+			toggle.appendChild(label);
+			toggle.insertAdjacentHTML('beforeend', '<svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg>');
+			nav.setAttribute('data-collapsed', '');
+			nav.parentNode.insertBefore(toggle, nav);
+			toggle.addEventListener('click', function () {
+				var closed = nav.hasAttribute('data-collapsed');
+
+				if (closed) {
+					nav.removeAttribute('data-collapsed');
+				} else {
+					nav.setAttribute('data-collapsed', '');
+				}
+
+				toggle.setAttribute('aria-expanded', closed ? 'true' : 'false');
+			});
 		}
 
 		var tables = document.querySelectorAll('[id^="account-"] .table-responsive > table');

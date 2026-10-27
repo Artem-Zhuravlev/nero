@@ -2106,6 +2106,8 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-acc-tile:focus-visible, .ocs-acc-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 	@container page (min-width: 40rem) { .ocs-acc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
+	.ocs-acc-toggle { display: none; }
+
 	/* menu card */
 	.ocs-acc-nav { display: grid; gap: 2px; padding: var(--sp-2); background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); }
 	.ocs-acc-link { display: flex; align-items: center; gap: var(--sp-3); min-block-size: 2.75rem; padding: var(--sp-2) var(--sp-3); border-radius: var(--r-sm); color: var(--text); text-decoration: none; font-size: var(--fs-sm); }
@@ -2115,15 +2117,19 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-acc-link[aria-current="page"] .ocs-i { color: var(--accent); }
 	.ocs-acc-logout { margin-block-start: var(--sp-2); border-block-start: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: 0 0 var(--r-sm) var(--r-sm); }
 
-	/* on phones the menu becomes a scrollable pill strip above the content */
+	/* on phones the menu becomes a dropdown above the content (SPEC-066) */
 	@container page (max-width: 56rem) {
 		.ocs-page > .container > .row > #column-right:has(.ocs-acc-nav), .ocs-page > .container > .row > #column-left:has(.ocs-acc-nav) { order: -1; }
 		/* Bootstrap's .hidden-xs on the aside would hide the whole menu on phones (SPEC-065) */
 		#column-right.hidden-xs:has(.ocs-acc-nav), #column-left.hidden-xs:has(.ocs-acc-nav) { display: block !important; }
-		.ocs-acc-nav { display: flex; gap: var(--sp-2); overflow-x: auto; padding: var(--sp-1); border-radius: 999px; scrollbar-width: none; }
-		.ocs-acc-nav::-webkit-scrollbar { display: none; }
-		.ocs-acc-link { flex: none; white-space: nowrap; border-radius: 999px; min-block-size: 2.5rem; }
-		.ocs-acc-logout { margin: 0; border: 0; border-radius: 999px; }
+		/* SPEC-066: dropdown instead of a strip; theme.js adds the toggle button and data-collapsed */
+		.ocs-acc-toggle { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); inline-size: 100%; min-block-size: 2.75rem; padding: var(--sp-2) var(--sp-4); background: var(--bg); color: var(--text); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); font: inherit; font-weight: 600; text-align: start; cursor: pointer; }
+		.ocs-acc-toggle .ocs-i { flex: none; transition: rotate .15s ease; }
+		.ocs-acc-toggle[aria-expanded="true"] .ocs-i { rotate: 180deg; }
+		.ocs-acc-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+		.ocs-acc-nav { margin-block-start: var(--sp-2); }
+		.ocs-acc-nav[data-collapsed] { display: none; }
+		.ocs-acc-logout { margin-block-start: var(--sp-2); }
 	}
 
 	/* order status */
