@@ -2772,6 +2772,32 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 	}
 }(window, document));
 
+/* Rating line links (product page): <base href> makes a bare "#tab-review" leave the page, so the click scrolls to the reviews section itself. */
+(function (window, document) {
+	'use strict';
+
+	document.addEventListener('click', function (e) {
+		var a = e.target.closest ? e.target.closest('.rating a[href="#tab-review"]') : null;
+		var target = a ? document.getElementById('tab-review') : null;
+
+		if (!target) {
+			return;
+		}
+
+		var header = document.querySelector('header.ocs-head') || document.querySelector('header');
+		var bar = document.getElementById('ocs-sections');
+		var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		var offset = (header && window.getComputedStyle(header).position === 'sticky' ? header.offsetHeight : 0) + (bar ? bar.offsetHeight : 0) + 8;
+
+		e.preventDefault();
+		window.scrollTo({top: target.getBoundingClientRect().top + window.pageYOffset - offset, behavior: reduce ? 'auto' : 'smooth'});
+
+		if (window.history && window.history.replaceState) {
+			window.history.replaceState(null, '', '#tab-review');
+		}
+	});
+}(window, document));
+
 /* Instalment block (SPEC-036): payments are recalculated when options change; the chosen plan becomes the quick-order note. Display only. */
 (function (window, document) {
 	'use strict';
