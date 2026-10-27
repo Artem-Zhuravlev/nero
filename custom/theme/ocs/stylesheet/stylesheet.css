@@ -1452,13 +1452,6 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-cmenu { padding: var(--sp-2); background: var(--bg); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); }
 	.ocs-cmenu-title { padding: var(--sp-2) var(--sp-3) 0; }
 
-	/* --- sort as a row of chips; the select stays for narrow screens --- */
-	@container page (min-width: 48rem) {
-		#content .row:has(> div > .btn-group > #list-view) > div:has(#input-sort) { display: none; }
-	}
-	@container page (max-width: 47.99rem) {
-	}
-
 	/* --- product page details --- */
 	.ocs-pdp-sections #tab-specification table { border-collapse: separate; border-spacing: 0; inline-size: 100%; }
 	.ocs-pdp-sections #tab-specification thead td { padding-block-start: var(--sp-5); font-size: var(--fs-md); border: 0; background: none; }

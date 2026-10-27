@@ -975,6 +975,7 @@ test('visual identity: category tree and sort chips', () => {
   }
   for (const rule of ['.list-group-item, a.list-group-item', 'a.list-group-item.active']) assert.ok(css.includes(rule), rule);
   assert.ok(!css.includes('.ocs-sortchips'));
+  assert.ok(!css.includes(':has(#input-sort) { display: none'), 'sort dropdown is not hidden on wide screens');
 });
 
 // TEST-VIS-007 - verifies REQ-VIS-006 (product: sticky summary bar and zebra specification table)
