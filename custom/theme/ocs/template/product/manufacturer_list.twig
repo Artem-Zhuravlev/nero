@@ -1,5 +1,5 @@
 {# @core-file catalog/view/theme/default/template/product/manufacturer_list.twig @core-version 3.0.3.7 #}
-{# Brands page with a client-side brand search (SPEC-074). #}
+{# Brands page with a client-side brand search (SPEC-074), restyled as chips and tiles (SPEC-075). #}
 {{ header }}
 <div id="product-manufacturer" class="container">
   <ul class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
@@ -19,20 +19,21 @@
       <h1>{{ heading_title }}</h1>
       {% if categories %}
       <div class="ocs-brand-search"><input type="search" id="ocs-brand-search" class="form-control" placeholder="{{ ocs_brand_search }}" aria-label="{{ ocs_brand_search }}" autocomplete="off" /></div>
-      <p id="ocs-brand-index"><strong>{{ text_index }}</strong> {% for category in categories %}
-        &nbsp;&nbsp;&nbsp;<a data-brand-letter="{{ category.name }}" href="index.php?route=product/manufacturer#{{ category.name }}">{{ category.name }}</a> {% endfor %} </p>
+      <nav id="ocs-brand-index" class="ocs-brand-index" aria-label="{{ text_index }}"><strong>{{ text_index }}</strong>
+        {% for category in categories %}<a data-brand-letter="{{ category.name }}" href="index.php?route=product/manufacturer#{{ category.name }}">{{ category.name }}</a>
+        {% endfor %}</nav>
       <div id="ocs-brand-groups">
       {% for category in categories %}
-      <div class="ocs-brand-group" data-brand-letter="{{ category.name }}">
-      <h2 id="{{ category.name }}">{{ category.name }}</h2>
-      {% if category.manufacturer %}
-      {% for manufacturers in category.manufacturer|batch(4) %}
-      <div class="row"> {% for manufacturer in manufacturers %}
-        <div class="col-sm-3 ocs-brand-item"><a href="{{ manufacturer.href }}">{{ manufacturer.name }}</a></div>
-        {% endfor %} </div>
-      {% endfor %}
-      {% endif %}
-      </div>
+      <section class="ocs-brand-group" data-brand-letter="{{ category.name }}">
+        <h2 id="{{ category.name }}">{{ category.name }}</h2>
+        {% if category.manufacturer %}
+        <div class="ocs-brand-grid">
+          {% for manufacturer in category.manufacturer %}
+          <a class="ocs-brand-item" href="{{ manufacturer.href }}">{{ manufacturer.name }}</a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section>
       {% endfor %}
       </div>
       <p id="ocs-brand-none" hidden>{{ ocs_brand_none }}</p>

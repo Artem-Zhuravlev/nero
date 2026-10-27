@@ -2223,5 +2223,20 @@ li .ocs-stock { font-size: inherit; }
 	}
 }
 
-/* Brand search on the brands page (SPEC-074) */
-.ocs-brand-search { max-width: 360px; margin-bottom: 15px; }
+/* Brands page: search, letter chips, tiles (SPEC-074, SPEC-075) */
+@layer components {
+	.ocs-brand-search { max-width: 22.5rem; margin-bottom: var(--sp-4); }
+	.ocs-brand-index { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-5); }
+	.ocs-brand-index strong { margin-inline-end: var(--sp-2); }
+	.ocs-brand-index a { display: inline-grid; place-items: center; min-inline-size: 2.25rem; block-size: 2.25rem; padding-inline: var(--sp-2); border-radius: var(--r-pill); background: var(--bg-alt); color: var(--text); font-weight: 700; font-size: var(--fs-sm); text-decoration: none; transition: background-color var(--t), color var(--t); }
+	.ocs-brand-index a:hover, .ocs-brand-index a:focus-visible { background: var(--accent); color: var(--on-accent); text-decoration: none; }
+	.ocs-brand-group { margin-bottom: var(--sp-5); }
+	.ocs-brand-group h2 { margin: 0 0 var(--sp-3); scroll-margin-top: 6rem; font-size: var(--fs-xl); font-weight: 800; }
+	.ocs-brand-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2); }
+	.ocs-brand-item { display: flex; align-items: center; min-block-size: 3rem; padding: var(--sp-2) var(--sp-4); border: 1px solid transparent; border-radius: var(--r-md); background: var(--bg-alt); color: var(--text); font-weight: 600; text-decoration: none; overflow-wrap: anywhere; transition: border-color var(--t), background-color var(--t); }
+	.ocs-brand-item:hover, .ocs-brand-item:focus-visible { border-color: var(--accent); background: var(--bg); color: var(--text); text-decoration: none; }
+	.ocs-brand-item:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+	.ocs-brand-index a[hidden], .ocs-brand-group[hidden], .ocs-brand-item[hidden] { display: none; }
+	@media (min-width: 48rem) { .ocs-brand-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+	@media (min-width: 75rem) { .ocs-brand-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+}
