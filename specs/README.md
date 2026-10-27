@@ -126,6 +126,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-057 | [Compare Page: Categories, Differences Only, Table UX](compare-page/spec.md) | `implemented` |
 | SPEC-058 | [Header Search Field Style](header-search-style/spec.md) | `implemented` |
 | SPEC-059 | [Mobile Header Reduction and Tab Bar Order](mobile-header-tabbar/spec.md) | `implemented` |
+| SPEC-060 | [Footer Groups One Column on Mobile](footer-mobile-single-column/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

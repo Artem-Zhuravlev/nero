@@ -1048,7 +1048,10 @@ li .ocs-stock { font-size: inherit; }
 	/* Bootstrap's clearfix pseudo-elements would become grid items */
 	footer > .container::before, footer > .container::after { display: none; }
 	footer .ocs-foot-contacts, footer .ocs-foot-groups { grid-column: 1 / -1; min-inline-size: 0; }
-	footer .ocs-foot-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); column-gap: var(--sp-5); row-gap: var(--sp-4); align-content: start; }
+	footer .ocs-foot-groups { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--sp-5); row-gap: var(--sp-4); align-content: start; }
+	@container foot (min-width: 36rem) {
+		footer .ocs-foot-groups { grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); }
+	}
 	@container foot (min-width: 62rem) {
 		footer .ocs-foot-contacts { grid-column: span 4; }
 		footer .ocs-foot-groups { grid-column: span 8; }
