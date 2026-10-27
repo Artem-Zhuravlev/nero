@@ -1189,7 +1189,7 @@ li .ocs-stock { font-size: inherit; }
 	.breadcrumb > li + li::before { content: "\203A"; padding: 0; color: var(--text-muted); }
 	.breadcrumb > li a { color: var(--text-muted); }
 	.breadcrumb > li a:hover { color: var(--link); text-decoration: none; }
-	.breadcrumb > li:last-child a { color: var(--text); }
+	.breadcrumb > li:last-child a, .breadcrumb > li > [aria-current] { color: var(--text); }
 
 	/* --- pagination --- */
 	.pagination { display: inline-flex; flex-wrap: wrap; gap: var(--sp-1); margin: var(--sp-4) 0; padding: 0; }

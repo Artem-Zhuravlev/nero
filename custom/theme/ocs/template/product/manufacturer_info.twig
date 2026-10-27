@@ -1,9 +1,9 @@
 {# @core-file catalog/view/theme/default/template/product/manufacturer_info.twig @core-version 3.0.3.7 #}
 {{ header }}
 <div id="product-manufacturer" class="container">
-  <ul class="breadcrumb">
+  <ul class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
     {% for breadcrumb in breadcrumbs %}
-    <li><a href="{{ breadcrumb.href }}">{% if 'fa-home' in breadcrumb.text %}<svg class="ocs-i" aria-hidden="true"><use href="#i-home"/></svg>{% else %}{{ breadcrumb.text }}{% endif %}</a></li>
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">{% if loop.last %}<span itemprop="name" aria-current="page">{{ breadcrumb.text }}</span>{% else %}<a itemprop="item" href="{{ breadcrumb.href }}"><span itemprop="name">{{ breadcrumb.text }}</span></a>{% endif %}<meta itemprop="position" content="{{ loop.index }}" /></li>
     {% endfor %}
   </ul>
   <div class="row">{{ column_left }}

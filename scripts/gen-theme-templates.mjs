@@ -44,9 +44,10 @@ export function convert(src, map, report) {
     if (!map[name]) report.add(`unmapped icon fa-${name}`);
     return svg(map[name] || 'i-dot');
   });
-  // home breadcrumb icon comes from the core language file (text_home) as markup
+  // SPEC-054: schema.org BreadcrumbList, the current page is plain text; the home word comes from the ocs_shell view event
+  s = s.replace(/<ul class="breadcrumb">/g, '<ul class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">');
   s = s.replace(/<li><a href="\{\{ breadcrumb\.href \}\}">\s*\{\{ breadcrumb\.text \}\}<\/a><\/li>/g,
-    `<li><a href="{{ breadcrumb.href }}">{% if 'fa-home' in breadcrumb.text %}${svg('i-home')}{% else %}{{ breadcrumb.text }}{% endif %}</a></li>`);
+    `<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">{% if loop.last %}<span itemprop="name" aria-current="page">{{ breadcrumb.text }}</span>{% else %}<a itemprop="item" href="{{ breadcrumb.href }}"><span itemprop="name">{{ breadcrumb.text }}</span></a>{% endif %}<meta itemprop="position" content="{{ loop.index }}" /></li>`);
   return s;
 }
 

@@ -120,6 +120,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-051 | [Rebuild the Theme Package After Every Change](theme-package-rebuild/spec.md) | `draft` |
 | SPEC-052 | [Remove the Cities Feature](remove-cities/spec.md) | `implemented` |
 | SPEC-053 | [OCMOD as Files in system/](ocmod-as-system-files/spec.md) | `implemented` |
+| SPEC-054 | [Breadcrumbs: schema.org, No Self-Link, "Home" Word](breadcrumbs-schema/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

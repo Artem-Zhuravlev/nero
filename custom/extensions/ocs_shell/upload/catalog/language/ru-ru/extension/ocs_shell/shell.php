@@ -8,6 +8,7 @@ $_['ocs_address']    = 'Адрес';
 $_['ocs_social']     = 'Соцсети';
 $_['ocs_contacts']   = 'Контакты';
 $_['ocs_tab_home']   = 'Главная';
+$_['ocs_breadcrumb_home'] = 'Главная';
 $_['ocs_tab_catalog'] = 'Каталог';
 $_['ocs_tab_cart']   = 'Корзина';
 $_['ocs_tab_compare'] = 'Сравнение';

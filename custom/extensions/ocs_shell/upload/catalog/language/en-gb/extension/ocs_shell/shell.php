@@ -8,6 +8,7 @@ $_['ocs_address']    = 'Address';
 $_['ocs_social']     = 'Social networks';
 $_['ocs_contacts']   = 'Contacts';
 $_['ocs_tab_home']   = 'Home';
+$_['ocs_breadcrumb_home'] = 'Home';
 $_['ocs_tab_catalog'] = 'Catalogue';
 $_['ocs_tab_cart']   = 'Cart';
 $_['ocs_tab_compare'] = 'Compare';

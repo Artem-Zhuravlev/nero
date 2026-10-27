@@ -25,6 +25,29 @@ class ControllerExtensionOcsShellEvents extends Controller {
 		$data['ocs_shell'] = $this->build(true);
 	}
 
+	/**
+	 * catalog/view/any/before (SPEC-054): the core "home" breadcrumb is an icon; the theme prints a word instead.
+	 */
+	public function beforeView(&$route, &$data) {
+		if (!is_array($data) || empty($data['breadcrumbs']) || !is_array($data['breadcrumbs']) || !$this->enabled()) {
+			return;
+		}
+
+		$strings = $this->load->language('extension/ocs_shell/shell');
+		$home = is_array($strings) && isset($strings['ocs_breadcrumb_home']) ? $strings['ocs_breadcrumb_home'] : '';
+
+		if ($home === '') {
+			return;
+		}
+
+		foreach ($data['breadcrumbs'] as &$crumb) {
+			if (isset($crumb['text']) && strpos($crumb['text'], 'fa-home') !== false) {
+				$crumb['text'] = $home;
+			}
+		}
+		unset($crumb);
+	}
+
 	private function enabled() {
 		return (bool)$this->config->get('module_ocs_shell_status') && $this->config->get('config_theme') == 'ocs';
 	}
