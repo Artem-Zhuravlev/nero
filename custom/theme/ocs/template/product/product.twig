@@ -39,7 +39,6 @@
                 {% endfor %}
                 {% if ocs_px.video %}<li class="swiper-slide ocs-gal-video"><button type="button" class="ocs-vid" data-ocs-video="{{ ocs_px.video.id }}" data-embed="{{ ocs_px.video.embed }}" aria-label="{{ ocs_px.video.label }}"><img src="{{ ocs_px.video.poster }}" alt="" loading="lazy" /><span class="ocs-vid-play"><svg class="ocs-i" aria-hidden="true"><use href="#i-play"/></svg></span></button></li>{% endif %}
               </ul>
-              {% if ocs_px.gallery|length + (ocs_px.video ? 1 : 0) > 1 %}<div class="ocs-gal-dots swiper-pagination"></div>{% endif %}
             </div>
             {% if ocs_px.gallery|length + (ocs_px.video ? 1 : 0) > 1 %}
             <div class="ocs-gal-thumbs swiper-container">

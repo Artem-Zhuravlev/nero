@@ -1630,8 +1630,6 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		var thumbs = null;
 		var main = new window.Swiper(mainEl, {
 			spaceBetween: 8,
-			pagination: box.querySelector('.ocs-gal-dots'),
-			paginationClickable: true,
 			onSlideChangeStart: function (s) {
 				mark(s.activeIndex);
 

@@ -674,9 +674,6 @@ li .ocs-stock { font-size: inherit; }
 .ocs-gal-main .thumbnails > li { margin: 0; padding: 0; float: none; }
 .ocs-gal-main .thumbnail { display: block; border: 0; padding: 0; background: none; }
 .ocs-gal-main img { display: block; width: 100%; height: auto; border-radius: var(--r-lg); }
-.ocs-gal-dots.swiper-pagination { position: absolute; bottom: var(--sp-2); left: 0; right: 0; text-align: center; z-index: var(--z-raised); }
-.ocs-gal-dots .swiper-pagination-bullet { background: var(--border); opacity: 1; }
-.ocs-gal-dots .swiper-pagination-bullet-active { background: var(--accent); }
 .ocs-gal-thumbs { margin-top: var(--sp-3); }
 .ocs-gal-thumbs .swiper-slide { width: 74px; height: 74px; border: 2px solid transparent; border-radius: var(--r-md); overflow: hidden; cursor: pointer; background: var(--bg-alt); }
 .ocs-gal-thumbs .swiper-slide.is-current { border-color: var(--accent); }
