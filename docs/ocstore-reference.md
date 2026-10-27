@@ -169,3 +169,12 @@ Theme image settings: `theme_default_image_{thumb,popup,category,manufacturer,pr
 ## 12. Installer behaviour (verified)
 
 `install/cli_install.php install --db_* --username --password --email --http_server` defines `DIR_OPENCART` as the parent of its own directory, imports `opencart.sql`, creates the admin user, settings and API user, then **writes `config.php` and `admin/config.php` into `DIR_OPENCART`** and checks that `image/` and `system/storage/{download,upload,cache,logs,modification}` are writable there. Never run it against `core/` — run it only on a throw-away copy (parity tests) or replay its DB steps (SPEC-001 REQ-ARCH-032).
+
+## 13. Structured data (SPEC-080, project addition, not core)
+
+| Item | Value |
+| --- | --- |
+| Settings (group `theme_ocs`) | `theme_ocs_schema_status` (1/0, default 1), `theme_ocs_schema_org_name`, `theme_ocs_schema_org_logo` (empty = store name / logo) |
+| Event | `ocs_structured_data`: `catalog/view/*/after` -> `extension/ocs/events/structuredData` (migration 0011); puts one `<script type="application/ld+json">` before the first `</head>` of full pages |
+| Library | `Ocs\StructuredData` (`system/library/ocs/structureddata.php`): sanitisers, node builders, `graph()` (safe encoder), `inject()` |
+| Facts used | `catalog/view/*/after` receives `($route, &$data, &$output)`; `common/header` output also contains `</head>` and is skipped; module carousels are collected from `extension/module/*` views |

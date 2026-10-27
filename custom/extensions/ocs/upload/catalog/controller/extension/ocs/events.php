@@ -211,6 +211,334 @@ class ControllerExtensionOcsEvents extends Controller {
 		return null;
 	}
 
+	/** @var bool the page already got its JSON-LD */
+	private static $ldDone = false;
+
+	/** @var array product carousels of the modules rendered so far: [name, items => [href]] */
+	private static $ldLists = array();
+
+	/**
+	 * catalog/view/ * /after: SPEC-080. Product carousel modules are remembered while they render; the first full page (output with a head) gets one
+	 * JSON-LD script before </head>. Partials, AJAX answers, non-GET requests and error pages are left alone. Never throws to the customer.
+	 */
+	public function structuredData(&$route, &$data, &$output) {
+		if (!is_array($data) || !is_string($output) || $this->config->get('config_theme') != 'ocs') {
+			return;
+		}
+
+		if (strpos($route, 'extension/module/') === 0) {
+			if (!empty($data['products']) && is_array($data['products']) && count(self::$ldLists) < 10) {
+				self::$ldLists[] = array(isset($data['heading_title']) ? $data['heading_title'] : '', $data['products']);
+			}
+
+			return;
+		}
+
+		if (self::$ldDone || strpos($output, '</head>') === false || in_array($route, array('common/header', 'common/footer', 'common/maintenance'), true) || strpos($route, 'error/') === 0) {
+			return;
+		}
+
+		$status = $this->config->get('theme_ocs_schema_status');
+
+		if (($status !== null && !$status) || !isset($this->request->server['REQUEST_METHOD']) || $this->request->server['REQUEST_METHOD'] !== 'GET') {
+			return;
+		}
+
+		try {
+			$output = \Ocs\StructuredData::inject($output, $this->ldDocument($route, $data));
+			self::$ldDone = true;
+		} catch (\Throwable $e) {
+			$this->log->write('[ocs] structured data: ' . $e->getMessage());
+		}
+	}
+
+	/**
+	 * @return string JSON-LD document of the page (REQ-SD-002..008)
+	 */
+	private function ldDocument($route, $data) {
+		$home = html_entity_decode($this->url->link('common/home'), ENT_QUOTES, 'UTF-8');
+		$parts = parse_url($home);
+
+		if (!$parts || empty($parts['host'])) {
+			return '';
+		}
+
+		$https = !empty($this->request->server['HTTPS']) && $this->request->server['HTTPS'] !== 'off';
+
+		\Ocs\StructuredData::$scheme = $https ? 'https' : 'http';
+		\Ocs\StructuredData::$host = $parts['host'];
+		\Ocs\StructuredData::$base = \Ocs\StructuredData::$scheme . '://' . $parts['host'] . (isset($parts['port']) ? ':' . $parts['port'] : '');
+
+		$home = \Ocs\StructuredData::url($home);
+		$server = $https ? $this->config->get('config_ssl') : $this->config->get('config_url');
+		$code = (string)$this->config->get('config_language');
+		$lang = \Ocs\StructuredData::lang($code);
+
+		// the page itself: the canonical link of the controller, else the requested URL
+		$page_url = '';
+
+		foreach ($this->document->getLinks() as $link) {
+			if ($link['rel'] === 'canonical') {
+				$page_url = $link['href'];
+			}
+		}
+
+		if ($page_url === '' && isset($this->request->server['REQUEST_URI'])) {
+			$page_url = \Ocs\StructuredData::$base . strtok($this->request->server['REQUEST_URI'], '#');
+		}
+
+		$page_url = \Ocs\StructuredData::url($page_url, true);
+
+		if ($page_url === '') {
+			return '';
+		}
+
+		$org_id = $home . '#organization';
+		$site_id = $home . '#website';
+		$org = $this->ldOrganization($org_id, $home, $server, $code);
+
+		$nodes = array(\Ocs\StructuredData::organization($org), \Ocs\StructuredData::website(array('id' => $site_id, 'name' => $org['name'], 'url' => $home, 'lang' => $lang, 'publisher' => $org_id)));
+
+		$crumbs = isset($data['breadcrumbs']) && is_array($data['breadcrumbs']) ? $data['breadcrumbs'] : array();
+		$crumbs_id = $page_url . '#breadcrumb';
+		$crumb_node = \Ocs\StructuredData::breadcrumbs($crumbs_id, $crumbs);
+
+		$type = 'WebPage';
+		$name = isset($data['heading_title']) ? $data['heading_title'] : '';
+		$main = '';
+		$page = max(1, isset($this->request->get['page']) ? (int)$this->request->get['page'] : 1);
+		$limit = !empty($data['limit']) ? (int)$data['limit'] : 0;
+
+		switch ($route) {
+			case 'common/home':
+				$name = $this->config->get('config_meta_title');
+
+				foreach (self::$ldLists as $i => $list) {
+					$nodes[] = \Ocs\StructuredData::itemList($page_url . '#carousel-' . ($i + 1), $list[0], $list[1]);
+				}
+
+				break;
+
+			case 'product/category':
+			case 'product/manufacturer_info':
+			case 'product/special':
+			case 'product/search':
+				$type = $route === 'product/search' ? 'SearchResultsPage' : 'CollectionPage';
+				$products = isset($data['products']) && is_array($data['products']) ? $data['products'] : array();
+				$list = \Ocs\StructuredData::itemList($page_url . '#list', $name, $products, ($page - 1) * ($limit ?: count($products)));
+
+				if ($list) {
+					$nodes[] = $list;
+					$main = $list['@id'];
+				}
+
+				break;
+
+			case 'product/manufacturer_list':
+				$type = 'CollectionPage';
+				$brands = array();
+
+				foreach (isset($data['categories']) && is_array($data['categories']) ? $data['categories'] : array() as $group) {
+					foreach (isset($group['manufacturer']) ? (array)$group['manufacturer'] : array() as $brand) {
+						$brands[] = $brand;
+					}
+				}
+
+				$list = \Ocs\StructuredData::itemList($page_url . '#list', $name, $brands);
+
+				if ($list) {
+					$nodes[] = $list;
+					$main = $list['@id'];
+				}
+
+				break;
+
+			case 'product/product':
+				$product = $this->ldProduct($data, $page_url, $org);
+
+				if ($product) {
+					$nodes[] = $product;
+					$main = $product['@id'];
+				}
+
+				foreach (array('accessories' => 'text_accessories', 'similar' => 'text_similar') as $key => $title) {
+					if (!empty($data['ocs_px'][$key])) {
+						$nodes[] = \Ocs\StructuredData::itemList($page_url . '#' . $key, isset($data['ocs_px'][$title]) ? $data['ocs_px'][$title] : '', $data['ocs_px'][$key]);
+					}
+				}
+
+				break;
+
+			case 'blog/article':
+				$article = $this->ldArticle($data, $page_url, $org);
+
+				if ($article) {
+					$nodes[] = $article;
+					$main = $article['@id'];
+				}
+
+				break;
+
+			case 'blog/category':
+			case 'blog/latest':
+				$type = $route === 'blog/latest' ? 'Blog' : 'CollectionPage';
+				$articles = isset($data['articles']) && is_array($data['articles']) ? $data['articles'] : array();
+				$list = \Ocs\StructuredData::itemList($page_url . '#list', $name, $articles, ($page - 1) * ($limit ?: count($articles)));
+
+				if ($list) {
+					$nodes[] = $list;
+					$main = $list['@id'];
+				}
+
+				break;
+
+			case 'information/contact':
+				$type = 'ContactPage';
+
+				break;
+		}
+
+		$nodes[] = \Ocs\StructuredData::page(array('type' => $type, 'url' => $page_url, 'name' => $name, 'lang' => $lang, 'website' => $site_id, 'breadcrumb' => $crumb_node ? $crumbs_id : '', 'main' => $main));
+		$nodes[] = $crumb_node;
+
+		return \Ocs\StructuredData::graph($nodes);
+	}
+
+	/**
+	 * Organization of the store: name and logo from the schema settings (store name / logo by default), profiles, phones and address from the contacts of the theme (SPEC-047).
+	 */
+	private function ldOrganization($id, $home, $server, $code) {
+		$this->load->model('setting/setting');
+
+		$default = (string)$this->model_setting_setting->getSettingValue('config_language', (int)$this->config->get('config_store_id'));
+		$contacts = \Ocs\Contacts::view($this->config->get('theme_ocs_contact'), $this->config->get('theme_ocs_contact_links'), $code, $default);
+
+		$same = array();
+
+		foreach ($contacts['links'] as $link) {
+			if ($link['kind'] === 'social' && !in_array($link['key'], array('email', 'phone', 'map'), true)) {
+				$same[] = $link['href'];
+			}
+		}
+
+		$name = trim((string)$this->config->get('theme_ocs_schema_org_name'));
+		$logo = trim((string)$this->config->get('theme_ocs_schema_org_logo'));
+		$logo = $logo !== '' ? $logo : (string)$this->config->get('config_logo');
+
+		return array(
+			'id'      => $id,
+			'name'    => $name !== '' ? $name : $this->config->get('config_name'),
+			'url'     => $home,
+			'logo'    => $logo !== '' && is_file(DIR_IMAGE . $logo) ? $server . 'image/' . $logo : '',
+			'same_as' => $same,
+			'phones'  => array_column($contacts['phones'], 'href'),
+			'address' => $contacts['address']
+		);
+	}
+
+	/**
+	 * Product node (REQ-SD-004, REQ-SD-005): the facts come from the product row and the prices as shown on the page (same tax and currency).
+	 */
+	private function ldProduct($data, $page_url, $org) {
+		if (empty($data['product_id'])) {
+			return null;
+		}
+
+		$this->load->model('catalog/product');
+
+		$info = $this->model_catalog_product->getProduct((int)$data['product_id']);
+
+		if (!$info) {
+			return null;
+		}
+
+		$currency = $this->session->data['currency'];
+		$price = false;
+
+		if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+			$amount = $this->tax->calculate(!is_null($info['special']) ? $info['special'] : $info['price'], $info['tax_class_id'], $this->config->get('config_tax'));
+			$price = $this->currency->format($amount, $currency, '', false);
+		}
+
+		$until = '';
+
+		if ($price !== false && !is_null($info['special'])) {
+			$row = $this->db->query("SELECT date_end FROM `" . DB_PREFIX . "product_special` WHERE product_id = '" . (int)$info['product_id'] . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND (date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW()) ORDER BY priority ASC, price ASC LIMIT 1")->row;
+			$until = $row ? $row['date_end'] : '';
+		}
+
+		$images = array();
+
+		if (!empty($data['popup'])) {
+			$images[] = $data['popup'];
+		}
+
+		foreach (isset($data['images']) && is_array($data['images']) ? $data['images'] : array() as $image) {
+			$images[] = isset($image['popup']) ? $image['popup'] : '';
+		}
+
+		$reviews = array();
+		$total = 0;
+
+		if ($this->config->get('config_review_status') && (int)$info['reviews'] > 0) {
+			$this->load->model('catalog/review');
+
+			$total = (int)$info['reviews'];
+
+			foreach ($this->model_catalog_review->getReviewsByProductId((int)$info['product_id'], 0, \Ocs\StructuredData::MAX_REVIEWS) as $row) {
+				$reviews[] = array('author' => $row['author'], 'rating' => $row['rating'], 'date' => $row['date_added'], 'text' => $row['text']);
+			}
+		}
+
+		return \Ocs\StructuredData::product(array(
+			'name'         => isset($data['heading_title']) ? $data['heading_title'] : $info['name'],
+			'url'          => $page_url,
+			'images'       => $images,
+			'description'  => isset($data['description']) ? $data['description'] : '',
+			'sku'          => !empty($info['sku']) ? $info['sku'] : $info['model'],
+			'mpn'          => !empty($info['mpn']) ? $info['mpn'] : $info['model'],
+			'gtin'         => array(isset($info['ean']) ? $info['ean'] : '', isset($info['upc']) ? $info['upc'] : '', isset($info['jan']) ? $info['jan'] : ''),
+			'brand'        => $info['manufacturer'],
+			'price'        => $price,
+			'currency'     => $currency,
+			'in_stock'     => (int)$info['quantity'] > 0,
+			'valid_until'  => $until,
+			'seller'       => $org,
+			'rating'       => $info['rating'],
+			'review_total' => $total,
+			'reviews'      => $reviews
+		));
+	}
+
+	/**
+	 * BlogPosting node (REQ-SD-007).
+	 */
+	private function ldArticle($data, $page_url, $org) {
+		if (empty($data['article_id'])) {
+			return null;
+		}
+
+		$this->load->model('blog/article');
+
+		$info = $this->model_blog_article->getArticle((int)$data['article_id']);
+
+		if (!$info) {
+			return null;
+		}
+
+		$server = !empty($this->request->server['HTTPS']) && $this->request->server['HTTPS'] !== 'off' ? $this->config->get('config_ssl') : $this->config->get('config_url');
+
+		return \Ocs\StructuredData::article(array(
+			'url'         => $page_url,
+			'headline'    => isset($data['heading_title']) ? $data['heading_title'] : $info['name'],
+			'image'       => !empty($info['image']) && is_file(DIR_IMAGE . $info['image']) ? $server . 'image/' . $info['image'] : '',
+			'description' => !empty($info['meta_description']) ? $info['meta_description'] : (isset($data['description']) ? $data['description'] : ''),
+			'published'   => $info['date_added'],
+			'modified'    => $info['date_modified'],
+			'publisher'   => $org
+		));
+	}
+
 	private function assetVersion() {
 		$info = dirname(dirname(rtrim(DIR_APPLICATION, '/\\'))) . '/BUILD_INFO.json';
 

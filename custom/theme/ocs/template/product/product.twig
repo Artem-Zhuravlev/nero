@@ -2,13 +2,12 @@
 {{ header }}
 <div class="ocs-sticky-buy" id="ocs-sticky-buy" hidden aria-hidden="true"><div class="container ocs-sticky-inner">{% if thumb %}<img src="{{ thumb }}" alt="" width="40" height="40" />{% endif %}<strong>{{ heading_title }}</strong>{% if price %}<span class="ocs-sticky-price">{{ special ? special : price }}</span>{% endif %}<button type="button" class="btn btn-primary" data-ocs-buy>{{ button_cart }}</button></div></div>
 <div id="product-product" class="container">
-  <ul class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+  <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
-    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">{% if loop.last %}<span itemprop="name" aria-current="page">{{ breadcrumb.text }}</span>{% else %}<a itemprop="item" href="{{ breadcrumb.href }}"><span itemprop="name">{{ breadcrumb.text }}</span></a>{% endif %}<meta itemprop="position" content="{{ loop.index }}" /></li>
+    <li>{% if loop.last %}<span aria-current="page">{{ breadcrumb.text }}</span>{% else %}<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>{% endif %}</li>
     {% endfor %}
   </ul>
   {% if ocs_px %}
-  <script type="application/ld+json">{{ ocs_px.schema }}</script>
   <nav class="ocs-sections" id="ocs-sections" aria-label="{{ heading_title }}">
     {% for s in ocs_px.sections %}<a href="{{ s.href }}"{% if s.tab %} data-ocs-tab="1"{% endif %}>{{ s.text }}</a>{% endfor %}
   </nav>

@@ -98,3 +98,12 @@ $_['text_footer_order'] = 'Order history';
 $_['text_footer_wishlist'] = 'Wishlist';
 $_['text_footer_newsletter'] = 'Newsletter';
 $_['entry_footer_payments'] = 'Visa and Mastercard logos';
+
+// Structured data (SPEC-080)
+$_['text_schema']           = 'Structured data (schema.org)';
+$_['entry_schema_status']   = 'Structured data (schema.org)';
+$_['entry_schema_org_name'] = 'Organization name';
+$_['entry_schema_org_logo'] = 'Organization logo';
+$_['help_schema_status']    = 'Prints schema.org JSON-LD in the head of every page (organization, breadcrumbs, products, reviews, lists, articles) for search engines.';
+$_['help_schema_org_name']  = 'Shown to search engines as the organization name; empty = store name.';
+$_['help_schema_org_logo']  = 'Path of the logo inside the image directory, for example catalog/logo.png; empty = store logo.';

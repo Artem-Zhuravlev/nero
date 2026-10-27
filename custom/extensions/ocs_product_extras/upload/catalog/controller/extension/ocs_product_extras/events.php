@@ -199,23 +199,6 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 				$x[$key] = $this->language->get($key);
 			}
 
-			// REQ-PRD-040: Schema.org
-			$this->load->model('catalog/review');
-
-			$x['schema'] = \Ocs\ProductExtras::schema(array(
-				'name'        => $product['name'],
-				'url'         => html_entity_decode($this->url->link('product/product', 'product_id=' . $product_id), ENT_QUOTES, 'UTF-8'),
-				'image'       => isset($data['thumb']) ? $data['thumb'] : '',
-				'sku'         => $product['model'],
-				'brand'       => $product['manufacturer'],
-				'description' => utf8_substr(trim(strip_tags(html_entity_decode($product['description'], ENT_QUOTES, 'UTF-8'))), 0, 300),
-				'price'       => $this->customer->isLogged() || !$this->config->get('config_customer_price') ? $this->tax->calculate(!is_null($product['special']) ? $product['special'] : $product['price'], $product['tax_class_id'], $this->config->get('config_tax')) : false,
-				'currency'    => $this->session->data['currency'],
-				'in_stock'    => (int)$product['quantity'] > 0,
-				'rating'      => (int)$product['rating'],
-				'reviews'     => $this->config->get('config_review_status') ? $this->model_catalog_review->getTotalReviewsByProductId($product_id) : 0
-			), isset($data['breadcrumbs']) ? $data['breadcrumbs'] : array());
-
 			// REQ-PRD-030: the first image is the LCP image, so it gets its size up front
 			$x['thumb_w'] = (int)$this->config->get('theme_ocs_image_thumb_width');
 			$x['thumb_h'] = (int)$this->config->get('theme_ocs_image_thumb_height');

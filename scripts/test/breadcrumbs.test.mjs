@@ -4,7 +4,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { REPO_ROOT } from './helpers.mjs';
 
-// SPEC-054: breadcrumbs with schema.org markup, no self-link, home as a word.
+// SPEC-054: no self-link, home as a word. SPEC-080 REQ-SD-003: the schema.org BreadcrumbList is JSON-LD (structured-data.test.mjs), the HTML carries no microdata.
 const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
 const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
 
@@ -18,8 +18,8 @@ function storefrontTemplates() {
   return out;
 }
 
-// TEST-BRC-001 - verifies REQ-BRC-001, REQ-BRC-002, REQ-BRC-004
-test('every storefront breadcrumb uses the same BreadcrumbList block without a self-link', () => {
+// TEST-BRC-001 - verifies REQ-BRC-002, REQ-BRC-004, REQ-SD-003
+test('every storefront breadcrumb uses the same plain block without microdata and without a self-link', () => {
   const files = storefrontTemplates();
   assert.ok(files.length >= 44, 'found ' + files.length);
   const blocks = new Set();
@@ -27,9 +27,8 @@ test('every storefront breadcrumb uses the same BreadcrumbList block without a s
     const s = readFileSync(f, 'utf8');
     const m = s.match(/<ul class="breadcrumb"[^>]*>[\s\S]*?<\/ul>/);
     assert.ok(m, f);
-    assert.ok(m[0].includes('itemtype="https://schema.org/BreadcrumbList"'), f);
-    assert.ok(m[0].includes('{% if loop.last %}<span itemprop="name" aria-current="page">'), f);
-    assert.ok(m[0].includes('<meta itemprop="position" content="{{ loop.index }}" />'), f);
+    assert.ok(!/itemscope|itemprop|itemtype/.test(m[0]), f);
+    assert.ok(m[0].includes('{% if loop.last %}<span aria-current="page">{{ breadcrumb.text }}</span>{% else %}<a href="{{ breadcrumb.href }}">'), f);
     assert.ok(!m[0].includes('#i-home') && !m[0].includes('fa-home'), f);
     blocks.add(m[0].replace(/\s+/g, ' '));
   }

@@ -55,7 +55,7 @@ class ControllerExtensionThemeOcs extends Controller {
 			$setting_info = $this->model_setting_setting->getSetting('theme_ocs', $store_id);
 		}
 
-		$defaults = array('status' => 0, 'directory' => 'ocs', 'product_limit' => 15, 'product_description_length' => 100, 'show_stock' => 1, 'show_sku' => 1);
+		$defaults = array('status' => 0, 'directory' => 'ocs', 'product_limit' => 15, 'product_description_length' => 100, 'show_stock' => 1, 'show_sku' => 1, 'schema_status' => 1, 'schema_org_name' => '', 'schema_org_logo' => '');
 
 		foreach ($this->roles as $role) {
 			$data['error_image_' . $role] = isset($this->error['image_' . $role]) ? $this->error['image_' . $role] : '';
@@ -230,6 +230,14 @@ class ControllerExtensionThemeOcs extends Controller {
 			}
 
 			$this->request->post['theme_ocs_contact'] = $contact;
+
+			// structured data (SPEC-080 REQ-SD-009): organization name and a logo path inside the image directory
+			$name = isset($this->request->post['theme_ocs_schema_org_name']) ? trim((string)$this->request->post['theme_ocs_schema_org_name']) : '';
+			$logo = isset($this->request->post['theme_ocs_schema_org_logo']) ? (string)$this->request->post['theme_ocs_schema_org_logo'] : '';
+
+			$this->request->post['theme_ocs_schema_status'] = empty($this->request->post['theme_ocs_schema_status']) ? 0 : 1;
+			$this->request->post['theme_ocs_schema_org_name'] = function_exists('mb_substr') ? mb_substr($name, 0, 200, 'UTF-8') : substr($name, 0, 200);
+			$this->request->post['theme_ocs_schema_org_logo'] = ltrim(str_replace('..', '', preg_replace('~[^\w.\/ -]~u', '', $logo)), '/');
 
 			$this->load->model('catalog/information');
 

@@ -611,7 +611,7 @@ test('product extras: manifest matches migration and language files have identic
 test('product override keeps core hooks and adds section bar, questions tab and carousels', () => {
   const twig = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/product/product.twig'), 'utf8');
   for (const hook of ['id="button-cart"', 'id="product"', 'id="input-quantity"', 'name="product_id"', 'id="tab-description"', 'id="tab-review"', 'id="button-review"', 'wishlist.add', 'compare.add', 'class="thumbnails"']) assert.ok(twig.includes(hook), hook);
-  for (const el of ['id="ocs-sections"', 'id="tab-questions"', "'id': 'ocs-accessories'", "'id': 'ocs-similar'", 'ocs-buy-slot', 'application/ld+json', 'fetchpriority="high"']) assert.ok(twig.includes(el), el);
+  for (const el of ['id="ocs-sections"', 'id="tab-questions"', "'id': 'ocs-accessories'", "'id': 'ocs-similar'", 'ocs-buy-slot', 'fetchpriority="high"']) assert.ok(twig.includes(el), el);
   const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
   assert.match(js, /getElementById\('ocs-sections'\)/);
   assert.match(js, /IntersectionObserver/);

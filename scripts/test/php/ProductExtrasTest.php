@@ -61,32 +61,6 @@ final class ProductExtrasTest extends TestCase
         $this->assertSame([], \Ocs\ProductExtras::validateQuestion(['name' => 'Ivan', 'text' => 'Is there a warranty?'])['errors']);
     }
 
-    // TEST-PRD-006 - verifies REQ-PRD-040 (JSON-LD: Product with offer and rating, BreadcrumbList; cannot close the script tag)
-    public function test_schema(): void
-    {
-        $json = \Ocs\ProductExtras::schema(
-            ['name' => 'Mac </script><b>', 'url' => 'http://x/p?a=1&b=2', 'price' => 99.5, 'currency' => 'UAH', 'in_stock' => false, 'rating' => 4, 'reviews' => 3, 'brand' => 'Apple', 'sku' => 'M1'],
-            [['text' => 'Home', 'href' => 'http://x/'], ['text' => 'A &amp; B', 'href' => 'http://x/c?x=1&amp;y=2']]
-        );
-
-        $this->assertTrue(strpos($json, '</script>') === false, 'tags are escaped');
-
-        $data = json_decode($json, true);
-
-        $this->assertSame('Product', $data[0]['@type']);
-        $this->assertSame('99.50', $data[0]['offers']['price']);
-        $this->assertSame('https://schema.org/OutOfStock', $data[0]['offers']['availability']);
-        $this->assertSame(3, $data[0]['aggregateRating']['reviewCount']);
-        $this->assertSame('Apple', $data[0]['brand']['name']);
-        $this->assertSame('BreadcrumbList', $data[1]['@type']);
-        $this->assertSame('A & B', $data[1]['itemListElement'][1]['name']);
-        $this->assertSame('http://x/c?x=1&y=2', $data[1]['itemListElement'][1]['item']);
-        $this->assertSame(2, $data[1]['itemListElement'][1]['position']);
-
-        $none = json_decode(\Ocs\ProductExtras::schema(['name' => 'N', 'url' => 'u', 'price' => false, 'rating' => 0, 'reviews' => 0], []), true);
-        $this->assertTrue(!isset($none[0]['offers']) && !isset($none[0]['aggregateRating']), 'no price and no reviews = no offer and no rating');
-    }
-
     // TEST-PRD-006 - verifies REQ-PRD-041, REQ-EXT-031 (install: tables, off by default, events, idempotent)
     public function test_install_migration(): void
     {

@@ -40,7 +40,7 @@ Delivery block (SPEC-032), credit block (SPEC-036), reviews engine (core reviews
 
 ## Non-functional requirements
 
-- **REQ-PRD-040** — Schema.org Product and BreadcrumbList (REQ-THM-043); JS added <= 10 KB; core product JS hooks preserved (REQ-THM-013).
+- **REQ-PRD-040** — Schema.org Product and BreadcrumbList (REQ-THM-043; superseded by SPEC-080, which prints them from one event); JS added <= 10 KB; core product JS hooks preserved (REQ-THM-013).
 - **REQ-PRD-041** — uk/ru/en, PHP 7.4; each extra (Q&A, accessories, similar) switchable.
 
 ## Data requirements

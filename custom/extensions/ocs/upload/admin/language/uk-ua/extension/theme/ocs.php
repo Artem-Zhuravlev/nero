@@ -98,3 +98,12 @@ $_['text_footer_order'] = 'Історія замовлень';
 $_['text_footer_wishlist'] = 'Закладки';
 $_['text_footer_newsletter'] = 'Розсилка';
 $_['entry_footer_payments'] = 'Логотипи Visa і Mastercard';
+
+// Structured data (SPEC-080)
+$_['text_schema']           = 'Мікророзмітка (schema.org)';
+$_['entry_schema_status']   = 'Мікророзмітка (schema.org)';
+$_['entry_schema_org_name'] = 'Назва організації';
+$_['entry_schema_org_logo'] = 'Логотип організації';
+$_['help_schema_status']    = 'Виводить schema.org JSON-LD у head кожної сторінки (організація, хлібні крихти, товари, відгуки, списки, статті) для пошукових систем.';
+$_['help_schema_org_name']  = 'Показується пошуковим системам як назва організації; порожньо = назва магазину.';
+$_['help_schema_org_logo']  = 'Шлях до логотипа всередині каталогу image, наприклад catalog/logo.png; порожньо = логотип магазину.';
