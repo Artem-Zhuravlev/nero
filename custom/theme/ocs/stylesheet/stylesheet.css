@@ -1684,7 +1684,7 @@ li .ocs-stock { font-size: inherit; }
 	/* product sections instead of tabs */
 	.ocs-pdp-sections { display: grid; gap: var(--sp-7); margin-block-start: var(--sp-7); }
 	.ocs-section { min-inline-size: 0; padding-block-start: var(--sp-6); border-block-start: 1px solid var(--border); scroll-margin-block-start: calc(var(--head-h, 0rem) + 4.5rem); }
-	.ocs-section > h2 { margin: 0 0 var(--sp-5); font-size: var(--fs-2xl); }
+	.ocs-section > .ocs-sec-title { margin: 0 0 var(--sp-5); font-size: var(--fs-2xl); }
 	.ocs-section-body { overflow-wrap: anywhere; }
 	.ocs-section-body img { max-inline-size: 100%; block-size: auto; }
 	.ocs-section-body table { display: block; max-inline-size: 100%; overflow-x: auto; }
@@ -1836,7 +1836,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-js .ocs-js-only { display: inline-flex; }
 	.ocs-js .ocs-popup-box { display: none; }
 	.ocs-sec-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-block-end: var(--sp-5); }
-	.ocs-sec-head > h2 { margin: 0; }
+	.ocs-sec-head > .ocs-sec-title { margin: 0; }
 	.ocs-modal-center .ocs-modal-dialog.ocs-pop-dialog { max-inline-size: 40rem; padding: var(--sp-5); border-radius: var(--r-lg); }
 	.ocs-pop .ocs-form { margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
 	.ocs-pop .ocs-form-title { font-size: var(--fs-xl); padding-inline-end: var(--sp-6); }

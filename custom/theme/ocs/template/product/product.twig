@@ -167,12 +167,12 @@
       <div class="ocs-pdp-body">
       <div class="ocs-pdp-sections">
         <section class="ocs-section" id="tab-description">
-          <h2>{{ tab_description }}</h2>
+          <div class="ocs-sec-title">{{ tab_description }}</div>
           <div class="ocs-section-body">{{ description }}</div>
         </section>
         {% if attribute_groups %}
         <section class="ocs-section" id="tab-specification">
-          <h2>{{ tab_attribute }}</h2>
+          <div class="ocs-sec-title">{{ tab_attribute }}</div>
               <table class="table table-bordered">
                 {% for attribute_group in attribute_groups %}
                 <thead>
@@ -194,7 +194,7 @@
         {% endif %}
         {% if review_status %}
         <section class="ocs-section" id="tab-review">
-          <div class="ocs-sec-head"><h2>{{ tab_review }}</h2><button type="button" class="btn btn-primary ocs-js-only" data-ocs-popup="ocs-review-box" aria-haspopup="dialog">{{ text_write }}</button></div>
+          <div class="ocs-sec-head"><div class="ocs-sec-title">{{ tab_review }}</div><button type="button" class="btn btn-primary ocs-js-only" data-ocs-popup="ocs-review-box" aria-haspopup="dialog">{{ text_write }}</button></div>
             {% if ocs_px.stars.total %}
             <div class="ocs-stars-sum">
               <div class="ocs-stars-avg"><strong>{{ ocs_px.stars.avg }}</strong><span>{{ ocs_px.stars.title }}: {{ ocs_px.stars.total }}</span></div>
@@ -247,7 +247,7 @@
         {% endif %}
         {% if ocs_px.qa %}
         <section class="ocs-section" id="tab-questions">
-          <div class="ocs-sec-head"><h2>{{ ocs_px.qa.label }}</h2><button type="button" class="btn btn-primary ocs-js-only" data-ocs-popup="ocs-question-box" aria-haspopup="dialog">{{ ocs_px.qa.ask.text_ask_title }}</button></div>
+          <div class="ocs-sec-head"><div class="ocs-sec-title">{{ ocs_px.qa.label }}</div><button type="button" class="btn btn-primary ocs-js-only" data-ocs-popup="ocs-question-box" aria-haspopup="dialog">{{ ocs_px.qa.ask.text_ask_title }}</button></div>
             {% for q in ocs_px.qa.list %}
             <div class="ocs-q">
               <p><strong>{{ q.name }}</strong> <span class="text-muted">{{ q.date }}</span></p>
@@ -309,7 +309,7 @@
       {% for block in [{'id': 'ocs-accessories', 'title': ocs_px.text_accessories, 'items': ocs_px.accessories}, {'id': 'ocs-similar', 'title': ocs_px.text_similar, 'items': ocs_px.similar}] %}
       {% if block.items %}
       <section class="ocs-pcarousel" id="{{ block.id }}" aria-label="{{ block.title }}">
-        <div class="ocs-pcarousel-head"><h2>{{ block.title }}</h2></div>
+        <div class="ocs-pcarousel-head"><div class="ocs-sec-title">{{ block.title }}</div></div>
         <div class="ocs-carousel" role="region" aria-label="{{ block.title }}">
           <div class="ocs-carousel-track">
             {% for product in block.items %}
@@ -323,7 +323,7 @@
       {% endif %}
       {% endfor %}
       {% if products %}
-      <h2 class="ocs-sec-title">{{ text_related }}</h2>
+      <div class="ocs-sec-title">{{ text_related }}</div>
       <div class="row"> {% set i = 0 %}
         {% for product in products %}
         {% if column_left and column_right %}
