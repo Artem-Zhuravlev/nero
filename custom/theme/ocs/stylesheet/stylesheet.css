@@ -306,6 +306,7 @@ footer hr { border-color: var(--border); }
 	font-size: var(--fs-xl);
 	line-height: 1;
 	cursor: pointer;
+	z-index: 2; /* above positioned body content (lightbox stage) that would otherwise swallow the click */
 }
 .ocs-modal-close:hover { background: var(--border); }
 
