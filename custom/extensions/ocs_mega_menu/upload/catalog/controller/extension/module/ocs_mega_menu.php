@@ -65,7 +65,7 @@ class ControllerExtensionModuleOcsMegaMenu extends Controller {
 				$url = \Ocs\Shell::safeUrl($node['banner_url']);
 
 				$banner = array(
-					'src' => $this->model_tool_image->resize($node['banner_image'], 300, 200),
+					'src' => $this->model_tool_image->resize($node['banner_image'], 480, 720),
 					'url' => $url !== '' ? $url : $node['href']
 				);
 			}

@@ -14,6 +14,7 @@
           {% if c.children %}
           <button type="button" class="ocs-mega-expand" aria-expanded="false" aria-label="{{ c.name }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
           <div class="ocs-mega-fly" style="--ocs-cols: {{ columns }}">
+            <div class="ocs-mega-body">
             <div class="ocs-mega-cols">
               {% for g in c.children %}
               <div class="ocs-mega-group">
@@ -34,8 +35,9 @@
               {% for b in c.brands %}<a class="ocs-chip" href="{{ b.href }}">{{ b.name }}</a>{% endfor %}
             </div>
             {% endif %}
-            {% if c.banner %}<a class="ocs-mega-promo" href="{{ c.banner.url }}"><img src="{{ c.banner.src }}" alt="" loading="lazy" /></a>{% endif %}
             <a href="{{ c.href }}" class="see-all">{{ text_all }} {{ c.name }}</a>
+            </div>
+            {% if c.banner %}<a class="ocs-mega-promo" href="{{ c.banner.url }}"><img src="{{ c.banner.src }}" alt="" width="240" height="360" loading="lazy" /></a>{% endif %}
           </div>
           {% endif %}
         </li>
