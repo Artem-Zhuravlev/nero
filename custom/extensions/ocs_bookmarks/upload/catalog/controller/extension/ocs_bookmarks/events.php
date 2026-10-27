@@ -46,11 +46,179 @@ class ControllerExtensionOcsBookmarksEvents extends Controller {
 				}
 			}
 
+			// SPEC-057 REQ-CMP-006: a longer-than-allowed list can only exist in a category-heavy cookie, so the lookup runs only then
+			if (count($compare) > \Ocs\Bookmarks::COMPARE_PER_CATEGORY) {
+				$this->load->model('extension/ocs_bookmarks/compare');
+
+				$trimmed = \Ocs\Bookmarks::trim($compare, $this->model_extension_ocs_bookmarks_compare->categories($compare), \Ocs\Bookmarks::COMPARE_MAX, \Ocs\Bookmarks::COMPARE_PER_CATEGORY);
+
+				if ($trimmed != $compare) {
+					$compare = $trimmed;
+					$this->setCookie(\Ocs\Bookmarks::COMPARE, $compare);
+				}
+			}
+
 			$this->session->data['wishlist'] = $wish;
 			$this->session->data['compare'] = $compare;
 		} catch (\Exception $e) {
 			$this->log->write('[ocs_bookmarks] ' . $e->getMessage());
 		}
+	}
+
+	/**
+	 * catalog/controller/product/compare/before (after hydrate): the page shows one compare category (SPEC-057 REQ-CMP-002).
+	 * session['compare'] is narrowed to the active group, so the core controller builds only those products; the cookie is not touched.
+	 * A removal is done here too, to come back to the same tab.
+	 */
+	public function compareFilter(&$route, &$args) {
+		if (!$this->enabled() || empty($this->session->data['compare']) || !is_array($this->session->data['compare'])) {
+			return;
+		}
+
+		try {
+			$this->load->model('extension/ocs_bookmarks/compare');
+
+			$ids = array_values($this->session->data['compare']);
+			$of = $this->model_extension_ocs_bookmarks_compare->categories($ids);
+			$groups = \Ocs\Bookmarks::groups($ids, $of);
+			$wanted = isset($this->request->get['category']) ? (int)$this->request->get['category'] : -1;
+
+			if (isset($this->request->get['remove'])) {
+				$gone = (int)$this->request->get['remove'];
+
+				$this->session->data['compare'] = array_values(array_diff($ids, array($gone)));
+				$this->load->language('product/compare');
+				$this->session->data['success'] = $this->language->get('text_remove');
+
+				$remaining = \Ocs\Bookmarks::groups($this->session->data['compare'], $of);
+
+				$this->response->redirect($this->url->link('product/compare', isset($remaining[$wanted]) ? 'category=' . $wanted : ''));
+			}
+
+			if (!$groups) {
+				return;
+			}
+
+			$active = isset($groups[$wanted]) ? $wanted : key($groups);
+
+			$this->load->language('extension/ocs_bookmarks/bookmarks');
+			$names = $this->model_extension_ocs_bookmarks_compare->names(array_keys($groups));
+			$tabs = array();
+
+			foreach ($groups as $category => $members) {
+				$tabs[] = array(
+					'category_id' => $category,
+					'name'        => $category && isset($names[$category]) ? $names[$category] : $this->language->get('text_cmp_other'),
+					'count'       => count($members),
+					'href'        => $this->url->link('product/compare', 'category=' . $category),
+					'active'      => $category === $active
+				);
+			}
+
+			self::$view = array('tabs' => $tabs, 'active' => $active);
+			$this->session->data['compare'] = array_slice($groups[$active], -\Ocs\Bookmarks::COMPARE_PER_CATEGORY);
+		} catch (\Exception $e) {
+			$this->log->write('[ocs_bookmarks] ' . $e->getMessage());
+		}
+	}
+
+	/**
+	 * catalog/view/product/compare/before: tabs, characteristic groups with rows and a "same" flag per row (SPEC-057 REQ-CMP-003, 005, 007).
+	 * Without the filter data (disabled, failed) the template renders the flat core table.
+	 */
+	public function compareView(&$route, &$data) {
+		if (!self::$view || !is_array($data) || empty($data['products'])) {
+			return;
+		}
+
+		try {
+			$products = $data['products'];
+			$groups = array();
+
+			$general = array();
+			$general[] = $this->row('model', $this->language->get('text_model'), $products, function ($p) {
+				return isset($p['model']) ? $p['model'] : '';
+			});
+			$general[] = $this->row('manufacturer', $this->language->get('text_manufacturer'), $products, function ($p) {
+				return isset($p['manufacturer']) ? $p['manufacturer'] : '';
+			});
+			$general[] = $this->row('description', $this->language->get('text_summary'), $products, function ($p) {
+				return isset($p['description']) ? $p['description'] : '';
+			});
+			$general[] = $this->row('weight', $this->language->get('text_weight'), $products, function ($p) {
+				return isset($p['weight']) ? $p['weight'] : '';
+			});
+			$general[] = $this->row('dimension', $this->language->get('text_dimension'), $products, function ($p) {
+				$parts = array(isset($p['length']) ? $p['length'] : '', isset($p['width']) ? $p['width'] : '', isset($p['height']) ? $p['height'] : '');
+
+				return trim(implode('', $parts)) === '' ? '' : implode(' x ', $parts);
+			});
+
+			$groups[] = array('name' => $this->language->get('text_cmp_general'), 'rows' => $this->visible($general));
+
+			if (!empty($data['attribute_groups'])) {
+				foreach ($data['attribute_groups'] as $group) {
+					$rows = array();
+
+					foreach ($group['attribute'] as $attribute_id => $attribute) {
+						$rows[] = $this->row('attr', $attribute['name'], $products, function ($p) use ($attribute_id) {
+							return isset($p['attribute'][$attribute_id]) ? $p['attribute'][$attribute_id] : '';
+						});
+					}
+
+					$groups[] = array('name' => $group['name'], 'rows' => $this->visible($rows));
+				}
+			}
+
+			$groups = array_values(array_filter($groups, function ($g) {
+				return !empty($g['rows']);
+			}));
+
+			foreach ($data['products'] as $id => $product) {
+				$data['products'][$id]['remove'] = $this->url->link('product/compare', 'remove=' . (int)$id . '&category=' . self::$view['active']);
+			}
+
+			$category = self::$view['active'] > 0 ? $this->url->link('product/category', 'path=' . self::$view['active']) : $this->url->link('common/home');
+
+			$data['ocs_cmp'] = array(
+				'tabs'     => self::$view['tabs'],
+				'groups'   => $groups,
+				'single'   => count($products) < 2,
+				'category' => $category,
+				't'        => array(
+					'only_diff' => $this->language->get('text_cmp_only_diff'),
+					'same'      => $this->language->get('text_cmp_same'),
+					'more'      => $this->language->get('text_cmp_more'),
+					'category'  => $this->language->get('text_cmp_category'),
+					'groups'    => $this->language->get('text_cmp_group')
+				)
+			);
+		} catch (\Exception $e) {
+			$this->log->write('[ocs_bookmarks] ' . $e->getMessage());
+		}
+	}
+
+	private static $view = null;
+
+	private function row($key, $name, array $products, $cell) {
+		$cells = array();
+		$flat = array();
+		$empty = true;
+
+		foreach ($products as $id => $product) {
+			$text = (string)$cell($product);
+			$cells[] = $text;
+			$flat[] = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8')));
+			$empty = $empty && end($flat) === '';
+		}
+
+		return array('key' => $key, 'name' => $name, 'cells' => $cells, 'empty' => $empty, 'same' => count(array_unique($flat)) === 1);
+	}
+
+	private function visible(array $rows) {
+		return array_values(array_filter($rows, function ($r) {
+			return !$r['empty'];
+		}));
 	}
 
 	/**

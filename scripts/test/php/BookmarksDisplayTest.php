@@ -28,6 +28,37 @@ final class BookmarksDisplayTest extends TestCase
         $this->assertSame([1], \Ocs\Bookmarks::change([1], 'add', 0, 4));
     }
 
+    // TEST-CMP-001 - verifies REQ-CMP-001 (the compare category is the deepest one, ties by lowest id, none -> 0)
+    public function test_deepest_category(): void
+    {
+        $this->assertSame(7, \Ocs\Bookmarks::deepest([['category_id' => 3, 'level' => 0], ['category_id' => 7, 'level' => 2], ['category_id' => 5, 'level' => 1]]));
+        $this->assertSame(4, \Ocs\Bookmarks::deepest([['category_id' => 9, 'level' => 1], ['category_id' => 4, 'level' => 1]]));
+        $this->assertSame(0, \Ocs\Bookmarks::deepest([['category_id' => null, 'level' => null]]));
+        $this->assertSame(0, \Ocs\Bookmarks::deepest([]));
+    }
+
+    // TEST-CMP-002 - verifies REQ-CMP-002 (groups: newest group first, unknown products dropped)
+    public function test_groups(): void
+    {
+        $of = [1 => 10, 2 => 20, 3 => 10, 4 => 0];
+        $groups = \Ocs\Bookmarks::groups([1, 2, 3, 4, 99], $of);
+
+        $this->assertSame([0, 10, 20], array_keys($groups));
+        $this->assertSame([1, 3], $groups[10]);
+        $this->assertSame([10, 20], array_keys(\Ocs\Bookmarks::groups([2, 1, 3], $of)));
+        $this->assertSame([], \Ocs\Bookmarks::groups([5], $of));
+    }
+
+    // TEST-CMP-003 - verifies REQ-CMP-006 (newest 4 per category, newest 12 overall, unknown ids kept)
+    public function test_trim_limits(): void
+    {
+        $of = [1 => 10, 2 => 10, 3 => 10, 4 => 10, 5 => 10, 6 => 20];
+        $this->assertSame([2, 3, 4, 5, 6], \Ocs\Bookmarks::trim([1, 2, 3, 4, 5, 6], $of, 12, 4));
+        $this->assertSame([5, 6], \Ocs\Bookmarks::trim([1, 2, 3, 4, 5, 6], $of, 2, 4));
+        $this->assertSame([50, 1, 2], \Ocs\Bookmarks::trim([50, 1, 2], $of, 12, 4));
+        $this->assertSame(12, \Ocs\Bookmarks::COMPARE_MAX);
+    }
+
     // TEST-VIS-050 - verifies REQ-VIS-050 (an unset switch means on)
     public function test_switch_values(): void
     {

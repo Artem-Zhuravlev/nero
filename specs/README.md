@@ -123,6 +123,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-054 | [Breadcrumbs: schema.org, No Self-Link, "Home" Word](breadcrumbs-schema/spec.md) | `implemented` |
 | SPEC-055 | [Mega Menu: Full-Height Flyout and Banner Column](megamenu-fullheight-banner/spec.md) | `implemented` |
 | SPEC-056 | [Default Product Modules in the Site Card Style](module-product-cards/spec.md) | `implemented` |
+| SPEC-057 | [Compare Page: Categories, Differences Only, Table UX](compare-page/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

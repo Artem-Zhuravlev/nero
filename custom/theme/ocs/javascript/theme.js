@@ -1689,7 +1689,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 
 	var OCS = window.OCS = window.OCS || {};
 	var KEY = {wish: 'ocs_wish', cmp: 'ocs_cmp'};
-	var MAX = {wish: 100, cmp: 4};
+	var MAX = {wish: 100, cmp: 12};
 	var cfg = null;
 	var cart = [];
 	var queued = false;
@@ -2956,6 +2956,81 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		sync();
 		window.addEventListener('load', sync);
 		window.addEventListener('resize', sync);
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
+
+/* Compare page (SPEC-057 REQ-CMP-003, 005): "differences only" switch (remembered in localStorage) and collapsible characteristic groups.
+   Without JS the switch stays hidden and every row is visible. */
+(function (window, document) {
+	'use strict';
+
+	var KEY = 'ocs_cmp_diff';
+
+	function boot() {
+		var table = document.getElementById('ocs-cmp-table');
+		var box = document.getElementById('ocs-cmp-switch');
+		var input = document.getElementById('ocs-cmp-diff');
+		var note = document.getElementById('ocs-cmp-same');
+
+		if (!table || !box || !input) {
+			return;
+		}
+
+		function stored() {
+			try {
+				return window.localStorage.getItem(KEY) === '1';
+			} catch (e) {
+				return false;
+			}
+		}
+
+		function apply(on) {
+			var groups = table.querySelectorAll('.ocs-cmp-group');
+			var shown = 0;
+
+			table.classList.toggle('is-diff', on);
+
+			Array.prototype.forEach.call(groups, function (g) {
+				var rows = g.querySelectorAll('.ocs-cmp-row');
+				var diff = g.querySelectorAll('.ocs-cmp-row[data-same="0"]').length;
+
+				g.classList.toggle('is-same', rows.length > 0 && diff === 0);
+				shown += diff;
+			});
+
+			if (note) {
+				note.hidden = !(on && shown === 0);
+			}
+		}
+
+		box.hidden = false;
+		input.checked = stored();
+		apply(input.checked);
+
+		input.addEventListener('change', function () {
+			try {
+				window.localStorage.setItem(KEY, input.checked ? '1' : '0');
+			} catch (e) {}
+
+			apply(input.checked);
+		});
+
+		table.addEventListener('click', function (e) {
+			var t = e.target.closest ? e.target.closest('.ocs-cmp-toggle') : null;
+
+			if (t) {
+				var g = t.closest('.ocs-cmp-group');
+				var collapsed = g.classList.toggle('is-collapsed');
+
+				t.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+			}
+		});
 	}
 
 	if (document.readyState === 'loading') {

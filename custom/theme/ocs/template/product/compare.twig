@@ -21,7 +21,48 @@
     {% endif %}
     <div id="content" class="{{ class }}">{{ content_top }}
       <h1>{{ heading_title }}</h1>
-      {% if products %}
+      {% if products and ocs_cmp %}
+      {% set cols = products|length %}
+      <nav class="ocs-cmp-tabs" aria-label="{{ ocs_cmp.t.groups }}">
+        {% for tab in ocs_cmp.tabs %}<a href="{{ tab.href }}" class="ocs-cmp-tab{% if tab.active %} is-active{% endif %}"{% if tab.active %} aria-current="page"{% endif %}>{{ tab.name }} <span class="ocs-cmp-count">{{ tab.count }}</span></a>{% endfor %}
+      </nav>
+      <label class="ocs-cmp-switch" id="ocs-cmp-switch" hidden><input type="checkbox" id="ocs-cmp-diff" /> <span>{{ ocs_cmp.t.only_diff }}</span></label>
+      {% if ocs_cmp.single %}
+      <p class="ocs-cmp-hint">{{ ocs_cmp.t.more }} <a href="{{ ocs_cmp.category }}">{{ ocs_cmp.t.category }}</a></p>
+      {% endif %}
+      <div class="ocs-cmp-scroll">
+        <table class="ocs-cmp-table" id="ocs-cmp-table" style="--cols: {{ cols }}">
+          <thead>
+            <tr>
+              <th class="ocs-cmp-corner" scope="col"><span class="ocs-sr">{{ text_product }}</span></th>
+              {% for product in products %}
+              <th scope="col" class="ocs-cmp-head">
+                <a href="{{ product.remove }}" class="ocs-cmp-remove" title="{{ button_remove }}" aria-label="{{ button_remove }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-x"/></svg></a>
+                {% if product.thumb %}<a href="{{ product.href }}" class="ocs-cmp-img"><img src="{{ product.thumb }}" alt="{{ product.name }}" /></a>{% endif %}
+                <a href="{{ product.href }}" class="ocs-cmp-name">{{ product.name }}</a>
+                {% if review_status %}<span class="ocs-stars" role="img" aria-label="{{ product.rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if product.rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span>{% endif %}
+                {% if product.price %}<span class="ocs-cmp-price">{% if product.special %}<strong>{{ product.special }}</strong> <s>{{ product.price }}</s>{% else %}<strong>{{ product.price }}</strong>{% endif %}</span>{% endif %}
+                {% if ocs_show_stock %}<span class="ocs-cmp-stock">{{ product.availability }}</span>{% endif %}
+                <button type="button" class="btn btn-primary" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');">{{ button_cart }}</button>
+              </th>
+              {% endfor %}
+            </tr>
+          </thead>
+          {% for group in ocs_cmp.groups %}
+          <tbody class="ocs-cmp-group">
+            <tr class="ocs-cmp-gh"><th colspan="{{ cols + 1 }}" scope="colgroup"><button type="button" class="ocs-cmp-toggle" aria-expanded="true">{{ group.name }}<svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th></tr>
+            {% for row in group.rows %}{% if row.key != 'model' or ocs_show_sku %}
+            <tr class="ocs-cmp-row" data-same="{{ row.same ? 1 : 0 }}">
+              <th scope="row">{{ row.name }}</th>
+              {% for cell in row.cells %}<td>{{ cell }}</td>{% endfor %}
+            </tr>
+            {% endif %}{% endfor %}
+          </tbody>
+          {% endfor %}
+        </table>
+      </div>
+      <p class="ocs-cmp-same" id="ocs-cmp-same" hidden>{{ ocs_cmp.t.same }}</p>
+      {% elseif products %}
       <table class="table table-bordered">
         <thead>
           <tr>

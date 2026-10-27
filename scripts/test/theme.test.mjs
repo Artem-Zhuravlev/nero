@@ -1181,7 +1181,7 @@ test('quick order is exposed on the product page only', () => {
 // TEST-BKM-001, TEST-BKM-002 - verifies REQ-BKM-001, REQ-BKM-002 (cookie bookmarks: events, guest page, sync route, links)
 test('bookmarks: events hydrate the session from cookies, the wishlist page needs no login', () => {
   const ext = JSON.parse(read44('custom/extensions/ocs_bookmarks/extension.json'));
-  const mig = read44('custom/extensions/ocs_bookmarks/db/001_install.php');
+  const mig = read44('custom/extensions/ocs_bookmarks/db/001_install.php') + read44('custom/extensions/ocs_bookmarks/db/002_compare_groups.php');
   for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), e);
   const page = read44('custom/extensions/ocs_bookmarks/upload/catalog/controller/extension/ocs_bookmarks/wishlist.php');
   assert.ok(!/isLogged\(\)\s*\)\s*\{\s*\$this->response->redirect/.test(page), 'no login redirect');
@@ -1209,4 +1209,23 @@ test('stock / sku switches: form, migration, last-running view event, guarded te
   assert.match(read44('custom/extensions/ocs_ajax_search/upload/catalog/controller/extension/module/ocs_ajax_search.php'), /Display::on\(\$this->config->get\('theme_ocs_show_sku'\)\)/);
   // every template that prints model / stock outside the guarded files reads it from data the event strips
   assert.ok(read44('custom/extensions/ocs/upload/system/library/ocs/display.php').includes("'ocs_stock', 'stock', 'availability'"));
+});
+
+// TEST-CMP-005 - verifies REQ-CMP-002, 003, 004, 005, 007, 008, 013 (compare page: events, template, switch, sticky table, scale icon)
+test('compare page: category tabs, differences switch, sticky table, scale icon', () => {
+  const ext = JSON.parse(read44('custom/extensions/ocs_bookmarks/extension.json'));
+  const mig = read44('custom/extensions/ocs_bookmarks/db/002_compare_groups.php');
+  for (const e of ['ocs_bookmarks_compare_filter', 'ocs_bookmarks_compare_view']) {
+    assert.ok(ext.events.includes(e), e);
+    assert.ok(mig.includes(`'${e}'`), e);
+  }
+  const tpl = read44('custom/theme/ocs/template/product/compare.twig');
+  for (const hook of ['ocs-cmp-tabs', 'aria-current="page"', 'id="ocs-cmp-diff"', 'data-same', 'scope="row"', 'scope="col"', 'ocs-cmp-toggle', '{% elseif products %}']) assert.ok(tpl.includes(hook), hook);
+  const style = read44('custom/theme/ocs/stylesheet/stylesheet.css');
+  assert.ok(/\.ocs-cmp-table > thead th \{ position: sticky/.test(style) && /\.ocs-cmp-scroll \{[^}]*overflow: auto/.test(style));
+  assert.ok(/is-diff \.ocs-cmp-row\[data-same="1"\]/.test(style));
+  const js = read44('custom/theme/ocs/javascript/theme.js');
+  assert.ok(js.includes("'ocs_cmp_diff'") && js.includes('cmp: 12'));
+  const sprite = read44('custom/theme/ocs/template/ocs/sprite.twig');
+  assert.ok(/<symbol id="i-compare"[^>]*><path d="M12 4v16/.test(sprite), 'balance scale icon');
 });

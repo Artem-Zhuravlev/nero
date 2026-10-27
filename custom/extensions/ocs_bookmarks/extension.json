@@ -1,7 +1,7 @@
 { "code": "ocs_bookmarks", "type": "library", "version": "1.0.0",
   "title": { "en-gb": "OCS Bookmarks", "uk-ua": "OCS: закладки" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
-  "spec": "SPEC-044", "tables": [],
+  "spec": "SPEC-044, SPEC-057", "tables": [],
   "settings": [],
-  "events": ["ocs_bookmarks_hydrate_header", "ocs_bookmarks_hydrate_compare", "ocs_bookmarks_hydrate_wishlist", "ocs_bookmarks_view"],
+  "events": ["ocs_bookmarks_hydrate_header", "ocs_bookmarks_hydrate_compare", "ocs_bookmarks_hydrate_wishlist", "ocs_bookmarks_view", "ocs_bookmarks_compare_filter", "ocs_bookmarks_compare_view"],
   "routes": ["extension/ocs_bookmarks/events", "extension/ocs_bookmarks/wishlist", "extension/ocs_bookmarks/sync"] }
