@@ -14,6 +14,22 @@ class ControllerExtensionOcsEvents extends Controller {
 	}
 
 	/**
+	 * catalog/model/tool/image/resize/before: core passes unset theme size settings (null) to Image::resize(int, int), a fatal error;
+	 * replaces a missing size by a default (migration 0009).
+	 */
+	public function beforeImageResize(&$route, &$args) {
+		if (!is_array($args)) {
+			return;
+		}
+
+		foreach (array(1 => 228, 2 => 228) as $i => $default) {
+			if (!isset($args[$i]) || (int)$args[$i] <= 0) {
+				$args[$i] = $default;
+			}
+		}
+	}
+
+	/**
 	 * Every storefront view, last in order: applies the stock / article number switches of the theme settings to every storefront view (SPEC-044 REQ-VIS-051).
 	 */
 	public function applyDisplay(&$route, &$data) {
