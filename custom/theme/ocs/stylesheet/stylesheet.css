@@ -1092,7 +1092,7 @@ li .ocs-stock { font-size: inherit; }
 /* ==== 34. SPEC-038 phones: two card columns, header scrolls away, compact toolbar ============= */
 @layer layout {
 	@container page (max-width: 40rem) {
-		#ocs-grid, .ocs-viewed-grid, .ocs-cards { --card-min: 9rem; column-gap: var(--sp-2); }
+		#ocs-grid, .ocs-viewed-grid, .ocs-cards { --card-min: 9rem; column-gap: var(--sp-2); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		#content .row:has(> div > .btn-group > #list-view) .input-group-addon { display: none; }
 		#content .row:has(> div > .btn-group > #list-view) > :nth-child(3) { margin-inline-start: 0; }
 	}

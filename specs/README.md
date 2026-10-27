@@ -127,6 +127,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-058 | [Header Search Field Style](header-search-style/spec.md) | `implemented` |
 | SPEC-059 | [Mobile Header Reduction and Tab Bar Order](mobile-header-tabbar/spec.md) | `implemented` |
 | SPEC-060 | [Footer Groups One Column on Mobile](footer-mobile-single-column/spec.md) | `implemented` |
+| SPEC-061 | [Mobile Product Grid: Always Two Columns](mobile-two-column-grid/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).
