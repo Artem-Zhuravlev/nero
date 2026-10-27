@@ -27,6 +27,8 @@ final class Context
     public $repoRoot;
     /** @var callable|null fn(string $app, string $relControllerFile): bool - replaces the repo lookup inside an installed store (SPEC-040) */
     public $routeResolver;
+    /** @var string|null directory for system/<code>.ocmod.xml files; null keeps OCMOD in oc_modification (SPEC-053) */
+    public $ocmodDir;
     /** @var bool true while running an *_uninstall migration (REQ-DB-012, REQ-DB-030) */
     public $uninstall;
     /** @var bool set by helpers that change OCMOD/events/extensions: refresh.php must run (REQ-DB-040) */

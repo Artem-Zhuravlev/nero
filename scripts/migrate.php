@@ -25,6 +25,7 @@ $isLocal = ($env['APP_ENV'] ?? 'local') === 'local';
 
 $db = ocs_connect($root, $config);
 $runner = new Runner($db, DB_PREFIX, $root);
+$runner->ocmodDir = dirname($config) . '/system';
 
 if ($cmd === 'status') {
     foreach ($runner->status() as $row) {

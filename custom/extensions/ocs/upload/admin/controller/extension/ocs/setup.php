@@ -128,7 +128,7 @@ class ControllerExtensionOcsSetup extends Controller {
 
 		return new \Ocs\Setup\Service($db, DB_PREFIX, $base . 'payload', function ($app, $rel) use ($docroot) {
 			return is_file($docroot . $rel);
-		});
+		}, rtrim(DIR_SYSTEM, '/\\'));
 	}
 
 	private function tableReady() {

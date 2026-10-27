@@ -55,6 +55,12 @@ export function collectLayers({ coreDir, customDir, adminDir }) {
     add(rewriteAdmin(rel, adminDir), join(overlayDir, rel), 'overlay');
   }
 
+  // SPEC-053: OCMOD ships as system/<code>.ocmod.xml, which core's modification refresh applies straight from disk.
+  const ocmodDir = join(customDir, 'ocmod');
+  for (const rel of walk(ocmodDir)) {
+    if (rel.endsWith('.ocmod.xml') && !rel.includes('/')) add(`system/${rel}`, join(ocmodDir, rel), 'ocmod');
+  }
+
   const themeDir = join(customDir, 'theme', 'ocs');
   for (const rel of walk(themeDir)) {
     if (isCustomExcluded(rel)) continue;

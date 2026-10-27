@@ -99,6 +99,37 @@ PHP
         $this->assertSame(1, (int) $this->db->pdo->query("SELECT COUNT(*) FROM oc_event")->fetchColumn());
     }
 
+    // TEST-OCM-001 - verifies REQ-OCM-001, REQ-OCM-002, REQ-OCM-003, REQ-OCM-010
+    public function test_ocmod_is_written_to_system_dir_and_restored_on_every_install(): void
+    {
+        $xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<modification><name>T</name><code>ocs_t</code><version>1.0</version><author>me</author><link></link></modification>";
+        $this->repo->put('custom/ocmod/ocs_t.ocmod.xml', $xml);
+        $this->repo->migration('0002_mod.php', "<?php\ndeclare(strict_types=1);\nreturn function (\\Ocs\\Migrate\\Context \$m): void {\n    \$m->ocmod->install('custom/ocmod/ocs_t.ocmod.xml');\n};\n");
+        $sys = $this->repo->root . '/sysdir';
+        mkdir($sys);
+        $s = new Service($this->db, "oc_", $this->repo->root, static function (string $app, string $rel): bool {
+            return true;
+        }, $sys);
+        $this->db->pdo->exec("INSERT INTO oc_modification (extension_install_id, name, code, author, version, link, xml, status, date_added) VALUES (0, 'old', 'ocs_old', 'me', '1', '', '<x/>', 1, '2024-01-01')");
+        $r = $s->install();
+        $this->assertTrue($r["ok"]);
+        $this->assertSame($xml, file_get_contents($sys . '/ocs_t.ocmod.xml'));
+        $this->assertSame(0, (int) $this->db->pdo->query('SELECT COUNT(*) FROM oc_modification')->fetchColumn());
+        unlink($sys . '/ocs_t.ocmod.xml');
+        $again = $s->install();
+        $this->assertTrue($again['refresh']);
+        $this->assertSame($xml, file_get_contents($sys . '/ocs_t.ocmod.xml'));
+        $s->uninstall();
+        $this->assertFalse(is_file($sys . '/ocs_t.ocmod.xml'));
+    }
+
+    // TEST-OCM-002 - verifies REQ-OCM-004
+    public function test_precheck_reports_unwritable_system_dir(): void
+    {
+        $s = new Service($this->db, 'oc_', $this->repo->root, null, $this->repo->root . '/no-such-dir');
+        $this->assertTrue(in_array('not writable: ' . $this->repo->root . '/no-such-dir', $s->precheck(), true));
+    }
+
     // TEST-PKG-007 - verifies REQ-PKG-006
     public function test_activate_selects_theme_and_switches_modules_on(): void
     {

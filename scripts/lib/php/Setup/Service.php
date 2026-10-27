@@ -26,8 +26,12 @@ final class Service
     /** @var string[] */
     private $log = [];
 
-    public function __construct(Db $db, string $prefix, string $payloadRoot, ?callable $routeResolver = null)
+    /** @var string|null system/ directory that receives the ocs_*.ocmod.xml files (SPEC-053) */
+    private $systemDir;
+
+    public function __construct(Db $db, string $prefix, string $payloadRoot, ?callable $routeResolver = null, ?string $systemDir = null)
     {
+        $this->systemDir = $systemDir !== null ? rtrim($systemDir, '/\\') : null;
         $this->db = $db;
         $this->prefix = $prefix;
         $this->payload = rtrim($payloadRoot, '/\\');
@@ -81,6 +85,9 @@ final class Service
                 $problems[] = "not writable: {$path}";
             }
         }
+        if ($this->systemDir !== null && !is_writable($this->systemDir)) {
+            $problems[] = "not writable: {$this->systemDir}";
+        }
         if (!is_dir($this->payload . '/custom/db/migrations')) {
             $problems[] = 'package payload is incomplete (custom/db/migrations not found)';
         }
@@ -105,14 +112,17 @@ final class Service
             $this->say($line);
         });
         $r->routeResolver = $this->routeResolver;
+        $r->ocmodDir = $this->systemDir;
         return $r;
     }
 
     private function context(): Context
     {
-        return new Context($this->db, $this->prefix, $this->payload, false, function (string $line): void {
+        $ctx = new Context($this->db, $this->prefix, $this->payload, false, function (string $line): void {
             $this->say($line);
         });
+        $ctx->ocmodDir = $this->systemDir;
+        return $ctx;
     }
 
     /**
@@ -133,6 +143,7 @@ final class Service
 
         $runner = $this->runner();
         $code = $runner->up();
+        $resynced = $code === Runner::EXIT_OK && $this->syncOcmodFiles($m);
 
         // Migration 0001 selects the theme for the dev stand; a package install must never switch a live storefront.
         $after = $m->setting->get('config', 'config_theme');
@@ -145,7 +156,31 @@ final class Service
         if ($code === Runner::EXIT_OK) {
             $m->setting->set('ocs_package', 'ocs_package_version', $this->version());
         }
-        return ['ok' => $code === Runner::EXIT_OK, 'problems' => [], 'log' => $this->log, 'refresh' => $runner->refreshRequired];
+        return ['ok' => $code === Runner::EXIT_OK, 'problems' => [], 'log' => $this->log, 'refresh' => $runner->refreshRequired || $resynced];
+    }
+
+    /**
+     * SPEC-053 REQ-OCM-001/010: every packaged OCMOD is (re)written to system/ on each install, even when its migration is already
+     * logged, so modifications deleted by hand come back. Leftover oc_modification rows are dropped (they would apply twice).
+     */
+    private function syncOcmodFiles(Context $m): bool
+    {
+        if ($this->systemDir === null) {
+            return false;
+        }
+        $changed = false;
+        foreach ((array) glob($this->payload . '/custom/ocmod/ocs_*.ocmod.xml') as $xmlPath) {
+            $target = $this->systemDir . '/' . basename($xmlPath);
+            $same = is_file($target) && (string) file_get_contents($target) === (string) file_get_contents($xmlPath);
+            $m->ocmod->install($xmlPath);
+            $changed = $changed || !$same;
+        }
+        $t = '`' . $this->prefix . 'modification`';
+        foreach ($this->db->rows("SELECT modification_id AS id FROM {$t} WHERE `code` LIKE 'ocs_%'") as $row) {
+            $this->db->exec("DELETE FROM {$t} WHERE modification_id = " . (int) $row['id']);
+            $changed = true;
+        }
+        return $changed;
     }
 
     /** @return array<int, array{id:string, state:string}> */
@@ -193,6 +228,11 @@ final class Service
                 if (strncmp((string) $row['code'], 'ocs_', 4) === 0) {
                     $this->db->exec('DELETE FROM `' . $p . "{$table}` WHERE {$pk} = " . (int) $row['id']);
                 }
+            }
+        }
+        if ($this->systemDir !== null) {
+            foreach ((array) glob($this->systemDir . '/ocs_*.ocmod.xml') as $file) {
+                @unlink($file);
             }
         }
         if ($this->db->tableExists($p . 'ocs_migration')) {

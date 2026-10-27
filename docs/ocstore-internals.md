@@ -208,7 +208,7 @@ catalog model `extension/total/<code>->getTotal($total)` (`$total['totals'][]`, 
 
 ## 9. OCMOD (the patch system)
 
-- XML modification files stored in `oc_modification`; admin "Refresh" (`marketplace/modification
+- XML modification files stored in `oc_modification` (the `ocs_*` ones are instead files `system/ocs_*.ocmod.xml`, SPEC-053: core applies `system/*.ocmod.xml` on every refresh, deleting them in admin is impossible); admin "Refresh" (`marketplace/modification
   /refresh`) rebuilds **patched copies** of every affected file into
   `DIR_MODIFICATION` (`system/storage/modification/{admin,catalog,system}/…`). At runtime the
   `modification($file)` function (and Twig patch in `system/modification.xml`) makes PHP/Twig

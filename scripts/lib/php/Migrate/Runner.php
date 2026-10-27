@@ -26,6 +26,8 @@ final class Runner
     public $refreshRequired = false;
     /** @var callable|null see Context::$routeResolver */
     public $routeResolver;
+    /** @var string|null see Context::$ocmodDir (SPEC-053) */
+    public $ocmodDir;
 
     public function __construct(Db $db, string $prefix, string $repoRoot, ?callable $out = null)
     {
@@ -205,6 +207,7 @@ final class Runner
             $this->say('    ' . $m);
         });
         $ctx->routeResolver = $this->routeResolver;
+        $ctx->ocmodDir = $this->ocmodDir;
         return $ctx;
     }
 
