@@ -332,7 +332,7 @@ test('request popups: buttons, JS handler, shared form and error codes are consi
   const prod = read('custom/theme/ocs/template/product/product.twig');
   for (const cls of ['ocs-preorder-btn', 'ocs-quick-btn', 'ocs-subscribe-btn', 'data-form', 'data-collect="1"']) assert.ok(prod.includes(cls), `product.twig lacks ${cls}`);
   assert.match(prod, /class="ocs-preorder"/);
-  assert.ok(!read('custom/theme/ocs/template/ocs/card.twig').includes('ocs-req-btn'), 'SPEC-044: quick order is on the product page only');
+  assert.ok(!read('custom/theme/ocs/template/ocs/card.twig').includes('ocs-quick-btn'), 'SPEC-044: quick order is on the product page only (SPEC-077: the bell notify button on cards is the only request button there)');
   const css = read('custom/theme/ocs/stylesheet/stylesheet.css');
   assert.match(css, /\.ocs-preorder #button-cart \{ display: none; \}/);
   const form = read('custom/extensions/ocs_request/upload/catalog/view/theme/default/template/extension/ocs_request/form.twig');

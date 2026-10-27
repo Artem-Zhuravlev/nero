@@ -79,6 +79,7 @@ class ControllerExtensionOcsBookmarksWishlist extends Controller {
 				'stock'      => $stock,
 				'price'      => $show_price ? $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']) : false,
 				'special'    => $show_price && (float)$product_info['special'] ? $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']) : false,
+				'quantity'   => (int)$product_info['quantity'],
 				'minimum'    => $product_info['minimum'] > 0 ? $product_info['minimum'] : 1,
 				'description' => utf8_substr(trim(strip_tags(html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8'))), 0, 100) . '..',
 				'tax'        => $show_price && $this->config->get('config_tax') ? $this->currency->format($tax_price, $this->session->data['currency']) : false,

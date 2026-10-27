@@ -759,9 +759,24 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		});
 	}
 
+	// SPEC-077: label of the bell button on out-of-stock cards comes from the header (module text); hidden when the module is off.
+	function labelNotify() {
+		var text = document.body.getAttribute('data-ocs-notify-t') || '';
+		var buttons = document.querySelectorAll('.ocs-notify-btn');
+
+		for (var i = 0; i < buttons.length; i++) {
+			buttons[i].hidden = !document.body.hasAttribute('data-ocs-notify');
+			buttons[i].title = text;
+			buttons[i].setAttribute('aria-label', text);
+		}
+	}
+
+	document.addEventListener('DOMContentLoaded', labelNotify);
+
 	OCS.req = {
+		label: labelNotify,
 		open: function (button) {
-			var url = button.getAttribute('data-form');
+			var url = button.getAttribute('data-form') || (button.classList.contains('ocs-notify-btn') ? document.body.getAttribute('data-ocs-notify') : '');
 			var id = button.getAttribute('data-product-id');
 			var snapshot = null;
 

@@ -1424,8 +1424,18 @@ li .ocs-stock { font-size: inherit; }
 }
 
 @layer components {
-	.ocs-buy-row .price { font-size: clamp(1.1rem, 2.2rem + 0cqi, 1.5rem); white-space: nowrap; }
-	@container card (max-width: 15rem) { .ocs-buy-row .price { font-size: var(--fs-lg); } }
+	/* SPEC-077: 18px price that wraps instead of pushing the round button out; even card spacing; out-of-stock card */
+	.ocs-buy-row .price { font-size: 1.125rem; line-height: 1.2; min-inline-size: 0; flex: 1 1 auto; overflow-wrap: anywhere; }
+	@container card (max-width: 15rem) { .ocs-buy-row .price { font-size: 1.125rem; } }
+	@container card (max-width: 12.5rem) { .ocs-buy-row .price { font-size: 1.125rem; } }
+	.ocs-buy-row { gap: var(--sp-3); align-items: center; }
+	.ocs-buy-row .ocs-cart-btn { flex: none; }
+	.product-thumb .caption { padding: var(--sp-2) var(--sp-4) var(--sp-4); gap: var(--sp-3); }
+	.product-thumb .caption > * { margin-block: 0; }
+	.product-thumb .caption h4 { margin: 0; }
+	.product-thumb > .image { padding: var(--sp-4); }
+	.product-thumb.is-out > .image .ocs-card-img img { filter: grayscale(.8); }
+	.ocs-notify-btn[hidden] { display: none; }
 }
 
 /* ==== 40. SPEC-039 category sidebar tree, sort chips, product page details (REQ-VIS-005, 006) ===== */

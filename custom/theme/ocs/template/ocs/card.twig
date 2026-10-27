@@ -1,7 +1,8 @@
 {# Product card partial for listing overrides (SPEC-034 REQ-LST-010, 012; SPEC-039 REQ-VIS-004). Core has no product/thumb.twig; the markup is derived from the inlined card of product/category.twig. #}
 {# Context: product, text_tax, button_cart, button_wishlist, button_compare. Extra keys added by ocs_listing events: model, reviews, discount_pct. #}
 <div class="product-layout product-list col-xs-12" data-product-id="{{ product.product_id }}">
-  <div class="product-thumb">
+  {% set ocs_out = (product.ocs_stock and product.ocs_stock.state == 'out') or (product.quantity is defined and product.quantity <= 0) %}
+  <div class="product-thumb{% if ocs_out %} is-out{% endif %}">
     <div class="image">
       <div class="ocs-slot ocs-slot-tl" data-product-id="{{ product.product_id }}">{% for s in product.stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-tr" data-product-id="{{ product.product_id }}">{% for s in product.stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div><div class="ocs-slot ocs-slot-bl" data-product-id="{{ product.product_id }}">{% for s in product.stickers.bl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
 
@@ -33,7 +34,11 @@
             {% else %} <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span> {% endif %}
             {% if product.tax %} <span class="price-tax">{{ text_tax }} {{ product.tax }}</span> {% endif %} </p>
           {% endif %}
+          {% if ocs_out %}
+          <button type="button" class="ocs-cart-btn ocs-notify-btn ocs-req-btn" data-product-id="{{ product.product_id }}" aria-label="Notify" title="Notify"><svg class="ocs-i" aria-hidden="true"><use href="#i-bell"/></svg></button>
+          {% else %}
           <button type="button" class="ocs-cart-btn" title="{{ button_cart }}" aria-label="{{ button_cart }}" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg></button>
+          {% endif %}
         </div>
       </div>
     </div>

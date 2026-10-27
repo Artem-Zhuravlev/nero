@@ -109,6 +109,7 @@ class ControllerExtensionModuleOcsProductCarousel extends Controller {
 				'price'        => $price,
 				'special'      => $special,
 				'tax'          => $this->config->get('config_tax') ? $this->currency->format($tax_price, $this->session->data['currency']) : false,
+				'quantity'     => (int)$product['quantity'],
 				'minimum'      => $product['minimum'] > 0 ? $product['minimum'] : 1,
 				'rating'       => $this->config->get('config_review_status') ? (int)$product['rating'] : false,
 				'discount_pct' => $discount,
