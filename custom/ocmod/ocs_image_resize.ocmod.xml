@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Purpose: the storefront image resizer must never crash on a missing/empty size setting (Image::resize() takes int).
+  Owner: SPEC-006 (REQ-THM-030). Event insufficient because: the model/tool/image/resize/before event is not reliably
+  fired on every deployment (live site still fataled), a patch inside the method always runs.
+  @core-file catalog/model/tool/image.php
+  @core-version 3.0.3.7
+-->
+<modification>
+  <name>OCS: image resize never receives an empty size</name>
+  <code>ocs_image_resize</code>
+  <version>1.0.0</version>
+  <author>OCS</author>
+  <link></link>
+  <file path="catalog/model/tool/image.php">
+    <operation>
+      <search><![CDATA[public function resize($filename, $width, $height) {]]></search>
+      <add position="after"><![CDATA[		$width = (int)$width > 0 ? (int)$width : (int)($this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width') ?: 228);
+		$height = (int)$height > 0 ? (int)$height : (int)($this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height') ?: 228);
+]]></add>
+    </operation>
+  </file>
+</modification>

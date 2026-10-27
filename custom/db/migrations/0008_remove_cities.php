@@ -9,7 +9,9 @@ return function (\Ocs\Migrate\Context $m): void {
     $m->event->unregisterByCode('ocs_city_product');
     $m->extension->unregister('module', 'ocs_city');
     $m->permission->revoke(1, 'extension/module/ocs_city');
-    $m->setting->delete('module_ocs_city', 'module_ocs_city_status', 'module_ocs_city_tracking', 'module_ocs_city_pickup_minutes', 'module_ocs_city_l');
+    foreach (['module_ocs_city_status', 'module_ocs_city_tracking', 'module_ocs_city_pickup_minutes', 'module_ocs_city_l'] as $key) {
+        $m->setting->delete('module_ocs_city', $key);
+    }
 
     foreach (['ocs_store_stock', 'ocs_store_description', 'ocs_store', 'ocs_city_delivery_description', 'ocs_city_delivery', 'ocs_city_description', 'ocs_city'] as $table) {
         $m->sql('DROP TABLE IF EXISTS {{PREFIX}}' . $table);
