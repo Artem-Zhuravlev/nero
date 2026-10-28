@@ -50,7 +50,7 @@ class ControllerExtensionModuleOcsMegaMenu extends Controller {
 		$data['action'] = $this->url->link('extension/module/ocs_mega_menu', $token, true);
 		$data['cancel'] = $this->url->link('marketplace/extension', $token . '&type=module', true);
 
-		$defaults = array('status' => 0, 'levels' => 3, 'columns' => 3, 'behaviour' => 'hover', 'brands' => 0, 'brands_limit' => 8);
+		$defaults = array('status' => 0, 'levels' => 3, 'columns' => 3, 'behaviour' => 'hover', 'brands' => 0);
 
 		foreach ($defaults as $field => $default) {
 			$key = 'module_ocs_mega_menu_' . $field;
@@ -104,9 +104,7 @@ class ControllerExtensionModuleOcsMegaMenu extends Controller {
 		$levels = isset($this->request->post['module_ocs_mega_menu_levels']) ? (int)$this->request->post['module_ocs_mega_menu_levels'] : 0;
 		$columns = isset($this->request->post['module_ocs_mega_menu_columns']) ? (int)$this->request->post['module_ocs_mega_menu_columns'] : 0;
 
-		$brands_limit = isset($this->request->post['module_ocs_mega_menu_brands_limit']) ? (int)$this->request->post['module_ocs_mega_menu_brands_limit'] : 0;
-
-		if ($brands_limit < 1 || $brands_limit > 20 || $levels < 1 || $levels > 3 || $columns < 1 || $columns > 5 || !in_array(isset($this->request->post['module_ocs_mega_menu_behaviour']) ? $this->request->post['module_ocs_mega_menu_behaviour'] : '', array('hover', 'click'), true)) {
+		if ($levels < 1 || $levels > 3 || $columns < 1 || $columns > 5 || !in_array(isset($this->request->post['module_ocs_mega_menu_behaviour']) ? $this->request->post['module_ocs_mega_menu_behaviour'] : '', array('hover', 'click'), true)) {
 			$this->error['warning'] = $this->language->get('error_values');
 		}
 

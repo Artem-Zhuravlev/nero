@@ -24,37 +24,24 @@ class ModelExtensionOcsMenuTree extends Model {
 	}
 
 	/**
-	 * Manufacturers of products in each given category including its descendants (one cached query).
+	 * All manufacturers of the current store (one cached query), sort_order then name.
 	 *
-	 * @param int[] $category_ids
-	 * @return array category_id => array(array(manufacturer_id, name), ...)
+	 * @return array of array(manufacturer_id, name)
 	 */
-	public function getBrands($category_ids, $limit) {
-		$ids = array();
-
-		foreach ((array)$category_ids as $id) {
-			$ids[] = (int)$id;
-		}
-
-		if (!$ids) {
-			return array();
-		}
-
-		sort($ids);
-
-		$key = 'ocs_menu.brands.' . (int)$this->config->get('config_store_id') . '.' . md5(implode(',', $ids));
+	public function getAllBrands() {
+		$key = 'ocs_menu.brands.' . (int)$this->config->get('config_store_id');
 
 		$rows = $this->cache->get($key);
 
 		if (!is_array($rows)) {
-			$query = $this->db->query("SELECT cp.path_id AS category_id, m.manufacturer_id, m.name, COUNT(*) AS cnt FROM " . DB_PREFIX . "category_path cp INNER JOIN " . DB_PREFIX . "product_to_category p2c ON (p2c.category_id = cp.category_id) INNER JOIN " . DB_PREFIX . "product p ON (p.product_id = p2c.product_id) INNER JOIN " . DB_PREFIX . "product_to_store p2s ON (p2s.product_id = p.product_id) INNER JOIN " . DB_PREFIX . "manufacturer m ON (m.manufacturer_id = p.manufacturer_id) INNER JOIN " . DB_PREFIX . "manufacturer_to_store m2s ON (m2s.manufacturer_id = m.manufacturer_id) WHERE cp.path_id IN (" . implode(',', $ids) . ") AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND m2s.store_id = '" . (int)$this->config->get('config_store_id') . "' GROUP BY cp.path_id, m.manufacturer_id");
+			$query = $this->db->query("SELECT m.manufacturer_id, m.name FROM " . DB_PREFIX . "manufacturer m INNER JOIN " . DB_PREFIX . "manufacturer_to_store m2s ON (m2s.manufacturer_id = m.manufacturer_id) WHERE m2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY m.sort_order, LCASE(m.name)");
 
 			$rows = $query->rows;
 
 			$this->cache->set($key, $rows);
 		}
 
-		return \Ocs\CategoryTree::groupBrands($rows, $limit);
+		return $rows;
 	}
 
 	/**

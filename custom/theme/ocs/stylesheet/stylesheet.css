@@ -452,7 +452,9 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 .ocs-mega-fly-in { display: contents; }
 .ocs-mega-gtitle { font-weight: 400; color: var(--text); display: block; margin-bottom: var(--sp-2); }
 .ocs-mega-group ul li a { display: block; padding: var(--sp-1) 0; color: var(--text-muted); font-size: var(--fs-sm); }
-.ocs-mega-brands { margin-top: var(--sp-4); }
+.ocs-mega-brandlist { column-count: var(--ocs-cols, 3); column-gap: var(--sp-5); margin: 0; }
+.ocs-mega-brandlist li a { display: block; padding: var(--sp-1) 0; color: var(--text-muted); font-size: var(--fs-sm); }
+.ocs-mega-brandlist li a:hover { color: var(--link); }
 .ocs-mega-group ul li a:hover { color: var(--link); }
 .ocs-mega-promo img { max-width: 100%; border-radius: var(--r-md); }
 

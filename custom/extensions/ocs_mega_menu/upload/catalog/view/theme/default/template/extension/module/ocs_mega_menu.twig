@@ -30,12 +30,6 @@
               </div>
               {% endfor %}
             </div>
-            {% if c.brands %}
-            <div class="ocs-mega-brands">
-              <span class="ocs-mega-gtitle">{{ text_brands }}</span>
-              {% for b in c.brands %}<a class="ocs-chip" href="{{ b.href }}">{{ b.name }}</a>{% endfor %}
-            </div>
-            {% endif %}
             </div>
             {% if c.banner %}<a class="ocs-mega-promo" href="{{ c.banner.url }}"><img src="{{ c.banner.src }}" alt="" width="240" height="360" loading="lazy" /></a>{% endif %}
             </div>
@@ -43,6 +37,21 @@
           {% endif %}
         </li>
         {% endfor %}
+        {% if brands %}
+        <li class="ocs-mega-item ocs-mega-branditem ocs-has-children">
+          <a href="{{ href_brands }}" class="ocs-mega-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-tag"/></svg><span>{{ text_brands }}</span></a>
+          <button type="button" class="ocs-mega-expand" aria-expanded="false" aria-label="{{ text_brands }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+          <div class="ocs-mega-fly">
+            <div class="ocs-mega-fly-in">
+            <div class="ocs-mega-body">
+              <ul class="ocs-mega-brandlist list-unstyled">
+                {% for b in brands %}<li><a href="{{ b.href }}">{{ b.name }}</a></li>{% endfor %}
+              </ul>
+            </div>
+            </div>
+          </div>
+        </li>
+        {% endif %}
       </ul>
     </div>
   </div>
