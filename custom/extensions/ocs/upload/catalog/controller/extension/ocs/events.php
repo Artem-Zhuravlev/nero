@@ -210,6 +210,13 @@ class ControllerExtensionOcsEvents extends Controller {
 				}
 			}
 
+			// core's event/language merges the strings into the view data at order 999, after this event (99): read them here
+			foreach ($this->language->all() as $key => $value) {
+				if (!isset($data[$key])) {
+					$data[$key] = $value;
+				}
+			}
+
 			return \Ocs\Footer::view($this->config->get('theme_ocs_footer'), $pages, $data);
 		} catch (\Exception $e) {
 			$this->log->write('[ocs] ' . $e->getMessage());
