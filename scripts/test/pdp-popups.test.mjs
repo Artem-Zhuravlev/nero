@@ -13,7 +13,7 @@ const css = () => read('custom/theme/ocs/stylesheet/stylesheet.css');
 // TEST-COD-001 - verifies REQ-COD-001, REQ-COD-002 (code pill gated by the SKU switch, copy button with live region, fallback copy)
 test('code pill: markup, SKU gate and copy handler', () => {
   const t = twig();
-  assert.equal((t.match(/\{% if ocs_show_sku and model %\}/g) || []).length, 2, 'info column and side card');
+  assert.equal((t.match(/\{% if ocs_show_sku and model %\}/g) || []).length, 1, 'info column only (SPEC-098: not in the side card)');
   for (const hook of ['data-ocs-copy="{{ model }}"', 'data-done="{{ ocs_px.text_copied }}"', 'role="status" aria-live="polite"', 'type="button" class="ocs-copy"']) assert.ok(t.includes(hook), hook);
   const s = js();
   const copy = s.slice(s.indexOf('/* Copy buttons (SPEC-049'), s.indexOf('/* Product lightbox'));

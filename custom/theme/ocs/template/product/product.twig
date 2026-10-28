@@ -292,13 +292,8 @@
           <div class="ocs-slot ocs-slot-tl">{% for s in ocs_stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
           <div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
         </div>
-        {% if manufacturer %}<a class="ocs-side-brand" href="{{ manufacturers }}">{{ manufacturer }}</a>{% endif %}
         <p class="ocs-side-title">{{ heading_title }}</p>
-        {% if ocs_show_sku and model %}
-        <div class="ocs-code-pill ocs-code-pill-sm"><span class="ocs-code-label">{{ ocs_px.text_product_code ? ocs_px.text_product_code : text_model }}</span> <span class="ocs-code-val">{{ model }}</span><button type="button" class="ocs-copy" data-ocs-copy="{{ model }}" data-done="{{ ocs_px.text_copied }}" title="{{ ocs_px.text_copy }}" aria-label="{{ ocs_px.text_copy }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-copy"/></svg></button><span class="ocs-sr" role="status" aria-live="polite"></span></div>
-        {% endif %}
         {% if price %}<p class="ocs-side-price">{% if special %}<s>{{ price }}</s> <strong>{{ special }}</strong>{% else %}<strong>{{ price }}</strong>{% endif %}</p>{% endif %}
-        {% if ocs_show_stock and ocs_stock %}<p class="ocs-side-stock"><span class="ocs-stock ocs-stock-{{ ocs_stock.state }}"><i class="ocs-dot" aria-hidden="true"></i>{{ ocs_stock.label }}</span></p>{% endif %}
         <div class="ocs-side-actions">
           <button type="button" class="btn btn-primary" data-ocs-buy>{% if ocs_preorder %}{{ ocs_preorder.text }}{% elseif ocs_subscribe %}{{ ocs_subscribe.text }}{% else %}{{ button_cart }}{% endif %}</button>
           <button type="button" class="btn btn-default" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>

@@ -14,7 +14,7 @@ test('side card: markup, sticky CSS and forwarding buttons', () => {
   assert.ok(body.indexOf('class="ocs-pdp-sections"') < body.indexOf('<aside class="ocs-side-card"'), 'sections first, card beside');
   const aside = body.slice(body.indexOf('<aside'), body.indexOf('</aside>'));
   assert.ok(!/<h[1-6]/.test(aside), 'no heading in the card');
-  for (const hook of ['class="ocs-side-title"', 'ocs-side-price', 'data-ocs-buy', "wishlist.add('{{ product_id }}')", "compare.add('{{ product_id }}')", 'ocs_show_stock', 'ocs_stickers.tl']) assert.ok(aside.includes(hook), hook);
+  for (const hook of ['class="ocs-side-title"', 'ocs-side-price', 'data-ocs-buy', "wishlist.add('{{ product_id }}')", "compare.add('{{ product_id }}')", 'ocs_stickers.tl']) assert.ok(aside.includes(hook), hook);
   const css = read('custom/theme/ocs/stylesheet/stylesheet.css');
   const blk = css.slice(css.indexOf('/* ==== SPEC-047: pinned product card'));
   for (const rule of ['.ocs-side-card { display: none; }', '@media (min-width: 64rem)', 'position: sticky', 'var(--head-h, 0rem)', '.ocs-sticky-buy { display: none; }']) assert.ok(blk.includes(rule), rule);

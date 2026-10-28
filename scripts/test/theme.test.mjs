@@ -1277,3 +1277,11 @@ test('request form fields have placeholders, modal close has no background', () 
   assert.ok(/background:\s*transparent/.test(rule));
   assert.ok(!/\.ocs-modal-close:hover \{ background/.test(css));
 });
+
+// TEST-PSC-001 - verifies REQ-PSC-001 (side card has no brand, product code, stock)
+test('product side card has no brand, code and stock', () => {
+  const tpl = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/template/product/product.twig'), 'utf8');
+  const side = tpl.slice(tpl.indexOf('<aside class="ocs-side-card"'), tpl.indexOf('</aside>'));
+  for (const s of ['ocs-side-brand', 'ocs-code-pill', 'ocs-side-stock']) assert.ok(!side.includes(s), s);
+  assert.ok(side.includes('ocs-side-title') && side.includes('ocs-side-price') && side.includes('data-ocs-buy'));
+});
