@@ -72,6 +72,22 @@ class ControllerExtensionOcsEvents extends Controller {
 		// config_language is the visitor's language at run time; the store default is read from the settings table (fallback for untranslated contacts)
 		$default = (string)$this->model_setting_setting->getSettingValue('config_language', (int)$this->config->get('config_store_id'));
 
+			// countdown to the end of the special applied now (SPEC-086 REQ-TMR-001); the core ends a special at 00:00 of date_end
+			$data['ocs_special_timer'] = null;
+
+			if (!empty($data['special']) && !empty($data['price']) && !empty($this->request->get['product_id'])) {
+				$end = $this->specialEnd((int)$this->request->get['product_id']);
+
+				if ($end && (int)$end['seconds'] > 0) {
+					$strings = $this->load->language('extension/ocs/top');
+					$data['ocs_special_timer'] = array(
+						'seconds' => (int)$end['seconds'],
+						'label'   => isset($strings['text_special_timer']) ? $strings['text_special_timer'] : '',
+						'days'    => isset($strings['text_special_days']) ? $strings['text_special_days'] : ''
+					);
+				}
+			}
+
 			$data['ocs_info_blocks'] = \Ocs\InfoBlocks::view($this->config->get('theme_ocs_info_blocks'), $this->config->get('config_language'), $default);
 		}
 
@@ -80,6 +96,19 @@ class ControllerExtensionOcsEvents extends Controller {
 		} catch (\Exception $e) {
 			$this->log->write('[ocs] ' . $e->getMessage());
 		}
+	}
+
+	/**
+	 * The special the core applies now (same filter and order as the product model): its end date and the seconds left, or null when it is open-ended or there is none (SPEC-086).
+	 */
+	private function specialEnd($product_id) {
+		$row = $this->db->query("SELECT date_end, TIMESTAMPDIFF(SECOND, NOW(), date_end) AS seconds FROM `" . DB_PREFIX . "product_special` WHERE product_id = '" . (int)$product_id . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND (date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW()) ORDER BY priority ASC, price ASC LIMIT 1")->row;
+
+		if (!$row || $row['date_end'] === '0000-00-00') {
+			return null;
+		}
+
+		return $row;
 	}
 
 	/**
@@ -463,7 +492,7 @@ class ControllerExtensionOcsEvents extends Controller {
 		$until = '';
 
 		if ($price !== false && !is_null($info['special'])) {
-			$row = $this->db->query("SELECT date_end FROM `" . DB_PREFIX . "product_special` WHERE product_id = '" . (int)$info['product_id'] . "' AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND (date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW()) ORDER BY priority ASC, price ASC LIMIT 1")->row;
+			$row = $this->specialEnd((int)$info['product_id']);
 			$until = $row ? $row['date_end'] : '';
 		}
 

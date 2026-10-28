@@ -3417,4 +3417,30 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 			btn.classList.remove('is-busy');
 		});
 	});
+
+	// special price countdown, counted from the server's seconds left (SPEC-086)
+	Array.prototype.forEach.call(document.querySelectorAll('[data-ocs-timer]'), function (el) {
+		var out = el.querySelector('.ocs-special-timer-time'),
+			end = Date.now() + parseInt(el.getAttribute('data-ocs-timer'), 10) * 1000,
+			days = el.getAttribute('data-days') || 'd',
+			pad = function (n) { return (n < 10 ? '0' : '') + n; },
+			timer;
+
+		function tick() {
+			var left = Math.max(0, Math.round((end - Date.now()) / 1000)),
+				d = Math.floor(left / 86400);
+
+			if (!left) {
+				clearInterval(timer);
+				el.hidden = true;
+
+				return;
+			}
+
+			out.textContent = (d ? d + ' ' + days + ' ' : '') + pad(Math.floor(left % 86400 / 3600)) + ' : ' + pad(Math.floor(left % 3600 / 60)) + ' : ' + pad(left % 60);
+		}
+
+		tick();
+		timer = setInterval(tick, 1000);
+	});
 }(window, document));

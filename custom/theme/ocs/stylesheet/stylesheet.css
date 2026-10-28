@@ -1684,6 +1684,9 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-price { font-size: var(--fs-3xl); font-weight: 800; line-height: 1; letter-spacing: var(--track); }
 	.ocs-price-old { font-size: var(--fs-md); color: var(--text-muted); }
 	.ocs-price-note { font-size: var(--fs-sm); color: var(--text-muted); }
+	.ocs-special-timer { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-1) var(--sp-2); font-size: var(--fs-sm); color: var(--text-muted); }
+	.ocs-special-timer strong { color: var(--text); font-variant-numeric: tabular-nums; }
+	.ocs-special-timer[hidden] { display: none; }
 }
 
 /* ==== SPEC-046: form system and stacked product sections ==== */

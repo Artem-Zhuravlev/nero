@@ -101,6 +101,9 @@
             {% else %}
             <p class="ocs-price">{{ price }}</p>
             {% endif %}
+            {% if ocs_special_timer %}
+            <p class="ocs-special-timer" role="timer" aria-live="off" data-ocs-timer="{{ ocs_special_timer.seconds }}" data-days="{{ ocs_special_timer.days }}"><span class="ocs-special-timer-label">{{ ocs_special_timer.label }}</span> <strong class="ocs-special-timer-time"></strong></p>
+            {% endif %}
             {% if tax %}<p class="ocs-price-note">{{ text_tax }} {{ tax }}</p>{% endif %}
             {% if points %}<p class="ocs-price-note">{{ text_points }} {{ points }}</p>{% endif %}
             {% if discounts %}

@@ -8,3 +8,7 @@ $_['text_customers'] = 'Покупцям';
 
 $_['text_brand_search'] = 'Пошук за брендами';
 $_['text_brand_none'] = 'Бренди не знайдено';
+
+// SPEC-086 special countdown
+$_['text_special_timer'] = 'Акція закінчиться через';
+$_['text_special_days'] = 'д';
