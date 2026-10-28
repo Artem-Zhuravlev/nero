@@ -229,8 +229,20 @@ test('listing overrides use the card partial, expose load-more/reset hooks and d
   assert.deepEqual(keys('ru-ru'), keys('uk-ua'));
   for (const used of cat.matchAll(/ocs_listing\.t\.(ocs_[a-z_]+)/g)) assert.ok(keys('uk-ua').includes(used[1]), `missing string ${used[1]}`);
   const ext = JSON.parse(read('custom/extensions/ocs_listing/extension.json'));
-  const mig = read('custom/extensions/ocs_listing/db/001_install.php');
-  for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
+  const mig = ['001_install', '003_header_event'].map((f) => read(`custom/extensions/ocs_listing/db/${f}.php`)).join('\n');
+  for (const e of ext.events.filter((x) => !x.startsWith('ocs_listing_module_'))) assert.ok(mig.includes(`'${e}'`), `migration does not register ${e}`);
+});
+
+// TEST-PGSEO-001 - verifies REQ-PGSEO-001..004 (SEO text dropped and page suffix added after page 1, strings in every language)
+test('pagination pages: no SEO text, page number in title/description, multilingual suffix', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const ev = read('custom/extensions/ocs_listing/upload/catalog/controller/extension/ocs_listing/events.php');
+  assert.match(ev, /isLaterListingPage\(\)\) \{\s*unset\(\$data\['description'\]\)/);
+  assert.match(ev, /function beforeHeader/);
+  assert.match(read('custom/extensions/ocs_listing/db/003_header_event.php'), /catalog\/view\/common\/header\/before/);
+  for (const l of ['ru-ru', 'uk-ua', 'en-gb']) {
+    assert.match(read(`custom/extensions/ocs_listing/upload/catalog/language/${l}/extension/ocs_listing/listing.php`), /\$_\['ocs_page_suffix'\] = '%s - [^']*%d[^']*';/);
+  }
 });
 
 // --- SPEC-027 navigation ---

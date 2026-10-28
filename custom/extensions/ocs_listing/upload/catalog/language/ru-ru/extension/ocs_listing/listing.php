@@ -14,3 +14,4 @@ $_['ocs_read_more']        = 'Читать далее';
 $_['ocs_read_less']        = 'Скрыть текст';
 $_['ocs_prev'] = 'Назад';
 $_['ocs_next'] = 'Вперёд';
+$_['ocs_page_suffix'] = '%s - страница %d';

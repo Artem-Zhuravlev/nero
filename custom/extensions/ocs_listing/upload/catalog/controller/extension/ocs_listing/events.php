@@ -34,9 +34,44 @@ class ControllerExtensionOcsListingEvents extends Controller {
 		$this->extras($data);
 	}
 
+	/**
+	 * SPEC-094 REQ-PGSEO-002, 003: pages of a category or manufacturer list after the first get the page number appended to title and meta description.
+	 */
+	public function beforeHeader(&$route, &$data) {
+		try {
+			if (!is_array($data) || !$this->config->get('library_ocs_listing_status') || !$this->isLaterListingPage()) {
+				return;
+			}
+
+			$strings = $this->load->language('extension/ocs_listing/listing');
+			$format = is_array($strings) && !empty($strings['ocs_page_suffix']) ? $strings['ocs_page_suffix'] : '%s - %d';
+			$page = (int)$this->request->get['page'];
+
+			foreach (array('title', 'description') as $key) {
+				if (isset($data[$key]) && trim((string)$data[$key]) !== '') {
+					$data[$key] = sprintf($format, $data[$key], $page);
+				}
+			}
+		} catch (Exception $e) {
+			$this->log->write('[ocs_listing] ' . $e->getMessage());
+		}
+	}
+
+	private function isLaterListingPage() {
+		$route = isset($this->request->get['route']) ? (string)$this->request->get['route'] : '';
+
+		return in_array($route, array('product/category', 'product/manufacturer/info'), true)
+			&& isset($this->request->get['page']) && (int)$this->request->get['page'] > 1;
+	}
+
 	private function apply($route, &$data, $replace_sorts) {
 		if (!is_array($data) || !$this->config->get('library_ocs_listing_status') || $this->config->get('config_theme') != 'ocs') {
 			return;
+		}
+
+		// SPEC-094 REQ-PGSEO-001: the SEO text belongs to the first page only
+		if (($route === 'product/category' || $route === 'product/manufacturer_info') && $this->isLaterListingPage()) {
+			unset($data['description']);
 		}
 
 		$strings = $this->load->language('extension/ocs_listing/listing');
