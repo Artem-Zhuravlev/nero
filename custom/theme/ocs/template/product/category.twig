@@ -36,76 +36,24 @@
       </nav>
       {% endif %}
       {% if products %}
-      <div class="row">
-        <div class="col-md-2 col-sm-6 hidden-xs">
-          <div class="btn-group btn-group-sm">
-            <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_list }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-view-list"/></svg></button>
-            <button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_grid }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-grid"/></svg></button>
-          </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
+      <div class="row ocs-toolbar">
+        <div class="ocs-tb-sort">
           <div class="form-group input-group input-group-sm">
             <label class="input-group-addon" for="input-sort">{{ text_sort }}</label>
             <select id="input-sort" class="form-control" onchange="location = this.value;">
-              
-              
-              
               {% for sorts in sorts %}
               {% if sorts.value == '%s-%s'|format(sort, order) %}
-              
-              
-              
               <option value="{{ sorts.href }}" selected="selected">{{ sorts.text }}</option>
-              
-              
-              
               {% else %}
-              
-              
-              
               <option value="{{ sorts.href }}">{{ sorts.text }}</option>
-              
-              
-              
               {% endif %}
               {% endfor %}
-            
-            
-            
             </select>
           </div>
         </div>
-        <div class="col-md-3 col-xs-6">
-          <div class="form-group input-group input-group-sm">
-            <label class="input-group-addon" for="input-limit">{{ text_limit }}</label>
-            <select id="input-limit" class="form-control" onchange="location = this.value;">
-              
-              
-              
-              {% for limits in limits %}
-              {% if limits.value == limit %}
-              
-              
-              
-              <option value="{{ limits.href }}" selected="selected">{{ limits.text }}</option>
-              
-              
-              
-              {% else %}
-              
-              
-              
-              <option value="{{ limits.href }}">{{ limits.text }}</option>
-              
-              
-              
-              {% endif %}
-              {% endfor %}
-            
-            
-            
-            </select>
-          </div>
+        <div class="ocs-view-switch">
+          <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_list }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-view-list"/></svg></button>
+          <button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_grid }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-grid"/></svg></button>
         </div>
       </div>
       {% if ocs_listing and ocs_listing.reset %}

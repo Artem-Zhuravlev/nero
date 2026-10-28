@@ -960,20 +960,17 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-page > .container > .row > #column-left { order: 0; position: sticky; inset-block-start: calc(var(--head-h) + var(--sp-4)); max-block-size: calc(100dvh - var(--head-h) - var(--sp-6)); overflow-y: auto; overflow-x: clip; scrollbar-width: thin; }
 	}
 
-	/* listing toolbar: view switch, compare, sort, limit on one wrapping line, sticky under the header */
-	#content .row:has(> div > .btn-group > #list-view) {
-		display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-4); margin-inline: 0; padding-block: var(--sp-2);
-		position: sticky; inset-block-start: var(--head-h); z-index: var(--z-sticky);
-		background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-	}
-	#content .row:has(> div > .btn-group > #list-view)::before, #content .row:has(> div > .btn-group > #list-view)::after { display: none; }
-	#content .row:has(> div > .btn-group > #list-view) > [class*="col-"] { inline-size: auto; float: none; padding: 0; }
-	#content .row:has(> div > .btn-group > #list-view) .form-group { margin: 0; }
-	#content .row:has(> div > .btn-group > #list-view) > :nth-child(3) { margin-inline-start: auto; }
-	/* limit dropdown: plain "label  select" pair instead of Bootstrap's grey addon block */
-	#content .row:has(> div > .btn-group > #list-view) .input-group { display: flex; align-items: center; gap: var(--sp-2); inline-size: auto; }
-	#content .row:has(> div > .btn-group > #list-view) .input-group-addon { display: block; inline-size: auto; padding: 0; border: 0; background: transparent; color: var(--text-muted); font-size: var(--fs-sm, 0.875rem); font-weight: 500; white-space: nowrap; }
-	#content .row:has(> div > .btn-group > #list-view) .input-group .form-control { display: block; float: none; inline-size: auto; min-inline-size: 5rem; border-radius: var(--r-pill, 999px); }
+	/* listing toolbar (SPEC-095): sort on the left, view switch on the right, not sticky */
+	#content .ocs-toolbar { display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-inline: 0; padding-block: var(--sp-2); }
+	#content .ocs-toolbar::before, #content .ocs-toolbar::after { display: none; }
+	.ocs-toolbar .form-group { margin: 0; }
+	.ocs-toolbar .input-group { display: flex; align-items: center; gap: var(--sp-2); inline-size: auto; }
+	.ocs-toolbar .input-group-addon { display: flex; align-items: center; inline-size: auto; padding: 0; border: 0; background: transparent; color: var(--text-muted); font-size: var(--fs-sm, 0.875rem); font-weight: 500; line-height: 1; white-space: nowrap; }
+	.ocs-toolbar .input-group .form-control { display: block; float: none; inline-size: auto; min-inline-size: 5rem; margin: 0; border-radius: var(--r-pill, 999px); }
+	.ocs-view-switch { display: flex; gap: var(--sp-2); }
+	.ocs-view-switch .btn { inline-size: 2.5rem; min-inline-size: 0; block-size: 2.5rem; min-block-size: 0; padding: 0; border-radius: 50%; }
+	.ocs-view-switch .btn.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+}
 }
 
 @layer components {
@@ -1133,8 +1130,8 @@ li .ocs-stock { font-size: inherit; }
 @layer layout {
 	@container page (max-width: 40rem) {
 		#ocs-grid, .ocs-viewed-grid, .ocs-cards { --card-min: 9rem; column-gap: var(--sp-2); grid-template-columns: repeat(2, minmax(0, 1fr)); }
-		#content .row:has(> div > .btn-group > #list-view) .input-group-addon { display: none; }
-		#content .row:has(> div > .btn-group > #list-view) > :nth-child(3) { margin-inline-start: 0; }
+		.ocs-toolbar .ocs-view-switch { display: none; }
+		.ocs-toolbar .ocs-tb-sort, .ocs-toolbar .input-group, .ocs-toolbar .input-group .form-control { inline-size: 100%; }
 	}
 	@media (max-width: 40rem) {
 		header.ocs-head { position: static; -webkit-backdrop-filter: none; backdrop-filter: none; }

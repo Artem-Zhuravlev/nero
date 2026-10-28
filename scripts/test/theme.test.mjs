@@ -827,7 +827,7 @@ test('modern layout: home grid, promo tiles and the benefits module', () => {
 
 // TEST-LAY-005 - verifies REQ-LAY-007 (sidebar grid through :has() and a page container; sticky toolbar)
 test('modern layout: category grid with sidebar, :has() and sticky toolbar', () => {
-  for (const rule of ['.ocs-page > .container { container: page / inline-size; }', ':has(> #content)', '@container page (min-width: 56rem)', ':has(> #column-left):has(> #column-right)', 'position: sticky; inset-block-start: var(--head-h); z-index: var(--z-sticky);', ':has(> div > .btn-group > #list-view)']) assert.ok(css.includes(rule), rule);
+  for (const rule of ['.ocs-page > .container { container: page / inline-size; }', ':has(> #content)', '@container page (min-width: 56rem)', ':has(> #column-left):has(> #column-right)', '#content .ocs-toolbar']) assert.ok(css.includes(rule), rule);
 });
 
 // TEST-LAY-006 - verifies REQ-LAY-008 (product grid: sticky gallery | info card, sections full width below, tabs keep the core ids)
@@ -1245,4 +1245,16 @@ test('mobile panel animates opacity/transform only, sub-items unfold via grid ro
   assert.ok(css.includes('grid-template-rows: 0fr') && css.includes('grid-template-rows: 1fr'));
   assert.ok(css.includes('html.ocs-menu-open { scrollbar-gutter: stable; }'));
   assert.ok(/prefers-reduced-motion: reduce\) \{\s*\.ocs-mega \.navbar-collapse\.collapse/.test(css));
+});
+
+// TEST-LTB-001 - verifies REQ-LTB-001..005 (toolbar: sort first, two round view buttons, no limit, not sticky, view switch hidden on phones)
+test('listing toolbar: sort then view switch, no limit select, not sticky', () => {
+  for (const f of ['category', 'manufacturer_info', 'search', 'special']) {
+    const tpl = readFileSync(join(REPO_ROOT, `custom/theme/ocs/template/product/${f}.twig`), "utf8");
+    assert.ok(tpl.includes('ocs-toolbar') && !tpl.includes('input-limit'), f);
+    assert.ok(tpl.indexOf('input-sort') < tpl.indexOf('id="list-view"') && tpl.indexOf('id="list-view"') < tpl.indexOf('id="grid-view"'), f);
+  }
+  const rule = css.split(String.fromCharCode(10)).find((l) => l.includes('#content .ocs-toolbar {'));
+  assert.ok(rule && !rule.includes('sticky'));
+  assert.ok(css.includes('.ocs-toolbar .ocs-view-switch { display: none; }'));
 });
