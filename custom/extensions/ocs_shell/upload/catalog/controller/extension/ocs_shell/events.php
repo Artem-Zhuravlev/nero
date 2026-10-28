@@ -7,6 +7,11 @@ class ControllerExtensionOcsShellEvents extends Controller {
 	 * catalog/view/common/header/before
 	 */
 	public function beforeHeader(&$route, &$data) {
+		// the name of a logged-in customer is printed next to the account icon; independent of the shell module status
+		if (is_array($data) && $this->config->get('config_theme') == 'ocs') {
+			$data['first_name'] = $this->customer->isLogged() ? trim((string)$this->customer->getFirstName()) : '';
+		}
+
 		if (!is_array($data) || !$this->enabled()) {
 			return;
 		}

@@ -132,7 +132,7 @@
     <div class="ocs-head-search">{{ search }}</div>
     <div class="ocs-head-actions" id="top-links">
       <div class="dropdown ocs-act">
-        <a href="{{ account }}" class="ocs-act-btn dropdown-toggle" data-toggle="dropdown" title="{{ text_account }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg></a>
+        <a href="{{ account }}" class="ocs-act-btn dropdown-toggle" data-toggle="dropdown" title="{{ text_account }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg>{% if logged and first_name %}<span class="ocs-act-name">{{ first_name|e }}</span>{% endif %}</a>
         <ul class="dropdown-menu dropdown-menu-right">
           {% if logged %}
           <li><a href="{{ account }}">{{ text_account }}</a></li>
