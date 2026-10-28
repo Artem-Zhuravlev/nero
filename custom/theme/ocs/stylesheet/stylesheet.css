@@ -785,7 +785,7 @@ li .ocs-stock { font-size: inherit; }
 
 @layer components {
 	.ocs-head-grid {
-		display: grid; align-items: center; gap: var(--sp-2) var(--sp-4); padding-block: var(--sp-3);
+		display: grid; align-items: center; gap: var(--sp-2) var(--sp-4); padding-block: var(--sp-2);
 		grid-template-columns: auto auto minmax(0, 1fr) auto;
 		grid-template-areas: "logo cat search actions";
 	}
@@ -797,6 +797,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-head-cat { grid-area: cat; }
 	.ocs-head-cat > .container, .ocs-head-cat .container { inline-size: auto; margin: 0; padding: 0; position: relative; }
 	.ocs-head-cat #menu { margin: 0; }
+	.ocs-head-cat .ocs-mega-open { block-size: 2.75rem; }
 	.ocs-head-search { grid-area: search; min-inline-size: 0; }
 	.ocs-head-search #search { margin: 0; inline-size: 100%; max-inline-size: 46rem; }
 	.ocs-head-search #search .form-control { border-radius: var(--r-pill) 0 0 var(--r-pill); block-size: 2.75rem; }
