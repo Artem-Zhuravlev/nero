@@ -3314,3 +3314,63 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		init();
 	}
 }(window, document));
+
+/* Cookie popup (SPEC-083): the choice lives in cookie ocs_consent = "<all|necessary>.<version>"; window.ocsConsent and the ocs:consent event expose it. */
+(function (window, document) {
+	'use strict';
+
+	var NAME = 'ocs_consent';
+	var box = null;
+	var version = '1';
+
+	function read() {
+		var parts = ('; ' + document.cookie).split('; ' + NAME + '=');
+		var raw = parts.length === 2 ? parts.pop().split(';').shift() : '';
+		var m = /^(all|necessary)\.(\d+)$/.exec(raw);
+		return m ? { choice: m[1], version: m[2] } : null;
+	}
+
+	window.ocsConsent = {
+		get: function () {
+			var c = read();
+			return c && (!box || c.version === version) ? { choice: c.choice, version: parseInt(c.version, 10) } : null;
+		}
+	};
+
+	function init() {
+		box = document.getElementById('ocs-cookie');
+
+		if (!box) {
+			return;
+		}
+
+		version = box.getAttribute('data-version') || '1';
+		box.hidden = window.ocsConsent.get() !== null;
+
+		[].slice.call(document.querySelectorAll('[data-ocs-cookie-reopen]')).forEach(function (a) {
+			a.addEventListener('click', function () {
+				box.hidden = false;
+			});
+		});
+
+		[].slice.call(box.querySelectorAll('[data-ocs-cookie]')).forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				var choice = btn.getAttribute('data-ocs-cookie');
+				var days = parseInt(box.getAttribute('data-days'), 10) || 365;
+
+				try {
+					document.cookie = NAME + '=' + choice + '.' + version + '; path=/; max-age=' + (days * 86400) + '; SameSite=Lax' + (window.location.protocol === 'https:' ? '; Secure' : '');
+				} catch (e) {}
+
+				box.hidden = true;
+				document.dispatchEvent(new CustomEvent('ocs:consent', { detail: { choice: choice, version: parseInt(version, 10) } }));
+			});
+		});
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+}(window, document));

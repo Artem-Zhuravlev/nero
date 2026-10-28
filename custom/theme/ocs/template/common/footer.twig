@@ -51,7 +51,7 @@
       {% endif %}
     </div>
     <div class="ocs-foot-bottom">
-      <p>{{ powered }}</p>
+      <p>{{ powered }}{% if ocs_cookie %} · <button type="button" class="ocs-cookie-reopen" data-ocs-cookie-reopen>{{ ocs_cookie.reopen }}</button>{% endif %}</p>
       {% if ocs_foot and ocs_foot.payments %}
       <ul class="ocs-pay list-unstyled" aria-label="Visa, Mastercard">
         <li><svg viewBox="0 0 48 30" role="img" aria-label="Visa"><rect width="48" height="30" rx="4" fill="#fff" stroke="#d9d9de"/><text x="24" y="21" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="800" font-style="italic" letter-spacing="-0.5" fill="#1a1f71">VISA</text></svg></li>
@@ -69,6 +69,18 @@
   <a href="{{ account }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg><span>{{ ocs_shell.t.ocs_tab_profile }}</span></a>
   <a class="ocs-tab-cart" href="{{ ocs_shell.cart }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg><span>{{ ocs_shell.t.ocs_tab_cart }}</span></a>
 </nav>
+{% endif %}
+{% if ocs_cookie %}
+<div class="ocs-cookie ocs-cookie--{{ ocs_cookie.position }}" id="ocs-cookie" role="dialog" aria-label="{{ ocs_cookie.label }}"{% if ocs_cookie.title %} aria-labelledby="ocs-cookie-title"{% endif %} data-version="{{ ocs_cookie.version }}" data-days="{{ ocs_cookie.days }}" hidden>
+  <div class="ocs-cookie-body">
+    {% if ocs_cookie.title %}<p class="ocs-cookie-title" id="ocs-cookie-title">{{ ocs_cookie.title }}</p>{% endif %}
+    <p class="ocs-cookie-text">{{ ocs_cookie.text }}{% if ocs_cookie.link_href %} <a href="{{ ocs_cookie.link_href }}">{{ ocs_cookie.link_label }}</a>{% endif %}</p>
+  </div>
+  <div class="ocs-cookie-actions">
+    <button type="button" class="btn btn-primary" data-ocs-cookie="all">{{ ocs_cookie.accept }}</button>
+    {% if ocs_cookie.necessary %}<button type="button" class="btn btn-primary" data-ocs-cookie="necessary">{{ ocs_cookie.necessary }}</button>{% endif %}
+  </div>
+</div>
 {% endif %}
 {% for style in styles %}
 <link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />

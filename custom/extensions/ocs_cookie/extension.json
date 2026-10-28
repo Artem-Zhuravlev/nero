@@ -1,0 +1,7 @@
+{ "code": "ocs_cookie", "type": "module", "version": "1.0.0",
+  "title": { "en-gb": "OCS Cookie Popup", "uk-ua": "OCS: попап cookie" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_shell"] },
+  "spec": "SPEC-083", "tables": [],
+  "settings": ["module_ocs_cookie_status", "module_ocs_cookie_position", "module_ocs_cookie_version", "module_ocs_cookie_days", "module_ocs_cookie_l"],
+  "events": ["ocs_cookie_footer_before"],
+  "routes": ["extension/module/ocs_cookie", "extension/ocs_cookie/events"] }

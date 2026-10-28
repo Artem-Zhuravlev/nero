@@ -149,6 +149,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-080 | [Structured Data (schema.org JSON-LD) for All Page Types](structured-data/spec.md) | `implemented` |
 | SPEC-081 | [Latest Reviews Module](latest-reviews/spec.md) | `implemented` |
 | SPEC-082 | [Top Bar Above the Header (text, link, button)](topbar/spec.md) | `implemented` |
+| SPEC-083 | [Cookie Terms Popup](cookie-popup/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

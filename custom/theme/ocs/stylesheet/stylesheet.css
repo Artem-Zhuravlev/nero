@@ -345,6 +345,33 @@ footer hr { border-color: var(--border); }
 	background: transparent; border: 0; color: var(--tb-fg, var(--on-accent)); font-size: var(--fs-xl); line-height: 1; cursor: pointer;
 }
 
+/* Cookie popup (SPEC-083): fixed, hidden until JS finds no valid choice; both buttons look the same (REQ-CKP-004) */
+.ocs-cookie[hidden] { display: none; }
+.ocs-cookie {
+	position: fixed; z-index: var(--z-overlay); inset-inline-start: var(--sp-4); inset-block-end: var(--sp-4);
+	inline-size: min(420px, calc(100vw - 2 * var(--sp-4))); max-block-size: calc(100vh - 2 * var(--sp-4)); overflow-y: auto;
+	display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-4);
+	background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: var(--shadow);
+	font-size: var(--fs-sm);
+}
+.ocs-cookie--bar {
+	inset-inline: 0; inset-block-end: 0; inline-size: auto; max-inline-size: none; border-radius: 0; border-inline: 0; border-block-end: 0;
+	flex-direction: row; align-items: center; justify-content: center; flex-wrap: wrap; padding-inline: max(var(--sp-4), calc((100vw - 1140px) / 2));
+}
+.ocs-cookie p { margin: 0; }
+.ocs-cookie-body { flex: 1 1 320px; min-inline-size: 0; }
+.ocs-cookie-title { font-weight: 600; margin-block-end: var(--sp-1) !important; }
+.ocs-cookie-text { color: var(--text-muted); overflow-wrap: anywhere; }
+.ocs-cookie-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.ocs-cookie-actions .btn { flex: 1 1 auto; }
+.ocs-cookie-reopen { background: transparent; border: 0; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; }
+@media (max-width: 767px) {
+	.ocs-cookie, .ocs-cookie--bar {
+		inset-inline: var(--sp-2); inline-size: auto; inset-block-end: calc(64px + var(--sp-2)); border-radius: var(--r-md); border: 1px solid var(--border);
+		flex-direction: column; align-items: stretch; padding: var(--sp-3); max-block-size: 60vh;
+	}
+}
+
 .ocs-strip { margin: 0 var(--sp-4); display: inline-block; }
 .ocs-strip > li { vertical-align: middle; }
 .ocs-msg {
