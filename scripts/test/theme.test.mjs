@@ -781,8 +781,10 @@ test('modern layout: cascade layers, layered vendor css, fluid scale and shell g
 test('modern layout: header grid with container queries', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
   const header = read('custom/theme/ocs/template/common/header.twig');
-  for (const hook of ['class="ocs-head"', 'ocs-head-grid', 'ocs-head-cat', 'ocs-head-search', 'ocs-head-actions', 'id="top-links"', 'ocs-head-cart', 'id="logo"']) assert.ok(header.includes(hook), hook);
+  for (const hook of ['class="ocs-head"', 'ocs-head-grid', 'ocs-head-cat', 'ocs-head-search', 'ocs-head-actions', 'id="top-links"', 'ocs-head-cart', 'id="logo"', 'ocs-util-logo']) assert.ok(header.includes(hook), hook);
   assert.ok(header.indexOf('<nav id="top"') < header.indexOf('<header class="ocs-head">'), 'utility strip above the main header');
+  assert.ok(header.indexOf('ocs-util-logo') < header.indexOf('ocs-util-end') && header.indexOf('ocs-util-end') < header.indexOf('ocs-contact"') && header.indexOf('ocs-contact"') < header.indexOf('{{ language }}'), 'SPEC-088 logo, then top menu, contacts, language');
+  assert.ok(header.includes('(ocs_shell.phones|first).text'), 'SPEC-088 first phone on the contacts button');
   for (const rule of ['container: head / inline-size', '@container head (max-width: 62rem)', '@container head (max-width: 40rem)', 'grid-template-areas: "logo cat search actions"', 'backdrop-filter']) assert.ok(css.includes(rule), rule);
   assert.match(read('custom/theme/ocs/javascript/theme.js'), /setProperty\('--head-h'/);
 });

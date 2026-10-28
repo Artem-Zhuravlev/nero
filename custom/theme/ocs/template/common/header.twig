@@ -78,19 +78,20 @@
   </div>
 </div>
 {% endif %}
+{% set ocs_logo %}
+{% if logo %}
+  {% if home == og_url %}
+    <img src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" />
+  {% else %}
+    <a href="{{ home }}"><img src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" /></a>
+  {% endif %}
+{% else %}
+  <h1><a href="{{ home }}">{{ name }}</a></h1>
+{% endif %}
+{% endset %}
 <nav id="top" class="ocs-util" aria-label="{{ text_account }}">
   <div class="container">
-    {% if ocs_shell and (ocs_shell.phones or ocs_shell.messengers or ocs_shell.address or ocs_shell.hours) %}
-    <div class="dropdown ocs-contact">
-      <button type="button" class="ocs-util-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">{{ ocs_shell.t.ocs_contacts }} <svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
-      <ul class="dropdown-menu ocs-contact-menu">
-        {% for phone in ocs_shell.phones %}<li><a href="{{ phone.href }}" class="ocs-crow"><span class="ocs-cicon"><svg class="ocs-i" aria-hidden="true"><use href="#i-phone"/></svg></span><span class="ocs-crow-text">{{ phone.text }}{% if phone.label %}<small>{{ phone.label }}</small>{% endif %}</span></a></li>{% endfor %}
-        {% for link in ocs_shell.messengers|merge(ocs_shell.contact_social) %}<li><a href="{{ link.href }}" class="ocs-crow" target="_blank" rel="noopener noreferrer"><span class="ocs-bchip ocs-bchip-{{ link.key }}"><svg class="ocs-i" aria-hidden="true"><use href="#{{ link.icon }}"/></svg></span><span class="ocs-crow-text">{{ link.title }}</span></a></li>{% endfor %}
-        {% if ocs_shell.hours %}<li class="ocs-crow ocs-crow-info"><span class="ocs-cicon"><svg class="ocs-i" aria-hidden="true"><use href="#i-clock"/></svg></span><span class="ocs-crow-text">{{ ocs_shell.hours }}</span></li>{% endif %}
-        {% if ocs_shell.address %}<li class="ocs-crow ocs-crow-info"><span class="ocs-cicon"><svg class="ocs-i" aria-hidden="true"><use href="#i-pin"/></svg></span><address class="ocs-crow-text">{{ ocs_shell.address }}</address></li>{% endif %}
-      </ul>
-    </div>
-    {% endif %}
+    <div id="logo" class="ocs-util-logo">{{ ocs_logo }}</div>
     {% if ocs_shell %}
     <ul class="list-inline ocs-strip">
       {% for link in ocs_shell.links %}
@@ -113,22 +114,23 @@
         {% endif %}
       </div>
       {% endif %}
+      {% if ocs_shell and (ocs_shell.phones or ocs_shell.messengers or ocs_shell.address or ocs_shell.hours) %}
+      <div class="dropdown ocs-contact">
+        <button type="button" class="ocs-util-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-label="{{ ocs_shell.t.ocs_contacts }}">{% if ocs_shell.phones %}{{ (ocs_shell.phones|first).text }}{% else %}{{ ocs_shell.t.ocs_contacts }}{% endif %} <svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+        <ul class="dropdown-menu ocs-contact-menu dropdown-menu-right">
+          {% for phone in ocs_shell.phones %}<li><a href="{{ phone.href }}" class="ocs-crow"><span class="ocs-cicon"><svg class="ocs-i" aria-hidden="true"><use href="#i-phone"/></svg></span><span class="ocs-crow-text">{{ phone.text }}{% if phone.label %}<small>{{ phone.label }}</small>{% endif %}</span></a></li>{% endfor %}
+          {% for link in ocs_shell.messengers|merge(ocs_shell.contact_social) %}<li><a href="{{ link.href }}" class="ocs-crow" target="_blank" rel="noopener noreferrer"><span class="ocs-bchip ocs-bchip-{{ link.key }}"><svg class="ocs-i" aria-hidden="true"><use href="#{{ link.icon }}"/></svg></span><span class="ocs-crow-text">{{ link.title }}</span></a></li>{% endfor %}
+          {% if ocs_shell.hours %}<li class="ocs-crow ocs-crow-info"><span class="ocs-cicon"><svg class="ocs-i" aria-hidden="true"><use href="#i-clock"/></svg></span><span class="ocs-crow-text">{{ ocs_shell.hours }}</span></li>{% endif %}
+          {% if ocs_shell.address %}<li class="ocs-crow ocs-crow-info"><span class="ocs-cicon"><svg class="ocs-i" aria-hidden="true"><use href="#i-pin"/></svg></span><address class="ocs-crow-text">{{ ocs_shell.address }}</address></li>{% endif %}
+        </ul>
+      </div>
+      {% endif %}
       {% if not (ocs_top and ocs_top.blog) %}{{ blog_menu }}{% endif %}{{ language }}{{ currency }}</div>
   </div>
 </nav>
 <header class="ocs-head">
   <div class="container ocs-head-grid">
-    <div id="logo" class="ocs-head-logo">
-      {% if logo %}
-        {% if home == og_url %}
-          <img src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" />
-        {% else %}
-          <a href="{{ home }}"><img src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" /></a>
-        {% endif %}
-      {% else %}
-        <h1><a href="{{ home }}">{{ name }}</a></h1>
-      {% endif %}
-    </div>
+    <div class="ocs-head-logo">{{ ocs_logo }}</div>
     <div class="ocs-head-cat">{{ menu }}</div>
     <div class="ocs-head-search">{{ search }}</div>
     <div class="ocs-head-actions" id="top-links">

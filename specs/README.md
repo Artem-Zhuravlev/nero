@@ -154,6 +154,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-085 | [Nova Poshta Delivery: Local Directories, City and Branch Suggest in Checkout](novaposhta-delivery/spec.md) | `implemented` |
 | SPEC-086 | [Таймер акции в карточке товара](special-countdown/spec.md) | `implemented` |
 | SPEC-087 | [Remove Instalments and Trade-in](remove-credit-tradein/spec.md) | `implemented` |
+| SPEC-088 | [Логотип в верхней панели, контакты рядом с языком](header-logo-topbar/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

@@ -2368,3 +2368,29 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-author-social { justify-content: center; }
 	.ocs-article-head h1 { font-size: var(--fs-xl); }
 }
+
+/* ==== SPEC-088: logo lives in the top bar; contacts (first phone) sit next to the language switch ==== */
+@layer overrides {
+	#top.ocs-util .ocs-util-logo { flex: 0 0 auto; margin: 0; }
+	#top.ocs-util .ocs-util-logo img { block-size: 2.5rem; inline-size: auto; max-inline-size: 11rem; object-fit: contain; }
+	#top.ocs-util .ocs-util-logo h1 { margin: 0; font-size: var(--fs-lg); }
+	#top.ocs-util .ocs-util-logo a { color: var(--text); }
+	#top.ocs-util > .container { min-block-size: 3.25rem; }
+	#top.ocs-util .ocs-util-end .ocs-contact { margin-inline-start: var(--sp-6); }
+	#top.ocs-util .ocs-util-end .ocs-contact > .ocs-util-btn { color: var(--text); font-weight: 600; white-space: nowrap; }
+	.ocs-head-logo { display: none; }
+	.ocs-head-grid { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "cat search actions"; }
+	@container head (max-width: 62rem) {
+		.ocs-head-grid { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "cat search actions"; }
+	}
+	@media (max-width: 767px) {
+		#top.ocs-util .ocs-util-logo { display: none; }
+		.ocs-head-logo { display: block; }
+	}
+	@container head (max-width: 40rem) {
+		.ocs-head-grid { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "logo actions" "search search" "cat cat"; }
+	}
+	@media (max-width: 767px) {
+		.ocs-head-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "logo" "search" "cat"; }
+	}
+}
