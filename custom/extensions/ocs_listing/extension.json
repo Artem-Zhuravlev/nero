@@ -3,5 +3,5 @@
   "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
   "spec": "SPEC-034", "tables": [],
   "settings": ["library_ocs_listing_status"],
-  "events": ["ocs_listing_category_before", "ocs_listing_search_before", "ocs_listing_manufacturer_before", "ocs_listing_special_before", "ocs_listing_module_featured", "ocs_listing_module_special", "ocs_listing_module_latest", "ocs_listing_module_bestseller", "ocs_listing_module_featured_product", "ocs_listing_header_page"],
+  "events": ["ocs_listing_category_before", "ocs_listing_search_before", "ocs_listing_manufacturer_before", "ocs_listing_special_before", "ocs_listing_module_featured", "ocs_listing_module_special", "ocs_listing_module_latest", "ocs_listing_module_bestseller", "ocs_listing_module_featured_product", "ocs_listing_header_page", "ocs_listing_related_product", "ocs_listing_related_article"],
   "routes": ["extension/ocs_listing/events"] }

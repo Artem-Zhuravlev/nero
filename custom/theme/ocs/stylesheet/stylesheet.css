@@ -245,9 +245,6 @@ footer hr { border-color: var(--border); }
 .product-thumb .price { color: var(--text); font-weight: 600; }
 .product-thumb .price-old { color: var(--text-muted); font-weight: 400; text-decoration: line-through; }
 .product-thumb .price-tax { color: var(--text-muted); }
-.product-thumb .button-group { background: transparent; border: 0; display: flex; gap: var(--sp-2); padding: 0 var(--sp-5) var(--sp-4); }
-.product-thumb .button-group button { flex: 1; background: transparent; border: 0; color: var(--link); }
-.product-thumb .button-group button:hover { background: transparent; color: var(--accent-hover); }
 
 .ocs-slot { position: absolute; z-index: var(--z-base); display: flex; flex-direction: column; gap: var(--sp-1); }
 .ocs-slot-tl { top: var(--sp-3); left: var(--sp-3); }
@@ -884,20 +881,9 @@ li .ocs-stock { font-size: inherit; }
 	.product-thumb .price-old { font-size: var(--fs-sm); }
 	.product-thumb .price-tax { flex-basis: 100%; font-size: var(--fs-xs); font-weight: 400; }
 	.product-thumb .rating { margin: 0; }
-	.product-thumb .button-group { margin-block-start: auto; display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3) var(--sp-4) var(--sp-4); background: transparent; border: 0; }
-	.product-thumb .button-group button {
-		flex: 0 0 2.5rem; block-size: 2.5rem; display: grid; place-items: center; padding: 0; border: 1px solid var(--border); border-radius: var(--r-pill);
-		background: var(--bg); color: var(--text);
-	}
-	.product-thumb .button-group button:hover { background: var(--bg-alt); color: var(--text); }
-	.product-thumb .button-group button:first-child { flex: 1 1 auto; background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; gap: var(--sp-2); grid-auto-flow: column; }
-	.product-thumb .button-group button:first-child:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
 
 	/* the card adapts to its own width, not to the viewport (REQ-LAY-005) */
 	@container card (max-width: 12.5rem) {
-		.product-thumb .button-group { display: grid; grid-template-columns: 1fr 1fr; }
-		.product-thumb .button-group button { flex: none; inline-size: 100%; border-radius: var(--r-pill); }
-		.product-thumb .button-group button:first-child { grid-column: 1 / -1; min-block-size: var(--btn-h); }
 		.product-thumb > .image { padding: var(--sp-3); }
 	}
 	@container card (min-width: 36rem) {
@@ -905,7 +891,6 @@ li .ocs-stock { font-size: inherit; }
 		.product-thumb > .image { flex: 0 0 14rem; block-size: auto; align-self: start; }
 		.product-thumb > div:last-child { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; grid-template-areas: "caption buy" "caption quick"; align-content: start; align-items: start; }
 		.product-thumb .caption { grid-area: caption; padding: var(--sp-4); }
-		.product-thumb .button-group { grid-area: buy; margin: 0; padding: var(--sp-4) var(--sp-4) var(--sp-2); }
 	}
 }
 
@@ -1143,9 +1128,6 @@ li .ocs-stock { font-size: inherit; }
 	#ocs-grid > .product-layout, .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout, #ocs-grid > .product-layout > .product-thumb, .ocs-viewed-grid > .product-layout > .product-thumb, .ocs-cards > .product-layout > .product-thumb { grid-template-columns: minmax(0, 1fr); }
 }
 @layer components {
-	@container card (max-width: 12.5rem) {
-		.product-thumb .button-group { gap: var(--sp-1); padding-inline: var(--sp-3); }
-	}
 }
 
 /* ==== 35. SPEC-039/067 typography: Gilroy (self-hosted), type scale (REQ-VIS-001) ================== */
