@@ -91,6 +91,11 @@ class Contacts {
 
 			$url = isset($row['url']) ? htmlspecialchars_decode(trim((string)$row['url']), ENT_QUOTES) : '';
 
+			// "t.me/shop" and "www.site.com" without a scheme are taken as https
+			if ($url !== '' && $url[0] !== '/' && !preg_match('#^[a-z][a-z0-9+.-]*:#i', $url) && preg_match('#^[^\s/@]+\.[^\s/@]+#', $url)) {
+				$url = 'https://' . $url;
+			}
+
 			if (self::url($url) === '') {
 				continue;
 			}

@@ -51,6 +51,7 @@ $_['entry_address'] = 'Address';
 $_['entry_hours'] = 'Working hours';
 $_['entry_phones'] = 'Phones';
 $_['help_phones'] = 'One per line: number or "number | label". Numbers become tel: links.';
+$_['error_contact_link'] = 'A messenger / social link was not saved: enter a valid URL (https://..., tg://, viber://, mailto:, tel:).';
 $_['text_contact_links'] = 'Messengers and social networks';
 $_['help_contact_links'] = 'Shown in the footer (and messengers in the header). Choose an icon, a type and enter a URL (https://, tg://, viber://, mailto:, tel:).';
 $_['column_icon'] = 'Icon';

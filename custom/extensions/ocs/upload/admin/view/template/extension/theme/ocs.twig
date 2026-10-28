@@ -134,13 +134,13 @@
               <table class="table table-bordered" id="contact-links">
                 <thead><tr><td>{{ column_icon }}</td><td>{{ column_kind }}</td><td>{{ column_title }}</td><td>{{ column_url }}</td><td>{{ column_sort }}</td><td></td></tr></thead>
                 <tbody>
-                {% for row in contact_links %}
+                {% for row in contact_links %}{% set ri = loop.index0 %}
                 <tr>
-                  <td><select name="theme_ocs_contact_links[{{ loop.index0 }}][icon]" class="form-control ocs-ic-select" data-ocs-icon>{% for icon in contact_icons %}<option value="{{ icon }}"{% if row.icon == icon %} selected="selected"{% endif %}>{{ icon|capitalize }}</option>{% endfor %}</select> <svg class="ocs-ic-prev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-site"/></svg></td>
-                  <td><select name="theme_ocs_contact_links[{{ loop.index0 }}][kind]" class="form-control"><option value="messenger"{% if row.kind == 'messenger' %} selected="selected"{% endif %}>{{ text_kind_messenger }}</option><option value="social"{% if row.kind != 'messenger' %} selected="selected"{% endif %}>{{ text_kind_social }}</option></select></td>
-                  <td>{% for language in languages %}<input type="text" name="theme_ocs_contact_links[{{ loop.index0 }}][title][{{ language.code }}]" value="{{ row.title[language.code] }}" maxlength="60" placeholder="{{ language.name }}" class="form-control" />{% endfor %}</td>
-                  <td><input type="text" name="theme_ocs_contact_links[{{ loop.index0 }}][url]" value="{{ row.url }}" maxlength="500" placeholder="https://t.me/shop" class="form-control" /></td>
-                  <td><input type="text" name="theme_ocs_contact_links[{{ loop.index0 }}][sort]" value="{{ row.sort }}" class="form-control" style="min-width: 70px" /></td>
+                  <td><select name="theme_ocs_contact_links[{{ ri }}][icon]" class="form-control ocs-ic-select" data-ocs-icon>{% for icon in contact_icons %}<option value="{{ icon }}"{% if row.icon == icon %} selected="selected"{% endif %}>{{ icon|capitalize }}</option>{% endfor %}</select> <svg class="ocs-ic-prev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-site"/></svg></td>
+                  <td><select name="theme_ocs_contact_links[{{ ri }}][kind]" class="form-control"><option value="messenger"{% if row.kind == 'messenger' %} selected="selected"{% endif %}>{{ text_kind_messenger }}</option><option value="social"{% if row.kind != 'messenger' %} selected="selected"{% endif %}>{{ text_kind_social }}</option></select></td>
+                  <td>{% for language in languages %}<input type="text" name="theme_ocs_contact_links[{{ ri }}][title][{{ language.code }}]" value="{{ row.title[language.code] }}" maxlength="60" placeholder="{{ language.name }}" class="form-control" />{% endfor %}</td>
+                  <td><input type="text" name="theme_ocs_contact_links[{{ ri }}][url]" value="{{ row.url }}" maxlength="500" placeholder="https://t.me/shop" class="form-control" /></td>
+                  <td><input type="text" name="theme_ocs_contact_links[{{ ri }}][sort]" value="{{ row.sort }}" class="form-control" style="min-width: 70px" /></td>
                   <td class="text-right"><button type="button" class="btn btn-danger" data-ocs-remove title="{{ button_remove }}"><i class="fa fa-minus-circle"></i></button></td>
                 </tr>
                 {% endfor %}
