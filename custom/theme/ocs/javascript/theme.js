@@ -1927,7 +1927,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 					window.location = json.redirect;
 				}
 
-				if (json.success) {
+				if (json.success && !json.error) {
 					window.setTimeout(function () {
 						$('#cart > button').html('<span id="cart-total">' + OCS.icon('cart') + ' ' + json.total + '</span>');
 					}, 100);

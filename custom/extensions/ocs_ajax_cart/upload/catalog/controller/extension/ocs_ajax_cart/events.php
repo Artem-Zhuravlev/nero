@@ -56,10 +56,31 @@ class ControllerExtensionOcsAjaxCartEvents extends Controller {
 			return;
 		}
 
+		$ids = array();
+
 		foreach ($data['products'] as $i => $product) {
 			// quantity comes from the ocs_listing events (same trigger, lower sort order)
 			if (isset($product['quantity'])) {
 				$data['products'][$i]['ocs_stock'] = $this->label((int)$product['quantity']);
+			}
+
+			if (!empty($product['product_id'])) {
+				$ids[] = (int)$product['product_id'];
+			}
+		}
+
+		// a product with options cannot be bought from a card: the card button leads to the product page
+		if ($ids) {
+			$with = array();
+
+			foreach ($this->db->query("SELECT DISTINCT product_id FROM `" . DB_PREFIX . "product_option` WHERE product_id IN (" . implode(',', $ids) . ")")->rows as $row) {
+				$with[(int)$row['product_id']] = true;
+			}
+
+			foreach ($data['products'] as $i => $product) {
+				if (!empty($product['product_id']) && isset($with[(int)$product['product_id']])) {
+					$data['products'][$i]['ocs_options'] = true;
+				}
 			}
 		}
 	}

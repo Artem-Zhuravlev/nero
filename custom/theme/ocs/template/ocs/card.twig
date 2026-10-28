@@ -35,6 +35,8 @@
           {% endif %}
           {% if ocs_out %}
           <button type="button" class="ocs-cart-btn ocs-notify-btn ocs-req-btn" data-product-id="{{ product.product_id }}" aria-label="Notify" title="Notify"><svg class="ocs-i" aria-hidden="true"><use href="#i-bell"/></svg></button>
+          {% elseif product.ocs_options %}
+          <a class="ocs-cart-btn" href="{{ product.href }}" title="{{ button_cart }}" aria-label="{{ button_cart }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg></a>
           {% else %}
           <button type="button" class="ocs-cart-btn" title="{{ button_cart }}" aria-label="{{ button_cart }}" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg></button>
           {% endif %}
