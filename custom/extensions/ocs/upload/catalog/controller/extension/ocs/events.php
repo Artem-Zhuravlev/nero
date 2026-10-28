@@ -72,6 +72,22 @@ class ControllerExtensionOcsEvents extends Controller {
 		// config_language is the visitor's language at run time; the store default is read from the settings table (fallback for untranslated contacts)
 		$default = (string)$this->model_setting_setting->getSettingValue('config_language', (int)$this->config->get('config_store_id'));
 
+			// quantity stepper limits: step = product minimum, max = stock when the cart refuses more (SPEC-101 REQ-QTY-002, REQ-QTY-004)
+			$step = max(1, isset($data['minimum']) ? (int)$data['minimum'] : 1);
+			$max = 0;
+
+			if (!empty($this->request->get['product_id'])) {
+				$this->load->model('catalog/product');
+
+				$stock_info = $this->model_catalog_product->getProduct((int)$this->request->get['product_id']);
+
+				if ($stock_info && !empty($stock_info['subtract']) && !$this->config->get('config_stock_checkout')) {
+					$max = (int)floor(max(0, (int)$stock_info['quantity']) / $step) * $step;
+				}
+			}
+
+			$data['ocs_qty'] = array('min' => $step, 'max' => $max);
+
 			// countdown to the end of the special applied now (SPEC-086 REQ-TMR-001); the core ends a special at 00:00 of date_end
 			$data['ocs_special_timer'] = null;
 

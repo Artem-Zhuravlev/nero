@@ -3397,3 +3397,47 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		timer = setInterval(tick, 1000);
 	});
 }(window, document));
+
+/* SPEC-101: quantity stepper on the product page */
+(function (w, d) {
+	'use strict';
+
+	/** Nearest allowed quantity: a multiple of min, at least min, at most max (0 = no limit). */
+	function clamp(value, min, max) {
+		var n = parseInt(value, 10);
+
+		if (isNaN(n) || n < min) {
+			return min;
+		}
+
+		n = Math.floor(n / min) * min;
+
+		return max > 0 && n > max ? Math.max(min, max) : n;
+	}
+
+	d.querySelectorAll('[data-ocs-qty]').forEach(function (box) {
+		var input = box.querySelector('input'),
+			dec = box.querySelector('[data-ocs-qty-dec]'),
+			inc = box.querySelector('[data-ocs-qty-inc]'),
+			min = Math.max(1, parseInt(box.getAttribute('data-min'), 10) || 1),
+			max = parseInt(box.getAttribute('data-max'), 10) || 0;
+
+		function set(v) {
+			var n = clamp(v, min, max);
+
+			if (String(n) !== input.value) {
+				input.value = n;
+				input.dispatchEvent(new Event('change', {bubbles: true}));
+			}
+
+			dec.disabled = n <= min;
+			inc.disabled = max > 0 && n + min > max;
+		}
+
+		dec.addEventListener('click', function () { set((parseInt(input.value, 10) || min) - min); });
+		inc.addEventListener('click', function () { set((parseInt(input.value, 10) || 0) + min); });
+		input.addEventListener('change', function () { set(input.value); });
+		input.addEventListener('blur', function () { set(input.value); });
+		set(input.value);
+	});
+}(window, document));

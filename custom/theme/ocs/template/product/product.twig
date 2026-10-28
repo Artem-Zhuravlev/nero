@@ -129,7 +129,11 @@
             {% endif %}
             <div class="form-group">
               <label class="control-label" for="input-quantity">{{ entry_qty }}</label>
-              <input type="text" name="quantity" value="{{ minimum }}" size="2" id="input-quantity" class="form-control" />
+              <div class="ocs-qty" data-ocs-qty="1" data-min="{{ ocs_qty.min ? ocs_qty.min : 1 }}" data-max="{{ ocs_qty.max ? ocs_qty.max : 0 }}">
+                <button type="button" class="ocs-qty-btn ocs-js-only" data-ocs-qty-dec aria-label="{{ ocs_px.qty_dec ? ocs_px.qty_dec : '−' }}">−</button>
+                <input type="text" name="quantity" value="{{ minimum }}" size="2" id="input-quantity" class="form-control" inputmode="numeric" autocomplete="off" />
+                <button type="button" class="ocs-qty-btn ocs-js-only" data-ocs-qty-inc aria-label="{{ ocs_px.qty_inc ? ocs_px.qty_inc : '+' }}">+</button>
+              </div>
               <input type="hidden" name="product_id" value="{{ product_id }}" />
               <br />
               <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-primary btn-lg btn-block">{{ button_cart }}</button>
