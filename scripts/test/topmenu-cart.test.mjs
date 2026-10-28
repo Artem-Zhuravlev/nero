@@ -23,6 +23,7 @@ test('top menu: settings form, header markup and styles', () => {
   assert.ok(read('custom/extensions/ocs/upload/admin/controller/extension/theme/ocs.php').includes('Ocs\\TopMenu::sanitize('));
   const h = read('custom/theme/ocs/template/common/header.twig');
   for (const hook of ['class="ocs-top"', 'ocs-top-sale', '#i-percent', 'dropdown-menu-right', 'aria-current="page"', 'not (ocs_top and ocs_top.blog)']) assert.ok(h.includes(hook), hook);
+  assert.ok(h.indexOf('ocs_top.contacts') < h.indexOf('ocs-top-sale') && h.indexOf('ocs-top-sale') < h.indexOf('ocs_top.blog %}<a') && h.indexOf('ocs_top.blog %}<a') < h.indexOf('ocs-top-drop'), 'TEST-TOP-031 contacts, sale, blog, then the dropdown');
   const c = css();
   assert.ok(c.includes('--sale: #d70015;') && c.includes('.ocs-top-sale') && c.includes('position: fixed; inset-inline'), 'sale token and the phone sheet');
   const keys = (l, f, side) => [...read(`custom/extensions/ocs/upload/${side}/language/${l}/extension/${f}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();

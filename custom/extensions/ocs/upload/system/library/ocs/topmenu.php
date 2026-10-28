@@ -85,15 +85,10 @@ class TopMenu {
 		}
 
 		$contacts = $item('contacts');
-
-		if ($contacts) {
-			$pages[] = $contacts;
-		}
-
 		$blog = $item('blog');
 		$sale = $item('sale');
 
-		if (!$pages && !$blog && !$sale) {
+		if (!$pages && !$contacts && !$blog && !$sale) {
 			return null;
 		}
 
@@ -107,6 +102,6 @@ class TopMenu {
 			}
 		}
 
-		return array('title' => Contacts::e($title !== '' ? $title : $fallback), 'pages' => $pages, 'blog' => $blog, 'sale' => $sale);
+		return array('title' => Contacts::e($title !== '' ? $title : $fallback), 'pages' => $pages, 'contacts' => $contacts, 'blog' => $blog, 'sale' => $sale);
 	}
 }

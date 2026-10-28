@@ -39,10 +39,10 @@ final class TopMenuTest extends TestCase
         $this->assertSame('Info', $v['title'], 'empty language title falls back to the default language');
         $this->assertSame(null, $v['blog'], 'no blog link available');
         $this->assertSame('Акції', $v['sale']['title']);
-        $this->assertSame(3, count($v['pages']), 'two pages and Contacts; the unknown page 7 is skipped');
+        $this->assertSame(2, count($v['pages']), 'two pages; the unknown page 7 is skipped, Contacts is not in the dropdown');
         $this->assertSame('Доставка &lt;i&gt;', $v['pages'][0]['title']);
         $this->assertTrue($v['pages'][1]['active'] && !$v['pages'][0]['active']);
-        $this->assertSame('Контакти', $v['pages'][2]['title']);
+        $this->assertSame('Контакти', $v['contacts']['title'], 'TEST-TOP-030 contacts is its own top item');
         $off = $cfg;
         $off['enabled'] = 0;
         $this->assertSame(null, \Ocs\TopMenu::view($off, 'uk-ua', 'en-gb', 'x', $titles, $links, ''));

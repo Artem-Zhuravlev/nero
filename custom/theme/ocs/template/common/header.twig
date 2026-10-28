@@ -102,8 +102,9 @@
     <div class="ocs-util-end">
       {% if ocs_top %}
       <div class="ocs-top">
-        {% if ocs_top.blog %}<a class="ocs-top-link{% if ocs_top.blog.active %} is-active{% endif %}" href="{{ ocs_top.blog.href }}"{% if ocs_top.blog.active %} aria-current="page"{% endif %}>{{ ocs_top.blog.title }}</a>{% endif %}
+        {% if ocs_top.contacts %}<a class="ocs-top-link{% if ocs_top.contacts.active %} is-active{% endif %}" href="{{ ocs_top.contacts.href }}"{% if ocs_top.contacts.active %} aria-current="page"{% endif %}>{{ ocs_top.contacts.title }}</a>{% endif %}
         {% if ocs_top.sale %}<a class="ocs-top-link ocs-top-sale{% if ocs_top.sale.active %} is-active{% endif %}" href="{{ ocs_top.sale.href }}"{% if ocs_top.sale.active %} aria-current="page"{% endif %}><svg class="ocs-i" aria-hidden="true"><use href="#i-percent"/></svg>{{ ocs_top.sale.title }}</a>{% endif %}
+        {% if ocs_top.blog %}<a class="ocs-top-link{% if ocs_top.blog.active %} is-active{% endif %}" href="{{ ocs_top.blog.href }}"{% if ocs_top.blog.active %} aria-current="page"{% endif %}>{{ ocs_top.blog.title }}</a>{% endif %}
         {% if ocs_top.pages %}
         <div class="dropdown ocs-top-drop">
           <button type="button" class="ocs-util-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">{{ ocs_top.title }} <svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
