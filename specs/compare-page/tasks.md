@@ -11,3 +11,4 @@
 | TASK-CMP-007 | Balance-scale icon in sprite | REQ-CMP-008 | TEST-CMP-005 | done |
 | TASK-CMP-008 | Language strings uk-ua / ru-ru / en-gb | REQ-CMP-012 | TEST-BKM-001 | done |
 | TASK-CMP-009 | README row, `npm run verify`, `npm run pack:theme` | all | npm run verify | done |
+| TASK-CMP-010 | Cap the compare table wrapper width by column count | REQ-CMP-014 | TEST-CMP-006 | done |

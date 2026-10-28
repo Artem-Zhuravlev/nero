@@ -1181,6 +1181,8 @@ test('compare page: category tabs, differences switch, sticky table, scale icon'
   const style = read44('custom/theme/ocs/stylesheet/stylesheet.css');
   assert.ok(/\.ocs-cmp-table > thead th \{ position: sticky/.test(style) && /\.ocs-cmp-scroll \{[^}]*overflow: auto/.test(style));
   assert.ok(/is-diff \.ocs-cmp-row\[data-same="1"\]/.test(style));
+  // TEST-CMP-006 - verifies REQ-CMP-014 (wrapper width is capped by the column count)
+  assert.ok(/\.ocs-cmp-scroll \{[^}]*max-inline-size: min\(100%, calc\(9rem \+ var\(--cols/.test(style) && tpl.includes('class="ocs-cmp-scroll" style="--cols'));
   const js = read44('custom/theme/ocs/javascript/theme.js');
   assert.ok(js.includes("'ocs_cmp_diff'") && js.includes('cmp: 12'));
   const sprite = read44('custom/theme/ocs/template/ocs/sprite.twig');

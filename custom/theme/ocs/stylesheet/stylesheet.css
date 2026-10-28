@@ -2065,7 +2065,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-cmp-switch { display: inline-flex; align-items: center; gap: var(--sp-2); margin-block-end: var(--sp-3); font-weight: 600; cursor: pointer; }
 	.ocs-cmp-switch[hidden], .ocs-cmp-same[hidden] { display: none; }
 	.ocs-cmp-hint, .ocs-cmp-same { padding: var(--sp-3) var(--sp-4); border-radius: var(--r-md); background: var(--bg-alt); color: var(--text-muted); }
-	.ocs-cmp-scroll { max-inline-size: 100%; max-block-size: 80dvh; overflow: auto; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); }
+	.ocs-cmp-scroll { max-inline-size: min(100%, calc(9rem + var(--cols, 2) * 22rem)); max-block-size: 80dvh; overflow: auto; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg); }
 	.ocs-cmp-table { inline-size: 100%; min-inline-size: calc(9rem + var(--cols, 2) * 11.25rem); border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 	.ocs-cmp-table th, .ocs-cmp-table td { padding: var(--sp-3) var(--sp-4); border-block-end: 1px solid color-mix(in srgb, var(--border) 60%, transparent); vertical-align: top; text-align: start; background: var(--bg); }
 	.ocs-cmp-table > thead th { position: sticky; inset-block-start: 0; z-index: var(--z-raised); vertical-align: top; }

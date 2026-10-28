@@ -30,8 +30,8 @@
       {% if ocs_cmp.single %}
       <p class="ocs-cmp-hint">{{ ocs_cmp.t.more }} <a href="{{ ocs_cmp.category }}">{{ ocs_cmp.t.category }}</a></p>
       {% endif %}
-      <div class="ocs-cmp-scroll">
-        <table class="ocs-cmp-table" id="ocs-cmp-table" style="--cols: {{ cols }}">
+      <div class="ocs-cmp-scroll" style="--cols: {{ cols }}">
+        <table class="ocs-cmp-table" id="ocs-cmp-table">
           <thead>
             <tr>
               <th class="ocs-cmp-corner" scope="col"><span class="ocs-sr">{{ text_product }}</span></th>

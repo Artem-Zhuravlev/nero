@@ -54,6 +54,7 @@ readable (sticky product header and attribute column, remove per product, buy fr
   of this category" with a link to the category listing; an empty list shows the existing empty state.
 - **REQ-CMP-008** — The compare icon is a balance scale (`i-compare` in `ocs/sprite.twig`, SVG, `currentColor`, 24×24 viewBox,
   same stroke style as the other sprite icons); `fa-exchange` in `Ocs\Icons` keeps mapping to it, so no template needs editing.
+- **REQ-CMP-014** — The table wrapper is capped at `9rem + columns × 22rem`, so a single compared product is not stretched across the whole content block.
 
 ## Non-functional requirements
 
