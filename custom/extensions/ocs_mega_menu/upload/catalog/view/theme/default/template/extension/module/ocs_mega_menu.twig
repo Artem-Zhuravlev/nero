@@ -1,11 +1,11 @@
-{# Extension: ocs_mega_menu. Mega menu markup (SPEC-027). Keeps core hooks: #menu, #category, .navbar-toggle with data-toggle="collapse". #}
+{# Extension: ocs_mega_menu. Mega menu markup (SPEC-027). Keeps core hooks: #menu, #category, .navbar-toggle ; the mobile panel is opened by theme.js (data-ocs-menu), not by Bootstrap collapse (SPEC-090). #}
 <nav id="menu" class="navbar ocs-mega" data-behaviour="{{ behaviour }}" aria-label="{{ text_catalog }}">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-controls="ocs-mega-panel" aria-expanded="false"><span id="category">{{ text_catalog }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <button type="button" class="btn btn-navbar navbar-toggle" data-ocs-menu="toggle" aria-controls="ocs-mega-drawer" aria-expanded="false"><span id="category">{{ text_catalog }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg></button>
     </div>
-    <div class="collapse navbar-collapse navbar-ex1-collapse">
-      <button type="button" class="ocs-mega-close visible-xs" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-label="{{ text_catalog }}">&times;</button>
+    <div class="collapse navbar-collapse navbar-ex1-collapse" id="ocs-mega-drawer">
+      <button type="button" class="ocs-mega-close visible-xs" data-ocs-menu="close" aria-label="{{ text_catalog }}">&times;</button>
       <button type="button" class="ocs-mega-open hidden-xs" aria-expanded="false" aria-controls="ocs-mega-panel"><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg> {{ text_catalog }}</button>
       <ul class="ocs-mega-l1 list-unstyled" id="ocs-mega-panel">
         {% for c in categories %}
@@ -14,6 +14,7 @@
           {% if c.children %}
           <button type="button" class="ocs-mega-expand" aria-expanded="false" aria-label="{{ c.name }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
           <div class="ocs-mega-fly" style="--ocs-cols: {{ columns }}">
+            <div class="ocs-mega-fly-in">
             <div class="ocs-mega-body">
             <div class="ocs-mega-cols">
               {% for g in c.children %}
@@ -38,6 +39,7 @@
             <a href="{{ c.href }}" class="see-all">{{ text_all }} {{ c.name }}</a>
             </div>
             {% if c.banner %}<a class="ocs-mega-promo" href="{{ c.banner.url }}"><img src="{{ c.banner.src }}" alt="" width="240" height="360" loading="lazy" /></a>{% endif %}
+            </div>
           </div>
           {% endif %}
         </li>

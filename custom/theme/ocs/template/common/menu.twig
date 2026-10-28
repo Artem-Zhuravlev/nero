@@ -6,9 +6,9 @@
 <div class="container">
   <nav id="menu" class="navbar">
     <div class="navbar-header">
-      <button type="button" class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-expanded="false"><span id="category">{{ text_category }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <button type="button" class="btn btn-navbar navbar-toggle" data-ocs-menu="toggle" aria-controls="ocs-mega-drawer" aria-expanded="false"><span id="category">{{ text_category }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-menu"/></svg></button>
     </div>
-    <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <div class="collapse navbar-collapse navbar-ex1-collapse" id="ocs-mega-drawer">
       <ul class="nav navbar-nav">
         {% for category in categories %}
         {% if category.children %}

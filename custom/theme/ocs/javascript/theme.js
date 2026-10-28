@@ -450,40 +450,133 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		var hover = nav.getAttribute('data-behaviour') !== 'click';
 		var collapse = nav.querySelector('.navbar-collapse');
 
-		// the full-screen mobile catalogue locks the page scroll and closes on Escape (SPEC-043 REQ-MNU-002)
-		if (collapse && window.jQuery) {
-			// the header is a size container (a stacking context): while open the panel goes to the top layer (Popover API), else --z-menu
-			var topLayer = typeof collapse.showPopover === 'function';
+		// SPEC-090: the phone catalogue is a full-screen panel driven by our own state machine (no Bootstrap collapse):
+		// closed -> open: the popover (top layer) is shown first, the next frame adds .in and CSS transitions opacity/transform;
+		// open -> closed: .in is removed, the panel leaves the top layer once the transition ends (timeout as a safety net).
+		var toggle = nav.querySelector('[data-ocs-menu="toggle"]');
+		var closeBtn = nav.querySelector('[data-ocs-menu="close"]');
+		var html = document.documentElement;
+		var topLayer = !!collapse && typeof collapse.showPopover === 'function';
+		var menuState = 'closed';
+		var menuTimer = 0;
+		var reduced = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
-			window.jQuery(collapse).on('shown.bs.collapse', function () {
-				document.documentElement.classList.add('ocs-menu-open');
+		function setExpanded(open) {
+			if (toggle) {
+				toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+			}
+		}
 
-				if (topLayer && isMobile()) {
-					collapse.setAttribute('popover', 'manual');
+		function leaveTopLayer() {
+			if (topLayer && collapse.hasAttribute('popover')) {
+				try {
+					collapse.hidePopover();
+				} catch (e) { /* already closed */ }
 
-					try {
-						collapse.showPopover();
-					} catch (e) {
-						collapse.removeAttribute('popover');
-					}
-				}
-			}).on('hide.bs.collapse', function () {
-				if (topLayer && collapse.hasAttribute('popover')) {
-					try {
-						collapse.hidePopover();
-					} catch (e) { /* already closed */ }
+				collapse.removeAttribute('popover');
+			}
+		}
 
+		function finishClose() {
+			window.clearTimeout(menuTimer);
+			collapse.classList.remove('in');
+			leaveTopLayer();
+			html.classList.remove('ocs-menu-open');
+			menuState = 'closed';
+		}
+
+		function openMenu() {
+			if (!collapse || !isMobile() || menuState === 'open') {
+				return;
+			}
+
+			window.clearTimeout(menuTimer);
+
+			if (topLayer && !collapse.hasAttribute('popover')) {
+				collapse.setAttribute('popover', 'manual');
+
+				try {
+					collapse.showPopover();
+				} catch (e) {
 					collapse.removeAttribute('popover');
 				}
-			}).on('hidden.bs.collapse', function () {
-				document.documentElement.classList.remove('ocs-menu-open');
+			}
+
+			html.classList.add('ocs-menu-open');
+			void collapse.offsetWidth; // commit the closed styles so the transition starts from them
+			collapse.classList.add('in');
+			menuState = 'open';
+			setExpanded(true);
+
+			if (closeBtn) {
+				closeBtn.focus({ preventScroll: true });
+			}
+		}
+
+		function closeMenu(instant, restoreFocus) {
+			if (!collapse || menuState === 'closed' || menuState === 'closing') {
+				return;
+			}
+
+			setExpanded(false);
+
+			if (instant || (reduced && reduced.matches)) {
+				finishClose();
+			} else {
+				menuState = 'closing';
+				collapse.classList.remove('in');
+				window.clearTimeout(menuTimer);
+				menuTimer = window.setTimeout(finishClose, 450);
+			}
+
+			if (restoreFocus && toggle) {
+				toggle.focus({ preventScroll: true });
+			}
+		}
+
+		if (collapse) {
+			collapse.addEventListener('transitionend', function (e) {
+				if (e.target === collapse && e.propertyName === 'opacity' && menuState === 'closing') {
+					finishClose();
+				}
 			});
 
-			document.addEventListener('keydown', function (e) {
-				var close = nav.querySelector('.ocs-mega-close');
+			if (toggle) {
+				toggle.addEventListener('click', function () {
+					if (!isMobile()) {
+						return;
+					}
 
-				if (e.key === 'Escape' && isMobile() && collapse.classList.contains('in') && close) {
-					close.click();
+					if (menuState === 'open') {
+						closeMenu(false, false);
+					} else {
+						openMenu();
+					}
+				});
+			}
+
+			if (closeBtn) {
+				closeBtn.addEventListener('click', function () {
+					closeMenu(false, true);
+				});
+			}
+
+			document.addEventListener('keydown', function (e) {
+				if (e.key === 'Escape' && isMobile() && menuState === 'open') {
+					closeMenu(false, true);
+				}
+			});
+
+			// leaving the phone layout (rotation, resize) or coming back from the back/forward cache resets the panel
+			window.addEventListener('resize', function () {
+				if (!isMobile() && menuState !== 'closed') {
+					closeMenu(true, false);
+				}
+			});
+			window.addEventListener('pageshow', function () {
+				if (menuState !== 'closed') {
+					finishClose();
+					setExpanded(false);
 				}
 			});
 		}

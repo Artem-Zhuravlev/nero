@@ -274,7 +274,7 @@ test('menu model reads only columns of ocs_menu_category', () => {
 test('mega menu markup keeps core hooks and matches theme.js and css selectors', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
   const tpl = read('custom/extensions/ocs_mega_menu/upload/catalog/view/theme/default/template/extension/module/ocs_mega_menu.twig');
-  for (const hook of ['id="menu"', 'id="category"', 'navbar-toggle', 'data-toggle="collapse"', 'navbar-ex1-collapse', 'aria-expanded="false"', 'data-behaviour']) assert.ok(tpl.includes(hook), `mega template lost ${hook}`);
+  for (const hook of ['id="menu"', 'id="category"', 'navbar-toggle', 'data-ocs-menu="toggle"', 'navbar-ex1-collapse', 'aria-expanded="false"', 'data-behaviour']) assert.ok(tpl.includes(hook), `mega template lost ${hook}`);
   const js = read('custom/theme/ocs/javascript/theme.js');
   const css = read('custom/theme/ocs/stylesheet/stylesheet.css');
   for (const cls of ["ocs-mega-open", "ocs-mega-expand", "ocs-has-children", "ocs-mega-fly", "ocs-mega-l1", "ocs-mega-close"]) {
@@ -1060,7 +1060,7 @@ test('bottom bar has no Home link and uses the header icons', () => {
 test('mobile catalogue panel is lifted to the top layer and keeps a top-range z-index fallback', () => {
   const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
   assert.ok(js.includes("collapse.setAttribute('popover', 'manual')") && js.includes('collapse.showPopover()') && js.includes('collapse.hidePopover()'));
-  assert.match(css, /\.ocs-mega \.navbar-collapse\.in \{[^}]*z-index: var\(--z-menu\)/);
+  assert.match(css, /\.ocs-mega \.navbar-collapse\.collapse \{[^}]*z-index: var\(--z-menu\)/);
   assert.ok(Number(/--z-menu:\s*(\d+)/.exec(css)[1]) > 5000000);
 });
 
@@ -1189,4 +1189,45 @@ test('compare page: category tabs, differences switch, sticky table, scale icon'
   assert.ok(js.includes("'ocs_cmp_diff'") && js.includes('cmp: 12'));
   const sprite = read44('custom/theme/ocs/template/ocs/sprite.twig');
   assert.ok(/<symbol id="i-compare"[^>]*><path d="M12 4v16/.test(sprite), 'balance scale icon');
+});
+
+// TEST-MHS-001 - verifies REQ-MHS-001, REQ-MHS-002, REQ-MHS-003, REQ-MHS-004, REQ-MHS-005, REQ-MHS-022
+test('phone header is one sticky row: catalogue button, logo, search', () => {
+  const css = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/stylesheet/stylesheet.css'), 'utf8');
+  const block = css.slice(css.indexOf('SPEC-090: phone header'));
+  assert.ok(block.includes('grid-template-areas: "cat logo search"'));
+  assert.ok(block.includes('grid-template-columns: auto auto minmax(0, 1fr)'));
+  assert.match(block, /header\.ocs-head \{ position: sticky;/);
+  assert.match(block, /\.navbar-toggle \{[^}]*inline-size: 2\.5rem; block-size: 2\.5rem/);
+  assert.match(block, /\.ocs-head-logo img \{ block-size: 2rem;[^}]*max-inline-size: 6\.5rem/);
+  assert.ok(block.includes('scroll-padding-block-start'));
+});
+
+// TEST-MHS-002 - verifies REQ-MHS-006, REQ-MHS-010, REQ-MHS-020
+test('catalogue buttons are driven by theme.js, not Bootstrap collapse', () => {
+  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
+  const tpls = [
+    read('custom/extensions/ocs_mega_menu/upload/catalog/view/theme/default/template/extension/module/ocs_mega_menu.twig'),
+    read('custom/theme/ocs/template/common/menu.twig'),
+  ];
+  for (const t of tpls) {
+    assert.ok(!t.includes('data-toggle="collapse"'), 'no bootstrap collapse toggle');
+    assert.ok(/data-ocs-menu="toggle"[^>]*aria-controls="ocs-mega-drawer"[^>]*aria-expanded="false"/.test(t));
+    assert.ok(t.includes('id="ocs-mega-drawer"'));
+  }
+  assert.ok(tpls[0].includes('data-ocs-menu="close"'));
+  const js = read('custom/theme/ocs/javascript/theme.js');
+  assert.ok(!js.includes('bs.collapse'));
+  assert.ok(js.includes("'aria-expanded'") && js.includes('transitionend') && js.includes('menuState'));
+});
+
+// TEST-MHS-003 - verifies REQ-MHS-007, REQ-MHS-008, REQ-MHS-009, REQ-MHS-011
+test('mobile panel animates opacity/transform only, sub-items unfold via grid rows, reduced motion is honoured', () => {
+  const css = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/stylesheet/stylesheet.css'), 'utf8');
+  const panel = /\.ocs-mega \.navbar-collapse\.collapse \{([^}]*)\}/.exec(css)[1];
+  assert.ok(panel.includes('transition: opacity') && panel.includes('transform') && !/transition:[^;]*(height|display)/.test(panel));
+  assert.ok(panel.includes('overscroll-behavior: contain'));
+  assert.ok(css.includes('grid-template-rows: 0fr') && css.includes('grid-template-rows: 1fr'));
+  assert.ok(css.includes('html.ocs-menu-open { scrollbar-gutter: stable; }'));
+  assert.ok(/prefers-reduced-motion: reduce\) \{\s*\.ocs-mega \.navbar-collapse\.collapse/.test(css));
 });
