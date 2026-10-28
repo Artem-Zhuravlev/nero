@@ -669,7 +669,7 @@ li .ocs-stock { font-size: inherit; }
 .ocs-hero .ocs-carousel-dots.swiper-pagination { position: absolute; left: 0; bottom: var(--sp-3); z-index: var(--z-raised); margin: 0; }
 
 .ocs-hero { margin: var(--sp-4) 0; }
-.ocs-hero .ocs-carousel-item { width: 100%; position: relative; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-alt); }
+.ocs-hero .ocs-carousel-item { width: 100%; position: relative; border-radius: var(--r-lg); overflow: hidden; }
 .ocs-hero-slide { display: block; }
 .ocs-hero-slide img { display: block; width: 100%; height: auto; }
 .ocs-hero-caption {
@@ -988,8 +988,9 @@ li .ocs-stock { font-size: inherit; }
 }
 
 @layer components {
-	.ocs-hero .ocs-carousel-item { border-radius: var(--r-lg); background: var(--bg-alt); }
-	.ocs-hero-slide img { inline-size: 100%; aspect-ratio: 8 / 3; object-fit: cover; }
+	.ocs-hero .ocs-carousel-item { border-radius: var(--r-lg); background: none; }
+	.ocs-hero-slide picture { display: block; }
+	.ocs-hero-slide img { inline-size: 100%; aspect-ratio: 8 / 3; object-fit: cover; border-radius: var(--r-lg); }
 	@container hero (max-width: 44rem) { .ocs-hero-slide img { aspect-ratio: 4 / 3; } }
 	@container hero (max-width: 30rem) { .ocs-hero-caption { inset-inline: var(--sp-3); inset-block-end: var(--sp-5); max-inline-size: none; } }
 
