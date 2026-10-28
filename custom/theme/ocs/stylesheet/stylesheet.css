@@ -486,7 +486,7 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 @media (max-width: 767px) {
 	/* SPEC-090: the panel is always laid out (no display:none <-> block jump); it fades and slides, only opacity/transform animate */
 	.ocs-mega .navbar-collapse.collapse {
-		display: block; position: fixed; inset: 0; inline-size: 100%; block-size: 100%; max-inline-size: none; max-block-size: none; margin: 0; border: 0; padding: var(--sp-8) 0 0;
+		display: block; position: fixed; inset: 0; inline-size: 100%; block-size: 100%; max-inline-size: none; max-block-size: none; margin: 0; border: 0; padding: 0;
 		z-index: var(--z-menu); background: var(--bg); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
 		visibility: hidden; pointer-events: none; opacity: 0; transform: translateY(-0.75rem);
 		transition: opacity 0.26s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.3s;
@@ -2167,6 +2167,14 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-mnav-extra .dropdown-menu { display: flex; flex-wrap: wrap; gap: var(--sp-2); position: static; float: none; inline-size: auto; margin: 0; padding: 0; border: 0; box-shadow: none; background: transparent; }
 		.ocs-mnav-extra .ocs-contact .dropdown-menu, .ocs-mnav-extra .ocs-top-drop .dropdown-menu { flex-direction: column; flex-wrap: nowrap; }
 		.ocs-mnav-extra .dropdown-menu > li { list-style: none; }
+		/* SPEC-107: logo in the panel head (left of the fixed close button), info pages folded under <details> */
+		.ocs-mnav-head { display: flex; align-items: center; min-block-size: 4.25rem; padding: var(--sp-2) calc(44px + var(--sp-6)) var(--sp-2) var(--sp-4); }
+		.ocs-mnav-head #logo { margin: 0; }
+		.ocs-mnav-head img { block-size: 2.5rem; inline-size: auto; max-inline-size: 11rem; object-fit: contain; }
+		.ocs-mnav-head h1 { margin: 0; font-size: var(--fs-lg); }
+		.ocs-mnav-head a { color: var(--text); }
+		.ocs-mnav-pages > summary { cursor: pointer; font-weight: 600; padding-block: var(--sp-2); }
+		.ocs-mnav-pages > .dropdown-menu { display: flex; flex-direction: column; padding-inline-start: var(--sp-3); }
 		.ocs-mnav-extra .dropdown-menu .btn { min-block-size: 2.75rem; }
 	}
 }

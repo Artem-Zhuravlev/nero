@@ -414,19 +414,65 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		}
 
 		var extra = document.createElement('div');
+		var head = document.createElement('div');
 		var mq = window.matchMedia('(max-width: 767px)');
+		var logo = box.querySelector('#logo');
+		var drop = box.querySelector('.ocs-top-drop');
+		var menu = drop && drop.querySelector('.dropdown-menu');
+		var toggle = drop && drop.querySelector('.dropdown-toggle');
+		var details = null;
 
 		extra.className = 'ocs-mnav-extra';
+		head.className = 'ocs-mnav-head';
 
+		if (menu && toggle) {
+			details = document.createElement('details');
+			details.className = 'ocs-mnav-pages';
+
+			var summary = document.createElement('summary');
+
+			summary.textContent = toggle.textContent.replace(/\s+/g, ' ').trim();
+			details.appendChild(summary);
+		}
+
+		// SPEC-107: on phones the logo fills the empty top of the panel and the info pages fold under <details>
 		function place() {
 			if (mq.matches) {
 				extra.appendChild(box);
 				collapse.appendChild(extra);
+
+				if (logo) {
+					head.appendChild(logo);
+					collapse.insertBefore(head, collapse.firstChild);
+				}
+
+				if (details) {
+					details.appendChild(menu);
+					drop.appendChild(details);
+				}
 			} else {
 				top.appendChild(box);
 
 				if (extra.parentNode) {
 					extra.parentNode.removeChild(extra);
+				}
+
+				if (logo) {
+					box.insertBefore(logo, box.firstChild);
+
+					if (head.parentNode) {
+						head.parentNode.removeChild(head);
+					}
+				}
+
+				if (details) {
+					drop.appendChild(menu);
+
+					if (details.parentNode) {
+						details.parentNode.removeChild(details);
+					}
+
+					details.open = false;
 				}
 			}
 		}
