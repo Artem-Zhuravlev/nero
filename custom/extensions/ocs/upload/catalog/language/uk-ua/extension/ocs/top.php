@@ -12,3 +12,6 @@ $_['text_brand_none'] = 'Бренди не знайдено';
 // SPEC-086 special countdown
 $_['text_special_timer'] = 'Акція закінчиться через';
 $_['text_special_days'] = 'д';
+
+// SPEC-091 savings badge
+$_['text_savings'] = 'Ви економите';

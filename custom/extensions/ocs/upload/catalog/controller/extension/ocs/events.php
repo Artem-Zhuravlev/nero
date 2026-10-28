@@ -88,6 +88,27 @@ class ControllerExtensionOcsEvents extends Controller {
 				}
 			}
 
+			// how much the customer saves with the special, in the visitor's currency (SPEC-091 REQ-SAV-002)
+			$data['ocs_savings'] = '';
+
+			if (!empty($data['special']) && !empty($data['price']) && !empty($this->request->get['product_id'])) {
+				$this->load->model('catalog/product');
+
+				$info = $this->model_catalog_product->getProduct((int)$this->request->get['product_id']);
+
+				if ($info && !is_null($info['special'])) {
+					$tax = $this->config->get('config_tax');
+					$currency = $this->session->data['currency'];
+					$saved = $this->tax->calculate($info['price'], $info['tax_class_id'], $tax) - $this->tax->calculate($info['special'], $info['tax_class_id'], $tax);
+
+					if ($this->currency->format($saved, $currency, '', false) > 0) {
+						$data['ocs_savings'] = $this->currency->format($saved, $currency);
+						$strings = $this->load->language('extension/ocs/top');
+						$data['ocs_savings_label'] = isset($strings['text_savings']) ? $strings['text_savings'] : '';
+					}
+				}
+			}
+
 			$data['ocs_info_blocks'] = \Ocs\InfoBlocks::view($this->config->get('theme_ocs_info_blocks'), $this->config->get('config_language'), $default);
 		}
 

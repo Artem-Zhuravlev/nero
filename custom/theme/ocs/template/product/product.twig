@@ -97,7 +97,7 @@
           <div class="ocs-price-box">
             {% if special %}
             <p class="ocs-price-old"><s>{{ price }}</s></p>
-            <p class="ocs-price ocs-price-special">{{ special }}</p>
+            <p class="ocs-price ocs-price-special">{{ special }}{% if ocs_savings %} <span class="ocs-savings">{{ ocs_savings_label }} {{ ocs_savings }}</span>{% endif %}</p>
             {% else %}
             <p class="ocs-price">{{ price }}</p>
             {% endif %}

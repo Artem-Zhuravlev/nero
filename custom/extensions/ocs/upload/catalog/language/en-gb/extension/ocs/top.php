@@ -12,3 +12,6 @@ $_['text_brand_none'] = 'No brands found';
 // SPEC-086 special countdown
 $_['text_special_timer'] = 'Offer ends in';
 $_['text_special_days'] = 'd';
+
+// SPEC-091 savings badge
+$_['text_savings'] = 'You save';
