@@ -298,14 +298,15 @@ footer hr { border-color: var(--border); }
 	height: 36px;
 	border: 0;
 	border-radius: 50%;
-	background: var(--bg-alt);
+	background: transparent;
 	color: var(--text);
 	font-size: var(--fs-xl);
 	line-height: 1;
 	cursor: pointer;
 	z-index: 2; /* above positioned body content (lightbox stage) that would otherwise swallow the click */
 }
-.ocs-modal-close:hover { background: var(--border); }
+.ocs-modal-close { opacity: .7; transition: opacity var(--t); }
+.ocs-modal-close:hover { opacity: 1; }
 
 /* ==== 9. Product page slots (REQ-DSG-024) =========================================== */
 .ocs-gallery { position: relative; }

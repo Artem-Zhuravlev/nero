@@ -10,9 +10,9 @@
     <div class="form-group{% if f.required %} required{% endif %}">
       <label class="control-label" for="ocs-req-{{ f.name }}">{{ f.label }}</label>
       {% if f.type == 'textarea' %}
-      <textarea name="{{ f.name }}" id="ocs-req-{{ f.name }}" rows="3" class="form-control"></textarea>
+      <textarea name="{{ f.name }}" id="ocs-req-{{ f.name }}" placeholder="{{ f.label }}" rows="3" class="form-control"></textarea>
       {% else %}
-      <input type="{{ f.type }}" name="{{ f.name }}" id="ocs-req-{{ f.name }}" class="form-control" autocomplete="{{ f.name == 'name' ? 'name' : (f.name == 'phone' ? 'tel' : 'email') }}" />
+      <input type="{{ f.type }}" name="{{ f.name }}" id="ocs-req-{{ f.name }}" placeholder="{{ f.label }}" class="form-control" autocomplete="{{ f.name == 'name' ? 'name' : (f.name == 'phone' ? 'tel' : 'email') }}" />
       {% endif %}
       <div class="text-danger" data-error-for="{{ f.name }}"></div>
     </div>

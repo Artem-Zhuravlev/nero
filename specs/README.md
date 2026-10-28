@@ -163,6 +163,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-094 | [SEO на страницах пагинации категории и производителя](pagination-seo/spec.md) | `implemented` |
 | SPEC-095 | [Панель сортировки в листингах](listing-toolbar/spec.md) | `implemented` |
 | SPEC-096 | [Кнопка «Показать ещё» только при наличии пагинации](load-more-visibility/spec.md) | `implemented` |
+| SPEC-097 | [Плейсхолдеры в форме запроса, крестик без подложки](modal-close-placeholders/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

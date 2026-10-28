@@ -1268,3 +1268,12 @@ test('listing show-more button: only rendered with pagination, hidden wins over 
   }
   assert.ok(css.includes('.ocs-more button[hidden] { display: none !important; }'));
 });
+
+// TEST-MCP-001 - verifies REQ-MCP-001..002 (request form placeholders; modal close button without background)
+test('request form fields have placeholders, modal close has no background', () => {
+  const tpl = readFileSync(join(REPO_ROOT, 'custom/extensions/ocs_request/upload/catalog/view/theme/default/template/extension/ocs_request/form.twig'), 'utf8');
+  assert.equal(tpl.split('placeholder="{{ f.label }}"').length - 1, 2);
+  const rule = /\.ocs-modal-close \{([^}]*)\}/.exec(css)[1];
+  assert.ok(/background:\s*transparent/.test(rule));
+  assert.ok(!/\.ocs-modal-close:hover \{ background/.test(css));
+});
