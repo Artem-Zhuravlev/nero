@@ -650,7 +650,7 @@ final class DemoCatalogue
         $this->m->setting->delete(self::SETTING_CODE, self::SETTINGS_KEY);
     }
 
-    /** subscribers, back-in-stock subscriptions, pre-order requests and trade-in leads for the admin lists */
+    /** subscribers, back-in-stock subscriptions, pre-order requests for the admin lists */
     private function records(array $r): void
     {
         $now = time();
@@ -665,7 +665,6 @@ final class DemoCatalogue
             }
             return $ids;
         };
-        $inStock = $byState('in');
         $insert = function (string $type, int $n, string $sql, array $params): void {
             if (isset($this->map["{$type}:{$n}"])) {
                 return;
@@ -695,19 +694,13 @@ final class DemoCatalogue
                     [$pid, $name, '', $s['name'], $s['phone'], $s['email'], $s['comment'], date('Y-m-d', $now + $s['days'] * 86400), $s['status'], date('Y-m-d H:i:s', $now - ($n + 1) * 86400)]);
             }
         }
-        if ($this->hasTable('ocs_tradein_lead') && $inStock) {
-            foreach ($r['leads'] ?? [] as $n => $s) {
-                $insert('lead', $n, 'INSERT INTO {{PREFIX}}ocs_tradein_lead (product_id, language_id, name, phone, email, device, photos, status, ip, date_added) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                    [$inStock[$n % count($inStock)][0], $lang, $s['name'], $s['phone'], $s['email'], $s['device'], '', $s['status'], '127.0.0.1', date('Y-m-d H:i:s', $now - ($n + 1) * 3600 * 7)]);
-            }
-        }
     }
 
     /** deletes the rows of the OCS tables this class created; core rows go through the core models */
     private function removeOcsRows(): void
     {
         $tables = ['video' => ['ocs_product_video', 'product_id'], 'question' => ['ocs_question', 'question_id'], 'menu' => ['ocs_menu_category', 'category_id'],
-            'subscriber' => ['ocs_subscriber', 'subscriber_id'], 'backinstock' => ['ocs_back_in_stock', 'subscription_id'], 'preorder' => ['ocs_preorder', 'preorder_id'], 'lead' => ['ocs_tradein_lead', 'lead_id']];
+            'subscriber' => ['ocs_subscriber', 'subscriber_id'], 'backinstock' => ['ocs_back_in_stock', 'subscription_id'], 'preorder' => ['ocs_preorder', 'preorder_id']];
         $reviews = [];
         foreach ($this->map as $key => $id) {
             if (strncmp($key, 'review:', 7) === 0) {

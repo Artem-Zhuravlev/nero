@@ -197,7 +197,6 @@ final class DemoCatalogueTest extends TestCase
             'CREATE TABLE oc_ocs_subscriber (subscriber_id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, language_id INTEGER, confirmed INTEGER, token TEXT, ip TEXT, date_added TEXT)',
             'CREATE TABLE oc_ocs_back_in_stock (subscription_id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, product_name TEXT, option_key TEXT, email TEXT, language_code TEXT, status INTEGER, date_added TEXT, date_notified TEXT)',
             'CREATE TABLE oc_ocs_preorder (preorder_id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, product_name TEXT, quantity INTEGER, options TEXT, name TEXT, phone TEXT, email TEXT, comment TEXT, expected_date TEXT, order_id INTEGER, status INTEGER, date_added TEXT)',
-            'CREATE TABLE oc_ocs_tradein_lead (lead_id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER, language_id INTEGER, name TEXT, phone TEXT, email TEXT, device TEXT, photos TEXT, status INTEGER, ip TEXT, date_added TEXT)',
             "INSERT INTO oc_ocs_sticker (code) VALUES ('new'), ('hit'), ('sale'), ('top'), ('preorder'), ('out')",
         ] as $sql) {
             $this->db->pdo->exec($sql);
@@ -257,7 +256,7 @@ final class DemoCatalogueTest extends TestCase
         foreach (['top', 'preorder', 'hit'] as $code) {
             $this->assertTrue((int) $this->db->pdo->query("SELECT COUNT(*) FROM oc_ocs_sticker_product sp JOIN oc_ocs_sticker s ON s.sticker_id = sp.sticker_id WHERE s.code = '{$code}'")->fetchColumn() >= 1, "sticker {$code} assigned");
         }
-        $this->assertTrue($this->count('oc_ocs_subscriber') >= 5 && $this->count('oc_ocs_back_in_stock') >= 3 && $this->count('oc_ocs_preorder') >= 3 && $this->count('oc_ocs_tradein_lead') >= 3);
+        $this->assertTrue($this->count('oc_ocs_subscriber') >= 5 && $this->count('oc_ocs_back_in_stock') >= 3 && $this->count('oc_ocs_preorder') >= 3);
     }
 
     // TEST-DCF-004 - verifies REQ-DCF-004, REQ-DCF-005 (settings per language, owner values kept)
@@ -273,8 +272,6 @@ final class DemoCatalogueTest extends TestCase
         $top = $this->m->setting->get('theme_ocs', 'theme_ocs_top_menu');
         $this->assertSame(4, count($top['pages']));
         $this->assertTrue($top['pages'][0] > 100, 'information ids come from the registry');
-        $this->assertSame(1, (int) $this->m->setting->get('module_ocs_credit', 'module_ocs_credit_status'));
-        $this->assertTrue(strlen((string) $this->m->setting->get('module_ocs_tradein', 'module_ocs_tradein_categories')) > 3);
     }
 
     // TEST-DCF-005 - verifies REQ-DCF-007, REQ-DCF-008 (idempotent; removal restores rows and settings)
@@ -298,7 +295,7 @@ final class DemoCatalogueTest extends TestCase
         foreach (['oc_ocs_question', 'oc_ocs_product_video', 'oc_ocs_subscriber', 'oc_ocs_preorder', 'oc_ocs_menu_category', 'oc_ocs_review_extra', 'oc_ocs_sticker_product'] as $t) {
             $this->assertSame(0, $this->count($t), "{$t} emptied");
         }
-        $this->assertSame(0, (int) $this->db->pdo->query("SELECT COUNT(*) FROM oc_setting WHERE `key` IN ('theme_ocs_contact_links', 'module_ocs_credit_plans', 'ocs_demo_settings')")->fetchColumn());
+        $this->assertSame(0, (int) $this->db->pdo->query("SELECT COUNT(*) FROM oc_setting WHERE `key` IN ('theme_ocs_contact_links', 'ocs_demo_settings')")->fetchColumn());
         $this->assertSame('Own street', $this->m->setting->get('theme_ocs', 'theme_ocs_contact')['uk-ua']['address']);
     }
 

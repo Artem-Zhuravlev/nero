@@ -102,7 +102,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-033 | [Home Page Blocks](home-blocks/spec.md) | `implemented` |
 | SPEC-034 | [Category Listing](category-listing/spec.md) | `in-progress` |
 | SPEC-035 | [Product Page Extras](product-page/spec.md) | `implemented` |
-| SPEC-036 | [Instalments and Trade-in](credit-tradein/spec.md) | `implemented` |
+| SPEC-036 | [Instalments and Trade-in](credit-tradein/spec.md) | `superseded` |
 | SPEC-037 | [Swiper Carousels and Brief Gaps](swiper-quickview/spec.md) | `implemented` |
 | SPEC-038 | [Modern Layout: Grid, Subgrid, Container Queries](modern-layout/spec.md) | `implemented` |
 | SPEC-039 | [Visual Identity Pass](visual-identity/spec.md) | `implemented` |
@@ -153,6 +153,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-084 | [Blog: Authors, Dates, Multilingual Settings, Comments, Likes](blog-authors/spec.md) | `implemented` |
 | SPEC-085 | [Nova Poshta Delivery: Local Directories, City and Branch Suggest in Checkout](novaposhta-delivery/spec.md) | `implemented` |
 | SPEC-086 | [Таймер акции в карточке товара](special-countdown/spec.md) | `implemented` |
+| SPEC-087 | [Remove Instalments and Trade-in](remove-credit-tradein/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

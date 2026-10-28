@@ -99,22 +99,6 @@ export function addCustomFields(j) {
       { icon: 'undo', l: { '@l': { title: L('Повернення 14 днів', 'Возврат 14 дней', '14-day returns'), text: L('Без зайвих питань', 'Без лишних вопросов', 'No questions asked') } } },
       { icon: 'headphones', l: { '@l': { title: L('Підтримка', 'Поддержка', 'Support'), text: L('Щодня 9:00-19:00', 'Ежедневно 9:00-19:00', 'Daily 9:00-19:00') } } },
     ] },
-    { code: 'module_ocs_credit', key: 'module_ocs_credit_status', value: 1 },
-    { code: 'module_ocs_credit', key: 'module_ocs_credit_plans', value: [
-      { bank: 'Demo Bank', months: 3, rate: 0, fee: 0, min: 1000, max: 0 },
-      { bank: 'Demo Bank', months: 12, rate: 1.9, fee: 1, min: 3000, max: 150000 },
-      { bank: 'Example Credit', months: 24, rate: 2.5, fee: 2, min: 5000, max: 300000 },
-    ] },
-    { code: 'module_ocs_credit', key: 'module_ocs_credit_l', value: { '@l': {
-      disclaimer: L('Розрахунок орієнтовний і не є пропозицією.', 'Расчёт ориентировочный и не является предложением.', 'The calculation is indicative and not an offer.'),
-      terms: L('Умови кредитування уточнюйте у менеджера.', 'Условия кредитования уточняйте у менеджера.', 'Ask the manager for the credit terms.') } } },
-    { code: 'module_ocs_tradein', key: 'module_ocs_tradein_status', value: 1 },
-    { code: 'module_ocs_tradein', key: 'module_ocs_tradein_categories', value: '@cats:phones,laptops' },
-    { code: 'module_ocs_tradein', key: 'module_ocs_tradein_email', value: 'tradein@example.test' },
-    { code: 'module_ocs_tradein', key: 'module_ocs_tradein_l', value: { '@l': {
-      title: L('Обміняйте старий пристрій', 'Обменяйте старое устройство', 'Trade in your old device'),
-      text: L('Оцінимо ваш гаджет і зарахуємо суму у вартість нового.', 'Оценим ваш гаджет и зачтём сумму в стоимость нового.', 'We appraise your gadget and deduct it from the new price.'),
-      button: L('Оцінити пристрій', 'Оценить устройство', 'Appraise my device') } } },
     { code: 'module_ocs_preorder', key: 'module_ocs_preorder_status', value: 1 },
     { code: 'module_ocs_preorder', key: 'module_ocs_preorder_l', value: { '@l': {
       button: L('Передзамовлення', 'Предзаказ', 'Pre-order'),
@@ -161,11 +145,6 @@ export function addCustomFields(j) {
       { name: 'Олена К.', phone: '+380000000101', email: 'preorder1@example.test', comment: 'Зателефонуйте після 18:00', status: 0, days: 14 },
       { name: 'Максим Д.', phone: '+380000000102', email: '', comment: '', status: 1, days: 30 },
       { name: 'Наталя П.', phone: '+380000000103', email: 'preorder3@example.test', comment: 'Потрібен чорний колір', status: 0, days: 21 },
-    ],
-    leads: [
-      { name: 'Сергій М.', phone: '+380000000201', email: 'lead1@example.test', device: 'Kiro Pulse 10, 128 GB, стан гарний, без подряпин', status: 0 },
-      { name: 'Юлія Т.', phone: '+380000000202', email: 'lead2@example.test', device: 'Ноутбук 2019 року, 8 GB RAM, працює справно', status: 1 },
-      { name: 'Денис Л.', phone: '+380000000203', email: '', device: 'Планшет 10", є тріщина на екрані', status: 0 },
     ],
   };
 

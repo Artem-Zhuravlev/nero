@@ -69,7 +69,6 @@ test('info blocks: theme form editor and product page markup', () => {
   const t = twig();
   const blocks = t.slice(t.indexOf('<div class="ocs-info-blocks">'), t.indexOf('<div class="ocs-info-blocks">') + 900);
   assert.ok(!/<h[1-6]|<ul|<li/.test(blocks), 'no headings or lists in the cards');
-  assert.ok(t.indexOf('ocs_tradein_banner') < t.indexOf('ocs-info-blocks'), 'after the delivery / instalment blocks');
   const keys = (l) => [...read(`custom/extensions/ocs/upload/admin/language/${l}/extension/theme/ocs.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
   assert.deepEqual(keys('en-gb'), keys('uk-ua'));
 });

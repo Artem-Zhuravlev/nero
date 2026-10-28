@@ -1,6 +1,6 @@
 # SPEC-036 — Instalments Block and Trade-in Request
 
-**Status:** implemented
+**Status:** superseded
 **Owner:** Artem Zhuravlev
 **Last updated:** 2026-10-23
 **Refines:** SPEC-024 REQ-MOY-056, 057 · **Depends on:** SPEC-011, SPEC-018, SPEC-035

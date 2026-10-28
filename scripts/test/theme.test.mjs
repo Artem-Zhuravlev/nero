@@ -650,56 +650,15 @@ test('cities removed: migration 0008 unregisters and drops', () => {
   assert.ok(mig.includes('DROP TABLE IF EXISTS'));
 });
 
-// TEST-CRD-004 - verifies REQ-CRD-021, REQ-EXT-051 (manifests match migrations; strings identical across languages; both blocks off by default)
-test('credit and trade-in: manifests match migrations, strings are identical, off by default', () => {
+// TEST-RCI-002, TEST-RCI-003 - verifies REQ-RCI-001, REQ-RCI-002, REQ-RCI-004, REQ-RCI-005 (SPEC-087: instalments and trade-in are gone)
+test('instalments and trade-in: no leftovers outside the removal migration', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  for (const code of ['ocs_credit', 'ocs_tradein']) {
-    const ext = JSON.parse(read(`custom/extensions/${code}/extension.json`));
-    assert.equal(ext.spec, 'SPEC-036');
-    const mig = read(`custom/extensions/${code}/db/001_install.php`);
-    for (const e of ext.events) assert.ok(mig.includes(`'${e}'`), `event ${e}`);
-    for (const t of ext.tables) assert.ok(mig.includes(`{{PREFIX}}${t.replace(/^oc_/, '')} (`), `table ${t}`);
-    for (const s of ext.settings) assert.ok(mig.includes(`'${s}'`), `setting ${s}`);
-    assert.match(mig, new RegExp(`'module_${code}_status' => 0`));
-    const keys = (side, l) => [...read(`custom/extensions/${code}/upload/${side}/language/${l}/extension/module/${code}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
-    for (const l of ['en-gb', 'ru-ru']) assert.deepEqual(keys('catalog', l), keys('catalog', 'uk-ua'), `${code} catalog ${l}`);
-    assert.deepEqual(keys('admin', 'en-gb'), keys('admin', 'uk-ua'), `${code} admin strings`);
+  assert.ok(!existsSync(join(REPO_ROOT, 'custom/extensions/ocs_credit')) && !existsSync(join(REPO_ROOT, 'custom/extensions/ocs_tradein')));
+  for (const p of ['custom/theme/ocs/template/product/product.twig', 'custom/theme/ocs/template/product/category.twig', 'custom/theme/ocs/javascript/theme.js', 'custom/theme/ocs/stylesheet/stylesheet.css', 'custom/catalog/demo/catalogue.json']) {
+    assert.ok(!/ocs[_-](credit|tradein)/.test(read(p)), p);
   }
-});
-
-// TEST-CRD-001 - verifies REQ-CRD-001, REQ-CRD-002, REQ-CRD-003 (block markup, disclaimer, JS formula and quick-order hand-off agree)
-test('instalment block: hooks, disclaimer and hand-off are consistent', () => {
-  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  const twig = read('custom/extensions/ocs_credit/upload/catalog/view/theme/default/template/extension/module/ocs_credit.twig');
-  for (const hook of ['data-ocs-credit="{{ config_json }}"', 'ocs-credit-disclaimer', 'name="ocs-credit-plan"', 'ocs-credit-pay', 'data-ocs-credit-details', 'ocs-credit-terms']) assert.ok(twig.includes(hook), hook);
-  assert.match(twig, /\{% if not any %\} hidden\{% endif %\}/, 'the block hides itself when no plan fits');
-  const ev = read('custom/extensions/ocs_credit/upload/catalog/controller/extension/ocs_credit/events.php');
-  assert.match(ev, /text_disclaimer/, 'the disclaimer always has a default text');
-  assert.match(ev, /htmlspecialchars\(json_encode\(/, 'the JSON of the attribute is entity-encoded as a whole');
-  const js = read('custom/theme/ocs/javascript/theme.js');
-  assert.match(js, /amount \* r \/ \(1 - Math\.pow\(1 \+ r, -months\)\)/, 'same annuity formula as Ocs\\Credit::payment');
-  assert.match(js, /ocs-quick-btn'\) && OCS\.credit && OCS\.credit\.note/);
-  assert.ok(css.includes('.ocs-credit'));
-});
-
-// TEST-CRD-003 - verifies REQ-CRD-020 (trade-in: token, rate limit, honeypot, uploads outside the docroot, photos served only through the admin)
-test('trade-in: guarded endpoint, storage outside the docroot, admin-only photo access', () => {
-  const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  const ctl = read('custom/extensions/ocs_tradein/upload/catalog/controller/extension/module/ocs_tradein.php');
-  assert.match(ctl, /tokenValid/);
-  assert.match(ctl, /allow\('tradein'\)/);
-  assert.match(ctl, /DIR_STORAGE/);
-  assert.match(ctl, /Tradein::check/);
-  assert.match(ctl, /move_uploaded_file/);
-  const form = read('custom/extensions/ocs_tradein/upload/catalog/view/theme/default/template/extension/module/ocs_tradein_form.twig');
-  for (const hook of ['enctype="multipart/form-data"', 'class="ocs-req-form"', 'name="photos[]"', 'name="website"', 'data-error-for="photos"']) assert.ok(form.includes(hook), hook);
-  const adm = read('custom/extensions/ocs_tradein/upload/admin/controller/extension/module/ocs_tradein.php');
-  assert.match(adm, /hasPermission\('access'/);
-  assert.match(adm, /validStoredName/);
-  assert.match(adm, /nosniff/);
-  assert.match(adm, /photoExists/);
-  assert.match(read('custom/theme/ocs/template/product/product.twig'), /\{\{ ocs_credit_block \}\}[\s\S]*\{\{ ocs_tradein_banner \}\}/);
-  assert.ok(read('custom/theme/ocs/template/product/category.twig').includes('{{ ocs_tradein_banner }}'));
+  const mig = read('custom/db/migrations/0012_remove_credit_tradein.php');
+  assert.ok(mig.includes('DROP TABLE IF EXISTS {{PREFIX}}ocs_tradein_lead'));
 });
 
 // TEST-SWP-001 - verifies REQ-SWP-001, REQ-SWP-003, REQ-SWP-005, REQ-SWP-010 (carousels run on Swiper from the same markup; no second engine; Swiper loaded once)
@@ -1010,7 +969,7 @@ test('popup requests are POSTs with the product id in the body (SeoPro redirects
   const js = readFileSync(join(REPO_ROOT, 'custom/theme/ocs/javascript/theme.js'), 'utf8');
   assert.ok(!/'product_id=' + encodeURIComponent/.test(js), "no product_id in a request URL");
   assert.equal(js.split("method: 'POST', body: OCS.productBody(id)").length - 1, 1, 'request popups');
-  for (const m of ['ocs_back_in_stock', 'ocs_preorder', 'ocs_quick_order', 'ocs_tradein']) {
+  for (const m of ['ocs_back_in_stock', 'ocs_preorder', 'ocs_quick_order']) {
     const php = readFileSync(join(REPO_ROOT, `custom/extensions/${m}/upload/catalog/controller/extension/module/${m}.php`), 'utf8');
     assert.ok(php.includes("isset($this->request->post['product_id'])"), `${m} reads product_id from POST`);
   }
