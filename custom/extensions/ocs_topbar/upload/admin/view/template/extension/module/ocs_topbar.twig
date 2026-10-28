@@ -1,0 +1,127 @@
+{# Extension: ocs_topbar. Admin settings form. Owner: SPEC-082. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-topbar" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-topbar" class="form-horizontal">
+          <fieldset>
+            <legend>{{ text_general }}</legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+              <div class="col-sm-10">
+                <select name="module_ocs_topbar_status" id="input-status" class="form-control">
+                  <option value="1"{% if module_ocs_topbar_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                  <option value="0"{% if not module_ocs_topbar_status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+                </select>
+                <div class="help-block">{{ help_status }}</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-from">{{ entry_from }}</label>
+              <div class="col-sm-4"><input type="text" name="module_ocs_topbar_from" value="{{ module_ocs_topbar_from }}" id="input-from" placeholder="2026-12-01" class="form-control" /></div>
+              <label class="col-sm-2 control-label" for="input-to">{{ entry_to }}</label>
+              <div class="col-sm-4"><input type="text" name="module_ocs_topbar_to" value="{{ module_ocs_topbar_to }}" id="input-to" placeholder="2026-12-31" class="form-control" /></div>
+              {% if error_date %}<div class="col-sm-offset-2 col-sm-10 text-danger">{{ error_date }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-closable">{{ entry_closable }}</label>
+              <div class="col-sm-4">
+                <select name="module_ocs_topbar_closable" id="input-closable" class="form-control">
+                  <option value="1"{% if module_ocs_topbar_closable %} selected="selected"{% endif %}>{{ text_yes }}</option>
+                  <option value="0"{% if not module_ocs_topbar_closable %} selected="selected"{% endif %}>{{ text_no }}</option>
+                </select>
+              </div>
+              <label class="col-sm-2 control-label" for="input-blank">{{ entry_blank }}</label>
+              <div class="col-sm-4">
+                <select name="module_ocs_topbar_blank" id="input-blank" class="form-control">
+                  <option value="1"{% if module_ocs_topbar_blank %} selected="selected"{% endif %}>{{ text_yes }}</option>
+                  <option value="0"{% if not module_ocs_topbar_blank %} selected="selected"{% endif %}>{{ text_no }}</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>{{ text_look }}</legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-bg">{{ entry_bg }}</label>
+              <div class="col-sm-4">
+                <select name="module_ocs_topbar_bg" id="input-bg" class="form-control">
+                  <option value="accent"{% if module_ocs_topbar_bg == 'accent' %} selected="selected"{% endif %}>{{ text_bg_accent }}</option>
+                  <option value="dark"{% if module_ocs_topbar_bg == 'dark' %} selected="selected"{% endif %}>{{ text_bg_dark }}</option>
+                  <option value="light"{% if module_ocs_topbar_bg == 'light' %} selected="selected"{% endif %}>{{ text_bg_light }}</option>
+                  <option value="custom"{% if module_ocs_topbar_bg == 'custom' %} selected="selected"{% endif %}>{{ text_bg_custom }}</option>
+                </select>
+              </div>
+              <label class="col-sm-2 control-label" for="input-bg-custom">{{ entry_bg_custom }}</label>
+              <div class="col-sm-4"><input type="text" name="module_ocs_topbar_bg_custom" value="{{ module_ocs_topbar_bg_custom }}" id="input-bg-custom" placeholder="#c8102e" class="form-control" /></div>
+              {% if error_color %}<div class="col-sm-offset-2 col-sm-10 text-danger">{{ error_color }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-btn-style">{{ entry_btn_style }}</label>
+              <div class="col-sm-4">
+                <select name="module_ocs_topbar_btn_style" id="input-btn-style" class="form-control">
+                  <option value="solid"{% if module_ocs_topbar_btn_style != 'outline' %} selected="selected"{% endif %}>{{ text_btn_solid }}</option>
+                  <option value="outline"{% if module_ocs_topbar_btn_style == 'outline' %} selected="selected"{% endif %}>{{ text_btn_outline }}</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>{{ text_per_language }}</legend>
+            {% if error_button %}<div class="text-danger">{{ error_button }}</div>{% endif %}
+            <ul class="nav nav-tabs" id="language">
+              {% for language in languages %}
+              <li{% if loop.first %} class="active"{% endif %}><a href="#language{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>
+              {% endfor %}
+            </ul>
+            <div class="tab-content">
+              {% for language in languages %}
+              <div class="tab-pane{% if loop.first %} active{% endif %}" id="language{{ language.language_id }}">
+                <br />
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_text }}</label>
+                  <div class="col-sm-10"><input type="text" name="module_ocs_topbar_l[{{ language.code }}][text]" value="{{ l[language.code].text }}" class="form-control" /></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_url }}</label>
+                  <div class="col-sm-10"><input type="text" name="module_ocs_topbar_l[{{ language.code }}][url]" value="{{ l[language.code].url }}" placeholder="/sale" class="form-control" /><div class="help-block">{{ help_url }}</div></div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">{{ entry_btn_label }}</label>
+                  <div class="col-sm-4"><input type="text" name="module_ocs_topbar_l[{{ language.code }}][btn_label]" value="{{ l[language.code].btn_label }}" class="form-control" /></div>
+                  <label class="col-sm-2 control-label">{{ entry_btn_url }}</label>
+                  <div class="col-sm-4"><input type="text" name="module_ocs_topbar_l[{{ language.code }}][btn_url]" value="{{ l[language.code].btn_url }}" placeholder="https://" class="form-control" /></div>
+                  <div class="col-sm-offset-2 col-sm-10 help-block">{{ help_button }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
