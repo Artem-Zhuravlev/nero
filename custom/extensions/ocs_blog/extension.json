@@ -1,0 +1,8 @@
+{ "code": "ocs_blog", "type": "library", "version": "1.0.0",
+  "title": { "en-gb": "OCS Blog: authors, comments, reactions", "uk-ua": "OCS: блог — автори, коментарі, реакції" },
+  "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
+  "spec": "SPEC-084",
+  "tables": ["oc_ocs_blog_author", "oc_ocs_blog_author_description", "oc_ocs_blog_article", "oc_ocs_blog_comment", "oc_ocs_blog_vote"],
+  "settings": ["configblog_description"],
+  "events": ["ocs_blog_menu", "ocs_blog_article_form", "ocs_blog_article_add", "ocs_blog_article_edit", "ocs_blog_article_delete", "ocs_blog_setting_form", "ocs_blog_setting_save", "ocs_blog_review_delete", "ocs_blog_localize_latest", "ocs_blog_localize_category", "ocs_blog_localize_article", "ocs_blog_localize_menu", "ocs_blog_view_article", "ocs_blog_view_review", "ocs_blog_view_latest", "ocs_blog_view_category", "ocs_blog_view_module_latest", "ocs_blog_view_module_featured"],
+  "routes": ["extension/ocs_blog/author", "extension/ocs_blog/events", "extension/ocs_blog/vote"] }

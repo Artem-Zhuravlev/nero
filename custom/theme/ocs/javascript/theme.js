@@ -3374,3 +3374,47 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		init();
 	}
 }(window, document));
+
+/* Blog reactions (SPEC-084 REQ-BLG-033, REQ-BLG-040): like / dislike of an article or a comment; the server returns the recomputed counters. */
+(function (window, document) {
+	'use strict';
+
+	document.addEventListener('click', function (e) {
+		var btn = e.target.closest ? e.target.closest('[data-ocs-react] .ocs-react-btn') : null;
+
+		if (!btn || btn.classList.contains('is-busy') || !window.fetch || !window.FormData) {
+			return;
+		}
+
+		var box = btn.closest('[data-ocs-react]');
+		var body = new FormData();
+
+		body.append('target_type', box.getAttribute('data-type'));
+		body.append('target_id', box.getAttribute('data-id'));
+		body.append('value', btn.getAttribute('data-value'));
+
+		btn.classList.add('is-busy');
+
+		fetch(box.getAttribute('data-url'), {method: 'POST', body: body, credentials: 'same-origin'}).then(function (r) {
+			return r.json();
+		}).then(function (json) {
+			if (!json || json.error) {
+				return;
+			}
+
+			var btns = box.querySelectorAll('.ocs-react-btn');
+
+			btns[0].querySelector('[data-count]').textContent = json.likes;
+			btns[1].querySelector('[data-count]').textContent = json.dislikes;
+
+			Array.prototype.forEach.call(btns, function (b) {
+				var on = parseInt(b.getAttribute('data-value'), 10) === json.mine;
+
+				b.classList.toggle('is-on', on);
+				b.setAttribute('aria-pressed', on ? 'true' : 'false');
+			});
+		}).catch(function () {}).then(function () {
+			btn.classList.remove('is-busy');
+		});
+	});
+}(window, document));

@@ -1,0 +1,5 @@
+{# Like / dislike buttons (SPEC-084 REQ-BLG-032, REQ-BLG-040). Context: rtype (article|comment), rid, likes, dislikes, mine, vote_url, text_like, text_dislike. Behaviour: theme.js OCS.react. #}
+<div class="ocs-react" data-ocs-react data-type="{{ rtype }}" data-id="{{ rid }}" data-url="{{ vote_url }}">
+  <button type="button" class="ocs-react-btn{% if mine == 1 %} is-on{% endif %}" data-value="1" aria-pressed="{{ mine == 1 ? 'true' : 'false' }}" aria-label="{{ text_like }}" title="{{ text_like }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-thumb-up"/></svg><span data-count>{{ likes }}</span></button>
+  <button type="button" class="ocs-react-btn{% if mine == -1 %} is-on{% endif %}" data-value="-1" aria-pressed="{{ mine == -1 ? 'true' : 'false' }}" aria-label="{{ text_dislike }}" title="{{ text_dislike }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-thumb-down"/></svg><span data-count>{{ dislikes }}</span></button>
+</div>

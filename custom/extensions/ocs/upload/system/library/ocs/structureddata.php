@@ -564,6 +564,39 @@ class StructuredData {
 			$node['publisher'] = $publisher;
 		}
 
+		// A named author (SPEC-084 REQ-BLG-005) replaces the organisation as author; the organisation stays the publisher.
+		if (isset($a['person']) && is_array($a['person']) && isset($a['person']['name']) && $a['person']['name'] !== '') {
+			$person = array('@type' => 'Person', 'name' => self::text($a['person']['name'], 120));
+
+			foreach (array('jobTitle' => 120, 'description' => 300) as $key => $max) {
+				if (!empty($a['person'][$key])) {
+					$person[$key] = self::text($a['person'][$key], $max);
+				}
+			}
+
+			$image = self::url(isset($a['person']['image']) ? $a['person']['image'] : '');
+
+			if ($image !== '') {
+				$person['image'] = $image;
+			}
+
+			$same = array();
+
+			foreach (isset($a['person']['sameAs']) && is_array($a['person']['sameAs']) ? $a['person']['sameAs'] : array() as $link) {
+				$link = self::url($link);
+
+				if ($link !== '') {
+					$same[] = $link;
+				}
+			}
+
+			if ($same) {
+				$person['sameAs'] = $same;
+			}
+
+			$node['author'] = $person;
+		}
+
 		return $node;
 	}
 

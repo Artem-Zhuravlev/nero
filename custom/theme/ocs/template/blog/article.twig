@@ -1,6 +1,7 @@
 {# @core-file catalog/view/theme/default/template/blog/article.twig @core-version 3.0.3.7 #}
+{# SPEC-084: author, publication date, reactions, popup comment form and shared cards. Hand-written override (no generated marker). #}
 {{ header }}
-<div id="product-product" class="container">
+<div id="blog-article" class="container">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
     <li>{% if loop.last %}<span aria-current="page">{{ breadcrumb.text }}</span>{% else %}<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>{% endif %}</li>
@@ -15,330 +16,139 @@
     {% set class = 'col-sm-12' %}
     {% endif %}
     <div id="content" class="{{ class }}">{{ content_top }}
-      <div class="row"> {% if column_left or column_right %}
-        {% set class = 'col-sm-12' %}
-        {% else %}
-        {% set class = 'col-sm-12' %}
-        {% endif %}
-        <div class="{{ class }}"> {% if thumb or images %}
-          <ul class="thumbnails">
-            {% if thumb %}
-            <li><a class="thumbnail" href="{{ popup }}" title="{{ heading_title }}"><img src="{{ thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" /></a></li>
-            {% endif %}
-            {% if images %}
-            {% for image in images %}
-            <li class="image-additional"><a class="thumbnail" href="{{ image.popup }}" title="{{ heading_title }}"> <img src="{{ image.thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" /></a></li>
-            {% endfor %}
-            {% endif %}
-          </ul>
-          {% endif %}
-         
-          <div class="content">
-		   <h1>{{ heading_title }}</h1>
-            <div class="tab-pane active" id="tab-description">{{ description }}</div>
-			{% if review_status %}
-          <div class="rating">
-            <p><span class="ocs-stars" role="img" aria-label="{{ rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span> 
-			  <a href="" onclick="gotoReview(); return false;">{{ reviews }}</a> / <a href="" onclick="gotoReviewWrite(); return false;">{{ text_write }}</a></p>
-            <hr>
-            <!-- AddThis Button BEGIN -->
-            <div class="addthis_toolbox addthis_default_style" data-url="{{ share }}"><a class="addthis_button_facebook_like" fb:like:layout="button_count"></a> <a class="addthis_button_tweet"></a> <a class="addthis_button_pinterest_pinit"></a> <a class="addthis_counter addthis_pill_style"></a></div>
-            <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-515eeaf54693130e"></script> 
-            <!-- AddThis Button END --> 
+      <article class="ocs-article">
+        <header class="ocs-article-head">
+          <h1>{{ heading_title }}</h1>
+          <div class="ocs-article-meta">
+            {% if ocs_blog and ocs_blog.date %}<span class="ocs-meta-item"><svg class="ocs-i" aria-hidden="true"><use href="#i-calendar"/></svg><time datetime="{{ ocs_blog.date_iso }}">{{ ocs_blog.date }}</time></span>{% endif %}
+            {% if ocs_blog and ocs_blog.author %}<span class="ocs-meta-item ocs-bcard-author">{% if ocs_blog.author.thumb %}<img src="{{ ocs_blog.author.thumb }}" alt="" width="24" height="24" />{% else %}<i aria-hidden="true">{{ ocs_blog.author.initial }}</i>{% endif %}<span>{{ ocs_blog.author.name }}</span></span>{% endif %}
+            {% if review_status %}<a class="ocs-meta-item" href="#tab-review"><span class="ocs-stars" role="img" aria-label="{{ rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span> {{ reviews }}</a>{% endif %}
           </div>
-          {% endif %}
-		  
-		  {% if download_status %}
-			<div class="blog-info">
-			{% if downloads %}
-			<br />
-			{% for download in downloads %}
-			<a href="{{ download.href }}" title=""><svg class="ocs-i" aria-hidden="true"><use href="#i-save"/></svg> {{ download.name }} {{ download.size }}</a><br>
-			{% endfor %}
-			<br />
-			{% endif %} 
-			</div>
-		  {% endif %} 
-            
-            
+        </header>
+
+        {% if thumb %}
+        <figure class="ocs-article-cover thumbnails"><a class="thumbnail" href="{{ popup }}" title="{{ heading_title }}"><img src="{{ thumb }}" alt="{{ heading_title }}" fetchpriority="high" /></a></figure>
+        {% endif %}
+        {% if images %}
+        <ul class="ocs-article-gallery thumbnails">
+          {% for image in images %}<li><a class="thumbnail" href="{{ image.popup }}" title="{{ heading_title }}"><img src="{{ image.thumb }}" alt="{{ heading_title }}" loading="lazy" /></a></li>{% endfor %}
+        </ul>
+        {% endif %}
+
+        <div class="ocs-article-body" id="tab-description">{{ description }}</div>
+
+        {% if download_status and downloads %}
+        <ul class="ocs-article-files">
+          {% for download in downloads %}<li><a href="{{ download.href }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-download"/></svg> {{ download.name }} <span class="text-muted">{{ download.size }}</span></a></li>{% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if ocs_blog %}
+        <div class="ocs-article-vote">
+          <span>{{ ocs_blog.t.text_helpful }}</span>
+          {% include 'ocs/template/ocs/blog_react.twig' with {rtype: 'article', rid: ocs_blog.article_id, likes: ocs_blog.likes, dislikes: ocs_blog.dislikes, mine: ocs_blog.mine, vote_url: ocs_blog.vote_url, text_like: ocs_blog.t.text_like, text_dislike: ocs_blog.t.text_dislike} %}
+        </div>
+
+        {% if ocs_blog.author %}
+        <aside class="ocs-author" aria-label="{{ ocs_blog.t.text_author_label }}">
+          <div class="ocs-author-pic">{% if ocs_blog.author.thumb %}<img src="{{ ocs_blog.author.thumb }}" alt="{{ ocs_blog.author.name }}" width="96" height="96" loading="lazy" />{% else %}<i aria-hidden="true">{{ ocs_blog.author.initial }}</i>{% endif %}</div>
+          <div class="ocs-author-info">
+            <p class="ocs-author-label">{{ ocs_blog.t.text_author_label }}</p>
+            <p class="ocs-author-name">{{ ocs_blog.author.name }}</p>
+            {% if ocs_blog.author.position %}<p class="ocs-author-pos">{{ ocs_blog.author.position }}</p>{% endif %}
+            {% if ocs_blog.author.description %}<p class="ocs-author-text">{{ ocs_blog.author.description }}</p>{% endif %}
+            {% if ocs_blog.author.social %}
+            <ul class="ocs-author-social">
+              {% for s in ocs_blog.author.social %}<li><a href="{{ s.url }}" target="_blank" rel="noopener nofollow me" aria-label="{{ s.label }}" title="{{ s.label }}"><svg class="ocs-i" aria-hidden="true"><use href="#{{ s.icon }}"/></svg></a></li>{% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+        </aside>
+        {% endif %}
+        {% endif %}
+      </article>
+
       {% if products %}
-      <h2>{{ text_related_product }}</h2>
-      <div class="row"> {% set i = 0 %}
-        {% for product in products %}
-        {% if column_left and column_right %}
-        {% set class = 'col-xs-8 col-sm-6' %}
-        {% elseif column_left or column_right %}
-        {% set class = 'col-xs-6 col-md-4' %}
-        {% else %}
-        {% set class = 'col-xs-6 col-sm-3' %}
-        {% endif %}
-        <div class="{{ class }}">
-          <div class="product-thumb transition">
-            <div class="image"><a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
-            <div class="caption">
-              <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
-              <p>{{ product.description }}</p>
-              {% if product.rating %}
-              <div class="rating"> <span class="ocs-stars" role="img" aria-label="{{ product.rating }} / 5">{% for j in 1..5 %}<svg class="ocs-i ocs-star{% if product.rating >= j %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span> </div>
-              {% endif %}
-              {% if product.price %}
-              <p class="price"> {% if not product.special %}
-                {{ product.price }}
-                {% else %} <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span> {% endif %}
-                {% if product.tax %} <span class="price-tax">{{ text_tax }} {{ product.tax }}</span> {% endif %} </p>
-              {% endif %} </div>
-            <div class="button-group">
-              <button type="button" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><span class="hidden-xs hidden-sm hidden-md">{{ button_cart }}</span> <svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg></button>
-              <button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.article_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>
-              <button type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product.article_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
-            </div>
-          </div>
+      <section class="ocs-section">
+        <h2 class="ocs-sec-title">{{ text_related_product }}</h2>
+        <div class="row">
+          {% for product in products %}
+          {% include 'ocs/template/ocs/card.twig' %}
+          {% endfor %}
         </div>
-        {% if column_left and column_right and (i + 1) % 2 == 0 %}
-        <div class="clearfix visible-md visible-sm"></div>
-        {% elseif column_left or column_right and (i + 1) % 3 == 0 %}
-        <div class="clearfix visible-md"></div>
-        {% elseif (i + 1) % 4 == 0 %}
-        <div class="clearfix visible-md"></div>
-        {% endif %}
-        {% set i = i + 1 %}
-        {% endfor %} </div>
-        {% endif %}
-		
-		{% if articles %}
-      <h2>{{ text_related }}</h2>
-      <div class="row"> {% set i = 0 %}
-        {% for article in articles %}
-        {% if column_left and column_right %}
-        {% set class = 'col-xs-8 col-sm-6' %}
-        {% elseif column_left or column_right %}
-        {% set class = 'col-xs-6 col-md-4' %}
-        {% else %}
-        {% set class = 'col-xs-6 col-sm-3' %}
-        {% endif %}
-        <div class="{{ class }}">
-          <div class="product-thumb transition">
-            <div class="image"><a href="{{ article.href }}"><img src="{{ article.thumb }}" alt="{{ article.name }}" title="{{ article.name }}" class="img-responsive" /></a></div>
-            <div class="caption">
-              <h4><a href="{{ article.href }}">{{ article.name }}</a></h4>
-              <p>{{ article.description }}</p>
-              {% if article.rating %}
-              <div class="rating"> <span class="ocs-stars" role="img" aria-label="{{ article.rating }} / 5">{% for j in 1..5 %}<svg class="ocs-i ocs-star{% if article.rating >= j %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span> </div>
-              {% endif %}
+      </section>
+      {% endif %}
+
+      {% if articles %}
+      <section class="ocs-section">
+        <h2 class="ocs-sec-title">{{ text_related }}</h2>
+        <div class="ocs-bgrid">
+          {% for article in articles %}
+          {% include 'ocs/template/ocs/blog_card.twig' %}
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if review_status %}
+      <section class="ocs-section ocs-comments" id="tab-review">
+        <div class="ocs-sec-head"><h2 class="ocs-sec-title">{{ ocs_blog ? ocs_blog.t.text_comments : text_write }}</h2><button type="button" class="btn btn-primary ocs-js-only" data-ocs-popup="ocs-review-box" aria-haspopup="dialog">{{ ocs_blog ? ocs_blog.t.button_write_comment : text_write }}</button></div>
+        <div id="review"></div>
+        <div class="ocs-popup-box" id="ocs-review-box" data-close="{{ ocs_blog ? ocs_blog.t.text_close : '' }}">
+          <form class="ocs-form" id="form-review">
+            <h2 class="ocs-form-title" id="ocs-review-title">{{ ocs_blog ? ocs_blog.t.button_write_comment : text_write }}</h2>
+            {% if review_guest %}
+            <fieldset class="ocs-field required ocs-rating-field">
+              <legend>{{ entry_rating }}</legend>
+              <div class="ocs-rate">
+                {% for i in 5..1 %}<input type="radio" name="rating" value="{{ i }}" id="input-rating-{{ i }}" /><label for="input-rating-{{ i }}" title="{{ i }}"><span class="ocs-sr">{{ i }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-star"/></svg></label>{% endfor %}
               </div>
-            <div class="button-group">
-              <button type="button" onclick="location.href = ('{{ article.href }}');"><span class="hidden-xs hidden-sm hidden-md">{{ button_more }}</span> <svg class="ocs-i" aria-hidden="true"><use href="#i-share"/></svg></button>
-              <button type="button" data-toggle="tooltip" title="{{ article.date_added }}" "><svg class="ocs-i" aria-hidden="true"><use href="#i-clock"/></svg></button>
-			  <button type="button" data-toggle="tooltip" title="{{ text_views }} {{ article.viewed }}" "><svg class="ocs-i" aria-hidden="true"><use href="#i-eye"/></svg></button>
+              <p class="ocs-help"><span>{{ entry_bad }}</span> <span>{{ entry_good }}</span></p>
+            </fieldset>
+            <div class="ocs-field required">
+              <label for="input-name">{{ entry_name }}</label>
+              <input placeholder="{{ entry_name }}" type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" autocomplete="name" />
             </div>
-          </div>
-        </div>
-        {% if column_left and column_right and (i + 1) % 2 == 0 %}
-        <div class="clearfix visible-md visible-sm"></div>
-        {% elseif column_left or column_right and (i + 1) % 3 == 0 %}
-        <div class="clearfix visible-md"></div>
-        {% elseif (i + 1) % 4 == 0 %}
-        <div class="clearfix visible-md"></div>
-        {% endif %}
-        {% set i = i + 1 %}
-        {% endfor %} </div>
-        {% endif %}
-		
-		{% if review_status %}
-            <div class="tab-pane" id="tab-review">
-              <form class="form-horizontal" id="form-review">
-                <div id="review"></div>
-                <h2>{{ text_write }}</h2>
-                {% if review_guest %}
-                <div class="form-group required">
-                  <div class="col-sm-12">
-                    <label class="control-label" for="input-name">{{ entry_name }}</label>
-                    <input placeholder="{{ entry_name }}" type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" />
-                  </div>
-                </div>
-                <div class="form-group required">
-                  <div class="col-sm-12">
-                    <label class="control-label" for="input-review">{{ entry_review }}</label>
-                    <textarea placeholder="{{ entry_review }}" name="text" rows="5" id="input-review" class="form-control"></textarea>
-                    <div class="help-block">{{ text_note }}</div>
-                  </div>
-                </div>
-                <div class="form-group required">
-                  <div class="col-sm-12">
-                    <label class="control-label">{{ entry_rating }}</label>
-                    &nbsp;&nbsp;&nbsp; {{ entry_bad }}&nbsp;
-                    <input type="radio" name="rating" value="1" />
-                    &nbsp;
-                    <input type="radio" name="rating" value="2" />
-                    &nbsp;
-                    <input type="radio" name="rating" value="3" />
-                    &nbsp;
-                    <input type="radio" name="rating" value="4" />
-                    &nbsp;
-                    <input type="radio" name="rating" value="5" />
-                    &nbsp;{{ entry_good }}</div>
-                </div>
-                {{ captcha }}
-                <div class="buttons clearfix">
-                  <div class="pull-right">
-                    <button type="button" id="button-review" data-loading-text="{{ text_loading }}" class="btn btn-primary">{{ button_continue }}</button>
-                  </div>
-                </div>
-                {% else %}
-                {{ text_login }}
-                {% endif %}
-              </form>
+            <div class="ocs-field required">
+              <label for="input-review">{{ entry_review }}</label>
+              <textarea placeholder="{{ entry_review }}" name="text" rows="5" id="input-review" class="form-control"></textarea>
+              <p class="ocs-help">{{ text_note }}</p>
             </div>
-            {% endif %}</div>
+            {{ captcha }}
+            <div id="review-msg" role="status" aria-live="polite"></div>
+            <div class="ocs-form-actions">
+              <button type="button" class="btn btn-default ocs-js-only" data-ocs-popup-close>{{ ocs_blog ? ocs_blog.t.button_cancel : button_cancel }}</button>
+              <button type="button" id="button-review" data-loading-text="{{ text_loading }}" class="btn btn-primary">{{ button_continue }}</button>
+            </div>
+            {% else %}
+            <p>{{ text_login }}</p>
+            {% endif %}
+          </form>
         </div>
-      
-      </div>
-        
+      </section>
+      {% endif %}
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>
 <script type="text/javascript"><!--
-$('#button-cart').on('click', function() {
-	$.ajax({
-		url: 'index.php?route=checkout/cart/add',
-		type: 'post',
-		data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
-		dataType: 'json',
-		beforeSend: function() {
-			$('#button-cart').button('loading');
-		},
-		complete: function() {
-			$('#button-cart').button('reset');
-		},
-		success: function(json) {
-			$('.alert-dismissible, .text-danger').remove();
-			$('.form-group').removeClass('has-error');
-
-			if (json['error']) {
-				if (json['error']['option']) {
-					for (i in json['error']['option']) {
-						var element = $('#input-option' + i.replace('_', '-'));
-
-						if (element.parent().hasClass('input-group')) {
-							element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
-						} else {
-							element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
-						}
-					}
-				}
-
-				if (json['error']['recurring']) {
-					$('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
-				}
-
-				// Highlight any found errors
-				$('.text-danger').parent().addClass('has-error');
-			}
-
-			if (json['success']) {
-				$('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '</div>');
-
-				$('#cart > button').html('<span id="cart-total"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg> ' + json['total'] + '</span>');
-
-				$('html, body').animate({ scrollTop: 0 }, 'slow');
-
-				$('#cart > ul').load('index.php?route=common/cart/info ul li');
-			}
-		},
-        error: function(xhr, ajaxOptions, thrownError) {
-            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-        }
-	});
-});
-//--></script> 
-<script type="text/javascript"><!--
-$('.date').datetimepicker({
-	language: '{{ datepicker }}',
-	pickTime: false
-});
-
-$('.datetime').datetimepicker({
-	language: '{{ datepicker }}',
-	pickDate: true,
-	pickTime: true
-});
-
-$('.time').datetimepicker({
-	language: '{{ datepicker }}',
-	pickDate: false
-});
-
-$('button[id^=\'button-upload\']').on('click', function() {
-	var node = this;
-
-	$('#form-upload').remove();
-
-	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
-
-	$('#form-upload input[name=\'file\']').trigger('click');
-
-	if (typeof timer != 'undefined') {
-    	clearInterval(timer);
-	}
-
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-
-			$.ajax({
-				url: 'index.php?route=tool/upload',
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).button('loading');
-				},
-				complete: function() {
-					$(node).button('reset');
-				},
-				success: function(json) {
-					$('.text-danger').remove();
-
-					if (json['error']) {
-						$(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
-					}
-
-					if (json['success']) {
-						alert(json['success']);
-
-						$(node).parent().find('input').val(json['code']);
-					}
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-				}
-			});
-		}
-	}, 500);
-});
-//--></script> 
-<script type="text/javascript"><!--
-$('#review').delegate('.pagination a', 'click', function(e) {
-    e.preventDefault();
-
-    $('#review').fadeOut('slow');
-
-    $('#review').load(this.href);
-
-    $('#review').fadeIn('slow');
-});
+if ($.fn.magnificPopup) {
+	$('.thumbnails').magnificPopup({ type: 'image', delegate: 'a', gallery: { enabled: true } });
+}
 
 $('#review').load('index.php?route=blog/article/review&article_id={{ article_id }}');
+
+$('#review').on('click', '.pagination a', function(e) {
+	e.preventDefault();
+
+	$('#review').load(this.href);
+});
 
 $('#button-review').on('click', function() {
 	$.ajax({
 		url: 'index.php?route=blog/article/write&article_id={{ article_id }}',
 		type: 'post',
 		dataType: 'json',
-		data: $("#form-review").serialize(),
+		data: $('#form-review').serialize(),
 		beforeSend: function() {
 			$('#button-review').button('loading');
 		},
@@ -346,55 +156,25 @@ $('#button-review').on('click', function() {
 			$('#button-review').button('reset');
 		},
 		success: function(json) {
-			$('.alert-dismissible').remove();
+			$('#review-msg').empty();
 
 			if (json['error']) {
-				$('#review').after('<div class="alert alert-danger alert-dismissible">' + json['error'] + '</div>');
+				$('#review-msg').html('<div class="alert alert-danger">' + json['error'] + '</div>');
 			}
 
 			if (json['success']) {
-				$('#review').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '</div>');
+				$('#review-msg').html('<div class="alert alert-success">' + json['success'] + '</div>');
 
-				$('input[name=\'name\']').val('');
-				$('textarea[name=\'text\']').val('');
-				$('input[name=\'rating\']:checked').prop('checked', false);
+				$('#form-review input[name=\'name\']').val('');
+				$('#form-review textarea[name=\'text\']').val('');
+				$('#form-review input[name=\'rating\']:checked').prop('checked', false);
+
+				if (window.OCS && OCS.popup) {
+					setTimeout(OCS.popup.close, 2200);
+				}
 			}
 		}
 	});
 });
-
-$(document).ready(function() {
-	$('.thumbnails').magnificPopup({
-		type:'image',
-		delegate: 'a',
-		gallery: {
-			enabled: true
-		}
-	});
-});
-//--></script> 
-<script type="text/javascript"><!--
-$(document).ready(function() {
-  $('#description').find('a>img').each(function(){
-    $(this).parent().addClass('gallery');
-  });
-  $('#description').magnificPopup({
-    delegate: 'a.gallery',
-    type: 'image',
-    gallery: {
-        enabled: true
-    }
-  });
-
-  gotoReview = function() {
-    offset = $('#form-review').offset();
-    $('html, body').animate({ scrollTop: offset.top-20 }, 'slow');
-  }
-  gotoReviewWrite = function() {
-    offset = $('#form-review h2').offset();
-    $('html, body').animate({ scrollTop: offset.top-20 }, 'slow');
-  }
-  
-});
---></script>
-{{ footer }} 
+//--></script>
+{{ footer }}

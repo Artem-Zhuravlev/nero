@@ -1,0 +1,33 @@
+{# Extension ocs_blog (SPEC-084): per-language name, H1 and meta fields of the blog settings. #}
+<ul class="nav nav-tabs" id="ocs-blog-language">
+  {% for language in languages %}
+  <li{% if loop.first %} class="active"{% endif %}><a href="#ocs-blog-lang-{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" alt="" /> {{ language.name }}</a></li>
+  {% endfor %}
+</ul>
+<div class="tab-content" style="padding-top:15px">
+  {% for language in languages %}
+  {% set v = values[language.language_id] %}
+  <div class="tab-pane{% if loop.first %} active{% endif %}" id="ocs-blog-lang-{{ language.language_id }}">
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="ocs-blog-name-{{ language.language_id }}">{{ entry_name }}</label>
+      <div class="col-sm-10"><input type="text" name="ocs_blog_desc[{{ language.language_id }}][name]" value="{{ v.name }}" id="ocs-blog-name-{{ language.language_id }}" class="form-control" /></div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="ocs-blog-h1-{{ language.language_id }}">{{ entry_html_h1 }}</label>
+      <div class="col-sm-10"><input type="text" name="ocs_blog_desc[{{ language.language_id }}][html_h1]" value="{{ v.html_h1 }}" id="ocs-blog-h1-{{ language.language_id }}" class="form-control" /></div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="ocs-blog-mt-{{ language.language_id }}">{{ entry_meta_title }}</label>
+      <div class="col-sm-10"><input type="text" name="ocs_blog_desc[{{ language.language_id }}][meta_title]" value="{{ v.meta_title }}" id="ocs-blog-mt-{{ language.language_id }}" class="form-control" /></div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="ocs-blog-md-{{ language.language_id }}">{{ entry_meta_description }}</label>
+      <div class="col-sm-10"><textarea name="ocs_blog_desc[{{ language.language_id }}][meta_description]" rows="4" id="ocs-blog-md-{{ language.language_id }}" class="form-control">{{ v.meta_description }}</textarea></div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="ocs-blog-mk-{{ language.language_id }}">{{ entry_meta_keyword }}</label>
+      <div class="col-sm-10"><textarea name="ocs_blog_desc[{{ language.language_id }}][meta_keyword]" rows="3" id="ocs-blog-mk-{{ language.language_id }}" class="form-control">{{ v.meta_keyword }}</textarea></div>
+    </div>
+  </div>
+  {% endfor %}
+</div>

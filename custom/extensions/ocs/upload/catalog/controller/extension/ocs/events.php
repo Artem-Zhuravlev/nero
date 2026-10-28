@@ -528,14 +528,46 @@ class ControllerExtensionOcsEvents extends Controller {
 
 		$server = !empty($this->request->server['HTTPS']) && $this->request->server['HTTPS'] !== 'off' ? $this->config->get('config_ssl') : $this->config->get('config_url');
 
+		$published = $info['date_added'];
+		$person = null;
+
+		// SPEC-084: publication date and named author from the ocs_blog extension, when it is installed.
+		if (class_exists('\Ocs\Blog')) {
+			try {
+				$this->load->model('extension/ocs_blog/blog');
+
+				$meta = $this->model_extension_ocs_blog_blog->getArticleMeta(array((int)$data['article_id']));
+				$authors = $this->model_extension_ocs_blog_blog->getAuthors(array((int)$data['article_id']));
+
+				if (isset($meta[(int)$data['article_id']]) && $meta[(int)$data['article_id']]['date']) {
+					$published = $meta[(int)$data['article_id']]['date'];
+				}
+
+				if (isset($authors[(int)$data['article_id']])) {
+					$author = $authors[(int)$data['article_id']];
+					$author['image_url'] = !empty($author['image']) && is_file(DIR_IMAGE . $author['image']) ? $server . 'image/' . $author['image'] : '';
+					$author['social'] = $author['social'];
+
+					$person = \Ocs\Blog::person($author);
+
+					if ($person && !empty($author['social'])) {
+						$person['sameAs'] = array_values($author['social']);
+					}
+				}
+			} catch (\Exception $e) {
+				$this->log->write('[ocs] blog author: ' . $e->getMessage());
+			}
+		}
+
 		return \Ocs\StructuredData::article(array(
 			'url'         => $page_url,
 			'headline'    => isset($data['heading_title']) ? $data['heading_title'] : $info['name'],
 			'image'       => !empty($info['image']) && is_file(DIR_IMAGE . $info['image']) ? $server . 'image/' . $info['image'] : '',
 			'description' => !empty($info['meta_description']) ? $info['meta_description'] : (isset($data['description']) ? $data['description'] : ''),
-			'published'   => $info['date_added'],
+			'published'   => $published,
 			'modified'    => $info['date_modified'],
-			'publisher'   => $org
+			'publisher'   => $org,
+			'person'      => $person
 		));
 	}
 

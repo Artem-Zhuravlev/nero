@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Purpose: author select, publication date and reaction counters in the admin blog article form.
+  Owner: SPEC-084 (REQ-BLG-003, REQ-BLG-010). Event insufficient because: view events can add variables but not new markup to the core template.
+  The block is rendered by the ocs_blog admin event and handed over as {{ ocs_blog_article_extra }}.
+  @core-file admin/view/template/blog/article_form.twig
+  @core-version 3.0.3.7
+-->
+<modification>
+  <name>OCS blog: author and publication date in the article form</name>
+  <code>ocs_blog_article_form</code>
+  <version>1.0.0</version>
+  <author>OCS</author>
+  <link></link>
+  <file path="admin/view/template/blog/article_form.twig">
+    <operation>
+      <search><![CDATA[<div class="tab-pane" id="tab-data">]]></search>
+      <add position="after"><![CDATA[{{ ocs_blog_article_extra }}]]></add>
+    </operation>
+  </file>
+</modification>

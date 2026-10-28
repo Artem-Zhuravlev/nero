@@ -1,0 +1,18 @@
+{# Article card shared by blog/latest, blog/category and the blog modules (SPEC-084 REQ-BLG-050). Context: article (core row + ocs_author, ocs_date, ocs_date_iso, ocs_likes from the ocs_blog event), button_more, text_views. #}
+<article class="ocs-bcard">
+  <a class="ocs-bcard-img" href="{{ article.href }}" tabindex="-1" aria-hidden="true">{% if article.thumb %}<img src="{{ article.thumb }}" alt="" loading="lazy" />{% else %}<span class="ocs-bcard-ph"><svg class="ocs-i" aria-hidden="true"><use href="#i-camera"/></svg></span>{% endif %}</a>
+  <div class="ocs-bcard-body">
+    <div class="ocs-bcard-meta">
+      {% set d = article.ocs_date ? article.ocs_date : article.date_added %}
+      {% if d %}<time{% if article.ocs_date_iso %} datetime="{{ article.ocs_date_iso }}"{% endif %}>{{ d }}</time>{% endif %}
+      {% if article.rating %}<span class="ocs-stars" role="img" aria-label="{{ article.rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if article.rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span>{% endif %}
+    </div>
+    <h3 class="ocs-bcard-title"><a href="{{ article.href }}">{{ article.name }}</a></h3>
+    {% if article.description %}<p class="ocs-bcard-text">{{ article.description }}</p>{% endif %}
+    <div class="ocs-bcard-foot">
+      {% if article.ocs_author %}<span class="ocs-bcard-author">{% if article.ocs_author.thumb %}<img src="{{ article.ocs_author.thumb }}" alt="" width="24" height="24" loading="lazy" />{% else %}<i aria-hidden="true">{{ article.ocs_author.initial }}</i>{% endif %}<span>{{ article.ocs_author.name }}</span></span>{% endif %}
+      <span class="ocs-bcard-stat" title="{{ text_views }} {{ article.viewed }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-eye"/></svg>{{ article.viewed }}</span>
+      {% if article.ocs_likes %}<span class="ocs-bcard-stat"><svg class="ocs-i" aria-hidden="true"><use href="#i-thumb-up"/></svg>{{ article.ocs_likes }}</span>{% endif %}
+    </div>
+  </div>
+</article>
