@@ -62,7 +62,7 @@
       <div class="row" id="ocs-grid"> {% for product in products %}
         {% include 'ocs/template/ocs/card.twig' %}
         {% endfor %} </div>
-      {% if ocs_listing %}
+      {% if ocs_listing and pagination %}
       <div class="text-center ocs-more"><button type="button" id="ocs-load-more" class="btn btn-default btn-lg" hidden>{{ ocs_listing.load_more }}</button></div>
       {% endif %}
       <div class="row">

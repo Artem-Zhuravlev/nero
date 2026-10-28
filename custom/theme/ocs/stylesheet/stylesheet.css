@@ -415,7 +415,6 @@ footer details.ocs-fgroup:not([open]) > ul { display: none; }
 .ocs-chip:hover { background: var(--border); text-decoration: none; color: var(--text); }
 .ocs-active-filters { margin-bottom: var(--sp-3); }
 .ocs-more { margin: var(--sp-5) 0; }
-.ocs-more button[hidden] { display: none; }
 
 .ocs-seo { margin: var(--sp-6) 0; color: var(--text-muted); }
 .ocs-seo-body { line-height: 1.5; }
@@ -2433,4 +2432,9 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-head-logo h1 { font-size: var(--fs-md); line-height: 1.2; max-inline-size: 6.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 		.ocs-head-search #search .form-control, .ocs-head-search #search .btn { block-size: 2.5rem; min-block-size: 2.5rem; }
 	}
+}
+
+/* SPEC-096: the "show more" button stays hidden whatever the button layer says */
+@layer overrides {
+	.ocs-more button[hidden] { display: none !important; }
 }

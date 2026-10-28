@@ -1258,3 +1258,13 @@ test('listing toolbar: sort then view switch, no limit select, not sticky', () =
   assert.ok(rule && !rule.includes('sticky'));
   assert.ok(css.includes('.ocs-toolbar .ocs-view-switch { display: none; }'));
 });
+
+// TEST-LML-001 - verifies REQ-LML-001..003 (show-more button only with pagination; hidden really hides it)
+test('listing show-more button: only rendered with pagination, hidden wins over button styles', () => {
+  for (const f of ['category', 'manufacturer_info', 'search', 'special']) {
+    const tpl = readFileSync(join(REPO_ROOT, `custom/theme/ocs/template/product/${f}.twig`), "utf8");
+    const at = tpl.indexOf('id="ocs-load-more"');
+    assert.ok(at > 0 && tpl.lastIndexOf('{% if', at) === tpl.lastIndexOf('{% if ocs_listing and pagination %}', at), f);
+  }
+  assert.ok(css.includes('.ocs-more button[hidden] { display: none !important; }'));
+});
