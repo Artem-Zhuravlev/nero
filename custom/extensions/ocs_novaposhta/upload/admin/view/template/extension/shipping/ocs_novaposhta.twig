@@ -1,0 +1,235 @@
+{# Extension: ocs_novaposhta. Admin settings, directory status and cron lines. Owner: SPEC-085. Autoescape is OFF: user values go through |escape. #}
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-np" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-database"></i> {{ text_directories }}</h3></div>
+      <div class="panel-body">
+        <p class="text-muted">{{ help_directories }}</p>
+        <table class="table table-bordered" id="np-directories">
+          <thead><tr>
+            <th>{{ column_directory }}</th><th>{{ column_status }}</th><th>{{ column_finished }}</th><th class="text-right">{{ column_rows }}</th><th></th>
+          </tr></thead>
+          <tbody>
+          {% for d in directories %}
+          <tr data-entity="{{ d.entity }}">
+            <td>{{ d.name }}</td>
+            <td class="np-status">{{ d.status }}{% if d.status != 'done' and d.status != 'idle' %} ({{ d.page }}){% endif %}{% if d.error %}<br><small class="text-danger">{{ d.error|escape }}</small>{% endif %}</td>
+            <td class="np-finished">{{ d.finished }}</td>
+            <td class="text-right np-rows">{{ d.active }} / {{ d.total }}</td>
+            <td class="text-right">
+              <button type="button" class="btn btn-primary btn-sm np-run">{{ button_run }}</button>
+              <button type="button" class="btn btn-default btn-sm np-reset">{{ button_reset }}</button>
+            </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        <div id="np-message" class="text-muted"></div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-clock-o"></i> {{ text_cron }}</h3></div>
+      <div class="panel-body">
+        <p class="text-muted">{{ help_cron }}</p>
+        <pre>10 3 * * *  php {{ cli_path|escape }} areas
+20 3 * * *  php {{ cli_path|escape }} cities
+40 3 * * *  php {{ cli_path|escape }} warehouses</pre>
+        <p class="text-muted">{{ help_cron_http }}</p>
+        <pre>{{ cron_url|escape }}areas
+{{ cron_url|escape }}cities
+{{ cron_url|escape }}warehouses</pre>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3></div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-np" class="form-horizontal">
+          <input type="hidden" name="shipping_ocs_novaposhta_cron_token" value="{{ shipping_ocs_novaposhta_cron_token|escape }}" />
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="shipping_ocs_novaposhta_status" id="input-status" class="form-control">
+                <option value="1"{% if shipping_ocs_novaposhta_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                <option value="0"{% if not shipping_ocs_novaposhta_status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group{% if error_key %} has-error{% endif %}">
+            <label class="col-sm-2 control-label" for="input-key">{{ entry_api_key }}</label>
+            <div class="col-sm-10">
+              <input type="password" name="shipping_ocs_novaposhta_api_key" value="" id="input-key" autocomplete="new-password" placeholder="{% if api_key_set %}{{ text_key_set }}{% else %}{{ entry_api_key }}{% endif %}" class="form-control" />
+              <div class="help-block">{{ help_api_key }}</div>
+              {% if error_key %}<div class="text-danger">{{ error_key }}</div>{% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-token">{{ entry_cron_token }}</label>
+            <div class="col-sm-10">
+              <label class="checkbox-inline"><input type="checkbox" name="regenerate_token" value="1" /> {{ text_regenerate }}</label>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend>{{ text_price }}</legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-cost">{{ entry_cost }}</label>
+              <div class="col-sm-10"><input type="text" name="shipping_ocs_novaposhta_cost" value="{{ shipping_ocs_novaposhta_cost|escape }}" id="input-cost" class="form-control" /></div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-free">{{ entry_free_total }}</label>
+              <div class="col-sm-10"><input type="text" name="shipping_ocs_novaposhta_free_total" value="{{ shipping_ocs_novaposhta_free_total|escape }}" id="input-free" class="form-control" />
+                <div class="help-block">{{ help_free_total }}</div></div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-tax">{{ entry_tax_class }}</label>
+              <div class="col-sm-10">
+                <select name="shipping_ocs_novaposhta_tax_class_id" id="input-tax" class="form-control">
+                  <option value="0">{{ text_none }}</option>
+                  {% for tax_class in tax_classes %}
+                  <option value="{{ tax_class.tax_class_id }}"{% if tax_class.tax_class_id == shipping_ocs_novaposhta_tax_class_id %} selected="selected"{% endif %}>{{ tax_class.title }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-geo">{{ entry_geo_zone }}</label>
+              <div class="col-sm-10">
+                <select name="shipping_ocs_novaposhta_geo_zone_id" id="input-geo" class="form-control">
+                  <option value="0">{{ text_all_zones }}</option>
+                  {% for geo_zone in geo_zones %}
+                  <option value="{{ geo_zone.geo_zone_id }}"{% if geo_zone.geo_zone_id == shipping_ocs_novaposhta_geo_zone_id %} selected="selected"{% endif %}>{{ geo_zone.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-ua">{{ entry_only_ua }}</label>
+              <div class="col-sm-10">
+                <select name="shipping_ocs_novaposhta_only_ua" id="input-ua" class="form-control">
+                  <option value="1"{% if shipping_ocs_novaposhta_only_ua %} selected="selected"{% endif %}>{{ text_yes }}</option>
+                  <option value="0"{% if not shipping_ocs_novaposhta_only_ua %} selected="selected"{% endif %}>{{ text_no }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-require">{{ entry_require_point }}</label>
+              <div class="col-sm-10">
+                <select name="shipping_ocs_novaposhta_require_point" id="input-require" class="form-control">
+                  <option value="1"{% if shipping_ocs_novaposhta_require_point %} selected="selected"{% endif %}>{{ text_yes }}</option>
+                  <option value="0"{% if not shipping_ocs_novaposhta_require_point %} selected="selected"{% endif %}>{{ text_no }}</option>
+                </select>
+                <div class="help-block">{{ help_require_point }}</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-sort">{{ entry_sort_order }}</label>
+              <div class="col-sm-10"><input type="text" name="shipping_ocs_novaposhta_sort_order" value="{{ shipping_ocs_novaposhta_sort_order|escape }}" id="input-sort" class="form-control" /></div>
+            </div>
+            {% for language in languages %}
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-title-{{ language.code }}">{{ entry_title }} ({{ language.code }})</label>
+              <div class="col-sm-10"><input type="text" name="shipping_ocs_novaposhta_title[{{ language.code }}]" value="{{ titles[language.code]|escape }}" id="input-title-{{ language.code }}" placeholder="{{ help_title }}" class="form-control" /></div>
+            </div>
+            {% endfor %}
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ text_checkout }}</legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-preset">{{ entry_preset }}</label>
+              <div class="col-sm-10">
+                <select name="shipping_ocs_novaposhta_preset" id="input-preset" class="form-control">
+                  <option value="default"{% if shipping_ocs_novaposhta_preset == 'default' %} selected="selected"{% endif %}>{{ text_preset_default }}</option>
+                  <option value="simple"{% if shipping_ocs_novaposhta_preset == 'simple' %} selected="selected"{% endif %}>{{ text_preset_simple }}</option>
+                  <option value="custom"{% if shipping_ocs_novaposhta_preset == 'custom' %} selected="selected"{% endif %}>{{ text_preset_custom }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-selectors">{{ entry_selectors }}</label>
+              <div class="col-sm-10">
+                <textarea name="shipping_ocs_novaposhta_selectors" id="input-selectors" rows="4" class="form-control" placeholder="#city | #address | #zone | #country">{{ selectors_text|escape }}</textarea>
+                <div class="help-block">{{ help_selectors }}</div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ text_sync }}</legend>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-batch">{{ entry_batch_size }}</label>
+              <div class="col-sm-10"><input type="text" name="shipping_ocs_novaposhta_batch_size" value="{{ shipping_ocs_novaposhta_batch_size|escape }}" id="input-batch" class="form-control" />
+                <div class="help-block">{{ help_batch_size }}</div></div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-pause">{{ entry_pause_ms }}</label>
+              <div class="col-sm-10"><input type="text" name="shipping_ocs_novaposhta_pause_ms" value="{{ shipping_ocs_novaposhta_pause_ms|escape }}" id="input-pause" class="form-control" />
+                <div class="help-block">{{ help_pause_ms }}</div></div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var url = '{{ sync_url }}';
+  var msg = document.getElementById('np-message');
+
+  function paint(row, d) {
+    row.querySelector('.np-status').textContent = d.status + (d.status !== 'done' && d.status !== 'idle' ? ' (' + d.page + ')' : '') + (d.error ? ' — ' + d.error : '');
+    row.querySelector('.np-finished').textContent = d.finished;
+    row.querySelector('.np-rows').textContent = d.active + ' / ' + d.total;
+  }
+
+  function post(row, reset) {
+    var entity = row.getAttribute('data-entity');
+    var buttons = row.querySelectorAll('button');
+    buttons.forEach(function (b) { b.disabled = true; });
+    msg.textContent = '{{ text_working }}';
+
+    var body = new URLSearchParams();
+    body.set('entity', entity);
+    if (reset) { body.set('reset', '1'); }
+
+    fetch(url, { method: 'POST', body: body, credentials: 'same-origin' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j.directory) { paint(row, j.directory); }
+        msg.textContent = j.error ? j.error : (j.status === 'partial' ? '{{ text_partial }}' : j.status);
+      })
+      .catch(function () { msg.textContent = '{{ error_request }}'; })
+      .then(function () { buttons.forEach(function (b) { b.disabled = false; }); });
+  }
+
+  document.querySelectorAll('#np-directories tbody tr').forEach(function (row) {
+    row.querySelector('.np-run').addEventListener('click', function () { post(row, false); });
+    row.querySelector('.np-reset').addEventListener('click', function () { post(row, true); });
+  });
+})();
+</script>
+{{ footer }}

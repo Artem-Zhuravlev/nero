@@ -1,0 +1,11 @@
+{ "code": "ocs_novaposhta", "type": "shipping", "version": "1.0.0",
+  "title": { "en-gb": "OCS Nova Poshta", "uk-ua": "OCS: Нова пошта" },
+  "requires": { "core": "3.0.3.7", "extensions": [] },
+  "spec": "SPEC-085",
+  "tables": ["ocs_np_area", "ocs_np_city", "ocs_np_warehouse", "ocs_np_sync", "ocs_np_order"],
+  "settings": ["shipping_ocs_novaposhta_status", "shipping_ocs_novaposhta_sort_order", "shipping_ocs_novaposhta_api_key", "shipping_ocs_novaposhta_cron_token",
+    "shipping_ocs_novaposhta_cost", "shipping_ocs_novaposhta_free_total", "shipping_ocs_novaposhta_tax_class_id", "shipping_ocs_novaposhta_geo_zone_id",
+    "shipping_ocs_novaposhta_only_ua", "shipping_ocs_novaposhta_require_point", "shipping_ocs_novaposhta_title", "shipping_ocs_novaposhta_preset",
+    "shipping_ocs_novaposhta_selectors", "shipping_ocs_novaposhta_batch_size", "shipping_ocs_novaposhta_pause_ms"],
+  "events": ["ocs_np_header_before", "ocs_np_add_order_before", "ocs_np_add_order_after", "ocs_np_edit_order_before", "ocs_np_edit_order_after"],
+  "routes": ["extension/shipping/ocs_novaposhta", "extension/ocs_novaposhta/api", "extension/ocs_novaposhta/cron", "extension/ocs_novaposhta/events"] }

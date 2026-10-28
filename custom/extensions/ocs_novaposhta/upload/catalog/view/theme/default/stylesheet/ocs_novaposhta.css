@@ -1,0 +1,65 @@
+/* Extension: ocs_novaposhta. City suggestions and branch picker popups on the checkout. Owner: SPEC-085. */
+.ocs-np-pop {
+  position: fixed;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--ocs-bg, #fff);
+  color: var(--ocs-text, #111);
+  border: 1px solid var(--ocs-border, #d9d9de);
+  border-radius: var(--ocs-radius, 10px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
+  font-size: 14px;
+  line-height: 1.35;
+}
+.ocs-np-head { padding: 8px; border-bottom: 1px solid var(--ocs-border, #e6e6ea); }
+.ocs-np-search {
+  width: 100%;
+  box-sizing: border-box;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--ocs-border, #d9d9de);
+  border-radius: 8px;
+  font: inherit;
+  background: transparent;
+  color: inherit;
+}
+.ocs-np-search:focus { outline: 2px solid var(--ocs-accent, #111); outline-offset: 0; }
+.ocs-np-tabs { display: flex; gap: 6px; margin-top: 8px; }
+.ocs-np-tab {
+  flex: 1;
+  height: 32px;
+  border: 1px solid var(--ocs-border, #d9d9de);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.ocs-np-tab.is-on { background: var(--ocs-accent, #111); border-color: var(--ocs-accent, #111); color: var(--ocs-on-accent, #fff); }
+.ocs-np-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.ocs-np-item { padding: 9px 12px; cursor: pointer; border-bottom: 1px solid var(--ocs-border, #f0f0f3); }
+.ocs-np-item:last-child { border-bottom: 0; }
+.ocs-np-item:hover, .ocs-np-item.is-active { background: var(--ocs-hover, #f3f3f5); }
+.ocs-np-title { font-weight: 500; }
+.ocs-np-title mark { background: transparent; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.ocs-np-sub { margin-top: 2px; font-size: 12px; color: var(--ocs-muted, #6b6b73); }
+.ocs-np-empty { padding: 14px 12px; color: var(--ocs-muted, #6b6b73); }
+.ocs-np-more {
+  height: 40px;
+  border: 0;
+  border-top: 1px solid var(--ocs-border, #e6e6ea);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.ocs-np-more:hover { background: var(--ocs-hover, #f3f3f5); }
+@media (prefers-color-scheme: dark) {
+  .ocs-np-pop { --ocs-bg: #1c1c1e; --ocs-text: #f2f2f7; --ocs-border: #3a3a3c; --ocs-hover: #2c2c2e; --ocs-muted: #98989f; }
+}
+@media (max-width: 575px) {
+  .ocs-np-pop { left: 8px !important; right: 8px; width: auto !important; }
+}
