@@ -2436,3 +2436,34 @@ li .ocs-stock { font-size: inherit; }
 @layer overrides {
 	.ocs-more button[hidden] { display: none !important; }
 }
+
+/* ==== SPEC-106 product modules: a carousel with exactly 2 cards per view on phones, the card grid from 768px ==== */
+.ocs-carousel.ocs-mc { margin: 0; }
+@media (max-width: 767px) {
+	.ocs-mc .ocs-carousel-track, .ocs-pcarousel .ocs-carousel-track { gap: var(--sp-2); }
+	.ocs-mc .ocs-carousel-item, .ocs-pcarousel .ocs-carousel-item { flex: 0 0 calc((100% - var(--sp-2)) / 2); inline-size: auto; min-inline-size: 0; }
+	.ocs-mc .ocs-carousel-item > .product-layout { inline-size: auto; float: none; padding: 0; margin: 0; block-size: 100%; }
+	.ocs-mc .product-thumb { block-size: 100%; margin-bottom: 0; }
+}
+@media (min-width: 768px) {
+	.ocs-mc .ocs-carousel-track {
+		display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min)), 1fr)); column-gap: var(--sp-4); row-gap: 0;
+		overflow: visible; scroll-snap-type: none;
+	}
+	.ocs-viewed .ocs-mc .ocs-carousel-track { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+	#column-left .ocs-mc .ocs-carousel-track, #column-right .ocs-mc .ocs-carousel-track { grid-template-columns: minmax(0, 1fr); }
+	.ocs-mc .ocs-carousel-item { display: contents; }
+	.ocs-mc .ocs-carousel-item > .product-layout { display: block; inline-size: auto; float: none; margin: 0 0 var(--sp-4); padding: 0; grid-template-columns: minmax(0, 1fr); }
+	.ocs-mc .ocs-carousel-item > .product-layout > .product-thumb { grid-template-columns: minmax(0, 1fr); }
+	@supports (grid-template-rows: subgrid) {
+		.ocs-mc .ocs-carousel-item > .product-layout { display: grid; grid-row: span 7; grid-template-rows: subgrid; row-gap: 0; }
+		.ocs-mc .ocs-carousel-item > .product-layout > .product-thumb { display: grid; grid-row: 1 / -1; grid-template-rows: subgrid; row-gap: 0; }
+		.ocs-mc .product-thumb > div:last-child, .ocs-mc .product-thumb .caption { display: contents; }
+		.ocs-mc .product-thumb > .image { grid-row: 1; }
+		.ocs-mc .product-thumb .caption > * { padding-inline: var(--sp-4); margin-inline: 0; }
+		.ocs-mc .product-thumb .caption h4 { grid-row: 2; }
+		.ocs-mc .product-thumb .rating { grid-row: 4; }
+		.ocs-mc .product-thumb .ocs-stock { grid-row: 5; }
+		.ocs-mc .product-thumb .ocs-buy-row { grid-row: 6; }
+	}
+}

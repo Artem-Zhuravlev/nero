@@ -1588,9 +1588,11 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 
 	var OCS = window.OCS = window.OCS || {};
 	var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	var phone = window.matchMedia ? window.matchMedia('(max-width: 767px)') : {matches: false};
 
 	function init(root) {
 		var track = root.querySelector('.ocs-carousel-track');
+		var cards = root.classList.contains('ocs-mc') || !!root.closest('.ocs-pcarousel');
 		var prev = root.querySelector('.ocs-carousel-prev');
 		var next = root.querySelector('.ocs-carousel-next');
 		var dots = root.querySelector('.ocs-carousel-dots');
@@ -1598,6 +1600,13 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		if (!track || !track.children.length || typeof window.Swiper !== 'function' || root.swiper) {
 			return;
 		}
+
+		// SPEC-106: product-card modules slide on phones only, exactly 2 cards per view; on wider screens .ocs-mc is a plain grid
+		if (root.classList.contains('ocs-mc') && !phone.matches) {
+			return;
+		}
+
+		var twoUp = cards && phone.matches;
 
 		var every = reduced ? 0 : (parseInt(root.getAttribute('data-autoplay'), 10) || 0);
 		var single = root.classList.contains('ocs-hero') && !root.classList.contains('ocs-hero-multi');
@@ -1611,9 +1620,9 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		}
 
 		var options = {
-			slidesPerView: single ? 1 : 'auto',
-			spaceBetween: single ? 0 : 16,
-			freeMode: !single,
+			slidesPerView: single ? 1 : (twoUp ? 2 : 'auto'),
+			spaceBetween: single ? 0 : (twoUp ? 8 : 16),
+			freeMode: !single && !twoUp,
 			autoplay: every > 0 && items.length > 1 ? every : 0,
 			autoplayDisableOnInteraction: false,
 			nextButton: next || null,
@@ -1645,6 +1654,12 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		}
 
 		function refresh() {
+			if (root.swiper !== swiper) {
+				window.removeEventListener('resize', refresh);
+				window.removeEventListener('load', refresh);
+				return;
+			}
+
 			swiper.update(true);
 			buttons();
 		}
@@ -1675,7 +1690,42 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		buttons();
 	}
 
+	function teardown(root) {
+		var swiper = root.swiper;
+
+		if (!swiper) {
+			return;
+		}
+
+		swiper.destroy(true, true);
+		root.swiper = null;
+		root.ocsRefresh = null;
+		root.classList.remove('swiper-container');
+
+		var track = root.querySelector('.ocs-carousel-track');
+
+		track.classList.remove('swiper-wrapper');
+		[].forEach.call(track.children, function (el) {
+			el.classList.remove('swiper-slide');
+		});
+		[].forEach.call(root.querySelectorAll('.ocs-carousel-prev, .ocs-carousel-next'), function (b) {
+			b.hidden = true;
+		});
+	}
+
 	OCS.carousel = {init: init};
+
+	// SPEC-106: product-card carousels are rebuilt when the viewport crosses the phone breakpoint
+	if (phone.addEventListener) {
+		phone.addEventListener('change', function () {
+			[].forEach.call(document.querySelectorAll('.ocs-carousel'), function (root) {
+				if (root.classList.contains('ocs-mc') || root.closest('.ocs-pcarousel')) {
+					teardown(root);
+					init(root);
+				}
+			});
+		});
+	}
 
 	function boot() {
 		var roots = document.querySelectorAll('.ocs-carousel');

@@ -3,10 +3,13 @@
 {% if products %}
 <section class="ocs-modcards">
   <h2 class="ocs-sec-title">{{ heading_title }}</h2>
-  <div class="ocs-cards">
-    {% for product in products %}
-    {% include 'ocs/template/ocs/card.twig' %}
-    {% endfor %}
+  {# SPEC-106: a carousel on phones (2 cards per view), the card grid from 768px #}
+  <div class="ocs-carousel ocs-mc" role="region" aria-label="{{ heading_title|striptags }}">
+    <div class="ocs-carousel-track">
+      {% for product in products %}
+      <div class="ocs-carousel-item">{% include 'ocs/template/ocs/card.twig' %}</div>
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endif %}

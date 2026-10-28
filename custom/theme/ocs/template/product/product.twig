@@ -324,10 +324,12 @@
       {% if products %}
       <section class="ocs-modcards">
         <h2 class="ocs-sec-title">{{ text_related }}</h2>
-        <div class="ocs-cards">
-          {% for product in products %}
-          {% include 'ocs/template/ocs/card.twig' %}
-          {% endfor %}
+        <div class="ocs-carousel ocs-mc" role="region" aria-label="{{ text_related }}">
+          <div class="ocs-carousel-track">
+            {% for product in products %}
+            <div class="ocs-carousel-item">{% include 'ocs/template/ocs/card.twig' %}</div>
+            {% endfor %}
+          </div>
         </div>
       </section>
         {% endif %}

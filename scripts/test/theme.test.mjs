@@ -678,7 +678,7 @@ test('swiper: carousels use core Swiper, the header loads it once, markup contra
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
   const js = read('custom/theme/ocs/javascript/theme.js');
   assert.match(js, /new window\.Swiper\(root, options\)/);
-  assert.match(js, /slidesPerView: single \? 1 : 'auto'/);
+  assert.match(js, /slidesPerView: single \? 1 : \(twoUp \? 2 : 'auto'\)/);
   assert.match(js, /autoplayDisableOnInteraction: false/);
   assert.match(js, /prefers-reduced-motion/);
   assert.match(js, /typeof window\.Swiper !== 'function'/, 'no Swiper = the plain scroller stays');

@@ -23,7 +23,7 @@ test('no storefront template prints the old card outside ocs/card.twig', () => {
     assert.ok(!/product-thumb|button-group/.test(readFileSync(f, 'utf8')), `${f}: old card markup`);
   }
   const pdp = read('product/product.twig');
-  assert.match(pdp, /<div class="ocs-cards">\s*\{% for product in products %\}\s*\{% include 'ocs\/template\/ocs\/card\.twig' %\}/);
+  assert.match(pdp, /<div class="ocs-carousel ocs-mc"[^>]*>\s*<div class="ocs-carousel-track">\s*\{% for product in products %\}\s*<div class="ocs-carousel-item">\{% include 'ocs\/template\/ocs\/card\.twig' %\}/);
   assert.match(read('extension/module/featured_article.twig'), /ocs\/blog_card\.twig/);
   assert.match(read('blog/article.twig'), /text_related_product \}\}<\/h2>\s*<div class="ocs-cards">/);
 });
