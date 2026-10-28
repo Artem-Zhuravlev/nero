@@ -38,12 +38,18 @@
               {% for product in products %}
               <th scope="col" class="ocs-cmp-head">
                 <a href="{{ product.remove }}" class="ocs-cmp-remove" title="{{ button_remove }}" aria-label="{{ button_remove }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-x"/></svg></a>
-                {% if product.thumb %}<a href="{{ product.href }}" class="ocs-cmp-img"><img src="{{ product.thumb }}" alt="{{ product.name }}" /></a>{% endif %}
+                <div class="ocs-cmp-top">
+                  {% if product.thumb %}<a href="{{ product.href }}" class="ocs-cmp-img"><img src="{{ product.thumb }}" alt="{{ product.name }}" /></a>{% endif %}
+                  <div class="ocs-cmp-buy">
+                    {% if product.price %}<span class="ocs-cmp-price">{% if product.special %}<strong>{{ product.special }}</strong> <s>{{ product.price }}</s>{% else %}<strong>{{ product.price }}</strong>{% endif %}</span>{% endif %}
+                    {% if ocs_show_stock %}<span class="ocs-cmp-stock">{{ product.availability }}</span>{% endif %}
+                  </div>
+                </div>
                 <a href="{{ product.href }}" class="ocs-cmp-name">{{ product.name }}</a>
-                {% if review_status %}<span class="ocs-stars" role="img" aria-label="{{ product.rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if product.rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span>{% endif %}
-                {% if product.price %}<span class="ocs-cmp-price">{% if product.special %}<strong>{{ product.special }}</strong> <s>{{ product.price }}</s>{% else %}<strong>{{ product.price }}</strong>{% endif %}</span>{% endif %}
-                {% if ocs_show_stock %}<span class="ocs-cmp-stock">{{ product.availability }}</span>{% endif %}
-                <button type="button" class="btn btn-primary" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');">{{ button_cart }}</button>
+                <div class="ocs-cmp-foot">
+                  {% if review_status %}<span class="ocs-stars" role="img" aria-label="{{ product.rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if product.rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span>{% endif %}
+                  <button type="button" class="ocs-cart-btn" title="{{ button_cart }}" aria-label="{{ button_cart }}" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-cart"/></svg></button>
+                </div>
               </th>
               {% endfor %}
             </tr>

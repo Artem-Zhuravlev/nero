@@ -2097,12 +2097,16 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-cmp-table > thead .ocs-cmp-corner { z-index: calc(var(--z-raised) + 1); }
 	.ocs-cmp-table th.ocs-cmp-head { position: sticky; text-align: center; font-weight: 400; }
 	.ocs-cmp-head > * { display: block; margin-inline: auto; margin-block-end: var(--sp-2); }
-	.ocs-cmp-head img { max-inline-size: 100%; block-size: 7rem; object-fit: contain; }
-	.ocs-cmp-name { font-weight: 700; line-height: 1.3; }
+	.ocs-cmp-head img { max-inline-size: 100%; inline-size: 4.5rem; block-size: 4.5rem; object-fit: contain; }
+	.ocs-cmp-top { display: flex; align-items: center; gap: var(--sp-3); }
+	.ocs-cmp-top .ocs-cmp-img { flex: none; margin: 0; }
+	.ocs-cmp-buy { display: flex; flex-direction: column; align-items: flex-start; min-inline-size: 0; text-align: start; }
+	.ocs-cmp-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); margin-block-end: 0; }
+	.ocs-cmp-foot .ocs-cart-btn { inline-size: 2.4rem; block-size: 2.4rem; margin: 0; }
+	.ocs-cmp-name { font-weight: 700; line-height: 1.3; margin-inline: 0; text-align: start; }
 	.ocs-cmp-price strong { font-size: var(--fs-lg); }
 	.ocs-cmp-price s { color: var(--text-muted); }
 	.ocs-cmp-stock { font-size: var(--fs-sm); color: var(--text-muted); }
-	.ocs-cmp-head .btn { inline-size: 100%; }
 	.ocs-cmp-head > .ocs-cmp-remove { position: absolute; inset-block-start: var(--sp-2); inset-inline-end: var(--sp-2); inline-size: 2rem; block-size: 2rem; display: grid; place-items: center; margin: 0; border-radius: 50%; color: var(--text-muted); }
 	.ocs-cmp-head > .ocs-cmp-remove:hover { background: var(--bg-alt); color: var(--danger); }
 	.ocs-cmp-table .ocs-cmp-gh th { position: static; padding: 0; background: var(--bg-alt); }

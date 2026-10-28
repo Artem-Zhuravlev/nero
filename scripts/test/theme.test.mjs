@@ -1185,6 +1185,9 @@ test('compare page: category tabs, differences switch, sticky table, scale icon'
   assert.ok(/is-diff \.ocs-cmp-row\[data-same="1"\]/.test(style));
   // TEST-CMP-006 - verifies REQ-CMP-014 (wrapper width is capped by the column count)
   assert.ok(/\.ocs-cmp-scroll \{[^}]*max-inline-size: min\(100%, calc\(9rem \+ var\(--cols/.test(style) && tpl.includes('class="ocs-cmp-scroll" style="--cols'));
+  // TEST-CMPH-001 - verifies REQ-CMPH-001, REQ-CMPH-002 (compact head: photo + price row, round cart button)
+  assert.ok(tpl.includes('class="ocs-cmp-top"') && tpl.includes('class="ocs-cart-btn"') && !tpl.includes('class="btn btn-primary" onclick="cart.add(\'{{ product.product_id }}\', \'{{ product.minimum }}\');">{{ button_cart }}'));
+  assert.ok(/\.ocs-cmp-head img \{[^}]*inline-size: 4\.5rem/.test(style) && /\.ocs-cmp-top \{ display: flex/.test(style));
   const js = read44('custom/theme/ocs/javascript/theme.js');
   assert.ok(js.includes("'ocs_cmp_diff'") && js.includes('cmp: 12'));
   const sprite = read44('custom/theme/ocs/template/ocs/sprite.twig');
