@@ -1323,10 +1323,8 @@ li .ocs-stock { font-size: inherit; }
 /* ==== 38. SPEC-039 product card: overlay tools, code, price row with a round cart button (REQ-VIS-004) ===== */
 @layer components {
 	.product-thumb { border-radius: var(--r-lg); border-color: color-mix(in srgb, var(--border) 55%, transparent); }
-	.product-thumb:hover, .product-thumb:focus-within { box-shadow: 0 10px 30px color-mix(in srgb, var(--text) 10%, transparent); translate: 0 -2px; }
+	.product-thumb:hover, .product-thumb:focus-within { box-shadow: 0 10px 30px color-mix(in srgb, var(--text) 10%, transparent); }
 	.product-thumb > .image { padding: var(--sp-5) var(--sp-4) var(--sp-3); position: relative; }
-	.product-thumb > .image .ocs-card-img img { transition: scale .35s ease; }
-	.product-thumb:hover > .image .ocs-card-img img { scale: 1.04; }
 	.product-thumb > .image .ocs-code { position: absolute; inset-block-end: var(--sp-3); inset-inline-end: var(--sp-3); z-index: var(--z-base); font-size: var(--fs-xs); color: var(--text-muted); letter-spacing: 0.01em; }
 	.ocs-card-tools { position: absolute; inset-block-start: 3rem; inset-inline-end: var(--sp-2); z-index: var(--z-base); display: grid; gap: var(--sp-2); }
 	.ocs-tool {
