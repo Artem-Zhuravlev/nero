@@ -22,7 +22,6 @@
     <div>
       <div class="caption">
         <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
-        <p class="ocs-desc">{{ product.description }}</p>
         {% if product.rating %}
         <div class="rating"> {% include 'ocs/template/ocs/rating.twig' with {'value': product.rating} only %}{% if product.reviews %} <span class="ocs-reviews">({{ product.reviews }})</span>{% endif %} </div>
         {% endif %}
