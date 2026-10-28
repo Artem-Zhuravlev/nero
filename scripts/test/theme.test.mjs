@@ -846,16 +846,20 @@ test('modern layout: footer container grid, dialog containers and the stylesheet
   assert.ok(Buffer.byteLength(css) <= 200 * 1024, 'stylesheet within 200 KB');
 });
 
-// TEST-VIS-001 / TEST-REF-001 - verifies REQ-VIS-001, REQ-REF-004 (Gilroy font faces, swap, fallback, no third-party font request)
-test('visual identity: Gilroy font faces with swap, preload and a metric-compatible fallback', () => {
+// TEST-VIS-001 / TEST-REF-001 / TEST-FNT-001 - verifies REQ-VIS-001, REQ-REF-004, REQ-FNT-001 (Montserrat font faces, swap, fallback, no third-party font request)
+test('visual identity: Montserrat font faces with swap, preload and a size-adjusted fallback', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
-  for (const file of ['regular', 'medium', 'semibold', 'bold', 'extrabold']) assert.ok(css.includes('../fonts/gilroy-' + file + '.woff2'), file);
-  assert.match(css, /font-family: "Gilroy"; font-style: normal; font-weight: 400; font-display: swap;/);
-  assert.ok(css.includes('@font-face { font-family: "Gilroy Fallback"; src: local("Arial")'));
-  assert.match(css, /--font: "Gilroy", "Gilroy Fallback"/);
-  assert.ok(!css.includes('Inter'), 'no Inter left');
+  for (const w of [400, 500, 600, 700, 800]) for (const s of ['latin', 'cyrillic']) {
+    assert.ok(css.includes('../fonts/montserrat-' + s + '-' + w + '.woff2'), s + w);
+    assert.ok(existsSync(join(REPO_ROOT, 'custom/theme/ocs/fonts/montserrat-' + s + '-' + w + '.woff2')), 'file ' + s + w);
+  }
+  assert.match(css, /font-family: "Montserrat"; font-style: normal; font-weight: 400; font-display: swap;/);
+  assert.ok(css.includes('@font-face { font-family: "Montserrat Fallback"; src: local("Arial")'));
+  assert.match(css, /--font: "Montserrat", "Montserrat Fallback"/);
+  assert.ok(!css.includes('Gilroy'), 'no Gilroy left');
+assert.ok(!css.includes('Inter'), 'no Inter left');
   const header = read('custom/theme/ocs/template/common/header.twig');
-  assert.ok(header.includes('gilroy-regular.woff2') && header.includes('rel="preload"'));
+  assert.ok(header.includes('montserrat-cyrillic-400.woff2') && header.includes('rel="preload"'));
   assert.ok(!/fonts.(googleapis|gstatic).com/.test(css + header), 'no third-party font request');
   assert.ok(css.includes('font-variant-numeric: tabular-nums'));
   assert.ok(!css.includes('#0071e3') && /--accent: #000000;/.test(css) && /--border: #f3f3f3;/.test(css), 'black accent, light border');
@@ -1284,4 +1288,12 @@ test('product side card has no brand, code and stock', () => {
   const side = tpl.slice(tpl.indexOf('<aside class="ocs-side-card"'), tpl.indexOf('</aside>'));
   for (const s of ['ocs-side-brand', 'ocs-code-pill', 'ocs-side-stock']) assert.ok(!side.includes(s), s);
   assert.ok(side.includes('ocs-side-title') && side.includes('ocs-side-price') && side.includes('data-ocs-buy'));
+});
+
+// TEST-FNT-002 - verifies REQ-FNT-002, REQ-FNT-003, REQ-FNT-004 (no text below 14px except the decorative count badges)
+test('typography: scale raised, no font-size below 14px except count badges', () => {
+  assert.match(css, /--fs-xs: 14px;[^]*--fs-sm: 15px;[^]*--fs-md: 16px;[^]*--fs-lg: 20px;[^]*--fs-xl: 26px;[^]*--fs-2xl: 34px;[^]*--fs-3xl: 48px;/);
+  const small = [...css.matchAll(/font-size:\s*([\d.]+)(px|rem)/g)].filter((m) => (m[2] === 'px' ? +m[1] : +m[1] * 16) < 14);
+  assert.equal(small.length, 2, 'only the two count-badge rules are below 14px');
+  for (const m of small) assert.equal(m[1] + m[2], '0.75rem');
 });

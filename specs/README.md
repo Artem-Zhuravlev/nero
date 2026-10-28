@@ -168,6 +168,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-099 | [Единый стиль блоков с товарами и статьями](product-blocks-unify/spec.md) | `implemented` |
 | SPEC-100 | [Карточка товара: при наведении только тень](card-hover-shadow-only/spec.md) | `implemented` |
 | SPEC-101 | [Карточка товара: степпер количества](pdp-qty-stepper/spec.md) | `implemented` |
+| SPEC-102 | [Шрифт Montserrat и минимальный размер текста 14px](font-montserrat-min-size/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

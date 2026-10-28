@@ -45,7 +45,7 @@
 .ocs-np-item:hover, .ocs-np-item.is-active { background: var(--ocs-hover, #f3f3f5); }
 .ocs-np-title { font-weight: 500; }
 .ocs-np-title mark { background: transparent; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
-.ocs-np-sub { margin-top: 2px; font-size: 12px; color: var(--ocs-muted, #6b6b73); }
+.ocs-np-sub { margin-top: 2px; font-size: 14px; color: var(--ocs-muted, #6b6b73); }
 .ocs-np-empty { padding: 14px 12px; color: var(--ocs-muted, #6b6b73); }
 .ocs-np-more {
   height: 40px;

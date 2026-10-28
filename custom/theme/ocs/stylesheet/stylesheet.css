@@ -41,13 +41,13 @@
 	--badge-fg: #ffffff;
 
 	/* typography (REQ-DSG-005) */
-	--font: "Gilroy", "Gilroy Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-	--fs-xs: 12px;
-	--fs-sm: 14px;
+	--font: "Montserrat", "Montserrat Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+	--fs-xs: 14px;
+	--fs-sm: 15px;
 	--fs-md: 16px;
-	--fs-lg: 19px;
-	--fs-xl: 24px;
-	--fs-2xl: 32px;
+	--fs-lg: 20px;
+	--fs-xl: 26px;
+	--fs-2xl: 34px;
 	--fs-3xl: 48px;
 
 	/* spacing, radius, shadow, motion (REQ-DSG-006) */
@@ -1136,23 +1136,28 @@ li .ocs-stock { font-size: inherit; }
 @layer components {
 }
 
-/* ==== 35. SPEC-039/067 typography: Gilroy (self-hosted), type scale (REQ-VIS-001) ================== */
-@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/gilroy-regular.woff2") format("woff2"); }
-@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/gilroy-medium.woff2") format("woff2"); }
-@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/gilroy-semibold.woff2") format("woff2"); }
-@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/gilroy-bold.woff2") format("woff2"); }
-@font-face { font-family: "Gilroy"; font-style: normal; font-weight: 800; font-display: swap; src: url("../fonts/gilroy-extrabold.woff2") format("woff2"); }
+/* ==== 35. SPEC-039/067 typography: Montserrat (self-hosted), type scale (REQ-VIS-001) ================== */
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/montserrat-cyrillic-400.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 400; font-display: swap; src: url("../fonts/montserrat-latin-400.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/montserrat-cyrillic-500.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 500; font-display: swap; src: url("../fonts/montserrat-latin-500.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/montserrat-cyrillic-600.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 600; font-display: swap; src: url("../fonts/montserrat-latin-600.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/montserrat-cyrillic-700.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 700; font-display: swap; src: url("../fonts/montserrat-latin-700.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 800; font-display: swap; src: url("../fonts/montserrat-cyrillic-800.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-weight: 800; font-display: swap; src: url("../fonts/montserrat-latin-800.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 /* metric-compatible fallback while the font loads: no layout jump when it swaps in */
-@font-face { font-family: "Gilroy Fallback"; src: local("Arial"), local("Helvetica"); size-adjust: 100%; ascent-override: 92%; descent-override: 24%; line-gap-override: 0%; }
+@font-face { font-family: "Montserrat Fallback"; src: local("Arial"), local("Helvetica"); size-adjust: 112%; ascent-override: 84%; descent-override: 22%; line-gap-override: 0%; }
 
 @layer base {
 	:root {
-		--font: "Gilroy", "Gilroy Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+		--font: "Montserrat", "Montserrat Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 		--lh: 1.5;
 		--track: -0.02em;
 	}
 
-	body { font-family: var(--font); line-height: var(--lh); font-feature-settings: "cv11", "ss03"; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+	body { font-family: var(--font); line-height: var(--lh); text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
 	h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { font-family: var(--font); font-weight: 800; letter-spacing: var(--track); line-height: 1.15; color: var(--text); }
 	h1 { font-size: var(--fs-2xl); }
 	h2 { font-size: var(--fs-xl); }
@@ -1296,14 +1301,14 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-act { position: relative; display: block; margin: 0; }
 	.ocs-act-btn, .ocs-head-cart #cart > .btn {
 		position: relative; display: grid; justify-items: center; align-content: center; gap: 0.15rem; min-inline-size: 4.25rem; min-block-size: 3.25rem; padding: 0.35rem var(--sp-2);
-		border: 0; border-radius: var(--r-md); background: none; color: var(--text); font-size: 0.6875rem; font-weight: 600; line-height: 1.15; text-decoration: none; cursor: pointer; box-shadow: none;
+		border: 0; border-radius: var(--r-md); background: none; color: var(--text); font-size: 0.875rem; font-weight: 600; line-height: 1.15; text-decoration: none; cursor: pointer; box-shadow: none;
 	}
 	.ocs-act-btn:hover, .ocs-head-cart #cart > .btn:hover, .ocs-act-btn:focus-visible { background: var(--bg-alt); color: var(--text); text-decoration: none; }
 	.ocs-act-btn .ocs-i { inline-size: 1.5rem; block-size: 1.5rem; }
 	.ocs-act-name { max-inline-size: 6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 	.ocs-act-btn[data-count]::after, .ocs-head-cart[data-count] #cart > .btn::after {
 		content: attr(data-count); position: absolute; inset-block-start: 0.1rem; inset-inline-start: calc(50% + 0.3rem); min-inline-size: 1.1rem; block-size: 1.1rem; padding-inline: 0.28rem;
-		border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent); font-size: 0.625rem; font-weight: 700; line-height: 1.1rem; text-align: center;
+		border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent); font-size: 0.75rem; font-weight: 700; line-height: 1.1rem; text-align: center;
 	}
 	.ocs-head-cart[data-count] #cart > .btn::after { content: attr(data-badge); }
 	.ocs-act-btn[data-count="0"]::after, .ocs-head-cart[data-count="0"] #cart > .btn::after { display: none; }
@@ -2137,7 +2142,7 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-tabbar > .ocs-tab-cart[data-count]::after {
 			content: attr(data-badge); position: absolute; inset-block-start: 0.3rem; inset-inline-start: calc(50% + 0.5rem);
 			min-inline-size: 1.1rem; block-size: 1.1rem; padding-inline: 0.28rem; border-radius: var(--r-pill);
-			background: var(--accent); color: var(--on-accent); font-size: 0.625rem; font-weight: 700; line-height: 1.1rem; text-align: center;
+			background: var(--accent); color: var(--on-accent); font-size: 0.75rem; font-weight: 700; line-height: 1.1rem; text-align: center;
 		}
 		.ocs-tabbar > .ocs-tab-cart[data-count="0"]::after { display: none; }
 
