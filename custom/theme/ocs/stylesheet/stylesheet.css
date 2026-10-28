@@ -1290,7 +1290,6 @@ li .ocs-stock { font-size: inherit; }
 	#top.ocs-util .ocs-util-end .btn-link, #top.ocs-util .ocs-util-end .dropdown-toggle { padding: 0.25rem 0; min-block-size: 0; color: var(--text-muted); font-size: var(--fs-xs); font-weight: 500; }
 	#top.ocs-util .ocs-contact .dropdown-menu { inset-inline-start: 0; }
 	#top.ocs-util .ocs-contact .dropdown-menu a { display: flex; align-items: center; gap: var(--sp-2); }
-	#top.ocs-util .ocs-hours-row { padding: var(--sp-2) var(--sp-3); color: var(--text-muted); }
 
 	/* --- main row: icon over a small label, count badges --- */
 	.ocs-head-actions { display: flex; align-items: stretch; gap: var(--sp-1); margin: 0; float: none; }
@@ -1958,6 +1957,12 @@ li .ocs-stock { font-size: inherit; }
 	/* the utility bar comes before the sticky header in the DOM: its dropdowns (contacts, currency) must paint over the header */
 	nav.ocs-util { position: relative; z-index: calc(var(--z-header) + 1); }
 	.ocs-contact-menu > li > a.ocs-crow { padding-inline: 0; }
+	/* plain icon (phone, hours, address): same box as the brand chips so the text columns line up */
+	.ocs-cicon { flex: none; display: inline-grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; color: var(--text-muted); }
+	.ocs-cicon .ocs-i { inline-size: 1.15rem; block-size: 1.15rem; }
+	.ocs-crow:hover .ocs-cicon { color: var(--accent); }
+	.ocs-crow-info, .ocs-crow-info:hover { font-weight: 400; color: var(--text-muted); font-size: var(--fs-sm); }
+	.ocs-crow-info address { margin: 0; font: inherit; }
 	footer .ocs-soc-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-1) var(--sp-4); }
 	@media (min-width: 768px) {
 		footer .ocs-soc-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
