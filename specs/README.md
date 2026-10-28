@@ -147,6 +147,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-078 | [Search Page Without the Search Form](search-page-no-form/spec.md) | `implemented` |
 | SPEC-079 | [Super Search: language, layout, typo, translit, synonyms](super-search/spec.md) | `implemented` |
 | SPEC-080 | [Structured Data (schema.org JSON-LD) for All Page Types](structured-data/spec.md) | `implemented` |
+| SPEC-081 | [Latest Reviews Module](latest-reviews/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

@@ -1,0 +1,28 @@
+{# Extension: ocs_latest_reviews. Latest approved reviews in a swiper carousel (SPEC-081 REQ-LRV-004, REQ-LRV-006). Values are escaped in the controller. #}
+<section class="ocs-lreviews" aria-label="{{ heading_title|striptags }}">
+  <div class="ocs-pcarousel-head">
+    <h2 class="ocs-sec-title">{{ heading_title }}</h2>
+  </div>
+  <div class="ocs-carousel" role="region" aria-label="{{ heading_title|striptags }}">
+    <div class="ocs-carousel-track">
+      {% for review in reviews %}
+      <div class="ocs-carousel-item">
+        <article class="ocs-lreview">
+          <div class="ocs-lreview-top">
+            <strong class="ocs-lreview-author">{{ review.author }}</strong>
+            <time class="ocs-lreview-date">{{ review.date }}</time>
+          </div>
+          <div class="rating">{% include 'ocs/template/ocs/rating.twig' with {'value': review.rating} only %}</div>
+          {% if review.text %}<p class="ocs-lreview-text">{{ review.text }}</p>{% endif %}
+          <a href="{{ review.href }}" class="ocs-lreview-product">
+            <img src="{{ review.thumb }}" alt="" width="40" height="40" loading="lazy" />
+            <span>{{ review.name }}</span>
+          </a>
+        </article>
+      </div>
+      {% endfor %}
+    </div>
+    <button type="button" class="ocs-carousel-prev" aria-label="{{ text_prev }}">&lsaquo;</button>
+    <button type="button" class="ocs-carousel-next" aria-label="{{ text_next }}">&rsaquo;</button>
+  </div>
+</section>

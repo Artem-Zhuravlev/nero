@@ -2250,3 +2250,14 @@ li .ocs-stock { font-size: inherit; }
 	@media (min-width: 48rem) { .ocs-brand-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 	@media (min-width: 75rem) { .ocs-brand-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 }
+
+/* SPEC-081: latest reviews block (REQ-LRV-004, REQ-LRV-006) */
+.ocs-lreviews { margin-block: var(--sp-5); }
+.ocs-lreviews .ocs-carousel-item { inline-size: 280px; }
+.ocs-lreview { display: grid; gap: var(--sp-2); align-content: start; block-size: 100%; padding: var(--sp-4); background: var(--bg-alt); border-radius: var(--r-lg); }
+.ocs-lreview-top { display: flex; justify-content: space-between; gap: var(--sp-2); align-items: baseline; }
+.ocs-lreview-date { color: var(--text-muted); font-size: var(--fs-xs); white-space: nowrap; }
+.ocs-lreview-text { margin: 0; overflow-wrap: anywhere; }
+.ocs-lreview-product { display: flex; align-items: center; gap: var(--sp-2); margin-block-start: var(--sp-2); color: inherit; font-size: var(--fs-sm); }
+.ocs-lreview-product img { border-radius: var(--r-sm, 6px); object-fit: cover; flex: none; }
+#column-left .ocs-lreviews .ocs-carousel-item, #column-right .ocs-lreviews .ocs-carousel-item { inline-size: 100%; }
