@@ -36,7 +36,6 @@
               {% for b in c.brands %}<a class="ocs-chip" href="{{ b.href }}">{{ b.name }}</a>{% endfor %}
             </div>
             {% endif %}
-            <a href="{{ c.href }}" class="see-all">{{ text_all }} {{ c.name }}</a>
             </div>
             {% if c.banner %}<a class="ocs-mega-promo" href="{{ c.banner.url }}"><img src="{{ c.banner.src }}" alt="" width="240" height="360" loading="lazy" /></a>{% endif %}
             </div>
