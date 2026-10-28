@@ -171,6 +171,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-102 | [Шрифт Montserrat и минимальный размер текста 14px](font-montserrat-min-size/spec.md) | `implemented` |
 | SPEC-103 | [Главное меню: без «Показать все», стрелка, отступы](mega-menu-polish/spec.md) | `implemented` |
 | SPEC-104 | [Бренды отдельным пунктом главного меню](mega-menu-brands/spec.md) | `implemented` |
+| SPEC-105 | [Стрелка у каждого пункта мега-меню с дочерними](mega-menu-arrows/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

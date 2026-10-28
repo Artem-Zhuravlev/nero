@@ -467,6 +467,10 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 	}
 	.ocs-mega-l1 { min-height: 360px; }
 	.ocs-mega-item { position: static; }
+	/* SPEC-105: item is static (flyout anchors to the panel), so the arrow sits in the row flow over the link's right edge instead of absolute */
+	.ocs-mega-item.ocs-has-children { display: flex; align-items: flex-start; }
+	.ocs-has-children > .ocs-mega-link { flex: 1 1 auto; min-inline-size: 0; }
+	.ocs-has-children > .ocs-mega-expand { position: relative; flex: none; margin-left: calc(-32px - var(--sp-2)); margin-right: var(--sp-2); }
 	.ocs-mega-item.open > .ocs-mega-fly {
 		display: flex; position: absolute; top: 0; bottom: 0; left: 100%; width: min(900px, calc(100vw - 340px));
 		background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow);
