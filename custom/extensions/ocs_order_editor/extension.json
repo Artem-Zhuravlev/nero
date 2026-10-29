@@ -1,0 +1,7 @@
+{ "code": "ocs_order_editor", "type": "library", "version": "1.0.0",
+  "title": { "en-gb": "OCS Single-page Order Editor", "uk-ua": "OCS: редактор замовлення на одній сторінці" },
+  "requires": { "core": "3.0.3.7", "extensions": [] },
+  "spec": "SPEC-122", "tables": [],
+  "settings": ["ocs_order_editor_status"],
+  "events": ["ocs_order_editor_form"],
+  "routes": ["extension/ocs_order_editor/events"] }
