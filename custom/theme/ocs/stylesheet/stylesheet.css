@@ -1946,6 +1946,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-rv-line .ocs-i { flex: none; margin-block-start: 0.2em; }
 	.ocs-rv-pros .ocs-i { color: var(--success); }
 	.ocs-rv-cons .ocs-i { color: var(--danger); }
+	.ocs-rv-reply { margin: var(--sp-2) 0; padding: var(--sp-2) var(--sp-3); border-inline-start: 3px solid #ccc; background: var(--surface-2, #f7f7f7); font-size: var(--fs-sm); }
 
 	/* contact rows (header dropdown and footer): coloured icon chip + text */
 	.ocs-crow { display: flex; align-items: center; gap: var(--sp-3); min-block-size: 2.75rem; padding-block: var(--sp-1); color: var(--text); font-weight: 600; text-decoration: none; }

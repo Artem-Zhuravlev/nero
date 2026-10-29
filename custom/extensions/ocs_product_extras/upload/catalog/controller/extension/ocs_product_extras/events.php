@@ -60,6 +60,16 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 				$extra[(int)$row['review_id']] = $row;
 			}
 
+			$replies = array();
+
+			try {
+				foreach ($this->db->query("SELECT review_id, reply FROM `" . DB_PREFIX . "ocs_review_extra` WHERE review_id IN (" . implode(',', $ids) . ") AND reply <> ''")->rows as $row) {
+					$replies[(int)$row['review_id']] = nl2br(htmlspecialchars((string)$row['reply'], ENT_QUOTES, 'UTF-8'));
+				}
+			} catch (\Exception $e) {
+				// the reply column is not migrated yet (SPEC-116): reviews are shown without replies
+			}
+
 			$this->load->language('extension/module/ocs_product_extras');
 
 			foreach ($data['reviews'] as $i => $review) {
@@ -67,10 +77,15 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 					$data['reviews'][$i]['pros'] = htmlspecialchars($extra[(int)$rows[$i]['review_id']]['pros'], ENT_QUOTES, 'UTF-8');
 					$data['reviews'][$i]['cons'] = htmlspecialchars($extra[(int)$rows[$i]['review_id']]['cons'], ENT_QUOTES, 'UTF-8');
 				}
+
+				if (isset($rows[$i]) && isset($replies[(int)$rows[$i]['review_id']])) {
+					$data['reviews'][$i]['reply'] = $replies[(int)$rows[$i]['review_id']];
+				}
 			}
 
 			$data['text_pros'] = $this->language->get('entry_pros');
 			$data['text_cons'] = $this->language->get('entry_cons');
+			$data['text_shop_reply'] = $this->language->get('text_shop_reply');
 		} catch (\Exception $e) {
 			$this->log->write('[ocs_product_extras] ' . $e->getMessage());
 		}

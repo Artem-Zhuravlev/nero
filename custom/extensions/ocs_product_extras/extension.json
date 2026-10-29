@@ -4,5 +4,5 @@
   "spec": "SPEC-035",
   "tables": ["oc_ocs_question", "oc_ocs_product_accessory", "oc_ocs_product_video", "oc_ocs_review_extra"],
   "settings": ["module_ocs_product_extras_status", "module_ocs_product_extras_key_attrs", "module_ocs_product_extras_questions", "module_ocs_product_extras_accessories", "module_ocs_product_extras_similar", "module_ocs_product_extras_similar_limit"],
-  "events": ["ocs_product_extras_view", "ocs_product_extras_form", "ocs_product_extras_add", "ocs_product_extras_edit", "ocs_product_extras_delete", "ocs_product_extras_cards", "ocs_product_extras_review_add", "ocs_product_extras_review_list", "ocs_product_extras_review_form", "ocs_product_extras_review_delete"],
+  "events": ["ocs_product_extras_view", "ocs_product_extras_form", "ocs_product_extras_add", "ocs_product_extras_edit", "ocs_product_extras_delete", "ocs_product_extras_cards", "ocs_product_extras_review_add", "ocs_product_extras_review_list", "ocs_product_extras_review_form", "ocs_product_extras_review_delete", "ocs_product_extras_review_admin_add", "ocs_product_extras_review_admin_edit"],
   "routes": ["extension/module/ocs_product_extras", "extension/module/ocs_product_extras/ask", "extension/ocs_product_extras/events"] }

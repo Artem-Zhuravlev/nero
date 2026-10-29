@@ -17,4 +17,12 @@ final class ReviewExtraTest extends TestCase
         $this->assertSame('', \Ocs\ReviewExtra::clean(null));
         $this->assertSame('', \Ocs\ReviewExtra::clean(['x']) === '' ? '' : 'array');
     }
+
+    // TEST-REV-031 - verifies REQ-REV-031 (admin reply: tags stripped, line breaks kept, 2000 characters, junk becomes '')
+    public function test_clean_reply(): void
+    {
+        $this->assertSame("Дякуємо!\nГарного дня", \Ocs\ReviewExtra::cleanReply("  Дякуємо!\r\n<b>Гарного</b>   дня "));
+        $this->assertSame(2000, mb_strlen(\Ocs\ReviewExtra::cleanReply(str_repeat('щ', 3000)), 'UTF-8'));
+        $this->assertSame('', \Ocs\ReviewExtra::cleanReply(['x']));
+    }
 }

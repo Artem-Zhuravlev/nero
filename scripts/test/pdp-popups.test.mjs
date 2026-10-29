@@ -54,6 +54,12 @@ test('pros and cons: migration, events and guarded handlers', () => {
   assert.ok(read('custom/theme/ocs/template/product/review.twig').includes('review.pros') && read('custom/theme/ocs/template/product/review.twig').includes('review.cons'));
   assert.ok(read('custom/ocmod/ocs_review_extra.ocmod.xml').includes('{{ ocs_review_extra }}'));
   assert.ok(read(`${base}/upload/admin/controller/extension/ocs_product_extras/events.php`).includes('beforeDeleteReview'));
+  // TEST-REV-030 - verifies REQ-REV-030..034 (reply column migration, editable form, save events, storefront reply)
+  const m4 = read(`${base}/db/004_review_reply.php`);
+  for (const part of ['addColumnIfMissing', 'reply', 'admin/model/catalog/review/addReview/after', 'admin/model/catalog/review/editReview/after']) assert.ok(m4.includes(part), part);
+  const adm = read(`${base}/upload/admin/controller/extension/ocs_product_extras/events.php`);
+  for (const part of ['name="ocs_reply"', "'ocs_pros'", "'ocs_cons'", 'afterAddReview', 'afterEditReview']) assert.ok(adm.includes(part), part);
+  assert.ok(read('custom/theme/ocs/template/product/review.twig').includes('review.reply'));
   const keys = (side, l, f) => [...read(`${base}/upload/${side}/language/${l}/extension/${f}.php`).matchAll(/\$_\['([a-z_]+)'\]/g)].map((m) => m[1]).sort();
   for (const l of ['ru-ru', 'uk-ua']) assert.deepEqual(keys('catalog', 'en-gb', 'module/ocs_product_extras'), keys('catalog', l, 'module/ocs_product_extras'), l);
   assert.deepEqual(keys('admin', 'en-gb', 'ocs_product_extras/tab'), keys('admin', 'uk-ua', 'ocs_product_extras/tab'));

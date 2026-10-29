@@ -40,3 +40,4 @@ $_['text_copied'] = 'Code copied';
 $_['entry_pros'] = 'Pros';
 $_['entry_cons'] = 'Cons';
 $_['button_cancel'] = 'Cancel';
+$_['text_shop_reply'] = 'Shop reply';

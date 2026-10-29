@@ -6,3 +6,5 @@ $_['ocs_help_video'] = 'A YouTube link (watch, youtu.be, embed, shorts) or the 1
 $_['ocs_error_video'] = 'The video was not saved: enter a YouTube link or an 11-character video id.';
 $_['ocs_entry_pros'] = 'Pros';
 $_['ocs_entry_cons'] = 'Cons';
+$_['ocs_entry_reply'] = 'Admin reply';
+$_['ocs_help_reply'] = 'Shown under the review on the product page. Leave empty for no reply.';

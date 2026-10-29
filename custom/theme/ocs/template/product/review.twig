@@ -10,6 +10,7 @@
     <td colspan="2"><p>{{ review.text }}</p>
       {% if review.pros %}<p class="ocs-rv-line ocs-rv-pros"><svg class="ocs-i" aria-hidden="true"><use href="#i-plus"/></svg><span><strong>{{ text_pros }}:</strong> {{ review.pros }}</span></p>{% endif %}
       {% if review.cons %}<p class="ocs-rv-line ocs-rv-cons"><svg class="ocs-i" aria-hidden="true"><use href="#i-minus"/></svg><span><strong>{{ text_cons }}:</strong> {{ review.cons }}</span></p>{% endif %}
+      {% if review.reply %}<div class="ocs-rv-reply"><strong>{{ text_shop_reply }}:</strong> {{ review.reply }}</div>{% endif %}
       <span class="ocs-stars" role="img" aria-label="{{ review.rating }} / 5">{% for i in 1..5 %}<svg class="ocs-i ocs-star{% if review.rating >= i %} is-on{% endif %}" aria-hidden="true"><use href="#i-star"/></svg>{% endfor %}</span></td>
   </tr>
 </table>
