@@ -1025,10 +1025,20 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-benefits span { display: block; color: var(--text-muted); font-size: var(--fs-sm); }
 
 	.ocs-news { display: grid; gap: var(--sp-4); background: linear-gradient(135deg, var(--bg-alt), color-mix(in srgb, var(--accent) 10%, var(--bg-alt))); }
-	@container home (min-width: 48rem) { .ocs-news { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); align-items: center; gap: var(--sp-6); } }
-	.ocs-news :is(h2, h3) { margin: 0 0 var(--sp-1); font-size: var(--fs-xl); }
+	@container home (min-width: 48rem) {
+		.ocs-news { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); grid-template-areas: "title form" "text form"; align-items: center; column-gap: var(--sp-6); row-gap: var(--sp-1); }
+		.ocs-news > :is(h2, h3) { grid-area: title; align-self: end; }
+		.ocs-news > p { grid-area: text; align-self: start; }
+		.ocs-news-form { grid-area: form; }
+	}
+	.ocs-news :is(h2, h3) { margin: 0; font-size: var(--fs-xl); }
 	.ocs-news p { margin: 0; color: var(--text-muted); }
 	.ocs-news-form { inline-size: 100%; }
+	.ocs-news-form .form-control { flex: 1 1 14rem; min-inline-size: 0; }
+	.ocs-news-form .btn { flex: 0 0 auto; }
+	.ocs-news-consent { display: flex; align-items: center; gap: var(--sp-2); cursor: pointer; }
+	.ocs-news-consent input { flex: none; margin: 0; }
+	.ocs-news-msg:empty { display: none; }
 
 	.ocs-wall { grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr)); }
 }
