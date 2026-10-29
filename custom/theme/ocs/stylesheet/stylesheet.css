@@ -242,7 +242,7 @@ footer hr { border-color: var(--border); }
 .product-thumb .image { background: var(--bg); text-align: center; }
 .product-thumb .image img { margin: 0 auto; }
 .product-thumb .caption { padding: var(--sp-4) var(--sp-5); min-height: 0; }
-.product-thumb .caption .ocs-card-name { font-size: var(--fs-md); font-weight: 600; }
+.product-thumb .caption .ocs-card-name { font-size: var(--fs-md); font-weight: 400; }
 .product-thumb .caption .ocs-card-name a {
 	color: var(--text);
 	display: -webkit-box;
@@ -665,6 +665,8 @@ li .ocs-stock { font-size: inherit; }
 /* with Swiper the library does the sliding */
 .ocs-carousel.swiper-container .ocs-carousel-track { overflow: visible; gap: 0; scroll-snap-type: none; }
 .ocs-carousel.swiper-container .ocs-carousel-item { scroll-snap-align: none; }
+/* Swiper's height:100% on a slide never stretches in an auto-height wrapper, so tiles ended up as a staircase; auto lets flex equalise them to the tallest */
+:where(.ocs-carousel.swiper-container:not(.ocs-hero)) .ocs-carousel-item.swiper-slide { height: auto; }
 .ocs-carousel-prev, .ocs-carousel-next {
 	position: absolute; top: 50%; transform: translateY(-50%); z-index: var(--z-raised); width: 44px; height: 44px; border: 0; border-radius: 50%;
 	background: var(--bg); color: var(--text); box-shadow: var(--shadow); font-size: var(--fs-lg); cursor: pointer;
@@ -1366,7 +1368,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-tool-remove { opacity: 1; translate: 0 0; text-decoration: none; }
 
 	.product-thumb .caption { padding: var(--sp-1) var(--sp-4) var(--sp-3); gap: var(--sp-2); }
-	.product-thumb .caption .ocs-card-name { font-size: var(--fs-md); font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+	.product-thumb .caption .ocs-card-name { font-size: var(--fs-md); font-weight: 400; letter-spacing: 0; line-height: 1.3; }
 	.product-thumb .rating { display: flex; align-items: center; gap: var(--sp-1); font-size: var(--fs-xs); color: var(--text-muted); }
 	.ocs-stock { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font-size: var(--fs-xs); font-weight: 600; }
 	.ocs-dot { display: inline-block; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 50%; background: currentColor; }
@@ -2516,3 +2518,10 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-modal-open .ocs-sticky-buy { visibility: hidden; }
 	}
 }
+
+/* card grids: the card fills its cell (flex, not a percentage height), so price and buy button sit on the card's bottom edge in every tile */
+.ocs-cards > .product-layout, .ocs-viewed-grid > .product-layout { display: flex; flex-direction: column; }
+.ocs-cards > .product-layout > .product-thumb, .ocs-viewed-grid > .product-layout > .product-thumb { flex: 1 1 auto; block-size: auto; margin-block-end: 0; }
+.ocs-cards .product-thumb > div:last-child, .ocs-viewed-grid .product-thumb > div:last-child { flex: 1 1 auto; }
+.ocs-cards .product-thumb .caption, .ocs-viewed-grid .product-thumb .caption { flex: 1 1 auto; }
+.ocs-cards .ocs-buy-row, .ocs-viewed-grid .ocs-buy-row { margin-block-start: auto; }
