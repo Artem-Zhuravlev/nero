@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_category_wall. Admin strings, uk-ua. Owner: SPEC-027.
 
-$_['heading_title']        = 'OCS: стіна категорій';
+$_['heading_title']        = 'Nero: стіна категорій';
 
 $_['text_extension']       = 'Доповнення';
 $_['text_success']         = 'Налаштування стіни категорій збережено';

@@ -1,5 +1,5 @@
 { "code": "ocs_topbar", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Top Bar", "uk-ua": "OCS: рядок над хедером" },
+  "title": { "en-gb": "Nero Top Bar", "uk-ua": "Nero: рядок над хедером" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_shell"] },
   "spec": "SPEC-082", "tables": [],
   "settings": ["module_ocs_topbar_status", "module_ocs_topbar_bg", "module_ocs_topbar_bg_custom", "module_ocs_topbar_from", "module_ocs_topbar_to",

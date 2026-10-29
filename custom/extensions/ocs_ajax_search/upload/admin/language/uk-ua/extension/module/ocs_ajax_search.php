@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_ajax_search. Admin strings, uk-ua. Owner: SPEC-028.
 
-$_['heading_title']    = 'OCS: AJAX-пошук';
+$_['heading_title']    = 'Nero: AJAX-пошук';
 
 $_['text_extension']   = 'Доповнення';
 $_['text_success']     = 'Налаштування пошуку збережено';

@@ -1,5 +1,5 @@
 { "code": "ocs_mega_menu", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Mega Menu", "uk-ua": "OCS: мегаменю" },
+  "title": { "en-gb": "Nero Mega Menu", "uk-ua": "Nero: мегаменю" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_menu", "ocs_shell"] },
   "spec": "SPEC-027", "tables": [],
   "settings": ["module_ocs_mega_menu_status", "module_ocs_mega_menu_levels", "module_ocs_mega_menu_columns", "module_ocs_mega_menu_behaviour", "module_ocs_mega_menu_brands"],

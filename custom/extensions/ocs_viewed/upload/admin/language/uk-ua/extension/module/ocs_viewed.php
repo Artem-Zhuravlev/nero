@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_viewed. Admin strings, uk-ua. Owner: SPEC-030.
 
-$_['heading_title']    = 'OCS: нещодавно переглянуті';
+$_['heading_title']    = 'Nero: нещодавно переглянуті';
 
 $_['text_extension']   = 'Доповнення';
 $_['text_success']     = 'Налаштування збережено';

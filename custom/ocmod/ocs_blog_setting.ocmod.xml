@@ -8,10 +8,10 @@
   @core-version 3.0.3.7
 -->
 <modification>
-  <name>OCS blog: multilingual blog settings</name>
+  <name>Nero blog: multilingual blog settings</name>
   <code>ocs_blog_setting</code>
   <version>1.0.0</version>
-  <author>OCS</author>
+  <author>Nero</author>
   <link></link>
   <file path="admin/view/template/blog/setting.twig">
     <operation>

@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_cookie. Admin strings, uk-ua. Owner: SPEC-083.
 
-$_['heading_title']       = 'OCS: попап cookie';
+$_['heading_title']       = 'Nero: попап cookie';
 
 $_['text_extension']      = 'Доповнення';
 $_['text_success']        = 'Налаштування збережено';

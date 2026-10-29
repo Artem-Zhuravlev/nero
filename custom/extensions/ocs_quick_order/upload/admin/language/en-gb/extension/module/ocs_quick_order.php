@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_quick_order. Admin strings, en-gb. Owner: SPEC-025.
 
-$_['heading_title']     = 'OCS Quick Order';
+$_['heading_title']     = 'Nero Quick Order';
 
 $_['text_extension']    = 'Extensions';
 $_['text_success']      = 'Success: quick order settings saved!';

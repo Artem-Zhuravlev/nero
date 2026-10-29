@@ -1,5 +1,5 @@
 { "code": "ocs_listing", "type": "library", "version": "1.0.0",
-  "title": { "en-gb": "OCS Listing Enhancements", "uk-ua": "OCS: покращення листингу" },
+  "title": { "en-gb": "Nero Listing Enhancements", "uk-ua": "Nero: покращення листингу" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
   "spec": "SPEC-034", "tables": [],
   "settings": ["library_ocs_listing_status"],

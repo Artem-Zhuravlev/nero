@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_topbar. Admin strings, uk-ua. Owner: SPEC-082.
 
-$_['heading_title']     = 'OCS: рядок над хедером';
+$_['heading_title']     = 'Nero: рядок над хедером';
 
 $_['text_extension']    = 'Доповнення';
 $_['text_success']      = 'Налаштування збережено';

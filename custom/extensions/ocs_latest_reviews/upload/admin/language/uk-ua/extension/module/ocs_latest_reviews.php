@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_latest_reviews. Admin strings, uk-ua. Owner: SPEC-081.
 
-$_['heading_title']     = 'OCS: останні відгуки';
+$_['heading_title']     = 'Nero: останні відгуки';
 
 $_['text_extension']    = 'Доповнення';
 $_['text_success']      = 'Модуль останніх відгуків збережено';

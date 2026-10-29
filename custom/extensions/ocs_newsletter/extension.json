@@ -1,5 +1,5 @@
 { "code": "ocs_newsletter", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Newsletter", "uk-ua": "OCS: підписка на розсилку" },
+  "title": { "en-gb": "Nero Newsletter", "uk-ua": "Nero: підписка на розсилку" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
   "spec": "SPEC-033", "tables": ["ocs_subscriber"],
   "settings": ["module_ocs_newsletter_status", "module_ocs_newsletter_double_optin", "module_ocs_newsletter_l"],

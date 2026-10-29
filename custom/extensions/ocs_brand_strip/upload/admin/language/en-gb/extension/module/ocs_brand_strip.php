@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_brand_strip. Admin strings, en-gb. Owner: SPEC-033.
 
-$_['heading_title']       = 'OCS Brand Strip';
+$_['heading_title']       = 'Nero Brand Strip';
 
 $_['text_extension']      = 'Extensions';
 $_['text_success']        = 'Success: brand strip settings saved!';

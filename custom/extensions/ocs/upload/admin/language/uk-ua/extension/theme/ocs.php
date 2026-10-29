@@ -2,12 +2,12 @@
 // Extension: ocs (theme). Admin strings, uk-ua. Owner: SPEC-006.
 
 // Heading
-$_['heading_title']                    = 'Тема OCS';
+$_['heading_title']                    = 'Тема Nero';
 
 // Text
 $_['text_extension']                   = 'Доповнення';
-$_['text_success']                     = 'Налаштування теми OCS змінені';
-$_['text_edit']                        = 'Налаштування теми OCS';
+$_['text_success']                     = 'Налаштування теми Nero змінені';
+$_['text_edit']                        = 'Налаштування теми Nero';
 $_['text_general']                     = 'Загальні';
 $_['text_product']                     = 'Товари';
 $_['text_image']                       = 'Зображення';
@@ -44,7 +44,7 @@ $_['help_show_sku']                     = 'Показує артикул (мод
 $_['help_font']                         = 'Шрифт усього сайту. Montserrat, Inter, Manrope, Onest, Golos Text і Nunito Sans вже в темі; Gilroy, Proxima Nova і Geometria доступні після додавання ліцензійних woff2 у catalog/view/theme/ocs/fonts/.';
 
 // Error
-$_['error_permission']                 = 'Увага: у вас немає прав для зміни теми OCS!';
+$_['error_permission']                 = 'Увага: у вас немає прав для зміни теми Nero!';
 $_['error_limit']                      = 'Значення обов\'язкове!';
 $_['error_image']                      = 'Вкажіть розміри зображення!';
 
@@ -111,3 +111,14 @@ $_['entry_schema_org_logo'] = 'Логотип організації';
 $_['help_schema_status']    = 'Виводить schema.org JSON-LD у head кожної сторінки (організація, хлібні крихти, товари, відгуки, списки, статті) для пошукових систем.';
 $_['help_schema_org_name']  = 'Показується пошуковим системам як назва організації; порожньо = назва магазину.';
 $_['help_schema_org_logo']  = 'Шлях до логотипа всередині каталогу image, наприклад catalog/logo.png; порожньо = логотип магазину.';
+
+// Tabs and setup hints (SPEC-123)
+$_['tab_general']       = 'Основне';
+$_['tab_contacts']      = 'Контакти';
+$_['tab_menu']          = 'Меню';
+$_['tab_footer']        = 'Футер';
+$_['tab_blocks']        = 'Блоки';
+$_['tab_seo']           = 'SEO';
+$_['tab_images']        = 'Зображення';
+$_['text_setup']        = 'Встановлення';
+$_['text_setup_pending'] = 'таблиці, налаштування й модулі Nero ще не встановлені.';

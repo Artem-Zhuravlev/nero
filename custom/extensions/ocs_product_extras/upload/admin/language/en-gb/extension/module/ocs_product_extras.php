@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_product_extras. Admin strings, en-gb. Owner: SPEC-035.
 
-$_['heading_title']        = 'OCS Product Page Extras';
+$_['heading_title']        = 'Nero Product Page Extras';
 
 $_['text_extension']       = 'Extensions';
 $_['text_success']         = 'Success: settings saved!';

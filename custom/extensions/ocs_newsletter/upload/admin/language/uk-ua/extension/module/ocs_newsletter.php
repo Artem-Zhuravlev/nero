@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_newsletter. Admin strings, uk-ua. Owner: SPEC-033.
 
-$_['heading_title']    = 'OCS: підписка на розсилку';
+$_['heading_title']    = 'Nero: підписка на розсилку';
 
 $_['text_extension']   = 'Доповнення';
 $_['text_success']     = 'Налаштування розсилки збережено';

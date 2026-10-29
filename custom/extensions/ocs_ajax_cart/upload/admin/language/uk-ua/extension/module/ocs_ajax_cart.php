@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_ajax_cart. Admin strings, uk-ua. Owner: SPEC-026.
 
-$_['heading_title']    = 'OCS: AJAX-кошик';
+$_['heading_title']    = 'Nero: AJAX-кошик';
 
 $_['text_extension']   = 'Доповнення';
 $_['text_success']     = 'Налаштування AJAX-кошика збережено';

@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_stickers. Admin strings, en-gb. Owner: SPEC-029.
 
-$_['heading_title']       = 'OCS Stickers';
+$_['heading_title']       = 'Nero Stickers';
 $_['heading_add']         = 'Add sticker';
 $_['heading_edit']        = 'Edit sticker';
 

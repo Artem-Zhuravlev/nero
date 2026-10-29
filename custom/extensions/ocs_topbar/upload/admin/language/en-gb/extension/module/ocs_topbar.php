@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_topbar. Admin strings, en-gb. Owner: SPEC-082.
 
-$_['heading_title']     = 'OCS Top Bar';
+$_['heading_title']     = 'Nero Top Bar';
 
 $_['text_extension']    = 'Extensions';
 $_['text_success']      = 'Success: top bar settings saved!';

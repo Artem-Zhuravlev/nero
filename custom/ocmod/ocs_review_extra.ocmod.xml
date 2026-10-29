@@ -8,10 +8,10 @@
   @core-version 3.0.3.7
 -->
 <modification>
-  <name>OCS review extras: pros, cons and admin reply in the admin review form</name>
+  <name>Nero review extras: pros, cons and admin reply in the admin review form</name>
   <code>ocs_review_extra</code>
   <version>1.1.0</version>
-  <author>OCS</author>
+  <author>Nero</author>
   <link></link>
   <file path="admin/view/template/catalog/review_form.twig">
     <operation>

@@ -8,10 +8,10 @@
   @core-version 3.0.3.7
 -->
 <modification>
-  <name>OCS product extras: product form video field</name>
+  <name>Nero product extras: product form video field</name>
   <code>ocs_product_extras_form</code>
   <version>1.1.0</version>
-  <author>OCS</author>
+  <author>Nero</author>
   <link></link>
   <file path="admin/view/template/catalog/product_form.twig">
     <operation>

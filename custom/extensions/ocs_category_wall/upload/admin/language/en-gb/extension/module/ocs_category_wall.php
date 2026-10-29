@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_category_wall. Admin strings, en-gb. Owner: SPEC-027.
 
-$_['heading_title']        = 'OCS Category Wall';
+$_['heading_title']        = 'Nero Category Wall';
 
 $_['text_extension']       = 'Extensions';
 $_['text_success']         = 'Success: category wall settings saved!';

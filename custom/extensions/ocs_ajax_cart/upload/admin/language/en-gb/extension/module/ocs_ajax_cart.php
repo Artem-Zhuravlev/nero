@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_ajax_cart. Admin strings, en-gb. Owner: SPEC-026.
 
-$_['heading_title']    = 'OCS AJAX Cart';
+$_['heading_title']    = 'Nero AJAX Cart';
 
 $_['text_extension']   = 'Extensions';
 $_['text_success']     = 'Success: AJAX cart settings saved!';

@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_quick_order. Admin strings, uk-ua. Owner: SPEC-025.
 
-$_['heading_title']     = 'OCS: швидке замовлення';
+$_['heading_title']     = 'Nero: швидке замовлення';
 
 $_['text_extension']    = 'Доповнення';
 $_['text_success']      = 'Налаштування швидкого замовлення збережено';

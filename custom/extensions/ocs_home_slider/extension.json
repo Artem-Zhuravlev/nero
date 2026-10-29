@@ -1,5 +1,5 @@
 { "code": "ocs_home_slider", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Home Slider", "uk-ua": "OCS: слайдер головної" },
+  "title": { "en-gb": "Nero Home Slider", "uk-ua": "Nero: слайдер головної" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
   "spec": "SPEC-033", "tables": ["oc_ocs_slide", "oc_ocs_slide_description"],
   "settings": ["module_ocs_home_slider_status", "module_ocs_home_slider_autoplay", "module_ocs_home_slider_tiles", "module_ocs_home_slider_menu", "module_ocs_home_slider_multi", "module_ocs_home_slider_width", "module_ocs_home_slider_height", "module_ocs_home_slider_mobile_width", "module_ocs_home_slider_mobile_height"],

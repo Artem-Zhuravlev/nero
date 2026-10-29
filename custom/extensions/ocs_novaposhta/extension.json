@@ -1,5 +1,5 @@
 { "code": "ocs_novaposhta", "type": "shipping", "version": "1.0.0",
-  "title": { "en-gb": "OCS Nova Poshta", "uk-ua": "OCS: Нова пошта" },
+  "title": { "en-gb": "Nero Nova Poshta", "uk-ua": "Nero: Нова пошта" },
   "requires": { "core": "3.0.3.7", "extensions": [] },
   "spec": "SPEC-085",
   "tables": ["ocs_np_area", "ocs_np_city", "ocs_np_warehouse", "ocs_np_sync", "ocs_np_order"],

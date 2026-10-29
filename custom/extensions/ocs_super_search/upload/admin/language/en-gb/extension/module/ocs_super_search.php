@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_super_search. Admin strings, en-gb. Owner: SPEC-079.
 
-$_['heading_title']       = 'OCS Super Search';
+$_['heading_title']       = 'Nero Super Search';
 
 $_['text_extension']      = 'Extensions';
 $_['text_success']        = 'Success: super search settings saved!';
@@ -29,7 +29,7 @@ $_['help_layout']         = 'A query typed on the wrong layout is also searched 
 $_['help_translit']       = 'Latin and Cyrillic spellings of one word match each other (apple, эпл, аппле).';
 $_['help_typo']           = 'One mistake is tolerated in words of 4+ letters (aple, одиг).';
 $_['help_cache_ttl']      = 'How long the answer to an identical query is reused. 0 disables the cache.';
-$_['help_synonyms']       = 'Words joined with "=" mean the same, both ways: "одежда=шмотки". Separate groups with a new line or a comma: "одежда=шмотки,носки=гольфы". A group may have several words and short phrases ("верхняя одежда"). Applies at once, no rebuild needed.';
+$_['help_synonyms']       = 'Words joined with "=" mean the same, both ways: "одяг=вбрання". Separate groups with a new line or a comma: "одяг=вбрання,шкарпетки=гольфи". A group may have several words and short phrases ("верхній одяг"). Applies at once, no rebuild needed.';
 $_['help_rebuild']        = 'Products are re-indexed automatically when saved in the admin. Rebuild after bulk imports, direct database edits, or renaming categories and brands. It runs in batches and is safe to repeat.';
 
 $_['error_permission']    = 'Warning: You do not have permission to modify super search!';

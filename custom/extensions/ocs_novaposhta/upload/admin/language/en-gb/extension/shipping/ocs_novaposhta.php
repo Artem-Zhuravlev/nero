@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_novaposhta. Admin strings, en-gb. Owner: SPEC-085.
 
-$_['heading_title']        = 'OCS: Nova Poshta';
+$_['heading_title']        = 'Nero: Nova Poshta';
 
 $_['text_extension']       = 'Extensions';
 $_['text_success']         = 'Nova Poshta settings saved';

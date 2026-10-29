@@ -1,5 +1,5 @@
 { "code": "ocs_shell", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Header, Footer and Mobile Shell", "uk-ua": "OCS: шапка, футер і мобільна панель" },
+  "title": { "en-gb": "Nero Header, Footer and Mobile Shell", "uk-ua": "Nero: шапка, футер і мобільна панель" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
   "spec": "SPEC-031", "tables": [],
   "settings": ["module_ocs_shell_status", "module_ocs_shell_mobile_bar", "module_ocs_shell_announcement_from", "module_ocs_shell_announcement_to",

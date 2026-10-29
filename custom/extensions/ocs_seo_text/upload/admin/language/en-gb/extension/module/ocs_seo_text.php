@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_seo_text. Admin strings, en-gb. Owner: SPEC-033.
 
-$_['heading_title']    = 'OCS Home SEO Text';
+$_['heading_title']    = 'Nero Home SEO Text';
 
 $_['text_extension']   = 'Extensions';
 $_['text_success']     = 'Success: SEO text saved!';

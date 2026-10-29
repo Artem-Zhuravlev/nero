@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_latest_reviews. Admin strings, en-gb. Owner: SPEC-081.
 
-$_['heading_title']     = 'OCS: Latest reviews';
+$_['heading_title']     = 'Nero: Latest reviews';
 
 $_['text_extension']    = 'Extensions';
 $_['text_success']      = 'Latest reviews module saved';

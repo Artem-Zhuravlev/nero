@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_preorder. Admin strings, en-gb. Owner: SPEC-025.
 
-$_['heading_title']      = 'OCS Pre-order';
+$_['heading_title']      = 'Nero Pre-order';
 $_['heading_requests']   = 'Pre-order requests';
 
 $_['text_extension']     = 'Extensions';

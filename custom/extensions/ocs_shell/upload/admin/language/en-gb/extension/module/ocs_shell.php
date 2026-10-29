@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_shell. Admin strings, en-gb. Owner: SPEC-031.
 
-$_['heading_title']        = 'OCS Header, Footer and Mobile Shell';
+$_['heading_title']        = 'Nero Header, Footer and Mobile Shell';
 
 $_['text_extension']       = 'Extensions';
 $_['text_success']         = 'Success: shell settings saved!';

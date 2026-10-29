@@ -1,5 +1,5 @@
 { "code": "ocs_menu", "type": "library", "version": "1.0.0",
-  "title": { "en-gb": "OCS Category Tree (shared by menus)", "uk-ua": "OCS: дерево категорій (спільне для меню)" },
+  "title": { "en-gb": "Nero Category Tree (shared by menus)", "uk-ua": "Nero: дерево категорій (спільне для меню)" },
   "requires": { "core": "3.0.3.7", "extensions": [] },
   "spec": "SPEC-027", "tables": ["oc_ocs_menu_category"],
   "settings": [], "events": [], "routes": [] }

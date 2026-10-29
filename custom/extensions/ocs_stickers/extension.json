@@ -1,5 +1,5 @@
 { "code": "ocs_stickers", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Stickers", "uk-ua": "OCS: стікери" },
+  "title": { "en-gb": "Nero Stickers", "uk-ua": "Nero: стікери" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_listing"] },
   "spec": "SPEC-029",
   "tables": ["oc_ocs_sticker", "oc_ocs_sticker_description", "oc_ocs_sticker_product"],

@@ -1,5 +1,5 @@
 { "code": "ocs_viewed", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Recently Viewed", "uk-ua": "OCS: нещодавно переглянуті" },
+  "title": { "en-gb": "Nero Recently Viewed", "uk-ua": "Nero: нещодавно переглянуті" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_listing"] },
   "spec": "SPEC-030", "tables": ["oc_ocs_viewed"],
   "settings": ["module_ocs_viewed_status", "module_ocs_viewed_limit"],

@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_shell. Admin strings, uk-ua. Owner: SPEC-031.
 
-$_['heading_title']        = 'OCS: шапка, футер і мобільна панель';
+$_['heading_title']        = 'Nero: шапка, футер і мобільна панель';
 
 $_['text_extension']       = 'Доповнення';
 $_['text_success']         = 'Налаштування збережено';

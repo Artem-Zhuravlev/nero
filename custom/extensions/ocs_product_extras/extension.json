@@ -1,5 +1,5 @@
 { "code": "ocs_product_extras", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Product Page Extras", "uk-ua": "OCS: додатки сторінки товару" },
+  "title": { "en-gb": "Nero Product Page Extras", "uk-ua": "Nero: додатки сторінки товару" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
   "spec": "SPEC-035",
   "tables": ["oc_ocs_question", "oc_ocs_product_accessory", "oc_ocs_product_video", "oc_ocs_review_extra"],

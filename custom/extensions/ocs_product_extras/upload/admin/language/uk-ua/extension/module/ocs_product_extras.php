@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_product_extras. Admin strings, uk-ua. Owner: SPEC-035.
 
-$_['heading_title']        = 'OCS: додатки сторінки товару';
+$_['heading_title']        = 'Nero: додатки сторінки товару';
 
 $_['text_extension']       = 'Доповнення';
 $_['text_success']         = 'Налаштування збережено';

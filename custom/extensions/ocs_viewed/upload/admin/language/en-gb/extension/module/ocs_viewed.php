@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_viewed. Admin strings, en-gb. Owner: SPEC-030.
 
-$_['heading_title']    = 'OCS Recently Viewed';
+$_['heading_title']    = 'Nero Recently Viewed';
 
 $_['text_extension']   = 'Extensions';
 $_['text_success']     = 'Success: settings saved!';

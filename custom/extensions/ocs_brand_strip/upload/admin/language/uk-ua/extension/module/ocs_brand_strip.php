@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_brand_strip. Admin strings, uk-ua. Owner: SPEC-033.
 
-$_['heading_title']       = 'OCS: смуга брендів';
+$_['heading_title']       = 'Nero: смуга брендів';
 
 $_['text_extension']      = 'Доповнення';
 $_['text_success']        = 'Налаштування смуги брендів збережено';

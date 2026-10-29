@@ -1,5 +1,5 @@
 { "code": "ocs_quick_order", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Quick Order", "uk-ua": "OCS: швидке замовлення" },
+  "title": { "en-gb": "Nero Quick Order", "uk-ua": "Nero: швидке замовлення" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
   "spec": "SPEC-025", "tables": [],
   "settings": ["module_ocs_quick_order_status", "module_ocs_quick_order_name", "module_ocs_quick_order_phone", "module_ocs_quick_order_email", "module_ocs_quick_order_comment", "module_ocs_quick_order_order_status_id"],

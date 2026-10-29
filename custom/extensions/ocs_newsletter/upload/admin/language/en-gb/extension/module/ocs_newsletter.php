@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_newsletter. Admin strings, en-gb. Owner: SPEC-033.
 
-$_['heading_title']    = 'OCS Newsletter';
+$_['heading_title']    = 'Nero Newsletter';
 
 $_['text_extension']   = 'Extensions';
 $_['text_success']     = 'Success: newsletter settings saved!';

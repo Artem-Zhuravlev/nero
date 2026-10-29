@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_stickers. Admin strings, uk-ua. Owner: SPEC-029.
 
-$_['heading_title']       = 'OCS: стікери';
+$_['heading_title']       = 'Nero: стікери';
 $_['heading_add']         = 'Новий стікер';
 $_['heading_edit']        = 'Редагування стікера';
 

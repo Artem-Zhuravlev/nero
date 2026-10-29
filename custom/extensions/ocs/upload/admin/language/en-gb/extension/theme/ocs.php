@@ -2,12 +2,12 @@
 // Extension: ocs (theme). Admin strings, en-gb. Owner: SPEC-006.
 
 // Heading
-$_['heading_title']                    = 'OCS Store Theme';
+$_['heading_title']                    = 'Nero Store Theme';
 
 // Text
 $_['text_extension']                   = 'Extensions';
-$_['text_success']                     = 'Success: You have modified the OCS theme!';
-$_['text_edit']                        = 'Edit OCS Theme';
+$_['text_success']                     = 'Success: You have modified the Nero theme!';
+$_['text_edit']                        = 'Edit Nero Theme';
 $_['text_general']                     = 'General';
 $_['text_product']                     = 'Products';
 $_['text_image']                       = 'Images';
@@ -44,7 +44,7 @@ $_['help_show_sku']                     = 'Shows the article number (model) on e
 $_['help_font']                         = 'Site-wide font. Montserrat, Inter, Manrope, Onest, Golos Text and Nunito Sans ship with the theme; Gilroy, Proxima Nova and Geometria become available once licensed woff2 files are added to catalog/view/theme/ocs/fonts/.';
 
 // Error
-$_['error_permission']                 = 'Warning: You do not have permission to modify the OCS theme!';
+$_['error_permission']                 = 'Warning: You do not have permission to modify the Nero theme!';
 $_['error_limit']                      = 'Value required!';
 $_['error_image']                      = 'Image dimensions required!';
 
@@ -111,3 +111,14 @@ $_['entry_schema_org_logo'] = 'Organization logo';
 $_['help_schema_status']    = 'Prints schema.org JSON-LD in the head of every page (organization, breadcrumbs, products, reviews, lists, articles) for search engines.';
 $_['help_schema_org_name']  = 'Shown to search engines as the organization name; empty = store name.';
 $_['help_schema_org_logo']  = 'Path of the logo inside the image directory, for example catalog/logo.png; empty = store logo.';
+
+// Tabs and setup hints (SPEC-123)
+$_['tab_general']       = 'General';
+$_['tab_contacts']      = 'Contacts';
+$_['tab_menu']          = 'Menu';
+$_['tab_footer']        = 'Footer';
+$_['tab_blocks']        = 'Blocks';
+$_['tab_seo']           = 'SEO';
+$_['tab_images']        = 'Images';
+$_['text_setup']        = 'Setup';
+$_['text_setup_pending'] = 'the Nero tables, settings and modules are not installed yet.';

@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_home_slider. Admin strings, en-gb. Owner: SPEC-033.
 
-$_['heading_title']      = 'OCS Home Slider';
+$_['heading_title']      = 'Nero Home Slider';
 $_['heading_add']        = 'Add slide';
 $_['heading_edit']       = 'Edit slide';
 

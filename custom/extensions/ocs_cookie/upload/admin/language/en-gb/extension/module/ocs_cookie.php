@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_cookie. Admin strings, en-gb. Owner: SPEC-083.
 
-$_['heading_title']       = 'OCS: Cookie popup';
+$_['heading_title']       = 'Nero: Cookie popup';
 
 $_['text_extension']      = 'Extensions';
 $_['text_success']        = 'Settings saved';

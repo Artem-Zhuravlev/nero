@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_back_in_stock. Admin strings, uk-ua. Owner: SPEC-025.
 
-$_['heading_title']         = 'OCS: повідомлення про надходження';
+$_['heading_title']         = 'Nero: повідомлення про надходження';
 $_['heading_subscriptions'] = 'Підписки на надходження';
 
 $_['text_extension']        = 'Доповнення';

@@ -189,6 +189,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-120 | [Не в наличии: колокольчик «сообщить о наличии», такие товары в конце списка](card-notify-oos-last/spec.md) | `implemented` |
 | SPEC-121 | [Выбор шрифта в настройках темы](theme-font-choice/spec.md) | `implemented` |
 | SPEC-122 | [Админка: редактор заказа на одной странице](admin-order-editor/spec.md) | `implemented` |
+| SPEC-123 | [Настройки Nero: вкладки, пункт меню, бренд NERO, чистка текстов](admin-nero-settings/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

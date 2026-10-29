@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_mega_menu. Admin strings, en-gb. Owner: SPEC-027.
 
-$_['heading_title']       = 'OCS Mega Menu';
+$_['heading_title']       = 'Nero Mega Menu';
 
 $_['text_extension']      = 'Extensions';
 $_['text_success']        = 'Success: mega menu settings saved!';

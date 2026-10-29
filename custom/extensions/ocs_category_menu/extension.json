@@ -1,5 +1,5 @@
 { "code": "ocs_category_menu", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Side Category Menu", "uk-ua": "OCS: бічне меню категорій" },
+  "title": { "en-gb": "Nero Side Category Menu", "uk-ua": "Nero: бічне меню категорій" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs_menu"] },
   "spec": "SPEC-027", "tables": [],
   "settings": ["module_ocs_category_menu_status", "module_ocs_category_menu_levels"],

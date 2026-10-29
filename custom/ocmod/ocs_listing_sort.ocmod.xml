@@ -7,10 +7,10 @@
   @core-version 3.0.3.7
 -->
 <modification>
-  <name>OCS listing: allow sort by p.viewed</name>
+  <name>Nero listing: allow sort by p.viewed</name>
   <code>ocs_listing_sort</code>
   <version>1.0.0</version>
-  <author>OCS</author>
+  <author>Nero</author>
   <link></link>
   <file path="catalog/model/catalog/product.php">
     <operation>

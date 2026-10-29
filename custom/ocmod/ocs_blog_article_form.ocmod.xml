@@ -7,10 +7,10 @@
   @core-version 3.0.3.7
 -->
 <modification>
-  <name>OCS blog: author and publication date in the article form</name>
+  <name>Nero blog: author and publication date in the article form</name>
   <code>ocs_blog_article_form</code>
   <version>1.0.0</version>
-  <author>OCS</author>
+  <author>Nero</author>
   <link></link>
   <file path="admin/view/template/blog/article_form.twig">
     <operation>

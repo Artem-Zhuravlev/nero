@@ -1,5 +1,5 @@
 { "code": "ocs_request", "type": "library", "version": "1.0.0",
-  "title": { "en-gb": "OCS Request Forms Library", "uk-ua": "OCS: бібліотека форм заявок" },
+  "title": { "en-gb": "Nero Request Forms Library", "uk-ua": "Nero: бібліотека форм заявок" },
   "requires": { "core": "3.0.3.7", "extensions": [] },
   "spec": "SPEC-025", "tables": [],
   "settings": [], "events": [], "routes": [] }

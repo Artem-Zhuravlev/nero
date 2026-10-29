@@ -1,5 +1,5 @@
 { "code": "ocs_bookmarks", "type": "library", "version": "1.0.0",
-  "title": { "en-gb": "OCS Bookmarks", "uk-ua": "OCS: закладки" },
+  "title": { "en-gb": "Nero Bookmarks", "uk-ua": "Nero: закладки" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
   "spec": "SPEC-044, SPEC-057", "tables": [],
   "settings": [],

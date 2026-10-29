@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_seo_text. Admin strings, uk-ua. Owner: SPEC-033.
 
-$_['heading_title']    = 'OCS: SEO-текст головної';
+$_['heading_title']    = 'Nero: SEO-текст головної';
 
 $_['text_extension']   = 'Доповнення';
 $_['text_success']     = 'SEO-текст збережено';

@@ -1,5 +1,5 @@
 { "code": "ocs_blog", "type": "library", "version": "1.0.0",
-  "title": { "en-gb": "OCS Blog: authors, comments, reactions", "uk-ua": "OCS: блог — автори, коментарі, реакції" },
+  "title": { "en-gb": "Nero Blog: authors, comments, reactions", "uk-ua": "Nero: блог — автори, коментарі, реакції" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
   "spec": "SPEC-084",
   "tables": ["oc_ocs_blog_author", "oc_ocs_blog_author_description", "oc_ocs_blog_article", "oc_ocs_blog_comment", "oc_ocs_blog_vote"],

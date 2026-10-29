@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_benefits. Admin strings, en-gb. Owner: SPEC-038.
 
-$_['heading_title']    = 'OCS Benefits Strip';
+$_['heading_title']    = 'Nero Benefits Strip';
 
 $_['text_extension']   = 'Extensions';
 $_['text_success']     = 'Success: benefits saved!';

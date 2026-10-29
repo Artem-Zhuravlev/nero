@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_product_carousel. Admin strings, en-gb. Owner: SPEC-033.
 
-$_['heading_title']        = 'OCS Product Carousel';
+$_['heading_title']        = 'Nero Product Carousel';
 
 $_['text_extension']       = 'Extensions';
 $_['text_success']         = 'Success: carousel saved!';

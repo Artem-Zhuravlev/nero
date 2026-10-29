@@ -1,5 +1,5 @@
 { "code": "ocs_latest_reviews", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Latest Reviews", "uk-ua": "OCS: останні відгуки" },
+  "title": { "en-gb": "Nero Latest Reviews", "uk-ua": "Nero: останні відгуки" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
   "spec": "SPEC-081", "tables": [],
   "settings": [],

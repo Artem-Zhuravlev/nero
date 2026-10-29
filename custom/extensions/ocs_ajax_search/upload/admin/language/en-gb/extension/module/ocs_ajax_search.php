@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_ajax_search. Admin strings, en-gb. Owner: SPEC-028.
 
-$_['heading_title']    = 'OCS AJAX Search';
+$_['heading_title']    = 'Nero AJAX Search';
 
 $_['text_extension']   = 'Extensions';
 $_['text_success']     = 'Success: search settings saved!';

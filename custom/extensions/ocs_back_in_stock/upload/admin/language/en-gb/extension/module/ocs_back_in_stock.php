@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_back_in_stock. Admin strings, en-gb. Owner: SPEC-025.
 
-$_['heading_title']         = 'OCS Back in Stock';
+$_['heading_title']         = 'Nero Back in Stock';
 $_['heading_subscriptions'] = 'Back-in-stock subscriptions';
 
 $_['text_extension']        = 'Extensions';

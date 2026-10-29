@@ -171,9 +171,9 @@ class SuperSearch {
 
 	/**
 	 * Synonym textarea -> groups of normalised phrases. Groups are separated by a new line, comma or semicolon,
-	 * members by "=" ("одежда=шмотки=одяг, носки=гольфы"). Pieces without "=" are returned as errors.
+	 * members by "=" ("одяг=вбрання, шкарпетки=гольфи"). Pieces without "=" are returned as errors.
 	 *
-	 * @return array array('groups' => array(array('одежда', 'шмотки'), ...), 'errors' => array('raw piece', ...))
+	 * @return array array('groups' => array(array('одяг', 'вбрання'), ...), 'errors' => array('raw piece', ...))
 	 */
 	public static function parseSynonyms($text) {
 		$groups = array();

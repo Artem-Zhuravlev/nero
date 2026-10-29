@@ -1,5 +1,5 @@
 { "code": "ocs_super_search", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Super Search", "uk-ua": "OCS: суперпошук" },
+  "title": { "en-gb": "Nero Super Search", "uk-ua": "Nero: суперпошук" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs"] },
   "spec": "SPEC-079", "tables": ["oc_ocs_search_token", "oc_ocs_search_vocab"],
   "settings": ["module_ocs_super_search_status", "module_ocs_super_search_layout", "module_ocs_super_search_translit", "module_ocs_super_search_typo", "module_ocs_super_search_min_length", "module_ocs_super_search_cache_ttl", "module_ocs_super_search_synonyms", "module_ocs_super_search_generation", "module_ocs_super_search_built_at"],

@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_category_menu. Admin strings, en-gb. Owner: SPEC-027.
 
-$_['heading_title']     = 'OCS Side Category Menu';
+$_['heading_title']     = 'Nero Side Category Menu';
 
 $_['text_extension']    = 'Extensions';
 $_['text_success']      = 'Success: side category menu settings saved!';

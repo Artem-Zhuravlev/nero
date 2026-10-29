@@ -1,5 +1,5 @@
 { "code": "ocs_product_carousel", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS Product Carousel", "uk-ua": "OCS: карусель товарів" },
+  "title": { "en-gb": "Nero Product Carousel", "uk-ua": "Nero: карусель товарів" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_request"] },
   "spec": "SPEC-033", "tables": [],
   "settings": [],

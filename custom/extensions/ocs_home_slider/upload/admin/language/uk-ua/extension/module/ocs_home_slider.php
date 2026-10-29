@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_home_slider. Admin strings, uk-ua. Owner: SPEC-033.
 
-$_['heading_title']      = 'OCS: слайдер головної';
+$_['heading_title']      = 'Nero: слайдер головної';
 $_['heading_add']        = 'Новий слайд';
 $_['heading_edit']       = 'Редагування слайда';
 

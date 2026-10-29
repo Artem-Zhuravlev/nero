@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_benefits. Admin strings, uk-ua. Owner: SPEC-038.
 
-$_['heading_title']    = 'OCS: смуга переваг';
+$_['heading_title']    = 'Nero: смуга переваг';
 
 $_['text_extension']   = 'Доповнення';
 $_['text_success']     = 'Переваги збережено';

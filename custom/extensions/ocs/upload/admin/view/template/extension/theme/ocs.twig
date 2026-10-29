@@ -5,7 +5,7 @@
     <div class="container-fluid">
       <div class="pull-right">
         <button type="submit" form="form-theme" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
-        {% if setup %}<a href="{{ setup }}" data-toggle="tooltip" title="Setup" class="btn btn-warning"><i class="fa fa-magic"></i></a>
+        {% if setup %}<a href="{{ setup }}" data-toggle="tooltip" title="{{ text_setup }}" class="btn btn-warning"><i class="fa fa-magic"></i></a>
         {% endif %}<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
       <h1>{{ heading_title }}</h1>
       <ul class="breadcrumb">
@@ -17,7 +17,7 @@
   </div>
   <div class="container-fluid">
     {% if setup_pending %}
-    <div class="alert alert-warning"><i class="fa fa-magic"></i> <a href="{{ setup }}">Setup</a>: the OCS tables, settings and modules are not installed yet.</div>
+    <div class="alert alert-warning"><i class="fa fa-magic"></i> <a href="{{ setup }}">{{ text_setup }}</a>: {{ text_setup_pending }}</div>
     {% endif %}
     {% if error_warning %}
     <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
@@ -30,8 +30,18 @@
       </div>
       <div class="panel-body">
         <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-theme" class="form-horizontal">
-          <fieldset>
-            <legend>{{ text_general }}</legend>
+          <ul class="nav nav-tabs nero-tabs" id="nero-tabs">
+            <li class="active"><a href="#nero-general" data-toggle="tab">{{ tab_general }}</a></li>
+            <li><a href="#nero-contacts" data-toggle="tab">{{ tab_contacts }}</a></li>
+            <li><a href="#nero-menu" data-toggle="tab">{{ tab_menu }}</a></li>
+            <li><a href="#nero-footer" data-toggle="tab">{{ tab_footer }}</a></li>
+            <li><a href="#nero-blocks" data-toggle="tab">{{ tab_blocks }}</a></li>
+            <li><a href="#nero-seo" data-toggle="tab">{{ tab_seo }}</a></li>
+            <li><a href="#nero-images" data-toggle="tab">{{ tab_images }}</a></li>
+          </ul>
+          <div class="tab-content nero-panes">
+            <div class="tab-pane active" id="nero-general">
+          <div class="nero-card"><h4 class="nero-card__title">{{ text_general }}</h4>
             <div class="form-group">
               <label class="col-sm-2 control-label" for="input-directory"><span data-toggle="tooltip" title="{{ help_directory }}">{{ entry_directory }}</span></label>
               <div class="col-sm-10">
@@ -47,9 +57,8 @@
                 </select>
               </div>
             </div>
-          </fieldset>
-          <fieldset>
-            <legend>{{ text_product }}</legend>
+          </div>
+          <div class="nero-card"><h4 class="nero-card__title">{{ text_product }}</h4>
             <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-catalog-limit"><span data-toggle="tooltip" title="{{ help_product_limit }}">{{ entry_product_limit }}</span></label>
               <div class="col-sm-10">
@@ -92,29 +101,10 @@
                 </select>
               </div>
             </div>
-          </fieldset>
-          <fieldset>
-            <legend>{{ text_schema }}</legend>
-            <div class="form-group">
-              <label class="col-sm-2 control-label" for="input-schema-status"><span data-toggle="tooltip" title="{{ help_schema_status }}">{{ entry_schema_status }}</span></label>
-              <div class="col-sm-10">
-                <select name="theme_ocs_schema_status" id="input-schema-status" class="form-control">
-                  <option value="1"{% if theme_ocs_schema_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
-                  <option value="0"{% if not theme_ocs_schema_status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
-                </select>
-              </div>
+          </div>
             </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label" for="input-schema-org-name"><span data-toggle="tooltip" title="{{ help_schema_org_name }}">{{ entry_schema_org_name }}</span></label>
-              <div class="col-sm-10"><input type="text" name="theme_ocs_schema_org_name" value="{{ theme_ocs_schema_org_name }}" id="input-schema-org-name" class="form-control" maxlength="200" /></div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label" for="input-schema-org-logo"><span data-toggle="tooltip" title="{{ help_schema_org_logo }}">{{ entry_schema_org_logo }}</span></label>
-              <div class="col-sm-10"><input type="text" name="theme_ocs_schema_org_logo" value="{{ theme_ocs_schema_org_logo }}" id="input-schema-org-logo" class="form-control" maxlength="255" /></div>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>{{ text_contacts }}</legend>
+            <div class="tab-pane" id="nero-contacts">
+          <div class="nero-card"><h4 class="nero-card__title">{{ text_contacts }}</h4>
             <ul class="nav nav-tabs" id="contact-lang">
               {% for language in languages %}
               <li{% if loop.first %} class="active"{% endif %}><a href="#contact-l{{ language.language_id }}" data-toggle="tab">{{ language.name }}</a></li>
@@ -138,7 +128,8 @@
               </div>
               {% endfor %}
             </div>
-            <legend>{{ text_contact_links }}</legend>
+            </div>
+            <div class="nero-card"><h4 class="nero-card__title">{{ text_contact_links }}</h4>
             <p class="help-block">{{ help_contact_links }}</p>
             <div class="table-responsive">
               <table class="table table-bordered" id="contact-links">
@@ -231,9 +222,10 @@
   boot(body);
 }());
 //--></script>
-          </fieldset>
-          <fieldset>
-            <legend>{{ text_top_menu }}</legend>
+          </div>
+            </div>
+            <div class="tab-pane" id="nero-menu">
+          <div class="nero-card"><h4 class="nero-card__title">{{ text_top_menu }}</h4>
             <p class="help-block">{{ help_top_menu }}</p>
             <div class="form-group">
               <label class="col-sm-2 control-label" for="input-top-enabled">{{ entry_top_enabled }}</label>
@@ -277,9 +269,10 @@
                 </div>
               </div>
             </div>
-          </fieldset>
-          <fieldset>
-            <legend>{{ text_footer }}</legend>
+          </div>
+            </div>
+            <div class="tab-pane" id="nero-footer">
+          <div class="nero-card"><h4 class="nero-card__title">{{ text_footer }}</h4>
             <p class="help-block">{{ help_footer }}</p>
             {% for column in footer_menu %}
             <div class="form-group">
@@ -300,9 +293,10 @@
                 </select>
               </div>
             </div>
-          </fieldset>
-          <fieldset>
-            <legend>{{ text_info_blocks }}</legend>
+          </div>
+            </div>
+            <div class="tab-pane" id="nero-blocks">
+          <div class="nero-card"><h4 class="nero-card__title">{{ text_info_blocks }}</h4>
             <p class="help-block">{{ help_info_blocks }}</p>
             <div class="table-responsive">
               <table class="table table-bordered" id="info-blocks">
@@ -358,9 +352,31 @@
   });
 }());
 //--></script>
-          </fieldset>
-          <fieldset>
-            <legend>{{ text_image }}</legend>
+          </div>
+            </div>
+            <div class="tab-pane" id="nero-seo">
+          <div class="nero-card"><h4 class="nero-card__title">{{ text_schema }}</h4>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-schema-status"><span data-toggle="tooltip" title="{{ help_schema_status }}">{{ entry_schema_status }}</span></label>
+              <div class="col-sm-10">
+                <select name="theme_ocs_schema_status" id="input-schema-status" class="form-control">
+                  <option value="1"{% if theme_ocs_schema_status %} selected="selected"{% endif %}>{{ text_enabled }}</option>
+                  <option value="0"{% if not theme_ocs_schema_status %} selected="selected"{% endif %}>{{ text_disabled }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-schema-org-name"><span data-toggle="tooltip" title="{{ help_schema_org_name }}">{{ entry_schema_org_name }}</span></label>
+              <div class="col-sm-10"><input type="text" name="theme_ocs_schema_org_name" value="{{ theme_ocs_schema_org_name }}" id="input-schema-org-name" class="form-control" maxlength="200" /></div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-schema-org-logo"><span data-toggle="tooltip" title="{{ help_schema_org_logo }}">{{ entry_schema_org_logo }}</span></label>
+              <div class="col-sm-10"><input type="text" name="theme_ocs_schema_org_logo" value="{{ theme_ocs_schema_org_logo }}" id="input-schema-org-logo" class="form-control" maxlength="255" /></div>
+            </div>
+          </div>
+            </div>
+            <div class="tab-pane" id="nero-images">
+          <div class="nero-card"><h4 class="nero-card__title">{{ text_image }}</h4>
             {% for role in roles %}
             <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-image-{{ role }}-width">{{ attribute(_context, 'entry_image_' ~ role) }}</label>
@@ -373,9 +389,67 @@
               </div>
             </div>
             {% endfor %}
-          </fieldset>
+          </div>
+            </div>
+          </div>
         </form>
-        <p class="text-muted">OCS theme v{{ version }}</p>
+        <style>
+.nero-tabs{margin-bottom:20px;border-bottom:2px solid #e5e7eb}
+.nero-tabs>li>a{border:0;border-radius:8px 8px 0 0;color:#555;font-weight:600;padding:10px 18px;margin-bottom:-2px}
+.nero-tabs>li>a:hover{background:#f3f4f6;border:0}
+.nero-tabs>li.active>a,.nero-tabs>li.active>a:hover,.nero-tabs>li.active>a:focus{border:0;border-bottom:2px solid #111;color:#111;background:transparent}
+.nero-tabs>li.has-error>a{color:#c0392b}
+.nero-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px 22px 8px;margin-bottom:20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.nero-card__title{margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid #f0f1f3;font-size:16px;font-weight:700;color:#111}
+.nero-card .form-group{margin-bottom:16px}
+.nero-card .form-control{border-radius:8px;box-shadow:none}
+.nero-card .form-control:focus{border-color:#111}
+.nero-card .nav-tabs{margin-bottom:16px}
+.nero-card .table{margin-bottom:12px}
+.nero-card .table thead td{font-weight:600;background:#f9fafb}
+@media(max-width:767px){.nero-tabs>li{float:none}.nero-tabs>li>a{padding:8px 12px}.nero-card{padding:16px 14px 4px}}
+        </style>
+        <script type="text/javascript"><!--
+(function () {
+  var nav = document.getElementById('nero-tabs');
+  var key = 'nero-settings-tab';
+  var saved = null;
+
+  function open(id) {
+    var a = nav.querySelector('a[href="' + id + '"]');
+
+    if (a && window.jQuery) {
+      jQuery(a).tab('show');
+    }
+  }
+
+  [].forEach.call(document.querySelectorAll('.nero-panes > .tab-pane'), function (pane) {
+    if (pane.querySelector('.text-danger')) {
+      nav.querySelector('a[href="#' + pane.id + '"]').parentNode.classList.add('has-error');
+    }
+  });
+
+  var bad = nav.querySelector('li.has-error a');
+
+  try { saved = localStorage.getItem(key); } catch (e) {}
+
+  if (bad) {
+    open(bad.getAttribute('href'));
+  } else if (saved) {
+    open(saved);
+  }
+
+  nav.addEventListener('click', function (e) {
+    var a = e.target.closest('a');
+
+    if (a) {
+      try { localStorage.setItem(key, a.getAttribute('href')); } catch (err) {}
+    }
+  });
+}());
+//--></script>
+
+        <p class="text-muted">Nero theme v{{ version }}</p>
       </div>
     </div>
   </div>

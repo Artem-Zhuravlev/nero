@@ -1,5 +1,5 @@
 { "code": "ocs_ajax_cart", "type": "module", "version": "1.0.0",
-  "title": { "en-gb": "OCS AJAX Cart", "uk-ua": "OCS: AJAX-кошик" },
+  "title": { "en-gb": "Nero AJAX Cart", "uk-ua": "Nero: AJAX-кошик" },
   "requires": { "core": "3.0.3.7", "extensions": ["ocs", "ocs_listing"] },
   "spec": "SPEC-026", "tables": [],
   "settings": ["module_ocs_ajax_cart_status", "module_ocs_ajax_cart_low_stock"],

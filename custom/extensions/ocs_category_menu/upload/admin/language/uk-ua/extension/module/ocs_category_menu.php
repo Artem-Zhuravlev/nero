@@ -1,7 +1,7 @@
 <?php
 // Extension: ocs_category_menu. Admin strings, uk-ua. Owner: SPEC-027.
 
-$_['heading_title']     = 'OCS: бічне меню категорій';
+$_['heading_title']     = 'Nero: бічне меню категорій';
 
 $_['text_extension']    = 'Доповнення';
 $_['text_success']      = 'Налаштування бічного меню збережено';
