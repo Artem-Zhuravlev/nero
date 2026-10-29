@@ -183,6 +183,8 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-114 | [Кнопка купленного товара: фон #222](in-cart-button-color/spec.md) | `implemented` |
 | SPEC-115 | [Админка товара: видео на вкладке «Данные», без аксессуаров](admin-product-video-field/spec.md) | `implemented` |
 | SPEC-116 | [Админка отзыва: плюсы, минусы, ответ магазина](review-admin-fields/spec.md) | `implemented` |
+| SPEC-117 | [Корзина: степпер количества, аккуратнее вид](cart-page-qty-stepper/spec.md) | `implemented` |
+| SPEC-118 | [Корзина: итоги sticky справа, аккордеоны под ними с иконками](cart-sticky-summary/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

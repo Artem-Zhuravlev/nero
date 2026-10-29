@@ -3537,3 +3537,55 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		set(input.value);
 	});
 }(window, document));
+
+/* Cart page quantity stepper (SPEC-117): - / + and manual edits submit the cart form (checkout/cart/edit) after a short pause. */
+(function (window, document) {
+	'use strict';
+
+	var timer = null;
+
+	function schedule(form) {
+		window.clearTimeout(timer);
+		timer = window.setTimeout(function () { form.submit(); }, 600);
+	}
+
+	function step(input, delta) {
+		var n = Math.max(1, (parseInt(input.value, 10) || 1) + delta);
+		var minus = input.parentNode.querySelector('.ocs-step-minus');
+
+		input.value = n;
+
+		if (minus) {
+			minus.disabled = n <= 1;
+		}
+
+		if (input.form) {
+			schedule(input.form);
+		}
+	}
+
+	document.addEventListener('click', function (e) {
+		var btn = e.target.closest ? e.target.closest('.ocs-step') : null;
+
+		if (!btn || btn.disabled) {
+			return;
+		}
+
+		step(btn.parentNode.querySelector('.ocs-step-input'), btn.classList.contains('ocs-step-plus') ? 1 : -1);
+	});
+
+	document.addEventListener('change', function (e) {
+		var input = e.target;
+
+		if (input.classList && input.classList.contains('ocs-step-input')) {
+			step(input, 0);
+		}
+	});
+
+	document.addEventListener('keydown', function (e) {
+		if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('ocs-step-input')) {
+			e.preventDefault();
+			step(e.target, 0);
+		}
+	});
+}(window, document));
