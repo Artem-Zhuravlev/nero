@@ -2,7 +2,7 @@
 {# SPEC-056: product modules use the shared ocs card partial (REQ-MPC-001). #}
 {% if products %}
 <section class="ocs-modcards">
-  <h2 class="ocs-sec-title">{{ heading_title }}</h2>
+  <div class="ocs-sec-title">{{ heading_title }}</div>
   {# SPEC-106: a carousel on phones (2 cards per view), the card grid from 768px #}
   <div class="ocs-carousel ocs-mc" role="region" aria-label="{{ heading_title|striptags }}">
     <div class="ocs-carousel-track">

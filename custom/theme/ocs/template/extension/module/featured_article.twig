@@ -2,7 +2,7 @@
 {# SPEC-099: shared article cards and grid, like blog_latest. Hand-written override (no generated marker). #}
 {% if articles %}
 <section class="ocs-section ocs-blog-module">
-  <h2 class="ocs-sec-title">{{ heading_title }}</h2>
+  <div class="ocs-sec-title">{{ heading_title }}</div>
   <div class="ocs-bgrid">
     {% for article in articles %}
     {% include 'ocs/template/ocs/blog_card.twig' %}
