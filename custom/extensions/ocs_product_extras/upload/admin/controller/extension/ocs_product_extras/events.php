@@ -1,5 +1,5 @@
 <?php
-// Extension: ocs_product_extras. Admin events: "Accessories" tab in the product form, saving and cleanup. Owner: SPEC-035 (REQ-PRD-020).
+// Extension: ocs_product_extras. Admin events: video field on the Data tab of the product form, saving and cleanup. Owner: SPEC-035, SPEC-115.
 // Handlers never throw to the admin user (REQ-EXT-062).
 
 class ControllerExtensionOcsProductExtrasEvents extends Controller {
@@ -67,11 +67,6 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 
 			$model = $this->model_extension_ocs_product_extras_extras;
 			$product_id = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
-			$ids = $product_id ? $model->getAccessoryIds($product_id) : array();
-
-			if (isset($this->request->post['ocs_accessory_ids'])) {
-				$ids = \Ocs\ProductExtras::ids($this->request->post['ocs_accessory_ids']);
-			}
 
 			$video = $product_id ? $model->getVideoId($product_id) : '';
 
@@ -86,20 +81,7 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 				unset($this->session->data['ocs_video_error']);
 			}
 
-			$title = isset($strings['ocs_tab_title']) ? $strings['ocs_tab_title'] : 'Accessories';
-
-			$accessories = array();
-
-			foreach ($model->getProductNames($ids) as $id => $name) {
-				$accessories[] = htmlspecialchars('#' . $id . ' ' . $name, ENT_QUOTES, 'UTF-8');
-			}
-
-			$data['ocs_extras_tab_link'] = '<li><a href="#tab-ocs-extras" data-toggle="tab">' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</a></li>';
-			$data['ocs_extras_tab_pane'] = $this->load->view('extension/ocs_product_extras/tab', array(
-				'ids'            => implode(', ', $ids),
-				'accessories'    => $accessories,
-				'ocs_text_help'  => isset($strings['ocs_text_help']) ? $strings['ocs_text_help'] : '',
-				'ocs_entry_ids'  => isset($strings['ocs_entry_ids']) ? $strings['ocs_entry_ids'] : '',
+			$data['ocs_video_field'] = $this->load->view('extension/ocs_product_extras/tab', array(
 				'video'          => $video,
 				'video_error'    => $video_error,
 				'ocs_entry_video' => isset($strings['ocs_entry_video']) ? $strings['ocs_entry_video'] : '',
@@ -136,15 +118,13 @@ class ControllerExtensionOcsProductExtrasEvents extends Controller {
 	}
 
 	private function save($product_id) {
-		// only the product form sends the marker; other callers of the model (imports) leave the links alone
+		// only the product form sends the marker; other callers of the model (imports) leave the video alone
 		if ($product_id < 1 || !$this->config->get('module_ocs_product_extras_status') || empty($this->request->post['ocs_extras_present']) || !$this->user->hasPermission('modify', 'extension/module/ocs_product_extras')) {
 			return;
 		}
 
 		try {
 			$this->load->model('extension/ocs_product_extras/extras');
-
-			$this->model_extension_ocs_product_extras_extras->setAccessories($product_id, \Ocs\ProductExtras::ids(isset($this->request->post['ocs_accessory_ids']) ? $this->request->post['ocs_accessory_ids'] : ''));
 
 			// SPEC-048 REQ-VID-001: a YouTube URL or id; anything else is not stored and the form reports it on the next load
 			$raw = isset($this->request->post['ocs_video']) ? trim((string)$this->request->post['ocs_video']) : '';

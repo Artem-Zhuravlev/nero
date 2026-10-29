@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Purpose: adds an "Accessories" tab to the admin product form.
-  Owner: SPEC-035 (REQ-PRD-020). Event insufficient because: view events can add variables but not new markup to the core template.
-  The tab is rendered by the ocs_product_extras admin event and handed over as {{ ocs_extras_tab_link }} / {{ ocs_extras_tab_pane }}.
+  Purpose: puts the YouTube video field on the "Data" tab of the admin product form, right after the model.
+  Owner: SPEC-035, reworked by SPEC-115 (REQ-PRD-122). Event insufficient because: view events can add variables but not new markup to the core template.
+  The field (label + input column) is rendered by the ocs_product_extras admin event as {{ ocs_video_field }}; it fills the form-group
+  that precedes the SKU label, and a new form-group is reopened for the SKU.
   @core-file admin/view/template/catalog/product_form.twig
   @core-version 3.0.3.7
 -->
 <modification>
-  <name>OCS product extras: product form tab</name>
+  <name>OCS product extras: product form video field</name>
   <code>ocs_product_extras_form</code>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <author>OCS</author>
   <link></link>
   <file path="admin/view/template/catalog/product_form.twig">
     <operation>
-      <search><![CDATA[<li><a href="#tab-design" data-toggle="tab">{{ tab_design }}</a></li>]]></search>
-      <add position="after"><![CDATA[{{ ocs_extras_tab_link }}]]></add>
-    </operation>
-    <operation>
-      <search><![CDATA[<div class="tab-pane" id="tab-design">]]></search>
-      <add position="before"><![CDATA[{{ ocs_extras_tab_pane }}]]></add>
+      <search><![CDATA[<label class="col-sm-2 control-label" for="input-sku">]]></search>
+      <add position="replace"><![CDATA[{% if ocs_video_field %}{{ ocs_video_field }}</div><div class="form-group">{% endif %}<label class="col-sm-2 control-label" for="input-sku">]]></add>
     </operation>
   </file>
 </modification>
