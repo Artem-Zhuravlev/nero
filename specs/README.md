@@ -186,6 +186,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-117 | [Корзина: степпер количества, аккуратнее вид](cart-page-qty-stepper/spec.md) | `implemented` |
 | SPEC-118 | [Корзина: итоги sticky справа, аккордеоны под ними с иконками](cart-sticky-summary/spec.md) | `implemented` |
 | SPEC-119 | [Попап корзины: акционная и актуальная цена](cart-popup-old-price/spec.md) | `implemented` |
+| SPEC-120 | [Не в наличии: колокольчик «сообщить о наличии», такие товары в конце списка](card-notify-oos-last/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

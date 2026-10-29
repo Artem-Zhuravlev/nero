@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Purpose: list out-of-stock products (quantity <= 0) after the available ones in every sort order of getProducts() and getProductSpecials().
+  Owner: SPEC-120 (REQ-OOS2-004, 005). Event insufficient because: model events cannot change the ORDER BY clause that core builds
+  inside ModelCatalogProduct::getProducts() / getProductSpecials().
+  @core-file catalog/model/catalog/product.php
+  @core-version 3.0.3.7
+-->
+<modification>
+  <name>OCS listing: out-of-stock products last</name>
+  <code>ocs_listing_stock_last</code>
+  <version>1.0.0</version>
+  <author>OCS</author>
+  <link></link>
+  <file path="catalog/model/catalog/product.php">
+    <operation>
+      <search><![CDATA[$sql .= " ORDER BY LCASE(" . $data['sort'] . ")";]]></search>
+      <add position="replace"><![CDATA[$sql .= " ORDER BY (p.quantity <= 0) ASC, LCASE(" . $data['sort'] . ")";]]></add>
+    </operation>
+    <operation>
+      <search><![CDATA[$sql .= " ORDER BY (CASE WHEN special IS NOT NULL]]></search>
+      <add position="replace"><![CDATA[$sql .= " ORDER BY (p.quantity <= 0) ASC, (CASE WHEN special IS NOT NULL]]></add>
+    </operation>
+    <operation>
+      <search><![CDATA[$sql .= " ORDER BY " . $data['sort'];]]></search>
+      <add position="replace"><![CDATA[$sql .= " ORDER BY (p.quantity <= 0) ASC, " . $data['sort'];]]></add>
+    </operation>
+    <operation>
+      <search><![CDATA[$sql .= " ORDER BY p.sort_order";]]></search>
+      <add position="replace"><![CDATA[$sql .= " ORDER BY (p.quantity <= 0) ASC, p.sort_order";]]></add>
+    </operation>
+  </file>
+</modification>
