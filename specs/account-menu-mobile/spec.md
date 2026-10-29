@@ -30,3 +30,7 @@ Other column modules (they stay hidden on phones), menu markup, desktop layout.
 ## Acceptance criteria
 
 - [x] At 375px the account pages show the pill strip above the content; other pages' side columns remain hidden.
+
+## Fix note (2026-10-29)
+
+The original override sat in `@layer components`, but Bootstrap is imported into `layer(reset)` and for `!important` the earlier layer wins, so the menu was still hidden on phones. The override now lives in `@layer reset` (`max-width: 767px`).

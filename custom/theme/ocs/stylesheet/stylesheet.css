@@ -8,6 +8,14 @@
 @import url("../../../javascript/jquery/swiper/css/swiper.min.css") layer(reset);
 @import url("../../../javascript/font-awesome/css/font-awesome.min.css") layer(reset);
 
+/* Bootstrap's `.hidden-xs { display: none !important }` lives in layer(reset); important rules of earlier layers win,
+   so the account-menu exception has to be in the same layer (SPEC-065) */
+@layer reset {
+	@media (max-width: 767px) {
+		#column-right.hidden-xs:has(.ocs-acc-nav), #column-left.hidden-xs:has(.ocs-acc-nav) { display: block !important; }
+	}
+}
+
 @layer tokens {
 /* ==== 1. Design tokens ============================================================== */
 :root {
@@ -2243,8 +2251,6 @@ li .ocs-stock { font-size: inherit; }
 	/* on phones the menu becomes a dropdown above the content (SPEC-066) */
 	@container page (max-width: 56rem) {
 		.ocs-page > .container > .row > #column-right:has(.ocs-acc-nav), .ocs-page > .container > .row > #column-left:has(.ocs-acc-nav) { order: -1; }
-		/* Bootstrap's .hidden-xs on the aside would hide the whole menu on phones (SPEC-065) */
-		#column-right.hidden-xs:has(.ocs-acc-nav), #column-left.hidden-xs:has(.ocs-acc-nav) { display: block !important; }
 		/* SPEC-066: dropdown instead of a strip; theme.js adds the toggle button and data-collapsed */
 		.ocs-acc-toggle { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); inline-size: 100%; min-block-size: 2.75rem; padding: var(--sp-2) var(--sp-4); background: var(--bg); color: var(--text); border: 1px solid color-mix(in srgb, var(--border) 55%, transparent); border-radius: var(--r-lg); font: inherit; font-weight: 600; text-align: start; cursor: pointer; }
 		.ocs-acc-toggle .ocs-i { flex: none; transition: rotate .15s ease; }
