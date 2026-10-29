@@ -2482,3 +2482,13 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-sec-title, .ocs-card-name { display: block; }
 	.ocs-modcards > .ocs-sec-title, .ocs-viewed > .ocs-sec-title { margin: 0 0 var(--sp-4); }
 }
+
+/* ==== SPEC-111: phone product page: section tabs scroll away, the buy summary sits right above the bottom tab bar ==== */
+@layer overrides {
+	@media (max-width: 767px) {
+		.ocs-sections { position: static; }
+		.ocs-sticky-buy { inset-block-start: auto; inset-block-end: calc(56px + 1px); border-block-end: 0; border-block-start: 1px solid color-mix(in srgb, var(--border) 60%, transparent); translate: 0 110%; }
+		.ocs-sticky-buy.is-on { translate: 0 0; }
+		.ocs-modal-open .ocs-sticky-buy { visibility: hidden; }
+	}
+}
