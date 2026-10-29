@@ -5,13 +5,13 @@
     {% if ocs_shell and (ocs_shell.address or ocs_shell.phones or ocs_shell.hours or ocs_shell.messengers or ocs_shell.social) %}
     <div class="ocs-foot-contacts">
       <h2 class="ocs-fh">{{ ocs_shell.t.ocs_contacts }}</h2>
-      {% if ocs_shell.address %}<address class="ocs-foot-row"><svg class="ocs-i" aria-hidden="true"><use href="#i-pin"/></svg><span>{{ ocs_shell.address }}</span></address>{% endif %}
       {% if ocs_shell.phones %}
       <ul class="ocs-foot-phones list-unstyled">
         {% for phone in ocs_shell.phones %}<li><a href="{{ phone.href }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-phone"/></svg><span>{{ phone.text }}</span></a>{% if phone.label %}<small>{{ phone.label }}</small>{% endif %}</li>{% endfor %}
       </ul>
       {% endif %}
       {% if ocs_shell.hours %}<p class="ocs-foot-row"><svg class="ocs-i" aria-hidden="true"><use href="#i-clock"/></svg><span>{{ ocs_shell.hours }}</span></p>{% endif %}
+      {% if ocs_shell.address %}<address class="ocs-foot-row"><svg class="ocs-i" aria-hidden="true"><use href="#i-pin"/></svg><span>{{ ocs_shell.address }}</span></address>{% endif %}
       {% set contact_icons = ocs_shell.messengers|merge(ocs_shell.social) %}
       {% if contact_icons %}
       <ul class="ocs-soc-list list-unstyled">

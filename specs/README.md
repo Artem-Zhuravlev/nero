@@ -178,6 +178,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-109 | [Слайдер: без серой полосы, скруглённые края фото](hero-slider-radius/spec.md) | `implemented` |
 | SPEC-110 | [Товарные блоки: заголовки в div, ровный отступ](product-block-headings/spec.md) | `implemented` |
 | SPEC-111 | [Карточка товара на телефоне: sticky купить над нижней навигацией](pdp-mobile-sticky/spec.md) | `implemented` |
+| SPEC-112 | [Футер: адрес под графиком работы](footer-address-order/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).
