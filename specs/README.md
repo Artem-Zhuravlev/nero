@@ -180,6 +180,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-111 | [Карточка товара на телефоне: sticky купить над нижней навигацией](pdp-mobile-sticky/spec.md) | `implemented` |
 | SPEC-112 | [Футер: адрес под графиком работы](footer-address-order/spec.md) | `implemented` |
 | SPEC-113 | [Товар не в наличии: без «Купити», меньшая цена](product-out-of-stock-buy/spec.md) | `implemented` |
+| SPEC-114 | [Кнопка купленного товара: фон #222](in-cart-button-color/spec.md) | `implemented` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

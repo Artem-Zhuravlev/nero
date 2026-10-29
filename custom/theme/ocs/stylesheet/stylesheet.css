@@ -1651,8 +1651,8 @@ li .ocs-stock { font-size: inherit; }
 	[aria-pressed="true"].ocs-tool, .btn[aria-pressed="true"], .button-group button[aria-pressed="true"] { color: var(--accent); opacity: 1; }
 	[onclick*="wishlist.add("][aria-pressed="true"] { color: var(--danger); }
 	[aria-pressed="true"] .ocs-i { fill: currentColor; }
-	.is-in-cart { background: var(--success); color: var(--on-accent); }
-	.ocs-cart-btn.is-in-cart:hover, .btn.is-in-cart:hover { background: var(--success); filter: brightness(0.95); }
+	.is-in-cart { background: #222; color: var(--on-accent); }
+	.ocs-cart-btn.is-in-cart:hover, .btn.is-in-cart:hover { background: #222; filter: brightness(1.3); }
 	.is-in-cart .ocs-i { fill: none; }
 	/* SPEC-070: a thicker rounded check that draws itself once after a click */
 	.is-in-cart .ocs-i path { stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
