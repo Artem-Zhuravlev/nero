@@ -64,6 +64,7 @@ Carousels on Swiper, a quick-view popup, and the missing behaviours of the brief
 - **REQ-SWP-010** — JS added <= 6 KB net (the custom carousel code is removed); no new third-party download.
 - **REQ-SWP-011** — Popups use `OCS.modal` only: closes on overlay click and Esc, focus is trapped and restored.
 - **REQ-SWP-012** — uk/ru/en, PHP 7.4, each new feature switchable and off by default.
+- **REQ-SWP-013** — Карусели с слайдами авто-ширины (бренды, блоки товаров на десктопе, категории, отзывы, мульти-hero) показывают только целые слайды: ширина слайдов подгоняется так, чтобы в ряд помещалось целое число, без обрезанного последнего.
 
 ## Data requirements
 

@@ -297,7 +297,7 @@
           <div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
         </div>
         <p class="ocs-side-title">{{ heading_title }}</p>
-        {% if price %}<p class="ocs-side-price">{% if special %}<s>{{ price }}</s> <strong>{{ special }}</strong>{% else %}<strong>{{ price }}</strong>{% endif %}</p>{% endif %}
+        {% if price %}<p class="ocs-side-price">{% if special %}<strong>{{ special }}</strong> <s>{{ price }}</s>{% else %}<strong>{{ price }}</strong>{% endif %}</p>{% endif %}
         <div class="ocs-side-actions">
           <button type="button" class="btn btn-primary" data-ocs-buy>{% if ocs_preorder %}{{ ocs_preorder.text }}{% elseif ocs_subscribe %}{{ ocs_subscribe.text }}{% else %}{{ button_cart }}{% endif %}</button>
           <button type="button" class="btn btn-default" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>

@@ -1636,6 +1636,28 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 	var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	var phone = window.matchMedia ? window.matchMedia('(max-width: 767px)') : {matches: false};
 
+	// Whole slides only: with auto-width slides the row ends on a cut-off one, so the slides are widened a little to fill the row with a whole number of them
+	function fit(root, items, gap) {
+		var i, n, w;
+
+		for (i = 0; i < items.length; i++) {
+			items[i].style.width = '';
+		}
+
+		w = items[0].offsetWidth;
+		n = w > 0 ? Math.max(1, Math.floor((root.clientWidth + gap) / (w + gap))) : 0;
+
+		if (!n || items.length <= n) {
+			return;
+		}
+
+		w = (root.clientWidth - (n - 1) * gap) / n;
+
+		for (i = 0; i < items.length; i++) {
+			items[i].style.width = w + 'px';
+		}
+	}
+
 	function init(root) {
 		var track = root.querySelector('.ocs-carousel-track');
 		var cards = root.classList.contains('ocs-mc') || !!root.closest('.ocs-pcarousel');
@@ -1665,10 +1687,16 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 			items[i].classList.add('swiper-slide');
 		}
 
+		var whole = !single && !twoUp;
+
+		if (whole) {
+			fit(root, items, 16);
+		}
+
 		var options = {
 			slidesPerView: single ? 1 : (twoUp ? 2 : 'auto'),
 			spaceBetween: single ? 0 : (twoUp ? 8 : 16),
-			freeMode: !single && !twoUp,
+			freeMode: false,
 			autoplay: every > 0 && items.length > 1 ? every : 0,
 			autoplayDisableOnInteraction: false,
 			nextButton: next || null,
@@ -1704,6 +1732,10 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 				window.removeEventListener('resize', refresh);
 				window.removeEventListener('load', refresh);
 				return;
+			}
+
+			if (whole) {
+				fit(root, items, 16);
 			}
 
 			swiper.update(true);
@@ -1753,6 +1785,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		track.classList.remove('swiper-wrapper');
 		[].forEach.call(track.children, function (el) {
 			el.classList.remove('swiper-slide');
+			el.style.width = '';
 		});
 		[].forEach.call(root.querySelectorAll('.ocs-carousel-prev, .ocs-carousel-next'), function (b) {
 			b.hidden = true;

@@ -921,23 +921,9 @@ li .ocs-stock { font-size: inherit; }
 	#ocs-grid > .product-layout, .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout { display: block; margin: 0 0 var(--sp-4); padding: 0; }
 	#ocs-grid > .product-list { grid-column: 1 / -1; }
 
-	/* subgrid: image, code, title, text, stock, price, rating, buttons line up across a row without fixed heights */
-	@supports (grid-template-rows: subgrid) {
-		#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout {
-			display: grid; grid-row: span 7; grid-template-rows: subgrid; row-gap: 0;
-		}
-		#ocs-grid > .product-layout:not(.product-list) > .product-thumb, .ocs-viewed-grid > .product-layout > .product-thumb, .ocs-cards > .product-layout > .product-thumb {
-			display: grid; grid-row: 1 / -1; grid-template-rows: subgrid; row-gap: 0;
-		}
-		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb > div:last-child,
-		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .caption { display: contents; }
-		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb > .image { grid-row: 1; }
-		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .caption > * { padding-inline: var(--sp-4); margin-inline: 0; }
-		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .caption .ocs-card-name { grid-row: 2; }
-		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .rating { grid-row: 4; }
-		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .ocs-stock { grid-row: 5; }
-		:is(#ocs-grid > .product-layout:not(.product-list), .ocs-viewed-grid > .product-layout, .ocs-cards > .product-layout) .product-thumb .ocs-buy-row { grid-row: 6; }
-	}
+	/* SPEC-106 REQ-MPK-011: no subgrid - the card is a size container (container: card) and a container never acts as a subgrid, so the card rows collapsed to the image. The flex card keeps the buy row at the bottom. */
+	.product-layout > .product-thumb { block-size: 100%; box-sizing: border-box; }
+	.product-thumb .caption .ocs-card-name { min-block-size: calc(2 * 1.3em); }
 }
 
 /* ==== 29. SPEC-038 page grid with sidebars, listing toolbar (REQ-LAY-007) ===================== */
@@ -967,10 +953,11 @@ li .ocs-stock { font-size: inherit; }
 	#content .ocs-toolbar::before, #content .ocs-toolbar::after { display: none; }
 	.ocs-toolbar .form-group { margin: 0; }
 	.ocs-toolbar .input-group { display: flex; align-items: center; gap: var(--sp-2); inline-size: auto; }
-	.ocs-toolbar .input-group-addon { display: flex; align-items: center; inline-size: auto; padding: 0; border: 0; background: transparent; color: var(--text-muted); font-size: var(--fs-sm, 0.875rem); font-weight: 500; line-height: 1; white-space: nowrap; }
+	.ocs-toolbar .input-group-addon { display: flex; align-items: center; inline-size: auto; padding: 0; margin: 0; align-self: center; border: 0; background: transparent; color: var(--text-muted); font-size: var(--fs-sm, 0.875rem); font-weight: 500; line-height: 1; white-space: nowrap; }
 	.ocs-toolbar .input-group .form-control { display: block; float: none; inline-size: auto; min-inline-size: 5rem; margin: 0; border-radius: var(--r-pill, 999px); }
 	.ocs-view-switch { display: flex; gap: var(--sp-2); }
-	.ocs-view-switch .btn { inline-size: 2.5rem; min-inline-size: 0; block-size: 2.5rem; min-block-size: 0; padding: 0; border-radius: 50%; }
+	.ocs-view-switch .btn { display: inline-flex; align-items: center; justify-content: center; inline-size: 2.5rem; min-inline-size: 0; block-size: 2.5rem; min-block-size: 0; padding: 0; border-radius: var(--r-md); }
+	.ocs-view-switch .btn .ocs-i { inline-size: 1.25rem; block-size: 1.25rem; min-inline-size: 1.25rem; max-inline-size: none; vertical-align: baseline; }
 	.ocs-view-switch .btn.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 }
 }
@@ -1669,7 +1656,9 @@ li .ocs-stock { font-size: inherit; }
 
 /* ==== SPEC-044: card actions - active wishlist / compare, "in cart" button ==== */
 @layer overrides {
-	[aria-pressed="true"].ocs-tool, .btn[aria-pressed="true"], .button-group button[aria-pressed="true"] { color: var(--accent); opacity: 1; }
+	/* card tools keep the hover-only reveal even when active, so the grid is not broken by lone icons */
+	[aria-pressed="true"].ocs-tool { color: var(--accent); }
+	.btn[aria-pressed="true"], .button-group button[aria-pressed="true"] { color: var(--accent); opacity: 1; }
 	[onclick*="wishlist.add("][aria-pressed="true"] { color: var(--danger); }
 	[aria-pressed="true"] .ocs-i { fill: currentColor; }
 	.is-in-cart { background: #222; color: var(--on-accent); }
@@ -1853,8 +1842,10 @@ li .ocs-stock { font-size: inherit; }
 		.ocs-side-brand { font-size: var(--fs-xs); font-weight: 600; color: var(--link); }
 		.ocs-side-title { font-size: var(--fs-sm); font-weight: 600; line-height: 1.35; color: var(--text); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
 		.ocs-side-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-2); }
-		.ocs-side-price strong { font-size: var(--fs-xl); font-weight: 800; letter-spacing: var(--track); line-height: 1.1; }
-		.ocs-side-price s { color: var(--text-muted); font-size: var(--fs-sm); }
+		.ocs-side-price strong { font-size: var(--fs-lg); font-weight: 800; letter-spacing: var(--track); line-height: 1.1; }
+		.ocs-side-price s { color: var(--text-muted); font-size: calc(var(--fs-lg) - 2px); }
+		.ocs-side-img .ocs-slot-tl { top: 0; left: 0; }
+		.ocs-side-img .ocs-slot-tr { top: 0; right: 0; }
 		.ocs-side-stock { font-size: var(--fs-xs); }
 		.ocs-side-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--sp-2); margin-block-start: var(--sp-2); }
 		.ocs-side-actions .btn-primary { border-radius: var(--r-pill); min-block-size: var(--btn-h); font-weight: 600; }
@@ -2508,17 +2499,6 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-mc .ocs-carousel-item { display: contents; }
 	.ocs-mc .ocs-carousel-item > .product-layout { display: block; inline-size: auto; float: none; margin: 0 0 var(--sp-4); padding: 0; grid-template-columns: minmax(0, 1fr); }
 	.ocs-mc .ocs-carousel-item > .product-layout > .product-thumb { grid-template-columns: minmax(0, 1fr); }
-	@supports (grid-template-rows: subgrid) {
-		.ocs-mc .ocs-carousel-item > .product-layout { display: grid; grid-row: span 7; grid-template-rows: subgrid; row-gap: 0; }
-		.ocs-mc .ocs-carousel-item > .product-layout > .product-thumb { display: grid; grid-row: 1 / -1; grid-template-rows: subgrid; row-gap: 0; }
-		.ocs-mc .product-thumb > div:last-child, .ocs-mc .product-thumb .caption { display: contents; }
-		.ocs-mc .product-thumb > .image { grid-row: 1; }
-		.ocs-mc .product-thumb .caption > * { padding-inline: var(--sp-4); margin-inline: 0; }
-		.ocs-mc .product-thumb .caption .ocs-card-name { grid-row: 2; }
-		.ocs-mc .product-thumb .rating { grid-row: 4; }
-		.ocs-mc .product-thumb .ocs-stock { grid-row: 5; }
-		.ocs-mc .product-thumb .ocs-buy-row { grid-row: 6; }
-	}
 }
 
 /* ==== SPEC-110 product blocks: titles are div, even gap between the title and the cards ==== */

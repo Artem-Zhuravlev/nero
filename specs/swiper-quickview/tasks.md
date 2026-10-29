@@ -9,3 +9,4 @@
 | TASK-OPT-001 | Option-level rule for pre-order and notify | REQ-OPT-001 | TEST-OPT-001 | done |
 | TASK-OPT-002 | Back-in-stock cron endpoint, option column, once-only mail | REQ-OPT-002, 003 | TEST-OPT-002 | done |
 | TASK-SWP-003 | i18n, switches, budgets, docs | REQ-SWP-012 | TEST-SWP-003 | done |
+| TASK-SWP-004 | JS: fit() подгоняет ширину слайдов под целое число в ряду | REQ-SWP-013 | TEST-SWP-004 | done |
