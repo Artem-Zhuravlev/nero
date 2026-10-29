@@ -55,7 +55,7 @@ class ControllerExtensionThemeOcs extends Controller {
 			$setting_info = $this->model_setting_setting->getSetting('theme_ocs', $store_id);
 		}
 
-		$defaults = array('status' => 0, 'directory' => 'ocs', 'product_limit' => 15, 'product_description_length' => 100, 'show_stock' => 1, 'show_sku' => 1, 'schema_status' => 1, 'schema_org_name' => '', 'schema_org_logo' => '');
+		$defaults = array('status' => 0, 'directory' => 'ocs', 'product_limit' => 15, 'product_description_length' => 100, 'show_stock' => 1, 'show_sku' => 1, 'font' => 'montserrat', 'schema_status' => 1, 'schema_org_name' => '', 'schema_org_logo' => '');
 
 		foreach ($this->roles as $role) {
 			$data['error_image_' . $role] = isset($this->error['image_' . $role]) ? $this->error['image_' . $role] : '';
@@ -74,6 +74,9 @@ class ControllerExtensionThemeOcs extends Controller {
 				$data[$key] = $default;
 			}
 		}
+
+		// font select (SPEC-121): fonts without files are listed but disabled
+		$data['fonts'] = \Ocs\Fonts::options(DIR_CATALOG . 'view/theme/ocs/fonts/');
 
 		// contacts of the footer / header (SPEC-047): per language texts and one list of links
 		$data['languages'] = $this->model_localisation_language->getLanguages();
@@ -244,7 +247,10 @@ class ControllerExtensionThemeOcs extends Controller {
 			$name = isset($this->request->post['theme_ocs_schema_org_name']) ? trim((string)$this->request->post['theme_ocs_schema_org_name']) : '';
 			$logo = isset($this->request->post['theme_ocs_schema_org_logo']) ? (string)$this->request->post['theme_ocs_schema_org_logo'] : '';
 
-			$this->request->post['theme_ocs_schema_status'] = empty($this->request->post['theme_ocs_schema_status']) ? 0 : 1;
+			// REQ-FCH-001/004: only a white-listed font with files is stored
+			$this->request->post['theme_ocs_font'] = \Ocs\Fonts::resolve(isset($this->request->post['theme_ocs_font']) ? $this->request->post['theme_ocs_font'] : '', DIR_CATALOG . 'view/theme/ocs/fonts/');
+
+			$this->request->post['theme_ocs_schema_status'] =empty($this->request->post['theme_ocs_schema_status']) ? 0 : 1;
 			$this->request->post['theme_ocs_schema_org_name'] = function_exists('mb_substr') ? mb_substr($name, 0, 200, 'UTF-8') : substr($name, 0, 200);
 			$this->request->post['theme_ocs_schema_org_logo'] = ltrim(str_replace('..', '', preg_replace('~[^\w.\/ -]~u', '', $logo)), '/');
 

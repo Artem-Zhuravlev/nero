@@ -55,7 +55,7 @@ no `!important` is needed (only the reduced-motion and `[hidden]` guards keep it
 
 ## Visual identity (SPEC-039)
 
-- **Type:** Montserrat (OFL, weights 400-800, `montserrat-<latin|cyrillic>-<weight>.woff2` in `fonts/`, cyrillic 400/700 preloaded, `font-display: swap`) with a size-adjusted
+- **Type:** Montserrat by default; the font is selectable in the theme settings (SPEC-121: Inter, Manrope, Onest, Golos Text, Nunito Sans bundled; Gilroy, Proxima Nova, Geometria once licensed files are added; generated @font-face in header.twig). Default: Montserrat (OFL, weights 400-800, `montserrat-<latin|cyrillic>-<weight>.woff2` in `fonts/`, cyrillic 400/700 preloaded, `font-display: swap`) with a size-adjusted
   fallback face; minimum text size is 14px (`--fs-xs`), the only exception is the 12px count badge on the header cart/wishlist/compare icons (decorative); headings weight 800 with `letter-spacing: -0.02em`; prices use tabular numerals.
 - **Vendor CSS in the lowest layer:** Bootstrap 3, Swiper and Font Awesome are `@import`ed with `layer(reset)`; unlayered vendor CSS would
   otherwise beat every theme rule. Core module CSS (magnific popup, date picker) stays unlayered; it only targets its own classes.

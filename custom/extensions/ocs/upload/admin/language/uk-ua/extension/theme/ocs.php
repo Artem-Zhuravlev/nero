@@ -19,6 +19,8 @@ $_['entry_product_limit']              = 'Елементів на сторінц
 $_['entry_product_description_length'] = 'Ліміт опису у списку';
 $_['entry_show_stock']                  = 'Показувати наявність';
 $_['entry_show_sku']                    = 'Показувати артикул';
+$_['entry_font']                        = 'Шрифт';
+$_['text_font_missing']                 = 'файли не завантажені';
 $_['entry_image_thumb']                = 'Розмір зображення товару (Ш x В)';
 $_['entry_image_popup']                = 'Розмір зображення у спливаючому вікні (Ш x В)';
 $_['entry_image_category']             = 'Розмір зображення категорії (Ш x В)';
@@ -39,6 +41,7 @@ $_['help_product_limit']               = 'Скільки елементів ка
 $_['help_product_description_length']  = 'Ліміт символів короткого опису у списках.';
 $_['help_show_stock']                   = 'Показує підпис наявності на всіх сторінках, у блоках, списках і підказках пошуку; вимкнено — прибирається скрізь.';
 $_['help_show_sku']                     = 'Показує артикул (модель) на всіх сторінках, у блоках, списках, таблицях і підказках пошуку; вимкнено — прибирається скрізь.';
+$_['help_font']                         = 'Шрифт усього сайту. Montserrat, Inter, Manrope, Onest, Golos Text і Nunito Sans вже в темі; Gilroy, Proxima Nova і Geometria доступні після додавання ліцензійних woff2 у catalog/view/theme/ocs/fonts/.';
 
 // Error
 $_['error_permission']                 = 'Увага: у вас немає прав для зміни теми OCS!';

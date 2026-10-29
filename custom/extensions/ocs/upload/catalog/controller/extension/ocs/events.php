@@ -11,6 +11,15 @@ class ControllerExtensionOcsEvents extends Controller {
 		}
 
 		$data['asset_version'] = $this->assetVersion();
+
+		// font chosen in the theme settings (SPEC-121); any problem leaves the template on its built-in Montserrat
+		try {
+			$font = \Ocs\Fonts::render($this->config->get('theme_ocs_font'), DIR_APPLICATION . 'view/theme/ocs/fonts/');
+
+			$data['font_css'] = $font['css'];
+			$data['font_preload'] = $font['preload'];
+		} catch (\Throwable $e) {
+		}
 	}
 
 	/**

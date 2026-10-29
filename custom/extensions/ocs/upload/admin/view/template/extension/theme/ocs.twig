@@ -82,6 +82,16 @@
                 </select>
               </div>
             </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-font"><span data-toggle="tooltip" title="{{ help_font }}">{{ entry_font }}</span></label>
+              <div class="col-sm-10">
+                <select name="theme_ocs_font" id="input-font" class="form-control">
+                  {% for key, font in fonts %}
+                  <option value="{{ key }}"{% if theme_ocs_font == key %} selected="selected"{% endif %}{% if not font.available %} disabled="disabled"{% endif %}>{{ font.name }}{% if not font.available %} — {{ text_font_missing }}{% endif %}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
           </fieldset>
           <fieldset>
             <legend>{{ text_schema }}</legend>

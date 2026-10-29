@@ -19,6 +19,8 @@ $_['entry_product_limit']              = 'Default Items Per Page';
 $_['entry_product_description_length'] = 'List Description Limit';
 $_['entry_show_stock']                  = 'Show stock availability';
 $_['entry_show_sku']                    = 'Show article number (SKU)';
+$_['entry_font']                        = 'Font';
+$_['text_font_missing']                 = 'files not uploaded';
 $_['entry_image_thumb']                = 'Product Image Thumb Size (W x H)';
 $_['entry_image_popup']                = 'Product Image Popup Size (W x H)';
 $_['entry_image_category']             = 'Category Image Size (W x H)';
@@ -39,6 +41,7 @@ $_['help_product_limit']               = 'How many catalog items are shown per p
 $_['help_product_description_length']  = 'Short description character limit in list views.';
 $_['help_show_stock']                   = 'Shows the "in stock" label on every page, block, list and search suggestion; off removes it everywhere.';
 $_['help_show_sku']                     = 'Shows the article number (model) on every page, block, list, table and search suggestion; off removes it everywhere.';
+$_['help_font']                         = 'Site-wide font. Montserrat, Inter, Manrope, Onest, Golos Text and Nunito Sans ship with the theme; Gilroy, Proxima Nova and Geometria become available once licensed woff2 files are added to catalog/view/theme/ocs/fonts/.';
 
 // Error
 $_['error_permission']                 = 'Warning: You do not have permission to modify the OCS theme!';
