@@ -97,6 +97,7 @@ class ControllerExtensionModuleOcsAjaxCart extends Controller {
 		}
 
 		$this->load->model('tool/image');
+		$this->load->model('catalog/product');
 
 		$lines = array();
 		$blocked = false;
@@ -126,6 +127,28 @@ class ControllerExtensionModuleOcsAjaxCart extends Controller {
 
 			$blocked = $blocked || $problem !== '';
 
+			// display only: regular unit price plus the same option surcharge, shown struck through when above the current one
+			$old_price = false;
+			$old_total = false;
+
+			if ($unit !== false) {
+				$info = $this->model_catalog_product->getProduct((int)$product['product_id']);
+
+				if ($info) {
+					$surcharge = 0.0;
+
+					foreach ($product['option'] as $option) {
+						$surcharge += ($option['price_prefix'] === '-' ? -1 : 1) * (float)$option['price'];
+					}
+
+					if ((float)$info['price'] + $surcharge > (float)$product['price'] + 0.004) {
+						$old = $this->tax->calculate((float)$info['price'] + $surcharge, $product['tax_class_id'], $this->config->get('config_tax'));
+						$old_price = $this->currency->format($old, $this->session->data['currency']);
+						$old_total = $this->currency->format($old * $product['quantity'], $this->session->data['currency']);
+					}
+				}
+			}
+
 			$lines[] = array(
 				'key'      => $product['cart_id'],
 				'name'     => $product['name'],
@@ -135,6 +158,8 @@ class ControllerExtensionModuleOcsAjaxCart extends Controller {
 				'quantity' => $product['quantity'],
 				'price'    => $unit !== false ? $this->currency->format($unit, $this->session->data['currency']) : false,
 				'total'    => $unit !== false ? $this->currency->format($unit * $product['quantity'], $this->session->data['currency']) : false,
+				'old_price' => $old_price,
+				'old_total' => $old_total,
 				'problem'  => $problem,
 				'added'    => $added && (int)$product['product_id'] === $added
 			);
