@@ -574,7 +574,7 @@ a.list-group-item:hover, a.list-group-item.active { background: var(--bg-alt); c
 .ocs-req-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .ocs-req-done { padding: var(--sp-4); border-radius: var(--r-md); background: var(--success-bg); color: var(--success); }
 .ocs-req .required .control-label:after { content: " *"; color: var(--danger); }
-.ocs-preorder #button-cart { display: none; }
+.ocs-preorder #button-cart { display: none !important; }
 
 /* ==== 17. Cart panel and availability labels (SPEC-026) ============================= */
 .ocs-cart-title { margin-top: 0; }
@@ -1679,7 +1679,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-facts dd { margin: 0; font-weight: 600; text-align: end; }
 	.ocs-price-box { display: grid; gap: var(--sp-1); }
 	.ocs-price-box p { margin: 0; }
-	.ocs-price { font-size: var(--fs-3xl); font-weight: 800; line-height: 1; letter-spacing: var(--track); }
+	.ocs-price { font-size: var(--fs-2xl); font-weight: 800; line-height: 1; letter-spacing: var(--track); }
 	.ocs-price-old { font-size: var(--fs-md); color: var(--text-muted); }
 	.ocs-price-note { font-size: var(--fs-sm); color: var(--text-muted); }
 	.ocs-special-timer { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-1) var(--sp-2); font-size: var(--fs-sm); color: var(--text-muted); }

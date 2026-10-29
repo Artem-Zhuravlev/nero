@@ -136,9 +136,9 @@
               </div>
               <input type="hidden" name="product_id" value="{{ product_id }}" />
               <br />
-              <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-primary btn-lg btn-block">{{ button_cart }}</button>
+              {% if not ocs_preorder %}<button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-primary btn-lg btn-block">{{ button_cart }}</button>{% endif %}
               <div class="ocs-buy-slot" id="ocs-buy-slot">
-                {% if ocs_preorder %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-req-btn ocs-preorder-btn" data-form="{{ ocs_preorder.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_preorder.text }}</button>{% if ocs_preorder.note %}<p class="ocs-req-note">{{ ocs_preorder.note }}</p>{% endif %}{% endif %}
+                {% if ocs_preorder %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-req-btn ocs-preorder-btn" data-form="{{ ocs_preorder.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_preorder.text }}</button>{% endif %}
                 {% if ocs_quick and not ocs_preorder %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-quick-btn" data-form="{{ ocs_quick.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_quick.text }}</button>{% endif %}
                 {% if ocs_preorder_opt %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-req-btn ocs-preorder-btn ocs-out-only" hidden data-form="{{ ocs_preorder_opt.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_preorder_opt.text }}</button>{% endif %}
                 {% if ocs_subscribe_opt %}<button type="button" class="btn btn-default btn-lg btn-block ocs-req-btn ocs-subscribe-btn ocs-out-only" hidden data-form="{{ ocs_subscribe_opt.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_subscribe_opt.text }}</button>{% endif %}
