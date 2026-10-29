@@ -39,4 +39,5 @@ $_['error_permission']  = 'Warning: You do not have permission to modify the top
 $_['error_form']        = 'Warning: Please check the form carefully for errors!';
 $_['error_date']        = 'Dates must look like YYYY-MM-DD.';
 $_['error_color']       = 'Enter the colour as #rrggbb.';
+$_['error_url']         = 'A link must look like /path, https://…, tel:… or mailto:….';
 $_['error_button']      = 'A button needs both a label and a link: fill in both or clear both.';

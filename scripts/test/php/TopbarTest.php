@@ -64,6 +64,9 @@ final class TopbarTest extends TestCase
         $light = \Ocs\Topbar::build($this->settings($t, ['bg' => 'custom', 'bg_custom' => '#ffd60a']), 'uk-ua', $now);
         $this->assertSame('--tb-bg:#ffd60a;--tb-fg:#1d1d1f', $light['style']);
 
+        $short = \Ocs\Topbar::build($this->settings($t, ['bg' => 'custom', 'bg_custom' => '#ddd']), 'uk-ua', $now);
+        $this->assertSame('--tb-bg:#dddddd;--tb-fg:#1d1d1f', $short['style']);
+
         $bad = \Ocs\Topbar::build($this->settings($t, ['bg' => 'custom', 'bg_custom' => 'red;background:url(x)']), 'uk-ua', $now);
         $this->assertSame('accent', $bad['bg']);
         $this->assertSame('', $bad['style']);

@@ -101,7 +101,7 @@ class ControllerExtensionModuleOcsTopbar extends Controller {
 		$bg = isset($this->request->post['module_ocs_topbar_bg']) ? $this->request->post['module_ocs_topbar_bg'] : '';
 		$hex = isset($this->request->post['module_ocs_topbar_bg_custom']) ? $this->request->post['module_ocs_topbar_bg_custom'] : '';
 
-		if ($bg === 'custom' && !preg_match('/^#[0-9a-fA-F]{6}$/', $hex)) {
+		if ($bg === 'custom' && !preg_match('/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $hex)) {
 			$this->error['color'] = $this->language->get('error_color');
 		}
 
@@ -113,6 +113,14 @@ class ControllerExtensionModuleOcsTopbar extends Controller {
 
 				if (($label === '') !== ($url === '')) {
 					$this->error['button'] = $this->language->get('error_button');
+				}
+
+				foreach (array('url', 'btn_url') as $key) {
+					$link = isset($fields[$key]) ? trim($fields[$key]) : '';
+
+					if ($link !== '' && \Ocs\Shell::safeUrl($link) === '') {
+						$this->error['button'] = $this->language->get('error_url');
+					}
 				}
 			}
 		}

@@ -34,6 +34,7 @@ class Topbar {
 
 		if ($bg === 'custom') {
 			$hex = isset($settings['bg_custom']) ? trim((string)$settings['bg_custom']) : '';
+				$hex = preg_match('/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i', $hex, $m) ? '#' . $m[1] . $m[1] . $m[2] . $m[2] . $m[3] . $m[3] : $hex; // #rgb shorthand
 
 			if (preg_match('/^#[0-9a-f]{6}$/i', $hex)) {
 				$style = '--tb-bg:' . strtolower($hex) . ';--tb-fg:' . self::contrast($hex);
