@@ -39,7 +39,7 @@ class Client {
 			throw new \RuntimeException('Unknown entity ' . $entity);
 		}
 
-		$properties = $entity == 'areas' ? array() : array('Page' => (int)$page, 'Limit' => (int)$limit);
+		$properties = $entity == 'areas' ? array() : array('Page' => (string)(int)$page, 'Limit' => (string)(int)$limit); // strings, as in the API documentation: numbers are rejected by some methods ("Page is invalid format")
 
 		if ($entity == 'areas' && $page > 1) {
 			return array();
@@ -57,9 +57,18 @@ class Client {
 
 		$body = json_encode(array('apiKey' => $this->key, 'modelName' => $model, 'calledMethod' => $method, 'methodProperties' => (object)$properties));
 
+		// which request failed, shown with every error (the key is never part of it)
+		$where = $model . '/' . $method;
+
+		foreach ($properties as $name => $value) {
+			$where .= ', ' . $name . '=' . $value;
+		}
+
 		$attempt = 0;
 
 		while (true) {
+			$error = '';
+
 			try {
 				list($status, $response) = call_user_func($this->transport, self::URL, $body, 20);
 			} catch (\Exception $e) {
@@ -72,13 +81,22 @@ class Client {
 				$json = json_decode($response, true);
 
 				if (!is_array($json) || !array_key_exists('success', $json)) {
-					throw new \RuntimeException('Nova Poshta: unreadable response');
+					throw new \RuntimeException($this->hide('Nova Poshta: unreadable response (' . $where . '): ' . $this->snippet($response)));
 				}
 
 				if (!$json['success']) {
 					$errors = !empty($json['errors']) && is_array($json['errors']) ? implode('; ', array_map('strval', $json['errors'])) : 'unknown error';
+					$codes = !empty($json['errorCodes']) && is_array($json['errorCodes']) ? implode(', ', array_map('strval', $json['errorCodes'])) : '';
 
-					throw new \RuntimeException('Nova Poshta: ' . str_replace($this->key, '***', $errors));
+					// the API answers 200 + success=false when the request rate is exceeded: wait and repeat
+					if (preg_match('/many requests|too many|rate limit/i', $errors) && $attempt < $this->retries) {
+						$attempt++;
+						call_user_func($this->sleep, 1500000 * $attempt + mt_rand(0, 500000));
+
+						continue;
+					}
+
+					throw new \RuntimeException($this->hide('Nova Poshta: ' . $errors . ($codes !== '' ? ' [' . $codes . ']' : '') . ' (' . $where . ($attempt ? ', retries=' . $attempt : '') . ')'));
 				}
 
 				return isset($json['data']) && is_array($json['data']) ? $json['data'] : array();
@@ -87,12 +105,22 @@ class Client {
 			$retryable = ($status == 0 || $status == 429 || $status >= 500);
 
 			if (!$retryable || $attempt >= $this->retries) {
-				throw new \RuntimeException('Nova Poshta: HTTP ' . $status . (isset($error) ? ' ' . str_replace($this->key, '***', $error) : ''));
+				throw new \RuntimeException($this->hide('Nova Poshta: HTTP ' . $status . ($error !== '' ? ' ' . $error : '') . ' (' . $where . ($attempt ? ', retries=' . $attempt : '') . ')' . ($status && !$error ? ': ' . $this->snippet($response) : '')));
 			}
 
 			$attempt++;
 			call_user_func($this->sleep, 400000 * $attempt + mt_rand(0, 200000));
 		}
+	}
+
+	private function hide($text) {
+		return $this->key === '' ? $text : str_replace($this->key, '***', $text);
+	}
+
+	private function snippet($response) {
+		$text = trim(preg_replace('/\s+/', ' ', strip_tags((string)$response)));
+
+		return $text === '' ? '(empty body)' : mb_substr($text, 0, 120, 'UTF-8');
 	}
 
 	private function curl($url, $body, $timeout) {

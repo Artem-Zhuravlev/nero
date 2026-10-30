@@ -112,12 +112,23 @@ class Stickers {
 		$out = array();
 
 		foreach ($facts as $product_id => $fact) {
+			$gone = isset($fact['quantity']) && (int)$fact['quantity'] <= 0;
+
 			foreach ($defs as $def) {
 				$position = in_array($def['position'], self::$positions, true) ? $def['position'] : 'tl';
 				$text = self::text($def, $fact);
 
+				// a product that is out of stock carries only the "out of stock" sticker: black, top right
+				if ($gone && $def['rule_type'] !== 'out_of_stock') {
+					continue;
+				}
+
 				if ($text === '' || !self::matches($def, $fact, $now)) {
 					continue;
+				}
+
+				if ($gone) {
+					$position = 'tr';
 				}
 
 				if (isset($out[$product_id][$position]) && count($out[$product_id][$position]) >= $limit) {
@@ -127,8 +138,8 @@ class Stickers {
 				$out[$product_id][$position][] = array(
 					'id'   => (int)$def['sticker_id'],
 					'text' => $text,
-					'fg'   => self::safeColor($def['text_color'], '#ffffff'),
-					'bg'   => self::safeColor($def['bg_color'], '#1d1d1f')
+					'fg'   => $gone ? '#ffffff' : self::safeColor($def['text_color'], '#ffffff'),
+					'bg'   => $gone ? '#000000' : self::safeColor($def['bg_color'], '#1d1d1f')
 				);
 			}
 		}

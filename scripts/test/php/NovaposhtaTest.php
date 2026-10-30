@@ -131,8 +131,8 @@ final class NovaposhtaTest extends TestCase
             $req = json_decode($body, true);
             $entity = ['getAreas' => 'areas', 'getCities' => 'cities', 'getWarehouses' => 'warehouses'][$req['calledMethod']];
             $props = (array) $req['methodProperties'];
-            $page = $props['Page'] ?? 1;
-            $limit = $props['Limit'] ?? 500;
+            $page = (int) ($props['Page'] ?? 1);
+            $limit = (int) ($props['Limit'] ?? 500);
             $this->calls[] = $entity . ':' . $page;
 
             if ($this->failAt === $entity . ':' . $page) {
@@ -372,6 +372,28 @@ final class NovaposhtaTest extends TestCase
             $this->fail('expected an exception');
         } catch (\RuntimeException $e) {
             $this->assertTrue(strpos($e->getMessage(), 'K-123') === false);
+        }
+
+        // rate limit comes as 200 + success=false: repeated; a final error names the request and codes
+        $n = 0;
+        $limited = new \Ocs\Novaposhta\Client('K-123', function () use (&$n) {
+            return ++$n < 3 ? [200, json_encode(['success' => false, 'errors' => ['To many requests'], 'errorCodes' => ['20000200429']])] : [200, json_encode(['success' => true, 'data' => [['Ref' => 'x']]])];
+        }, 2, function (): void {
+        });
+        $this->assertCount(1, $limited->page('cities', 3, 10));
+        $this->assertSame(3, $n);
+
+        $always = new \Ocs\Novaposhta\Client('K-123', function () {
+            return [200, json_encode(['success' => false, 'errors' => ['Page is invalid format'], 'errorCodes' => ['20000200']])];
+        }, 0, function (): void {
+        });
+        try {
+            $always->page('cities', 7, 10);
+            $this->fail('expected an exception');
+        } catch (\RuntimeException $e) {
+            $this->assertContains('getCities', $e->getMessage());
+            $this->assertContains('Page=7', $e->getMessage());
+            $this->assertContains('20000200', $e->getMessage());
         }
 
         try {

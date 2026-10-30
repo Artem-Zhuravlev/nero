@@ -1125,8 +1125,9 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 				var root = holder.querySelector('.ocs-cart');
 
 				dialog = OCS.modal.open({
-					content: holder,
+					content: json.html, // same body structure as after a re-render, so the pinned footer layout holds
 					variant: 'side',
+					className: 'ocs-cart-dialog',
 					closeLabel: root ? root.getAttribute('data-close') : '',
 					labelledBy: 'ocs-cart-title',
 					onClose: function () {
@@ -3217,7 +3218,8 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 			toggle.type = 'button';
 			toggle.className = 'ocs-acc-toggle';
 			toggle.setAttribute('aria-expanded', 'false');
-			label.textContent = cur ? cur.textContent.trim() : '';
+			label.textContent = nav.getAttribute('data-menu-label') || (cur ? cur.textContent.trim() : '');
+			toggle.insertAdjacentHTML('beforeend', '<svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-menu"/></svg>');
 			toggle.appendChild(label);
 			toggle.insertAdjacentHTML('beforeend', '<svg class="ocs-i ocs-i-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg>');
 			nav.setAttribute('data-collapsed', '');

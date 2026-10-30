@@ -14,5 +14,6 @@ $_['ocs_tab_cart']   = 'Cart';
 $_['ocs_tab_compare'] = 'Compare';
 $_['ocs_tab_lists']  = 'Lists';
 $_['ocs_tab_profile'] = 'Profile';
+$_['ocs_acc_menu']   = 'Account menu';
 $_['ocs_tabbar']     = 'Main navigation';
 $_['ocs_compare']    = 'Compare (%s)';

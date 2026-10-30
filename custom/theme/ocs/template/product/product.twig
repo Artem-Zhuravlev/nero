@@ -70,6 +70,11 @@
         {% set class = 'col-sm-4' %}
         {% endif %}
         <div class="{{ class }}">
+          {% if review_status %}
+          <div class="rating">
+            <a href="#tab-review">{% include 'ocs/template/ocs/rating.twig' with {'value': rating} only %} <span>({{ ocs_px.stars.total }})</span></a>
+          </div>
+          {% endif %}
           <div class="ocs-pdp-head">
             <h1>{{ heading_title }}</h1>
             <div class="ocs-pdp-tools">
@@ -77,20 +82,23 @@
               <button type="button" data-toggle="tooltip" class="btn btn-default" title="{{ button_compare }}" aria-label="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
             </div>
           </div>
+          {% if (ocs_show_sku and model) or (ocs_show_stock and (ocs_stock or stock)) %}
+          <div class="ocs-code-row">
           {% if ocs_show_sku and model %}
           <div class="ocs-code-pill"><span class="ocs-code-label">{{ ocs_px.text_product_code ? ocs_px.text_product_code : text_model }}</span> <span class="ocs-code-val">{{ model }}</span><button type="button" class="ocs-copy" data-ocs-copy="{{ model }}" data-done="{{ ocs_px.text_copied }}" title="{{ ocs_px.text_copy }}" aria-label="{{ ocs_px.text_copy }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-copy"/></svg></button><span class="ocs-sr" role="status" aria-live="polite"></span></div>
+          {% endif %}
+          {% if ocs_show_stock %}{% if ocs_stock %}<span class="ocs-stock ocs-stock-{{ ocs_stock.state }}"><svg class="ocs-i ocs-stock-i" aria-hidden="true"><use href="#{{ ocs_stock.state == 'out' ? 'i-x-thin' : 'i-check' }}"/></svg>{{ ocs_stock.label }}</span>{% elseif stock %}<span class="ocs-stock">{{ stock }}</span>{% endif %}{% endif %}
+          </div>
           {% endif %}
           {% if ocs_px.key_attrs %}
           <div class="ocs-key-attrs" role="group" aria-label="{{ ocs_px.text_key_attrs }}">
             {% for a in ocs_px.key_attrs %}<span class="ocs-attr-chip"><span class="text-muted">{{ a.name }}:</span> {{ a.text }}</span>{% endfor %}
           </div>
           {% endif %}
-          {% if manufacturer or ocs_show_sku or ocs_show_stock or reward %}
+          {% if manufacturer or reward %}
           <dl class="ocs-facts">
             {% if manufacturer %}<div><dt>{{ text_manufacturer }}</dt><dd><a href="{{ manufacturers }}">{{ manufacturer }}</a></dd></div>{% endif %}
-            {% if ocs_show_sku %}<div><dt>{{ text_model }}</dt><dd>{{ model }}</dd></div>{% endif %}
             {% if reward %}<div><dt>{{ text_reward }}</dt><dd>{{ reward }}</dd></div>{% endif %}
-            {% if ocs_show_stock %}<div><dt>{{ text_stock }}</dt><dd>{% if ocs_stock %}<span class="ocs-stock ocs-stock-{{ ocs_stock.state }}"><svg class="ocs-i ocs-stock-i" aria-hidden="true"><use href="#{{ ocs_stock.state == 'out' ? 'i-x-thin' : 'i-check' }}"/></svg>{{ ocs_stock.label }}</span>{% else %}{{ stock }}{% endif %}</dd></div>{% endif %}
           </dl>
           {% endif %}
           {% if price %}
@@ -159,12 +167,7 @@
             {% endfor %}
           </div>
           {% endif %}
-          {% if review_status %}
-          <div class="rating">
-            <p>{% include 'ocs/template/ocs/rating.twig' with {'value': rating} only %} <a href="#tab-review">{{ reviews }}</a> / <a href="#form-review">{{ text_write }}</a></p>
-            <hr>
-                      </div>
-          {% endif %} </div>
+          </div>
       </div>
       <div class="ocs-pdp-body">
       <div class="ocs-pdp-sections">
@@ -225,7 +228,6 @@
             <div class="ocs-field required">
               <label for="input-review">{{ entry_review }}</label>
               <textarea placeholder="{{ entry_review }}" name="text" rows="5" id="input-review" class="form-control"></textarea>
-              <p class="ocs-help">{{ text_note }}</p>
             </div>
             {{ captcha }}
             <div id="review-msg" role="status" aria-live="polite"></div>
@@ -284,15 +286,15 @@
       <aside class="ocs-side-card" aria-label="{{ heading_title }}">
         <div class="ocs-side-img">
           {% if thumb %}<img src="{{ thumb }}" alt="" loading="lazy" />{% endif %}
-          <div class="ocs-slot ocs-slot-tl">{% for s in ocs_stickers.tl %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
-          <div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
+          <div class="ocs-card-tools">
+            <button type="button" class="ocs-tool" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>
+            <button type="button" class="ocs-tool" title="{{ button_compare }}" aria-label="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
+          </div>
         </div>
         <p class="ocs-side-title">{{ heading_title }}</p>
         {% if price %}<p class="ocs-side-price">{% if special %}<strong data-ocs-cur>{{ special }}</strong> <s data-ocs-old>{{ price }}</s>{% else %}<strong data-ocs-cur>{{ price }}</strong>{% endif %}</p>{% endif %}
         <div class="ocs-side-actions">
           <button type="button" class="btn btn-primary" data-ocs-buy>{% if ocs_preorder %}{{ ocs_preorder.text }}{% elseif ocs_subscribe %}{{ ocs_subscribe.text }}{% else %}{{ button_cart }}{% endif %}</button>
-          <button type="button" class="btn btn-default" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>
-          <button type="button" class="btn btn-default" title="{{ button_compare }}" aria-label="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-compare"/></svg></button>
         </div>
       </aside>
       </div>

@@ -14,5 +14,6 @@ $_['ocs_tab_cart']   = 'Корзина';
 $_['ocs_tab_compare'] = 'Сравнение';
 $_['ocs_tab_lists']  = 'Списки';
 $_['ocs_tab_profile'] = 'Профиль';
+$_['ocs_acc_menu']   = 'Меню кабинета';
 $_['ocs_tabbar']     = 'Главная навигация';
 $_['ocs_compare']    = 'Сравнение (%s)';

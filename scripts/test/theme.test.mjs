@@ -139,7 +139,7 @@ test('category and product overrides add slots, keep core JS hooks, are not copi
     const core = read(`core/upload/catalog/view/theme/default/template/${t}.twig`);
     assert.notEqual(ours, core);
     assert.ok(ours.startsWith(`{# @core-file catalog/view/theme/default/template/${t}.twig @core-version 3.0.3.7 #}`));
-    assert.match(ours, t === 'product/product' ? /ocs-slot-tl/ : /ocs\/template\/ocs\/card\.twig/);
+    assert.match(ours, t === 'product/product' ? /ocs-slot-tr/ : /ocs\/template\/ocs\/card\.twig/);
   }
   const cat = read('custom/theme/ocs/template/product/category.twig') + read('custom/theme/ocs/template/ocs/card.twig');
   for (const hook of ['id="list-view"', 'id="grid-view"', "cart.add('{{ product.product_id }}'", 'wishlist.add', 'compare.add', 'class="product-layout']) {
@@ -1294,6 +1294,7 @@ test('product side card has no brand, code and stock', () => {
 test('typography: scale raised, no font-size below 14px except count badges', () => {
   assert.match(css, /--fs-xs: 14px;[^]*--fs-sm: 15px;[^]*--fs-md: 16px;[^]*--fs-lg: 20px;[^]*--fs-xl: 26px;[^]*--fs-2xl: 34px;[^]*--fs-3xl: 48px;/);
   const small = [...css.matchAll(/font-size:\s*([\d.]+)(px|rem)/g)].filter((m) => (m[2] === 'px' ? +m[1] : +m[1] * 16) < 14);
-  assert.equal(small.length, 2, 'only the two count-badge rules are below 14px');
-  for (const m of small) assert.equal(m[1] + m[2], '0.75rem');
+  const odd = small.filter((m) => m[1] + m[2] !== '13px');
+  assert.equal(odd.length, 2, 'only the two count-badge rules are below 14px, besides the owner-approved 13px ones');
+  for (const m of odd) assert.equal(m[1] + m[2], '0.75rem');
 });

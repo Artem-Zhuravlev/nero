@@ -83,6 +83,23 @@ final class StickersTest extends TestCase
         $this->assertSame('Odd', $unknown[10]['tl'][0]['text'], 'an unknown position falls back to the top-left corner');
     }
 
+    // TEST-STK-006 - verifies REQ-STK-004 (an out-of-stock product carries only a black "out of stock" sticker, top right)
+    public function test_out_of_stock_hides_other_stickers(): void
+    {
+        $now = strtotime('2026-10-23 12:00:00');
+        $defs = [
+            $this->def(['sticker_id' => 1, 'text' => 'Hit', 'position' => 'tl', 'priority' => 9]),
+            $this->def(['sticker_id' => 2, 'text' => 'Sale', 'position' => 'tl', 'rule_type' => 'discount']),
+            $this->def(['sticker_id' => 3, 'text' => 'Gone', 'position' => 'bl', 'bg_color' => '#cc0000', 'rule_type' => 'out_of_stock']),
+        ];
+
+        $r = \Ocs\Stickers::resolve($defs, [10 => $this->fact(['quantity' => 0, 'manual' => [1], 'price' => 100.0, 'special' => 80.0])], $now, 2);
+
+        $this->assertSame(['tr'], array_keys($r[10]));
+        $this->assertSame('Gone', $r[10]['tr'][0]['text']);
+        $this->assertSame('#000000', $r[10]['tr'][0]['bg']);
+    }
+
     // TEST-STK-005 - verifies REQ-STK-011 (colours are validated before they reach a style attribute; contrast helper)
     public function test_colours(): void
     {

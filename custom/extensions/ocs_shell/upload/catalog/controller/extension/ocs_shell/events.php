@@ -39,6 +39,12 @@ class ControllerExtensionOcsShellEvents extends Controller {
 			$data['ocs_shell'] = $this->build(true);
 		}
 
+		// the phone dropdown of the account menu carries a fixed "menu" caption and a burger icon
+		if ($route === 'extension/module/account' && is_array($data) && $this->enabled()) {
+			$strings = $this->load->language('extension/ocs_shell/shell');
+			$data['ocs_acc_menu'] = is_array($strings) && isset($strings['ocs_acc_menu']) ? $strings['ocs_acc_menu'] : '';
+		}
+
 		if (!is_array($data) || empty($data['breadcrumbs']) || !is_array($data['breadcrumbs']) || !$this->enabled()) {
 			return;
 		}

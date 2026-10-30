@@ -30,11 +30,20 @@
   </table>
   <div class="ocs-cart-actions">
     <a href="{{ checkout }}" class="btn btn-primary btn-lg btn-block">{{ text_checkout }}</a>
-    <button type="button" class="btn btn-default btn-block ocs-cart-continue">{{ text_continue }}</button>
     <a href="{{ cart }}" class="ocs-cart-full">{{ text_cart }}</a>
   </div>
   {% else %}
-  <p class="ocs-cart-empty">{{ text_empty }}</p>
+  <div class="ocs-cart-void">
+    <svg class="ocs-cart-void-art" viewBox="0 0 120 100" width="120" height="100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10 14h14l8 44a6 6 0 0 0 6 5h46a6 6 0 0 0 6-4.6L97 30H28"/>
+      <circle cx="44" cy="80" r="6"/>
+      <circle cx="76" cy="80" r="6"/>
+      <path d="M47 38v4M69 38v4" stroke-width="3"/>
+      <path d="M50 53q8-7 16 0"/>
+      <path class="ocs-cart-void-tear" d="M72 45q3 4 0 7q-3-3 0-7z" stroke="none" fill="currentColor"/>
+    </svg>
+    <p class="ocs-cart-void-text">{{ text_empty }}</p>
+  </div>
   <button type="button" class="btn btn-primary btn-block ocs-cart-continue">{{ text_continue }}</button>
   {% endif %}
 </div>

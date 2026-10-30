@@ -36,6 +36,13 @@ class ControllerExtensionOcsStickersEvents extends Controller {
 		if (isset($map[(int)$data['product_id']])) {
 			$data['ocs_stickers'] = $map[(int)$data['product_id']];
 		}
+
+		// out of stock is shown as a red line in the buy column, not as a sticker on the gallery
+		$row = $this->db->query("SELECT quantity FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$data['product_id'] . "'")->row;
+
+		if ($row && (int)$row['quantity'] <= 0) {
+			$data['ocs_stickers'] = array();
+		}
 	}
 
 	private function listing(&$data) {

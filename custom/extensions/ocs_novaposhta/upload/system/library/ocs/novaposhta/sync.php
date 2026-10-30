@@ -110,7 +110,8 @@ class Sync {
 				$data = $this->client->page($entity, (int)$state['page'], $this->limit);
 			} catch (\Exception $e) {
 				$state['status'] = 'error';
-				$state['error'] = mb_substr($e->getMessage(), 0, 250, 'UTF-8');
+				// page and progress first, the cause follows (the column holds 255 chars)
+					$state['error'] = mb_substr('p.' . (int)$state['page'] . ', +' . (int)$state['rows_run'] . ' rows: ' . $e->getMessage(), 0, 255, 'UTF-8');
 
 				if (!$dry) {
 					$this->save($state);

@@ -39,16 +39,6 @@
       <form action="{{ action }}" method="post" enctype="multipart/form-data">
         <div class="ocs-cart-wrap">
           <table class="table ocs-cart-table">
-            <thead>
-              <tr>
-                <td class="text-center ocs-c-img">{{ column_image }}</td>
-                <td class="text-left">{{ column_name }}</td>
-                {% if ocs_show_sku %}<td class="text-left">{{ column_model }}</td>{% endif %}
-                <td class="text-left">{{ column_quantity }}</td>
-                <td class="text-right">{{ column_price }}</td>
-                <td class="text-right">{{ column_total }}</td>
-              </tr>
-            </thead>
             <tbody>
             
             {% for product in products %}

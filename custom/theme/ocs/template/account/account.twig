@@ -22,10 +22,10 @@
       <section class="ocs-acc-card">
         <h2 class="ocs-acc-title"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg>{{ text_my_account }}</h2>
         <div class="ocs-acc-tiles">
-          <a class="ocs-acc-tile" href="{{ edit }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg><span>{{ text_edit }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
-          <a class="ocs-acc-tile" href="{{ password }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-shield"/></svg><span>{{ text_password }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
-          <a class="ocs-acc-tile" href="{{ address }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-pin"/></svg><span>{{ text_address }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
-          <a class="ocs-acc-tile" href="{{ wishlist }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg><span>{{ text_wishlist }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ edit }}"><span>{{ text_edit }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ password }}"><span>{{ text_password }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ address }}"><span>{{ text_address }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ wishlist }}"><span>{{ text_wishlist }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
         </div>
       </section>
       {% if credit_cards %}
@@ -33,7 +33,7 @@
         <h2 class="ocs-acc-title"><svg class="ocs-i" aria-hidden="true"><use href="#i-card"/></svg>{{ text_credit_card }}</h2>
         <div class="ocs-acc-tiles">
           {% for credit_card in credit_cards %}
-          <a class="ocs-acc-tile" href="{{ credit_card.href }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-card"/></svg><span>{{ credit_card.name }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ credit_card.href }}"><span>{{ credit_card.name }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
           {% endfor %}
         </div>
       </section>
@@ -41,31 +41,31 @@
       <section class="ocs-acc-card">
         <h2 class="ocs-acc-title"><svg class="ocs-i" aria-hidden="true"><use href="#i-package"/></svg>{{ text_my_orders }}</h2>
         <div class="ocs-acc-tiles">
-          <a class="ocs-acc-tile" href="{{ order }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-package"/></svg><span>{{ text_order }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
-          <a class="ocs-acc-tile" href="{{ download }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-download"/></svg><span>{{ text_download }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ order }}"><span>{{ text_order }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ download }}"><span>{{ text_download }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
           {% if reward %}
-          <a class="ocs-acc-tile" href="{{ reward }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-gift"/></svg><span>{{ text_reward }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ reward }}"><span>{{ text_reward }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
           {% endif %}
-          <a class="ocs-acc-tile" href="{{ return }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-return"/></svg><span>{{ text_return }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
-          <a class="ocs-acc-tile" href="{{ transaction }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-card"/></svg><span>{{ text_transaction }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
-          <a class="ocs-acc-tile" href="{{ recurring }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-clock"/></svg><span>{{ text_recurring }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ return }}"><span>{{ text_return }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ transaction }}"><span>{{ text_transaction }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ recurring }}"><span>{{ text_recurring }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
         </div>
       </section>
       <section class="ocs-acc-card">
         <h2 class="ocs-acc-title"><svg class="ocs-i" aria-hidden="true"><use href="#i-percent"/></svg>{{ text_my_affiliate }}</h2>
         <div class="ocs-acc-tiles">
           {% if not tracking %}
-          <a class="ocs-acc-tile" href="{{ affiliate }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-plus"/></svg><span>{{ text_affiliate_add }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ affiliate }}"><span>{{ text_affiliate_add }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
           {% else %}
-          <a class="ocs-acc-tile" href="{{ affiliate }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-pencil"/></svg><span>{{ text_affiliate_edit }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
-          <a class="ocs-acc-tile" href="{{ tracking }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-share"/></svg><span>{{ text_tracking }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ affiliate }}"><span>{{ text_affiliate_edit }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ tracking }}"><span>{{ text_tracking }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
           {% endif %}
         </div>
       </section>
       <section class="ocs-acc-card">
         <h2 class="ocs-acc-title"><svg class="ocs-i" aria-hidden="true"><use href="#i-mail"/></svg>{{ text_my_newsletter }}</h2>
         <div class="ocs-acc-tiles">
-          <a class="ocs-acc-tile" href="{{ newsletter }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-mail"/></svg><span>{{ text_newsletter }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+          <a class="ocs-acc-tile" href="{{ newsletter }}"><span>{{ text_newsletter }}</span><svg class="ocs-i ocs-acc-go" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
         </div>
       </section>
       </div>
