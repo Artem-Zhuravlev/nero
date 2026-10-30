@@ -28,7 +28,7 @@ test('no heading holds a price or another non-title value', () => {
     }
   }
   assert.deepEqual(bad, []);
-  assert.ok(/<p class="ocs-price">\{\{ price \}\}<\/p>/.test(read('custom/theme/ocs/template/product/product.twig')));
+  assert.ok(/<p class="ocs-price"><span data-ocs-cur>\{\{ price \}\}<\/span><\/p>/.test(read('custom/theme/ocs/template/product/product.twig')));
 });
 
 // TEST-SEO-002 - verifies REQ-SEO-002 (product titles are h4 with the link inside, everywhere)

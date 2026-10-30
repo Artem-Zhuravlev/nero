@@ -1,6 +1,6 @@
 {# @core-file catalog/view/theme/default/template/product/product.twig @core-version 3.0.3.7 #}
 {{ header }}
-<div class="ocs-sticky-buy" id="ocs-sticky-buy" hidden aria-hidden="true"><div class="container ocs-sticky-inner">{% if thumb %}<img src="{{ thumb }}" alt="" width="40" height="40" />{% endif %}<strong>{{ heading_title }}</strong>{% if price %}<span class="ocs-sticky-price">{{ special ? special : price }}</span>{% endif %}<button type="button" class="btn btn-primary" data-ocs-buy>{{ button_cart }}</button></div></div>
+<div class="ocs-sticky-buy" id="ocs-sticky-buy" hidden aria-hidden="true"><div class="container ocs-sticky-inner">{% if thumb %}<img src="{{ thumb }}" alt="" width="40" height="40" />{% endif %}<strong>{{ heading_title }}</strong>{% if price %}<span class="ocs-sticky-price" data-ocs-cur>{{ special ? special : price }}</span>{% endif %}<button type="button" class="btn btn-primary" data-ocs-buy>{{ button_cart }}</button></div></div>
 <div id="product-product" class="container">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
@@ -90,21 +90,21 @@
             {% if manufacturer %}<div><dt>{{ text_manufacturer }}</dt><dd><a href="{{ manufacturers }}">{{ manufacturer }}</a></dd></div>{% endif %}
             {% if ocs_show_sku %}<div><dt>{{ text_model }}</dt><dd>{{ model }}</dd></div>{% endif %}
             {% if reward %}<div><dt>{{ text_reward }}</dt><dd>{{ reward }}</dd></div>{% endif %}
-            {% if ocs_show_stock %}<div><dt>{{ text_stock }}</dt><dd>{% if ocs_stock %}<span class="ocs-stock ocs-stock-{{ ocs_stock.state }}">{{ ocs_stock.label }}</span>{% else %}{{ stock }}{% endif %}</dd></div>{% endif %}
+            {% if ocs_show_stock %}<div><dt>{{ text_stock }}</dt><dd>{% if ocs_stock %}<span class="ocs-stock ocs-stock-{{ ocs_stock.state }}"><svg class="ocs-i ocs-stock-i" aria-hidden="true"><use href="#{{ ocs_stock.state == 'out' ? 'i-x-thin' : 'i-check' }}"/></svg>{{ ocs_stock.label }}</span>{% else %}{{ stock }}{% endif %}</dd></div>{% endif %}
           </dl>
           {% endif %}
           {% if price %}
-          <div class="ocs-price-box">
+          <div class="ocs-price-box"{% if ocs_pricing %} data-ocs-pricing="{{ ocs_pricing }}"{% endif %}>
             {% if special %}
-            <p class="ocs-price-old"><s>{{ price }}</s></p>
-            <p class="ocs-price ocs-price-special">{{ special }}{% if ocs_savings %} <span class="ocs-savings">{{ ocs_savings_label }} {{ ocs_savings }}</span>{% endif %}</p>
+            <p class="ocs-price-old"><s data-ocs-old>{{ price }}</s></p>
+            <p class="ocs-price ocs-price-special"><span data-ocs-cur>{{ special }}</span>{% if ocs_savings %} <span class="ocs-savings">{{ ocs_savings_label }} <span data-ocs-sav>{{ ocs_savings }}</span></span>{% endif %}</p>
             {% else %}
-            <p class="ocs-price">{{ price }}</p>
+            <p class="ocs-price"><span data-ocs-cur>{{ price }}</span></p>
             {% endif %}
             {% if ocs_special_timer %}
             <p class="ocs-special-timer" role="timer" aria-live="off" data-ocs-timer="{{ ocs_special_timer.seconds }}" data-days="{{ ocs_special_timer.days }}"><span class="ocs-special-timer-label">{{ ocs_special_timer.label }}</span> <strong class="ocs-special-timer-time"></strong></p>
             {% endif %}
-            {% if tax %}<p class="ocs-price-note">{{ text_tax }} {{ tax }}</p>{% endif %}
+            {% if tax %}<p class="ocs-price-note">{{ text_tax }} <span data-ocs-ex>{{ tax }}</span></p>{% endif %}
             {% if points %}<p class="ocs-price-note">{{ text_points }} {{ points }}</p>{% endif %}
             {% if discounts %}
             <div class="ocs-discounts">
@@ -128,14 +128,12 @@
             </div>
             {% endif %}
             <div class="form-group">
-              <label class="control-label" for="input-quantity">{{ entry_qty }}</label>
               <div class="ocs-qty" data-ocs-qty="1" data-min="{{ ocs_qty.min ? ocs_qty.min : 1 }}" data-max="{{ ocs_qty.max ? ocs_qty.max : 0 }}">
                 <button type="button" class="ocs-qty-btn ocs-js-only" data-ocs-qty-dec aria-label="{{ ocs_px.qty_dec ? ocs_px.qty_dec : '−' }}">−</button>
                 <input type="text" name="quantity" value="{{ minimum }}" size="2" id="input-quantity" class="form-control" inputmode="numeric" autocomplete="off" />
                 <button type="button" class="ocs-qty-btn ocs-js-only" data-ocs-qty-inc aria-label="{{ ocs_px.qty_inc ? ocs_px.qty_inc : '+' }}">+</button>
               </div>
               <input type="hidden" name="product_id" value="{{ product_id }}" />
-              <br />
               {% if not ocs_preorder %}<button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-primary btn-lg btn-block">{{ button_cart }}</button>{% endif %}
               <div class="ocs-buy-slot" id="ocs-buy-slot">
                 {% if ocs_preorder %}<button type="button" class="btn btn-primary btn-lg btn-block ocs-req-btn ocs-preorder-btn" data-form="{{ ocs_preorder.form }}" data-product-id="{{ product_id }}" data-collect="1">{{ ocs_preorder.text }}</button>{% endif %}
@@ -177,23 +175,16 @@
         {% if attribute_groups %}
         <section class="ocs-section" id="tab-specification">
           <div class="ocs-sec-title">{{ tab_attribute }}</div>
-              <table class="table table-bordered">
+              <div class="ocs-specs">
                 {% for attribute_group in attribute_groups %}
-                <thead>
-                  <tr>
-                    <td colspan="2"><strong>{{ attribute_group.name }}</strong></td>
-                  </tr>
-                </thead>
-                <tbody>
-                {% for attribute in attribute_group.attribute %}
-                <tr>
-                  <td>{{ attribute.name }}</td>
-                  <td>{{ attribute.text }}</td>
-                </tr>
+                <dl class="ocs-specs-group">
+                  <dt class="ocs-specs-title">{{ attribute_group.name }}</dt>
+                  {% for attribute in attribute_group.attribute %}
+                  <div class="ocs-specs-row"><dt>{{ attribute.name }}</dt><dd>{{ attribute.text }}</dd></div>
+                  {% endfor %}
+                </dl>
                 {% endfor %}
-                  </tbody>
-                {% endfor %}
-              </table>
+              </div>
         </section>
         {% endif %}
         {% if review_status %}
@@ -297,7 +288,7 @@
           <div class="ocs-slot ocs-slot-tr">{% for s in ocs_stickers.tr %}<span class="ocs-badge" style="--badge-bg: {{ s.bg }}; --badge-fg: {{ s.fg }}">{{ s.text }}</span>{% endfor %}</div>
         </div>
         <p class="ocs-side-title">{{ heading_title }}</p>
-        {% if price %}<p class="ocs-side-price">{% if special %}<strong>{{ special }}</strong> <s>{{ price }}</s>{% else %}<strong>{{ price }}</strong>{% endif %}</p>{% endif %}
+        {% if price %}<p class="ocs-side-price">{% if special %}<strong data-ocs-cur>{{ special }}</strong> <s data-ocs-old>{{ price }}</s>{% else %}<strong data-ocs-cur>{{ price }}</strong>{% endif %}</p>{% endif %}
         <div class="ocs-side-actions">
           <button type="button" class="btn btn-primary" data-ocs-buy>{% if ocs_preorder %}{{ ocs_preorder.text }}{% elseif ocs_subscribe %}{{ ocs_subscribe.text }}{% else %}{{ button_cart }}{% endif %}</button>
           <button type="button" class="btn btn-default" title="{{ button_wishlist }}" aria-label="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg></button>

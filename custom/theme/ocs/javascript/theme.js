@@ -3544,6 +3544,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		return max > 0 && n > max ? Math.max(min, max) : n;
 	}
 
+	function boot() {
 	d.querySelectorAll('[data-ocs-qty]').forEach(function (box) {
 		var input = box.querySelector('input'),
 			dec = box.querySelector('[data-ocs-qty-dec]'),
@@ -3569,6 +3570,108 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		input.addEventListener('blur', function () { set(input.value); });
 		set(input.value);
 	});
+	}
+
+	// theme.js loads in <head>: the markup exists only after DOMContentLoaded
+	if (d.readyState === 'loading') {
+		d.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+}(window, document));
+
+/* Live price of the product page (SPEC-101 REQ-QTY-007, REQ-QTY-008): quantity x (price + selected option surcharges), the way the cart totals it.
+   The numbers come from [data-ocs-pricing] (events.php pricing()); the server re-prices everything when the product is added. */
+(function (w, d) {
+	'use strict';
+
+	/** Money in the visitor's currency, formatted like core's currency->format(). */
+	function money(v, c) {
+		var parts = (Math.round(v * Math.pow(10, c.dp)) / Math.pow(10, c.dp)).toFixed(c.dp).split('.');
+
+		parts[0] = parts[0].replace(/B(?=(d{3})+(?!d))/g, c.thou);
+
+		return c.sl + parts.join(c.dec) + c.sr;
+	}
+
+	/** Unit price without tax for the quantity: special, else the best quantity discount tier, else the base price. */
+	function unit(c, qty) {
+		var best = c.base,
+			bestQ = 0;
+
+		c.tiers.forEach(function (t) {
+			if (t[0] <= qty && t[0] > bestQ) {
+				bestQ = t[0];
+				best = t[1];
+			}
+		});
+
+		return {sale: c.spec !== null ? c.spec : best, regular: best};
+	}
+
+	function boot() {
+		var box = d.querySelector('[data-ocs-pricing]'),
+			product = d.getElementById('product'),
+			c;
+
+		if (!box || !product) {
+			return;
+		}
+
+		try {
+			c = JSON.parse(box.getAttribute('data-ocs-pricing'));
+		} catch (e) {
+			return;
+		}
+
+		var qtyInput = product.querySelector('input[name="quantity"]');
+
+		function surcharge() {
+			var sum = 0;
+
+			product.querySelectorAll('select[name^="option["] option:checked, input[name^="option["]:checked').forEach(function (el) {
+				if (el.value && Object.prototype.hasOwnProperty.call(c.opts, el.value)) {
+					sum += c.opts[el.value];
+				}
+			});
+
+			return sum;
+		}
+
+		function fill(selector, text) {
+			d.querySelectorAll(selector).forEach(function (el) { el.textContent = text; });
+		}
+
+		function update() {
+			var qty = Math.max(1, parseInt(qtyInput ? qtyInput.value : 1, 10) || 1),
+				u = unit(c, qty),
+				extra = surcharge(),
+				taxed = function (raw) { return (c.ta * raw + c.tb) * c.rate * qty; };
+
+			fill('[data-ocs-cur]', money(taxed(u.sale + extra), c));
+			fill('[data-ocs-old]', money(taxed(u.regular + extra), c));
+			fill('[data-ocs-ex]', money((u.sale + extra) * c.rate * qty, c));
+			fill('[data-ocs-sav]', money(c.ta * (u.regular - u.sale) * c.rate * qty, c));
+		}
+
+		['change', 'input'].forEach(function (type) {
+			product.addEventListener(type, function (e) {
+				var t = e.target;
+
+				if (t && t.name && (t.name === 'quantity' || t.name.indexOf('option[') === 0)) {
+					update();
+				}
+			});
+		});
+
+		update();
+	}
+
+	if (d.readyState === 'loading') {
+		d.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
 }(window, document));
 
 /* Cart page quantity stepper (SPEC-117): - / + and manual edits submit the cart form (checkout/cart/edit) after a short pause. */

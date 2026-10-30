@@ -97,6 +97,8 @@ class ControllerExtensionOcsEvents extends Controller {
 
 			$data['ocs_qty'] = array('min' => $step, 'max' => $max);
 
+			$data['ocs_pricing'] = !empty($data['price']) && !empty($this->request->get['product_id']) ? $this->pricing((int)$this->request->get['product_id']) : '';
+
 			// countdown to the end of the special applied now (SPEC-086 REQ-TMR-001); the core ends a special at 00:00 of date_end
 			$data['ocs_special_timer'] = null;
 
@@ -142,6 +144,64 @@ class ControllerExtensionOcsEvents extends Controller {
 		} catch (\Exception $e) {
 			$this->log->write('[ocs] ' . $e->getMessage());
 		}
+	}
+
+	/**
+	 * Data for the live price of the product page (SPEC-101 REQ-QTY-007): raw prices, quantity discount tiers and option surcharges, plus the
+	 * linear tax and currency factors, so theme.js can total quantity x (price + options) the way the cart does. Returned as an escaped JSON attribute value.
+	 */
+	private function pricing($product_id) {
+		try {
+			$this->load->model('catalog/product');
+
+			$info = $this->model_catalog_product->getProduct($product_id);
+
+			if (!$info) {
+				return '';
+			}
+
+			$tax_on = $this->config->get('config_tax');
+			$currency = $this->session->data['currency'];
+			$tax_b = (float)$this->tax->calculate(0, $info['tax_class_id'], $tax_on);
+			$tax_a = ((float)$this->tax->calculate(100, $info['tax_class_id'], $tax_on) - $tax_b) / 100;
+			$tiers = array();
+
+			foreach ($this->model_catalog_product->getProductDiscounts($product_id) as $row) {
+				$tiers[] = array((int)$row['quantity'], (float)$row['price']);
+			}
+
+			$opts = new \stdClass();
+
+			foreach ($this->model_catalog_product->getProductOptions($product_id) as $option) {
+				if (empty($option['product_option_value'])) {
+					continue;
+				}
+
+				foreach ($option['product_option_value'] as $value) {
+					$id = (string)$value['product_option_value_id'];
+					$opts->$id = ($value['price_prefix'] === '-' ? -1 : 1) * (float)$value['price'];
+				}
+			}
+
+			return htmlspecialchars(json_encode(array(
+				'base'  => (float)$info['price'],
+				'spec'  => is_null($info['special']) ? null : (float)$info['special'],
+				'tiers' => $tiers,
+				'opts'  => $opts,
+				'ta'    => $tax_a,
+				'tb'    => $tax_b,
+				'rate'  => (float)$this->currency->getValue($currency),
+				'dp'    => (int)$this->currency->getDecimalPlace($currency),
+				'dec'   => $this->language->get('decimal_point'),
+				'thou'  => $this->language->get('thousand_point'),
+				'sl'    => $this->currency->getSymbolLeft($currency),
+				'sr'    => $this->currency->getSymbolRight($currency)
+			)), ENT_QUOTES, 'UTF-8');
+		} catch (\Exception $e) {
+			$this->log->write('[ocs] ' . $e->getMessage());
+		}
+
+		return '';
 	}
 
 	/**

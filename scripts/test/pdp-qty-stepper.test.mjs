@@ -32,3 +32,15 @@ test('markup and styles of the stepper', () => {
   assert.match(twig, /name="quantity"[^>]*inputmode="numeric"/);
   assert.match(css, /\.ocs-qty \.form-control \{[^}]*inline-size: 3\.5rem/);
 });
+
+// TEST-QTY-003 - verifies REQ-QTY-007, REQ-QTY-008
+test('stepper boots after DOMContentLoaded and the price is recalculated', () => {
+  assert.match(js, /function boot\(\) \{\n\td\.querySelectorAll\('\[data-ocs-qty\]'\)/);
+  assert.match(js, /data-ocs-pricing/);
+  assert.match(twig, /data-ocs-pricing=/);
+  assert.match(twig, /data-ocs-cur/);
+  assert.doesNotMatch(twig, /for="input-quantity"/);
+  const php = read('custom/extensions/ocs/upload/catalog/controller/extension/ocs/events.php');
+  assert.match(php, /function pricing\(\$product_id\)/);
+  assert.match(php, /\['ocs_pricing'\] =/);
+});

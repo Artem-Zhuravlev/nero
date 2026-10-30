@@ -8,7 +8,6 @@
 
       {% if product.discount_pct and not product.stickers %}<span class="ocs-badge ocs-badge-discount">-{{ product.discount_pct }}%</span>{% endif %}
       {% if product.has_video %}<span class="ocs-vid-badge" role="img" aria-label="{{ text_video }}" title="{{ text_video }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-play"/></svg></span>{% endif %}
-      {% if product.model %}<span class="ocs-code">{{ product.model }}</span>{% endif %}
       <div class="ocs-card-tools">
         {% if product.remove %}
         <a href="{{ product.remove }}" data-ocs-wish-remove="{{ product.product_id }}" class="ocs-tool ocs-tool-remove" title="{{ button_remove }}" aria-label="{{ button_remove }}"><svg class="ocs-i" aria-hidden="true"><use href="#i-x"/></svg></a>
@@ -21,11 +20,12 @@
     </div>
     <div>
       <div class="caption">
+        {% if product.model %}<div class="ocs-code">{{ product.model }}</div>{% endif %}
         <div class="ocs-card-name"><a href="{{ product.href }}">{{ product.name }}</a></div>
         {% if product.rating %}
         <div class="rating"> {% include 'ocs/template/ocs/rating.twig' with {'value': product.rating} only %}{% if product.reviews %} <span class="ocs-reviews">({{ product.reviews }})</span>{% endif %} </div>
         {% endif %}
-        {% if product.ocs_stock %}<div class="ocs-stock ocs-stock-{{ product.ocs_stock.state }}"><i class="ocs-dot" aria-hidden="true"></i>{{ product.ocs_stock.label }}</div>{% endif %}
+        {% if product.ocs_stock %}<div class="ocs-stock ocs-stock-{{ product.ocs_stock.state }}"><svg class="ocs-i ocs-stock-i" aria-hidden="true"><use href="#{{ product.ocs_stock.state == 'out' ? 'i-x-thin' : 'i-check' }}"/></svg>{{ product.ocs_stock.label }}</div>{% endif %}
         <div class="ocs-buy-row">
           {% if product.price %}
           <p class="price"> {% if not product.special %}

@@ -882,7 +882,7 @@ test('visual identity: Bootstrap components are re-skinned in the components lay
 test('visual identity: product card markup and styles', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
   const card = read('custom/theme/ocs/template/ocs/card.twig');
-  for (const hook of ['ocs-card-tools', 'ocs-tool', 'class="ocs-code"', 'ocs-buy-row', 'ocs-cart-btn', 'ocs-dot', "wishlist.add('{{ product.product_id }}')", "compare.add('{{ product.product_id }}')", "cart.add('{{ product.product_id }}'", 'loading="lazy"']) assert.ok(card.includes(hook), hook);
+  for (const hook of ['ocs-card-tools', 'ocs-tool', 'class="ocs-code"', 'ocs-buy-row', 'ocs-cart-btn', 'i-check', "wishlist.add('{{ product.product_id }}')", "compare.add('{{ product.product_id }}')", "cart.add('{{ product.product_id }}'", 'loading="lazy"']) assert.ok(card.includes(hook), hook);
   for (const rule of ['.ocs-tool {', '.ocs-cart-btn {', '.ocs-card-tools {', '@media (hover: none) { .ocs-tool', '@container card (max-width: 12.5rem)']) assert.ok(css.includes(rule), rule);
 });
 
@@ -928,11 +928,11 @@ test('visual identity: category tree and sort chips', () => {
 });
 
 // TEST-VIS-007 - verifies REQ-VIS-006 (product: sticky summary bar and zebra specification table)
-test('visual identity: product sticky summary and specification table', () => {
+test('visual identity: product sticky summary and specification list', () => {
   const read = (p) => readFileSync(join(REPO_ROOT, p), 'utf8');
   assert.ok(read('custom/theme/ocs/template/product/product.twig').includes('id="ocs-sticky-buy"'));
   assert.match(read('custom/theme/ocs/javascript/theme.js'), /getElementById\('ocs-sticky-buy'\)/);
-  assert.ok(css.includes('.ocs-sticky-buy.is-on') && css.includes('#tab-specification tbody tr:nth-child(odd) td'));
+  assert.ok(css.includes('.ocs-sticky-buy.is-on') && css.includes('.ocs-specs-row:nth-of-type(odd)'));
 });
 
 // TEST-VIS-008 - verifies REQ-VIS-009 (motion: keyframes, skeleton, empty state, reduced-motion switch)
