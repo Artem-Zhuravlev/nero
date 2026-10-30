@@ -192,6 +192,7 @@ feat(theme): add base theme skeleton [SPEC-003]
 | SPEC-123 | [Настройки Nero: вкладки, пункт меню, бренд NERO, чистка текстов](admin-nero-settings/spec.md) | `implemented` |
 | SPEC-124 | [Характеристики, иконки наличия, код в карточке, без bold](pdp-card-polish/spec.md) | `implemented` |
 | SPEC-125 | [Своя иконка для информационных блоков карточки](info-block-custom-icon/spec.md) | `implemented` |
+| SPEC-127 | [Карточки отзывов и «полезно / не полезно»](review-cards-votes/spec.md) | `draft` |
 
 SPEC-002 is intentionally unused (a deployment spec was dropped; deployment will get its own
 number when requested).

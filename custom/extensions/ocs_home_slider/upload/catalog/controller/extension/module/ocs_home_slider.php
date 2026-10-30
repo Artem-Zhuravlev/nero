@@ -75,7 +75,7 @@ class ControllerExtensionModuleOcsHomeSlider extends Controller {
 				$banner = false;
 
 				if ($node['banner_image']) {
-					$url = OcsShell::safeUrl($node['banner_url']);
+					$url = \Ocs\Shell::safeUrl($node['banner_url']);
 
 					$banner = array(
 						'src' => $this->model_tool_image->resize($node['banner_image'], 480, 720),
