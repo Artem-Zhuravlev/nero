@@ -2618,3 +2618,8 @@ s, .price-old, .ocs-old, .ocs-price-old s { color: var(--price-old); text-decora
 .ocs-cart-void-art { inline-size: 7.5rem; block-size: auto; opacity: .75; }
 .ocs-cart-void-text { margin: 0; color: var(--text-muted); font-size: var(--fs-sm); }
 .ocs-cart-dialog .ocs-cart-continue { flex: none; margin-block-start: auto; }
+
+/* card buy row: the cart button always sits on the card's bottom edge, however many lines the price takes */
+.ocs-buy-row { align-items: flex-end; margin-block-start: auto; }
+.ocs-buy-row .price { align-self: center; }
+.ocs-buy-row .ocs-cart-btn { align-self: flex-end; }
