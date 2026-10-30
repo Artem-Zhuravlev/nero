@@ -1234,6 +1234,8 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 	var box;
 	var input;
 	var dd;
+	var clearBtn;
+	var closeBar;
 	var url;
 	var minLen;
 	var pageUrl;
@@ -1312,6 +1314,17 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		dd.hidden = !show;
 		input.setAttribute('aria-expanded', show ? 'true' : 'false');
 		active = -1;
+
+		// the sticky "close" bar always ends the list (renders wipe the dropdown, so it is put back each time it opens)
+		if (show && closeBar) {
+			dd.appendChild(closeBar);
+		}
+	}
+
+	function syncClear() {
+		if (clearBtn) {
+			clearBtn.hidden = input.value === '';
+		}
 	}
 
 	function items() {
@@ -1498,6 +1511,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 
 	function onInput() {
 		window.clearTimeout(timer);
+		syncClear();
 
 		var q = input.value.trim();
 
@@ -1561,6 +1575,38 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		} catch (e) {
 			strings = {};
 		}
+
+		// "x" inside the field clears the query and shows the idle suggestions again
+		clearBtn = el('button', 'ocs-search-x');
+		clearBtn.type = 'button';
+		clearBtn.hidden = true;
+		clearBtn.setAttribute('aria-label', strings.clear_input || '');
+		clearBtn.innerHTML = '<svg class="ocs-i" aria-hidden="true"><use href="#i-x"/></svg>';
+		clearBtn.addEventListener('click', function () {
+			input.value = '';
+			syncClear();
+			input.focus();
+			onInput();
+		});
+
+		var group = box.querySelector('.input-group-btn');
+
+		box.insertBefore(clearBtn, group || dd);
+
+		// a "close" bar closes the dropdown (handy on phones, where there is no Escape key and no outside area to tap)
+		closeBar = el('div', 'ocs-search-close-bar');
+
+		var closeBtn = el('button', 'ocs-search-close', strings.close || '');
+
+		closeBtn.type = 'button';
+		closeBtn.insertAdjacentHTML('afterbegin', '<svg class="ocs-i" aria-hidden="true"><use href="#i-x"/></svg>');
+		closeBtn.addEventListener('click', function () {
+			open(false);
+			input.blur();
+		});
+		closeBar.appendChild(closeBtn);
+
+		syncClear();
 
 		input.addEventListener('input', onInput);
 		input.addEventListener('focus', function () {

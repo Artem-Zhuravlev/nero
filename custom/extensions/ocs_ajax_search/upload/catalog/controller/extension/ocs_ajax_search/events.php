@@ -14,7 +14,7 @@ class ControllerExtensionOcsAjaxSearchEvents extends Controller {
 		$strings = $this->load->language('extension/module/ocs_ajax_search');
 		$strings = is_array($strings) ? $strings : array();
 
-		$keys = array('recent', 'popular', 'clear', 'all', 'empty', 'error', 'products', 'categories', 'brands');
+		$keys = array('recent', 'popular', 'clear', 'all', 'empty', 'error', 'products', 'categories', 'brands', 'clear_input', 'close');
 		$texts = array();
 
 		foreach ($keys as $key) {

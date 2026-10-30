@@ -2730,3 +2730,24 @@ footer .ocs-fh, footer :is(h5, h2) { font-weight: 500; }
 	display: inline-flex; align-items: center; justify-content: center; inline-size: 100%; min-inline-size: 0; min-block-size: var(--btn-h);
 	padding-inline: 1.5rem; border-radius: var(--r-pill); font-size: var(--fs-md); font-weight: 500;
 }
+
+/* header search: "x" inside the field clears the query; a sticky "close" bar ends the suggestions dropdown */
+.ocs-search-x {
+	flex: none; align-self: center; display: inline-grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; margin-inline-end: var(--sp-1); padding: 0;
+	border: 0; border-radius: 50%; background: var(--bg-alt); color: var(--text-muted); cursor: pointer;
+}
+.ocs-search-x[hidden] { display: none; }
+.ocs-search-x:hover, .ocs-search-x:focus-visible { background: var(--border); color: var(--text); }
+.ocs-search-x .ocs-i { inline-size: 0.9rem; block-size: 0.9rem; }
+.ocs-search-close-bar { position: sticky; inset-block-end: calc(-1 * var(--sp-2)); margin: var(--sp-1) calc(-1 * var(--sp-2)) calc(-1 * var(--sp-2)); padding: var(--sp-2); background: var(--bg); border-block-start: 1px solid color-mix(in srgb, var(--border) 60%, transparent); border-radius: 0 0 var(--r-lg) var(--r-lg); }
+.ocs-search-close {
+	display: flex; align-items: center; justify-content: center; gap: var(--sp-2); inline-size: 100%; min-block-size: 2.5rem; border: 0; border-radius: var(--r-pill);
+	background: var(--bg-alt); color: var(--text); font: inherit; font-size: var(--fs-sm); font-weight: 500; cursor: pointer;
+}
+.ocs-search-close:hover, .ocs-search-close:focus-visible { background: var(--border); }
+.ocs-search-close .ocs-i { inline-size: 1rem; block-size: 1rem; }
+
+/* label + select rows (listing toolbar, blog sort): the label is centred on the field; the global label bottom margin must not shift it */
+.ocs-toolbar .input-group, .ocs-blog-sort { display: flex; align-items: center; }
+.ocs-toolbar .input-group > *, .ocs-blog-sort > * { margin: 0; align-self: center; }
+.ocs-toolbar .input-group > label, .ocs-blog-sort > label { display: flex; align-items: center; padding: 0; line-height: 1.2; block-size: auto; min-block-size: 0; }
