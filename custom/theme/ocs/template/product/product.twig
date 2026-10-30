@@ -150,7 +150,7 @@
           <div class="ocs-info-blocks">
             {% for b in ocs_info_blocks %}
             <div class="ocs-info-card">
-              <svg class="ocs-i" aria-hidden="true"><use href="#{{ b.icon }}"/></svg>
+              {% if b.image %}<img class="ocs-i-img" src="{{ b.image }}" alt="" width="24" height="24" loading="lazy">{% else %}<svg class="ocs-i" aria-hidden="true"><use href="#{{ b.icon }}"/></svg>{% endif %}
               <div>
                 {% if b.title %}<p class="ocs-info-title">{% if b.href %}<a href="{{ b.href }}">{{ b.title }}</a>{% else %}{{ b.title }}{% endif %}</p>{% endif %}
                 {% if b.text %}<p class="ocs-info-text">{{ b.text }}</p>{% endif %}

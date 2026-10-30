@@ -137,6 +137,13 @@ class ControllerExtensionOcsEvents extends Controller {
 			}
 
 			$data['ocs_info_blocks'] = \Ocs\InfoBlocks::view($this->config->get('theme_ocs_info_blocks'), $this->config->get('config_language'), $default);
+
+			// a custom icon whose file is gone falls back to the built-in symbol (SPEC-125 REQ-INF-110)
+			foreach ($data['ocs_info_blocks'] as &$block) {
+				$block['image'] = $block['image'] !== '' && is_file(DIR_IMAGE . $block['image']) ? 'image/' . implode('/', array_map('rawurlencode', explode('/', $block['image']))) : '';
+			}
+
+			unset($block);
 		}
 
 		try {

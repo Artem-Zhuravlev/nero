@@ -1918,6 +1918,7 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-info-blocks { display: grid; gap: var(--sp-2); }
 	.ocs-info-card { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); border: 1px solid color-mix(in srgb, var(--border) 60%, transparent); border-radius: var(--r-md); background: var(--bg-alt); }
 	.ocs-info-card .ocs-i { inline-size: 1.5rem; block-size: 1.5rem; color: var(--accent); margin-block-start: 0.1rem; }
+	.ocs-info-card .ocs-i-img { inline-size: 1.5rem; block-size: 1.5rem; object-fit: contain; margin-block-start: 0.1rem; }
 	.ocs-info-card p { margin: 0; }
 	.ocs-info-title { font-size: var(--fs-sm); font-weight: 700; color: var(--text); }
 	.ocs-info-title a { color: inherit; }

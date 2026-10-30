@@ -1,6 +1,6 @@
 <?php
 // Extension: ocs (theme). Store-wide info blocks of the product page (delivery, returns, payment ...): sanitising for the theme settings and the storefront view.
-// Pure, no registry access (unit-testable). Output is escaped here because Twig autoescape is off. Owner: SPEC-048 (REQ-INF-001, 002).
+// Pure, no registry access (unit-testable). Output is escaped here because Twig autoescape is off. Owner: SPEC-048 (REQ-INF-001, 002), SPEC-125 (custom icon image).
 
 namespace Ocs;
 
@@ -12,6 +12,19 @@ class InfoBlocks {
 	);
 
 	const MAX = 10;
+
+	/**
+	 * A custom icon path chosen in the image manager: inside the image directory, whitelisted extension; '' when unusable (SPEC-125 REQ-INF-103).
+	 */
+	public static function image($path) {
+		$path = ltrim(str_replace('\\', '/', trim(htmlspecialchars_decode((string)$path, ENT_QUOTES))), '/');
+
+		if ($path === '' || strpos($path, '..') !== false || !preg_match('~^[\w.\/ -]+\.(png|jpe?g|gif|webp|svg)$~iu', $path)) {
+			return '';
+		}
+
+		return $path;
+	}
 
 	private static function cut($text, $max) {
 		$text = trim(htmlspecialchars_decode((string)$text, ENT_QUOTES));
@@ -33,7 +46,14 @@ class InfoBlocks {
 		}
 
 		foreach ($rows as $row) {
-			if (!is_array($row) || !isset($row['icon']) || !isset(self::$icons[$row['icon']])) {
+			if (!is_array($row)) {
+				continue;
+			}
+
+			$image = self::image(isset($row['image']) ? $row['image'] : '');
+			$icon = isset($row['icon'], self::$icons[$row['icon']]) ? $row['icon'] : ($image !== '' ? 'info' : '');
+
+			if ($icon === '') {
 				continue;
 			}
 
@@ -54,7 +74,8 @@ class InfoBlocks {
 			$url = isset($row['url']) ? htmlspecialchars_decode(trim((string)$row['url']), ENT_QUOTES) : '';
 
 			$out[] = array(
-				'icon'  => $row['icon'],
+				'icon'  => $icon,
+				'image' => $image,
 				'title' => $title,
 				'text'  => $text,
 				'url'   => Contacts::url($url) === '' ? '' : $url,
@@ -76,7 +97,13 @@ class InfoBlocks {
 		$out = array();
 
 		foreach (is_array($rows) ? $rows : array() as $row) {
-			if (!is_array($row) || !isset($row['icon'], self::$icons[$row['icon']])) {
+			if (!is_array($row)) {
+				continue;
+			}
+
+			$image = self::image(isset($row['image']) ? $row['image'] : '');
+
+			if (!isset($row['icon'], self::$icons[$row['icon']]) && $image === '') {
 				continue;
 			}
 
@@ -98,7 +125,8 @@ class InfoBlocks {
 			}
 
 			$out[] = array(
-				'icon'  => self::$icons[$row['icon']],
+				'icon'  => isset($row['icon'], self::$icons[$row['icon']]) ? self::$icons[$row['icon']] : self::$icons['info'],
+				'image' => $image,
 				'title' => Contacts::e($title),
 				'text'  => str_replace(array("\r\n", "\r", "\n"), '<br>', Contacts::e($text)),
 				'href'  => Contacts::url(isset($row['url']) ? $row['url'] : '')

@@ -84,4 +84,26 @@ final class VideoInfoTest extends TestCase
             $this->assertTrue(strpos($sprite, 'id="' . $symbol . '"') !== false, "sprite lacks $symbol");
         }
     }
+
+    // TEST-INF-101 - verifies REQ-INF-102, REQ-INF-103, REQ-INF-104 (custom icon: safe path kept, unsafe dropped, image alone makes a row valid, view exposes it)
+    public function test_custom_icon_image(): void
+    {
+        $this->assertSame('catalog/icons/dhl.svg', \Ocs\InfoBlocks::image('/catalog/icons/dhl.svg'));
+        $this->assertSame('', \Ocs\InfoBlocks::image('../config.php'));
+        $this->assertSame('', \Ocs\InfoBlocks::image('catalog/a/../../x.png'));
+        $this->assertSame('', \Ocs\InfoBlocks::image('catalog/shell.php'));
+        $rows = [
+            ['icon' => 'truck', 'image' => 'catalog/dhl.png', 'title' => ['uk-ua' => 'DHL'], 'text' => []],
+            ['image' => 'catalog/only.png', 'title' => ['uk-ua' => 'Only image'], 'text' => []],
+            ['icon' => 'gift', 'image' => 'catalog/bad.php', 'title' => ['uk-ua' => 'Bad'], 'text' => []],
+            ['icon' => 'bogus', 'image' => '', 'title' => ['uk-ua' => 'x'], 'text' => []],
+        ];
+        $clean = \Ocs\InfoBlocks::sanitize($rows, ['uk-ua']);
+        $this->assertSame(3, count($clean));
+        $this->assertSame(['catalog/dhl.png', 'catalog/only.png', ''], array_column($clean, 'image'));
+        $this->assertSame('info', $clean[1]['icon']);
+        $v = \Ocs\InfoBlocks::view($clean, 'uk-ua', 'uk-ua');
+        $this->assertSame('catalog/dhl.png', $v[0]['image']);
+        $this->assertSame('', $v[2]['image']);
+    }
 }

@@ -99,6 +99,19 @@ class ControllerExtensionThemeOcs extends Controller {
 		$blocks = isset($this->request->post['theme_ocs_info_blocks']) ? $this->request->post['theme_ocs_info_blocks'] : (isset($setting_info['theme_ocs_info_blocks']) ? $setting_info['theme_ocs_info_blocks'] : array());
 
 		$data['info_blocks'] = is_array($blocks) ? array_values($blocks) : array();
+
+		// custom icons chosen in the image manager (SPEC-125)
+		$this->load->model('tool/image');
+
+		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 40, 40);
+
+		foreach ($data['info_blocks'] as &$block) {
+			$image = is_array($block) && isset($block['image']) ? \Ocs\InfoBlocks::image($block['image']) : '';
+			$block['image'] = $image;
+			$block['thumb'] = $image !== '' && is_file(DIR_IMAGE . $image) ? $this->model_tool_image->resize($image, 40, 40) : $data['placeholder'];
+		}
+
+		unset($block);
 		$data['info_icons'] = array_keys(\Ocs\InfoBlocks::$icons);
 
 		// top menu of the header (SPEC-050)
@@ -206,6 +219,17 @@ class ControllerExtensionThemeOcs extends Controller {
 
 				if (!\Ocs\Contacts::sanitize(array($row), array())) {
 					$this->error['warning'] = $this->language->get('error_contact_link') . ' ' . htmlspecialchars(trim((string)$row['url']), ENT_QUOTES, 'UTF-8', false);
+
+					break;
+				}
+			}
+		}
+
+		// a custom icon with an unsafe path must not be dropped silently (SPEC-125 REQ-INF-103)
+		if (!$this->error && !empty($this->request->post['theme_ocs_info_blocks']) && is_array($this->request->post['theme_ocs_info_blocks'])) {
+			foreach ($this->request->post['theme_ocs_info_blocks'] as $row) {
+				if (is_array($row) && isset($row['image']) && trim((string)$row['image']) !== '' && \Ocs\InfoBlocks::image($row['image']) === '') {
+					$this->error['warning'] = $this->language->get('error_info_image') . ' ' . htmlspecialchars(trim((string)$row['image']), ENT_QUOTES, 'UTF-8', false);
 
 					break;
 				}

@@ -304,7 +304,8 @@
                 <tbody>
                 {% for block in info_blocks %}
                 <tr>
-                  <td><select name="theme_ocs_info_blocks[{{ loop.index0 }}][icon]" class="form-control">{% for icon in info_icons %}<option value="{{ icon }}"{% if block.icon == icon %} selected="selected"{% endif %}>{{ icon|capitalize }}</option>{% endfor %}</select></td>
+                  <td><select name="theme_ocs_info_blocks[{{ loop.index0 }}][icon]" class="form-control">{% for icon in info_icons %}<option value="{{ icon }}"{% if block.icon == icon %} selected="selected"{% endif %}>{{ icon|capitalize }}</option>{% endfor %}</select>
+                    <div class="ocs-info-image"><small class="text-muted">{{ entry_info_image }}</small><br /><a href="" id="thumb-info-image-{{ loop.index0 }}" data-toggle="image" class="img-thumbnail"><img src="{{ block.thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a><input type="hidden" name="theme_ocs_info_blocks[{{ loop.index0 }}][image]" value="{{ block.image }}" id="input-info-image-{{ loop.index0 }}" /> <button type="button" class="btn btn-default btn-xs" data-ocs-clear-image title="{{ button_clear }}"><i class="fa fa-trash-o"></i></button></div></td>
                   <td>{% for language in languages %}<input type="text" name="theme_ocs_info_blocks[{{ loop.index0 }}][title][{{ language.code }}]" value="{{ block.title[language.code] }}" maxlength="80" placeholder="{{ language.name }}" class="form-control" />{% endfor %}</td>
                   <td>{% for language in languages %}<textarea name="theme_ocs_info_blocks[{{ loop.index0 }}][text][{{ language.code }}]" rows="2" maxlength="500" placeholder="{{ language.name }}" class="form-control">{{ block.text[language.code] }}</textarea>{% endfor %}</td>
                   <td><input type="text" name="theme_ocs_info_blocks[{{ loop.index0 }}][url]" value="{{ block.url }}" maxlength="500" placeholder="https://" class="form-control" /></td>
@@ -318,7 +319,8 @@
             </div>
             <script type="text/template" id="info-block-template">
               <tr>
-                  <td><select name="theme_ocs_info_blocks[__N__][icon]" class="form-control">{% for icon in info_icons %}<option value="{{ icon }}"{% if x.icon == icon %} selected="selected"{% endif %}>{{ icon|capitalize }}</option>{% endfor %}</select></td>
+                  <td><select name="theme_ocs_info_blocks[__N__][icon]" class="form-control">{% for icon in info_icons %}<option value="{{ icon }}">{{ icon|capitalize }}</option>{% endfor %}</select>
+                    <div class="ocs-info-image"><small class="text-muted">{{ entry_info_image }}</small><br /><a href="" id="thumb-info-image-__N__" data-toggle="image" class="img-thumbnail"><img src="{{ placeholder }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a><input type="hidden" name="theme_ocs_info_blocks[__N__][image]" value="" id="input-info-image-__N__" /> <button type="button" class="btn btn-default btn-xs" data-ocs-clear-image title="{{ button_clear }}"><i class="fa fa-trash-o"></i></button></div></td>
                   <td>{% for language in languages %}<input type="text" name="theme_ocs_info_blocks[__N__][title][{{ language.code }}]" value="{{ x.title[language.code] }}" maxlength="80" placeholder="{{ language.name }}" class="form-control" />{% endfor %}</td>
                   <td>{% for language in languages %}<textarea name="theme_ocs_info_blocks[__N__][text][{{ language.code }}]" rows="2" maxlength="500" placeholder="{{ language.name }}" class="form-control">{{ x.text[language.code] }}</textarea>{% endfor %}</td>
                   <td><input type="text" name="theme_ocs_info_blocks[__N__][url]" value="{{ x.url }}" maxlength="500" placeholder="https://" class="form-control" /></td>
@@ -348,6 +350,15 @@
 
     if (btn) {
       body.removeChild(btn.closest('tr'));
+    }
+
+    btn = e.target.closest('[data-ocs-clear-image]');
+
+    if (btn) {
+      var cell = btn.closest('td');
+
+      cell.querySelector('input[type=hidden]').value = '';
+      cell.querySelector('img').src = cell.querySelector('img').getAttribute('data-placeholder');
     }
   });
 }());
