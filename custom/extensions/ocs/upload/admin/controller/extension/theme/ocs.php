@@ -198,10 +198,17 @@ class ControllerExtensionThemeOcs extends Controller {
 
 		// a row with an unusable URL or icon must not vanish silently
 		if (!$this->error && !empty($this->request->post['theme_ocs_contact_links']) && is_array($this->request->post['theme_ocs_contact_links'])) {
-			$posted = array_filter($this->request->post['theme_ocs_contact_links'], 'is_array');
+			foreach ($this->request->post['theme_ocs_contact_links'] as $row) {
+				// an empty row is simply dropped on save
+				if (!is_array($row) || !isset($row['url']) || trim((string)$row['url']) === '') {
+					continue;
+				}
 
-			if (count(\Ocs\Contacts::sanitize($posted, array())) < count($posted)) {
-				$this->error['warning'] = $this->language->get('error_contact_link');
+				if (!\Ocs\Contacts::sanitize(array($row), array())) {
+					$this->error['warning'] = $this->language->get('error_contact_link') . ' ' . htmlspecialchars(trim((string)$row['url']), ENT_QUOTES, 'UTF-8', false);
+
+					break;
+				}
 			}
 		}
 

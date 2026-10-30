@@ -71,6 +71,53 @@ class Contacts {
 	}
 
 	/**
+	 * Turns what an admin typically pastes into a usable URL: "t.me/shop", "www.site.com", "+380 44 123 45 67", "@shop", "name@site.com", "tel:+38 044 123".
+	 * Anything else is returned unchanged (and rejected by url()).
+	 */
+	public static function normalize($url, $icon = '') {
+		$url = trim((string)$url);
+
+		if ($url === '') {
+			return '';
+		}
+
+		if (preg_match('#^(tel|viber|whatsapp):[+\d\s()-]+$#i', $url)) {
+			return preg_replace('/\s+/', '', $url);
+		}
+
+		if (preg_match('/^\+?[\d\s()-]{5,}$/', $url)) {
+			$digits = preg_replace('/\D/', '', $url);
+
+			if ($icon === 'whatsapp') {
+				return 'https://wa.me/' . $digits;
+			}
+
+			if ($icon === 'viber') {
+				return 'viber://chat?number=%2B' . $digits;
+			}
+
+			return 'tel:' . ($url[0] === '+' ? '+' : '') . $digits;
+		}
+
+		if (preg_match('/^@([A-Za-z0-9_.]{2,64})$/', $url, $m)) {
+			$hosts = array('telegram' => 't.me', 'instagram' => 'instagram.com', 'tiktok' => 'tiktok.com/@', 'x' => 'x.com');
+
+			return isset($hosts[$icon]) ? 'https://' . $hosts[$icon] . ($icon === 'tiktok' ? '' : '/') . $m[1] : $url;
+		}
+
+		if (preg_match('/^[^\s@\/:]+@[^\s@\/:]+\.[^\s@\/:]+$/', $url)) {
+			return 'mailto:' . $url;
+		}
+
+		// "t.me/shop" and "www.site.com" without a scheme are taken as https
+		if ($url[0] !== '/' && !preg_match('#^[a-z][a-z0-9+.-]*:#i', $url) && preg_match('#^[^\s/@]+\.[^\s/@]+#', $url)) {
+			return 'https://' . $url;
+		}
+
+		return $url;
+	}
+
+	/**
 	 * Cleans the rows posted by the admin editor: allowed icon, kind, titles per language code, a valid URL, sort order. Invalid rows are dropped.
 	 *
 	 * @param mixed $rows posted rows (any keys)
@@ -91,10 +138,7 @@ class Contacts {
 
 			$url = isset($row['url']) ? htmlspecialchars_decode(trim((string)$row['url']), ENT_QUOTES) : '';
 
-			// "t.me/shop" and "www.site.com" without a scheme are taken as https
-			if ($url !== '' && $url[0] !== '/' && !preg_match('#^[a-z][a-z0-9+.-]*:#i', $url) && preg_match('#^[^\s/@]+\.[^\s/@]+#', $url)) {
-				$url = 'https://' . $url;
-			}
+			$url = self::normalize($url, $row['icon']);
 
 			if (self::url($url) === '') {
 				continue;
