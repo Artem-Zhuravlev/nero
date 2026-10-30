@@ -211,19 +211,20 @@
               <div class="ocs-rate">
                 {% for i in 5..1 %}<input type="radio" name="rating" value="{{ i }}" id="input-rating-{{ i }}" /><label for="input-rating-{{ i }}" title="{{ i }}"><span class="ocs-sr">{{ i }}</span><svg class="ocs-i" aria-hidden="true"><use href="#i-star"/></svg></label>{% endfor %}
               </div>
-              <p class="ocs-help"><span>{{ entry_bad }}</span> <span>{{ entry_good }}</span></p>
             </fieldset>
             <div class="ocs-field required">
               <label for="input-name">{{ entry_name }}</label>
               <input placeholder="{{ entry_name }}" type="text" name="name" value="{{ customer_name }}" id="input-name" class="form-control" autocomplete="name" />
             </div>
-            <div class="ocs-field">
-              <label for="input-pros"><span class="ocs-pm ocs-pm-plus" aria-hidden="true">+</span> {{ ocs_px.entry_pros }}</label>
-              <input type="text" placeholder="{{ ocs_px.entry_pros }}" name="pros" id="input-pros" maxlength="255" class="form-control" />
-            </div>
-            <div class="ocs-field">
-              <label for="input-cons"><span class="ocs-pm ocs-pm-minus" aria-hidden="true">&minus;</span> {{ ocs_px.entry_cons }}</label>
-              <input type="text" placeholder="{{ ocs_px.entry_cons }}" name="cons" id="input-cons" maxlength="255" class="form-control" />
+            <div class="ocs-field-pair">
+              <div class="ocs-field">
+                <label for="input-pros"><span class="ocs-pm ocs-pm-plus" aria-hidden="true">+</span> {{ ocs_px.entry_pros }}</label>
+                <input type="text" placeholder="{{ ocs_px.entry_pros }}" name="pros" id="input-pros" maxlength="255" class="form-control" />
+              </div>
+              <div class="ocs-field">
+                <label for="input-cons"><span class="ocs-pm ocs-pm-minus" aria-hidden="true">&minus;</span> {{ ocs_px.entry_cons }}</label>
+                <input type="text" placeholder="{{ ocs_px.entry_cons }}" name="cons" id="input-cons" maxlength="255" class="form-control" />
+              </div>
             </div>
             <div class="ocs-field required">
               <label for="input-review">{{ entry_review }}</label>

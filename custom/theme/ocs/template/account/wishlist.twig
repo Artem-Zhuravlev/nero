@@ -28,11 +28,16 @@
         {% endfor %}
       </div>
       {% else %}
-      <div class="ocs-acc-empty"><svg class="ocs-i" aria-hidden="true"><use href="#i-package"/></svg><p>{{ text_empty }}</p></div>
-      {% endif %}
-      <div class="buttons clearfix">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+      <div class="ocs-cart-void">
+        <svg class="ocs-cart-void-art" viewBox="0 0 120 100" width="120" height="100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M60 90C20 64 8 42 14 28C21 10 49 10 60 29C71 10 99 10 106 28C112 42 100 64 60 90Z"/>
+          <path d="M44 40v4M76 40v4" stroke-width="3"/>
+          <path d="M50 62q10-9 20 0"/>
+          <path class="ocs-cart-void-tear" d="M80 50q3 4 0 7q-3-3 0-7z" stroke="none" fill="currentColor"/>
+        </svg>
+        <p class="ocs-cart-void-text">{{ text_empty }}</p>
       </div>
+      {% endif %}
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>

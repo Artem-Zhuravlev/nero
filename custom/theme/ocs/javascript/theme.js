@@ -1638,7 +1638,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 	var phone = window.matchMedia ? window.matchMedia('(max-width: 767px)') : {matches: false};
 
 	// Whole slides only: with auto-width slides the row ends on a cut-off one, so the slides are widened a little to fill the row with a whole number of them
-	function fit(root, items, gap) {
+	function fit(root, items, gap, count) {
 		var i, n, w;
 
 		for (i = 0; i < items.length; i++) {
@@ -1646,7 +1646,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		}
 
 		w = items[0].offsetWidth;
-		n = w > 0 ? Math.max(1, Math.floor((root.clientWidth + gap) / (w + gap))) : 0;
+		n = count || (w > 0 ? Math.max(1, Math.floor((root.clientWidth + gap) / (w + gap))) : 0);
 
 		if (!n || items.length <= n) {
 			return;
@@ -1691,7 +1691,7 @@ document.documentElement.className += ' ocs-js'; // markers for CSS: forms and b
 		var whole = !single && !twoUp;
 
 		if (whole) {
-			fit(root, items, 16);
+			fit(root, items, 16, root.closest('.ocs-pcarousel') ? 4 : 0);
 		}
 
 		var options = {

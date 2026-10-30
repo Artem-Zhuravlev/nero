@@ -2,23 +2,23 @@
 {# SPEC-063: account menu card with icons; theme.js marks the current page with aria-current #}
 <nav class="ocs-acc-nav"{% if ocs_acc_menu %} data-menu-label="{{ ocs_acc_menu }}"{% endif %}>
   {% if not logged %}
-  <a href="{{ login }}" class="ocs-acc-link"><span>{{ text_login }}</span></a>
-  <a href="{{ register }}" class="ocs-acc-link"><span>{{ text_register }}</span></a>
-  <a href="{{ forgotten }}" class="ocs-acc-link"><span>{{ text_forgotten }}</span></a>
+  <a href="{{ login }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg><span>{{ text_login }}</span></a>
+  <a href="{{ register }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-plus"/></svg><span>{{ text_register }}</span></a>
+  <a href="{{ forgotten }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-shield"/></svg><span>{{ text_forgotten }}</span></a>
   {% endif %}
-  <a href="{{ account }}" class="ocs-acc-link"><span>{{ text_account }}</span></a>
-  <a href="{{ edit }}" class="ocs-acc-link"><span>{{ text_edit }}</span></a>
-  <a href="{{ password }}" class="ocs-acc-link"><span>{{ text_password }}</span></a>
-  <a href="{{ address }}" class="ocs-acc-link"><span>{{ text_address }}</span></a>
-  <a href="{{ wishlist }}" class="ocs-acc-link"><span>{{ text_wishlist }}</span></a>
-  <a href="{{ order }}" class="ocs-acc-link"><span>{{ text_order }}</span></a>
-  <a href="{{ download }}" class="ocs-acc-link"><span>{{ text_download }}</span></a>
-  <a href="{{ recurring }}" class="ocs-acc-link"><span>{{ text_recurring }}</span></a>
-  <a href="{{ reward }}" class="ocs-acc-link"><span>{{ text_reward }}</span></a>
-  <a href="{{ return }}" class="ocs-acc-link"><span>{{ text_return }}</span></a>
-  <a href="{{ transaction }}" class="ocs-acc-link"><span>{{ text_transaction }}</span></a>
-  <a href="{{ newsletter }}" class="ocs-acc-link"><span>{{ text_newsletter }}</span></a>
+  <a href="{{ account }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-home"/></svg><span>{{ text_account }}</span></a>
+  <a href="{{ edit }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-user"/></svg><span>{{ text_edit }}</span></a>
+  <a href="{{ password }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-shield"/></svg><span>{{ text_password }}</span></a>
+  <a href="{{ address }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-pin"/></svg><span>{{ text_address }}</span></a>
+  <a href="{{ wishlist }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-heart"/></svg><span>{{ text_wishlist }}</span></a>
+  <a href="{{ order }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-package"/></svg><span>{{ text_order }}</span></a>
+  <a href="{{ download }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-download"/></svg><span>{{ text_download }}</span></a>
+  <a href="{{ recurring }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-clock"/></svg><span>{{ text_recurring }}</span></a>
+  <a href="{{ reward }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-gift"/></svg><span>{{ text_reward }}</span></a>
+  <a href="{{ return }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-return"/></svg><span>{{ text_return }}</span></a>
+  <a href="{{ transaction }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-card"/></svg><span>{{ text_transaction }}</span></a>
+  <a href="{{ newsletter }}" class="ocs-acc-link"><svg class="ocs-i" aria-hidden="true"><use href="#i-mail"/></svg><span>{{ text_newsletter }}</span></a>
   {% if logged %}
-  <a href="{{ logout }}" class="ocs-acc-link ocs-acc-logout"><span>{{ text_logout }}</span></a>
+  <a href="{{ logout }}" class="ocs-acc-link ocs-acc-logout"><svg class="ocs-i" aria-hidden="true"><use href="#i-x"/></svg><span>{{ text_logout }}</span></a>
   {% endif %}
 </nav>

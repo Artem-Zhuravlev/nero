@@ -1417,13 +1417,13 @@ li .ocs-stock { font-size: inherit; }
 	.ocs-home-menu { display: none; }
 
 	@container home (min-width: 64rem) {
-		.ocs-hero-wrap.has-menu { grid-template-columns: 17rem minmax(0, 1fr); }
+		.ocs-hero-wrap.has-menu { grid-template-columns: 19rem minmax(0, 1fr); }
 		.ocs-hero-wrap.has-menu .ocs-home-menu { display: block; }
-		.ocs-hero-wrap.has-menu.has-tiles { grid-template-columns: 17rem minmax(0, 1fr); }
+		.ocs-hero-wrap.has-menu.has-tiles { grid-template-columns: 19rem minmax(0, 1fr); }
 		.ocs-hero-wrap.has-menu.has-tiles .ocs-hero-tiles { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; }
 	}
 	@container home (min-width: 76rem) {
-		.ocs-hero-wrap.has-menu.has-tiles { grid-template-columns: 17rem minmax(0, 1fr) 16rem; }
+		.ocs-hero-wrap.has-menu.has-tiles { grid-template-columns: 19rem minmax(0, 1fr) 16rem; }
 		.ocs-hero-wrap.has-menu.has-tiles .ocs-hero-tiles { grid-column: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: repeat(2, minmax(0, 1fr)); }
 	}
 }
@@ -2418,13 +2418,13 @@ li .ocs-stock { font-size: inherit; }
 .ocs-bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: var(--sp-5); margin-block: var(--sp-5); }
 #column-left .ocs-bgrid, #column-right .ocs-bgrid { grid-template-columns: 1fr; gap: var(--sp-3); }
 .ocs-bcard { display: flex; flex-direction: column; min-inline-size: 0; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; transition: box-shadow var(--t), transform var(--t); }
-.ocs-bcard:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.ocs-bcard:hover { box-shadow: var(--shadow); }
 .ocs-bcard-img { display: block; aspect-ratio: 16 / 10; background: var(--bg-alt); overflow: hidden; }
 .ocs-bcard-img img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
 .ocs-bcard-ph { display: grid; place-items: center; block-size: 100%; color: var(--text-muted); }
 .ocs-bcard-body { display: flex; flex-direction: column; flex: 1; gap: var(--sp-2); padding: var(--sp-4); }
 .ocs-bcard-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); color: var(--text-muted); font-size: var(--fs-xs); }
-.ocs-bcard-title { margin: 0; font-size: var(--fs-md); font-weight: 800; line-height: 1.3; }
+.ocs-bcard-title { margin: 0; font-size: var(--fs-md); font-weight: 400; line-height: 1.3; }
 .ocs-bcard-title a { color: inherit; text-decoration: none; }
 .ocs-bcard-text { margin: 0; color: var(--text-muted); font-size: var(--fs-sm); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
 .ocs-bcard-foot { display: flex; align-items: center; gap: var(--sp-3); margin-block-start: auto; padding-block-start: var(--sp-2); color: var(--text-muted); font-size: var(--fs-xs); }
@@ -2503,7 +2503,7 @@ li .ocs-stock { font-size: inherit; }
 }
 @media (min-width: 768px) {
 	.ocs-mc .ocs-carousel-track {
-		display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min)), 1fr)); column-gap: var(--sp-4); row-gap: 0;
+		display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--sp-4); row-gap: 0;
 		overflow: visible; scroll-snap-type: none;
 	}
 	.ocs-viewed .ocs-mc .ocs-carousel-track { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -2588,7 +2588,7 @@ s, .price-old, .ocs-old, .ocs-price-old s { color: var(--price-old); text-decora
 .ocs-section-body img { max-inline-size: 100% !important; block-size: auto !important; }
 
 /* Blog list sort bar: label and select centred on one line, no page-size limit */
-.ocs-blog-sort { display: flex; align-items: center; justify-content: center; gap: var(--sp-3); margin-block: var(--sp-4); }
+.ocs-blog-sort { display: flex; align-items: center; justify-content: flex-start; gap: var(--sp-3); margin-block: var(--sp-4); }
 .ocs-blog-sort .control-label { margin: 0; color: var(--text-muted); font-size: var(--fs-sm); white-space: nowrap; }
 .ocs-blog-sort .form-control { inline-size: auto; min-inline-size: 14rem; max-inline-size: 100%; border-radius: var(--r-pill, 999px); }
 
@@ -2623,3 +2623,110 @@ s, .price-old, .ocs-old, .ocs-price-old s { color: var(--price-old); text-decora
 .ocs-buy-row { align-items: flex-end; margin-block-start: auto; }
 .ocs-buy-row .price { align-self: center; }
 .ocs-buy-row .ocs-cart-btn { align-self: flex-end; }
+
+/* prices in the cart, the live search and the product modules: Semi Bold (600) */
+.product-thumb .price, .product-thumb .price-new, .product-thumb .price-old,
+.ocs-buy-row .price, .ocs-buy-row .price-old,
+.ocs-cart-price, .ocs-cart-price small, .ocs-cart-price .ocs-old,
+.ocs-cart-totals td,
+.ocs-search-price, .ocs-search-price s,
+.ocs-c-price, .ocs-c-total, .ocs-c-total .ocs-now, .ocs-old,
+.ocs-sum-row dd { font-weight: 600; }
+
+/* header catalogue popup: flush with the left edge of the "Каталог" button, same width as the home menu */
+@media (min-width: 768px) {
+	.ocs-head-cat .ocs-mega-l1 { left: 0; width: 19rem; }
+}
+
+/* utility strip: information menu centred on the page, phone icon, clearer language divider, roomier gap before the language switch */
+#top.ocs-util .ocs-contact { margin-inline-end: var(--sp-4); }
+#top.ocs-util .ocs-contact .ocs-util-btn > .ocs-i-sm { inline-size: 1rem; block-size: 1rem; }
+.ocs-lang-sep { color: color-mix(in srgb, var(--text-muted) 65%, transparent); }
+@media (min-width: 1100px) {
+	#top.ocs-util > .container { position: relative; }
+	#top.ocs-util .ocs-top { position: absolute; inset-inline-start: 50%; translate: -50% 0; inset-block: 0; }
+}
+
+/* every product block shows 4 cards per row (grid modules and the category-tab carousel) */
+@media (min-width: 768px) {
+	.ocs-pcarousel .ocs-carousel-item { inline-size: calc((100% - 3 * var(--sp-4)) / 4); }
+}
+
+/* block titles and the product price: 25px */
+.ocs-sec-title, .ocs-pcarousel-head .ocs-sec-title, .ocs-section > .ocs-sec-title, .ocs-price { font-size: 25px; }
+
+/* latest reviews: accent elements (author, product name) in Medium */
+.ocs-lreview-author, .ocs-lreview-product span { font-weight: 500; }
+
+/* compare toggle: the scales icon stays outlined; a small check badge says the product is in the comparison */
+[onclick*="compare.add("][aria-pressed="true"] .ocs-i { fill: none; }
+.ocs-tool[onclick*="compare.add("][aria-pressed="true"] { position: relative; }
+.ocs-tool[onclick*="compare.add("][aria-pressed="true"]::after {
+	content: ""; position: absolute; inset-block-start: 1px; inset-inline-end: 1px; inline-size: 0.9rem; block-size: 0.9rem; border-radius: 50%;
+	background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8.5l2.8 2.8L12 5.5'/%3E%3C/svg%3E") center / 70% no-repeat;
+	box-shadow: 0 0 0 2px var(--bg);
+}
+
+/* specifications table: regular weight, one text colour in both columns */
+.ocs-specs-row dt, .ocs-specs-row dd { font-weight: 400; color: var(--text); }
+
+/* review form: pros and cons side by side */
+.ocs-field-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--sp-4); }
+@media (max-width: 479px) { .ocs-field-pair { grid-template-columns: minmax(0, 1fr); } }
+
+/* customer account: tile fill */
+.ocs-acc-tile:not(:hover):not(:focus-visible) { background: #fbfbfb; }
+
+/* home category menu = the header catalogue menu: same rows, popular dot, flyout card, groups, links and banner */
+.ocs-home-link { min-block-size: 44px; box-sizing: border-box; padding: var(--sp-2) var(--sp-3); font-size: inherit; font-weight: 400; }
+.ocs-home-link > span { overflow: visible; text-overflow: clip; white-space: normal; }
+.ocs-home-link > .ocs-i-sm { color: var(--text-muted); }
+.ocs-home-menu .ocs-popular > .ocs-home-link > span { font-weight: 400; }
+.ocs-home-menu .ocs-popular > .ocs-home-link:after { content: ""; flex: none; inline-size: 6px; block-size: 6px; border-radius: 50%; background: var(--danger); order: 1; }
+.ocs-home-menu .ocs-popular > .ocs-home-link > .ocs-i-sm { order: 2; }
+.ocs-home-fly {
+	inline-size: min(56rem, 62cqi); padding: 0; border: 1px solid var(--border); border-radius: var(--r-lg);
+	overflow: hidden; grid-template-columns: minmax(0, 1fr) auto; gap: 0;
+}
+.ocs-home-body { min-inline-size: 0; overflow-y: auto; padding: var(--sp-5); }
+.ocs-home-cols { column-count: 3; column-gap: var(--sp-5); }
+.ocs-home-group { break-inside: avoid; margin-block-end: var(--sp-4); }
+.ocs-home-gtitle { font-weight: 400; }
+.ocs-home-promo { position: relative; display: block; inline-size: 240px; }
+.ocs-home-promo img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; max-inline-size: none; }
+
+/* contacts: however many info cards are filled, they share the whole row */
+.ocs-cc-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+
+/* footer column titles: Medium */
+footer .ocs-fh, footer :is(h5, h2) { font-weight: 500; }
+
+/* sale prices: only the struck-through old price is red, the current price keeps the text colour */
+.product-thumb .price-new, .ocs-price-special [data-ocs-cur], .ocs-price-special { color: var(--text); }
+
+/* product page sale price: current price with the old one beside it, a quiet Medium savings pill underneath */
+.ocs-price-box:has(> .ocs-price-special) { grid-template-columns: auto auto minmax(0, 1fr); align-items: baseline; column-gap: var(--sp-3); row-gap: var(--sp-2); }
+.ocs-price-box:has(> .ocs-price-special) > * { grid-column: 1 / -1; }
+.ocs-price-box > .ocs-price-special { display: contents; }
+.ocs-price-box > .ocs-price-special [data-ocs-cur] { grid-column: 1; grid-row: 1; }
+.ocs-price-box > .ocs-price-old { grid-column: 2; grid-row: 1; font-size: var(--fs-md); font-weight: 400; line-height: 1; }
+.ocs-price-box > .ocs-price-special .ocs-savings {
+	grid-column: 1 / -1; grid-row: 2; justify-self: start; padding: 3px 10px; border-radius: var(--r-pill);
+	background: color-mix(in srgb, var(--success) 10%, var(--bg)); color: var(--success);
+	font-size: var(--fs-xs); font-weight: 500; letter-spacing: 0; line-height: 1.4;
+}
+
+/* one look for every popup form (quick order, pre-order, back in stock, question, review): same width, title, field rhythm and submit button */
+.ocs-modal-center .ocs-modal-dialog.ocs-pop-dialog { max-inline-size: 32.5rem; }
+.ocs-req-title, .ocs-pop .ocs-form-title { margin: 0; padding-inline-end: var(--sp-6); font-size: var(--fs-lg); line-height: 1.25; }
+.ocs-req-form, .ocs-pop .ocs-form { display: grid; gap: var(--sp-4); margin: 0; }
+.ocs-req > .ocs-req-title { margin-block-end: var(--sp-4); }
+.ocs-req-form > * { margin: 0; min-inline-size: 0; }
+.ocs-req .form-group { display: grid; gap: var(--sp-1); margin: 0; }
+.ocs-req .control-label { margin: 0; font-size: var(--fs-sm); font-weight: 400; }
+.ocs-pop .ocs-form-grid { grid-template-columns: minmax(0, 1fr); }
+.ocs-pop .ocs-form-actions { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); }
+.ocs-req-form > .btn, .ocs-pop .ocs-form-actions .btn, .ocs-pop .ocs-form > .btn {
+	display: inline-flex; align-items: center; justify-content: center; inline-size: 100%; min-inline-size: 0; min-block-size: var(--btn-h);
+	padding-inline: 1.5rem; border-radius: var(--r-pill); font-size: var(--fs-md); font-weight: 500;
+}

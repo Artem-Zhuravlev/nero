@@ -62,7 +62,7 @@ class ControllerExtensionModuleOcsHomeSlider extends Controller {
 			$this->load->model('extension/ocs_menu/tree');
 
 			foreach ($this->model_extension_ocs_menu_tree->getTree(2) as $node) {
-				if (!$node['top'] || count($data['menu']) >= 14) {
+				if (!$node['top']) {
 					continue;
 				}
 
@@ -72,7 +72,19 @@ class ControllerExtensionModuleOcsHomeSlider extends Controller {
 					$icon['src'] = $this->model_tool_image->resize($icon['value'], 24, 24);
 				}
 
-				$data['menu'][] = array('name' => $node['name'], 'href' => $node['href'], 'icon' => $icon, 'children' => array_slice($node['children'], 0, 8));
+				$banner = false;
+
+				if ($node['banner_image']) {
+					$url = OcsShell::safeUrl($node['banner_url']);
+
+					$banner = array(
+						'src' => $this->model_tool_image->resize($node['banner_image'], 480, 720),
+						'url' => $url !== '' ? $url : $node['href']
+					);
+				}
+
+				// same node data as the header mega menu: popular dot, banner, every group and link
+				$data['menu'][] = array('name' => $node['name'], 'href' => $node['href'], 'icon' => $icon, 'popular' => (bool)$node['popular'], 'banner' => $banner, 'children' => $node['children']);
 			}
 		}
 
